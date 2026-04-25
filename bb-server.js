@@ -484,6 +484,55 @@ app.post('/api/generate-blueprint', async (req, res) => {
 
 // ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
 
+// ─── TEST ENDPOINT (remove after go-live) ────────────────────────────────────
+// Hit: GET /api/test-flow?email=you@example.com
+// Generates a real blueprint with Claude, renders a PDF, and emails it to you.
+
+app.get('/api/test-flow', async (req, res) => {
+  const email = req.query.email;
+  if (!email || !email.includes('@')) {
+    return res.status(400).send('Add ?email=your@email.com to the URL');
+  }
+
+  try {
+    res.write('Starting test...\n');
+
+    // 1. Generate blueprint with Claude
+    res.write('Calling Claude to generate blueprint...\n');
+    const blueprint = await generateBlueprint({
+      situation: "We have been together for two years. When things feel close and connected, she suddenly goes cold and distant for days without explanation. I reach out and she says nothing is wrong but pulls further away. I end up feeling desperate and clingy, which I hate. When I give her space she comes back warm and loving, but I never know how long it will last. I am exhausted from the cycle and do not know if I am the problem.",
+      who: 'my partner',
+      theme: 'pullaway',
+      goal: 'feel safe in love'
+    });
+    res.write(`Blueprint generated: "${blueprint.title}"\n`);
+
+    // 2. Render PDF
+    res.write('Rendering PDF...\n');
+    const pdfBuffer = await generateBlueprintPdf(blueprint, {
+      name: 'Ashley',
+      attachmentStyle: 'Anxious',
+      partnerStyle: 'Avoidant'
+    });
+    res.write(`PDF rendered: ${Math.round(pdfBuffer.length / 1024)}KB\n`);
+
+    // 3. Send email
+    res.write(`Sending email to ${email}...\n`);
+    await sendBlueprintEmail({
+      to: email,
+      name: 'Ashley',
+      pdfBuffer,
+      blueprintTitle: blueprint.title,
+      attachmentStyle: 'Anxious',
+      partnerStyle: 'Avoidant'
+    });
+
+    res.end(`\n✅ SUCCESS — Check ${email} for your test blueprint PDF.\nTitle: "${blueprint.title}"`);
+  } catch (err) {
+    res.end(`\n❌ ERROR: ${err.message}`);
+  }
+});
+
 app.get('/api/health', (req, res) => {
   res.json({
     ok:     true,
