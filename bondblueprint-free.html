@@ -1164,11 +1164,14 @@ document.addEventListener('DOMContentLoaded', () => {
   if (paid === 'success') {
     posthog.capture('purchase_completed');
     goTo('screen-success');
-    // Clean URL without reload
     window.history.replaceState({}, '', window.location.pathname);
   } else if (paid === 'cancelled') {
     posthog.capture('checkout_cancelled');
-    // Show landing — user just navigates normally
+  } else if (params.get('back') === '1') {
+    // Abandoned-cart email deep link — skip to pre-checkout
+    posthog.capture('abandoned_cart_email_click');
+    goTo('screen-precheckout');
+    window.history.replaceState({}, '', window.location.pathname);
   }
 });
 </script>
