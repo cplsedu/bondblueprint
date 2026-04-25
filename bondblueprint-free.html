@@ -6,7 +6,7 @@
 <title>BondBlueprint™: Free Attachment Style Quiz</title>
 <script>
   !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify alias setPersonProperties groupIdentify setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),i=0;i<o.length;i++)g(u,o[i]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-  posthog.init('phc_CXx2ezKhKjwXJWEWtShZgkYCf8q97VXgJEJ8GgaMiTUv', { api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only' });
+  posthog.init('phc_CXx2ezKhKjwXJWEWtShZgkYCf8q97VXgJEJ8GgaMiTUv', { api_host: 'https://us.i.posthog.com', person_profiles: 'always' });
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -272,9 +272,10 @@ input{font-family:inherit;font-size:16px;-webkit-appearance:none}
   <div class="land-inner">
     <div class="land-logo">Bond<span>Blueprint</span>™</div>
     <h1 class="land-h">You already know something is <em>off.</em></h1>
-    <p class="land-sub">You're exhausted from feeling this way. The push and pull. The silence. The overthinking after every interaction. There's a reason it keeps happening. And once you see it, you can't unsee it.</p>
+    <p class="land-sub">You've tried being more patient. More understanding. More available. The same thing keeps happening anyway.</p>
+    <p class="land-sub" style="margin-top:10px">There's a pattern underneath all of it. Your blueprint shows you exactly what it is, why it keeps happening, and what to do next.</p>
     <button class="land-cta" onclick="startQuiz()">Show Me What's Really Going On →</button>
-    <p class="land-note">2 minutes. Most people say "I finally understand why."</p>
+    <p class="land-note">Takes 2 minutes. Built from your answers, not a template.</p>
   </div>
   <div class="edu-bar">BondBlueprint™ is psychoeducational content based on peer-reviewed research. Not therapy or clinical advice.</div>
 </div>
@@ -353,8 +354,8 @@ input{font-family:inherit;font-size:16px;-webkit-appearance:none}
   <div class="pco-wrap">
     <div class="pco-logo">Bond<span>Blueprint</span>™</div>
     <div class="pco-badge">✦ Personalized for you</div>
-    <h2 class="pco-h">Your custom blueprint is one step away.</h2>
-    <p class="pco-sub">Tell us what's actually going on in your own words. Your blueprint is built around your exact situation, not a template.</p>
+    <h2 class="pco-h">Your blueprint is being built.</h2>
+    <p class="pco-sub">Based on your answers, we know the pattern. Describe your situation below and your full personalized blueprint gets sent straight to your inbox.</p>
 
     <div class="pco-features">
       <div class="pco-feat"><span class="pco-feat-icon">📖</span><span>What's actually happening and why</span></div>
@@ -365,12 +366,21 @@ input{font-family:inherit;font-size:16px;-webkit-appearance:none}
     </div>
 
     <div class="pco-field">
-      <label class="pco-label" for="pco-situation">Describe what's going on <span>(in your own words)</span></label>
+      <label class="pco-label" for="pco-name">Your first name <span style="color:var(--text3);font-weight:600;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input class="gate-input" id="pco-name" type="text" placeholder="What should we call you?" autocomplete="given-name">
+    </div>
+    <div class="pco-field">
+      <label class="pco-label" for="pco-email">Your email <span style="color:#DC2626">*</span></label>
+      <input class="gate-input" id="pco-email" type="email" placeholder="you@example.com" autocomplete="email" oninput="onPcoInput()">
+      <p style="margin:5px 0 0;font-size:.75rem;color:var(--text3);font-weight:600">Your PDF gets sent here. No spam. Unsubscribe anytime.</p>
+    </div>
+    <div class="pco-field">
+      <label class="pco-label" for="pco-situation">What's actually going on <span>(in your own words)</span></label>
       <textarea
         class="pco-textarea"
         id="pco-situation"
         placeholder="e.g. We've been together 8 months. Everything feels great, then out of nowhere they go cold and distant for days. I ask if something's wrong and they say 'nothing' but pull back even more. I end up feeling desperate and needy which I hate..."
-        oninput="onSituationInput()"
+        oninput="onPcoInput()"
       ></textarea>
     </div>
 
@@ -387,7 +397,7 @@ input{font-family:inherit;font-size:16px;-webkit-appearance:none}
 
     <button class="pco-btn" id="pco-btn" onclick="startCheckout()">Get My Blueprint — $19 →</button>
     <p class="pco-secure">🔒 Secure checkout via Stripe · No account needed</p>
-    <button class="pco-back" onclick="goTo('screen-results')">← Back to my results</button>
+    <button class="pco-back" onclick="goTo('screen-landing')">← Start over</button>
   </div>
   <div class="edu-bar">Secure payment powered by Stripe. PDF delivered to your email within minutes.</div>
 </div>
@@ -836,6 +846,7 @@ function startQuiz() {
   Q.currentIdx = 0;
   Q.myAnswers = [];
   Q.ptAnswers = [];
+  _situationTracked = false;
   track('quiz_started');
   goTo('screen-quiz');
   renderQuizQuestion();
@@ -1033,7 +1044,7 @@ function beginProcessing() {
       Q.ptStyle = resolveStyle(Q.ptAnswers);
       setTimeout(() => {
         bar.style.width = '100%';
-        setTimeout(() => { buildResults(); goTo('screen-gate'); }, 300);
+        setTimeout(() => { goTo('screen-precheckout'); }, 300);
       }, 400);
     }
   }, 140);
@@ -1131,24 +1142,47 @@ function buildResults() {
    PRE-CHECKOUT + STRIPE FLOW
 ═══════════════════════════════════════════ */
 function goToPreCheckout() {
-  track('checkout_initiated', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
   goTo('screen-precheckout');
 }
 
 let _situationTracked = false;
-function onSituationInput() {
-  const val = document.getElementById('pco-situation').value.trim();
-  const btn = document.getElementById('pco-btn');
-  btn.disabled = val.length < 20;
-  if (!_situationTracked && val.length > 10) {
+function onPcoInput() {
+  const email     = document.getElementById('pco-email').value.trim();
+  const situation = document.getElementById('pco-situation').value.trim();
+  const btn       = document.getElementById('pco-btn');
+  btn.disabled = situation.length < 20 || !email.includes('@') || !email.includes('.');
+  if (!_situationTracked && situation.length > 10) {
     track('situation_typed', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
     _situationTracked = true;
   }
 }
 
 async function startCheckout() {
+  const email     = document.getElementById('pco-email').value.trim().toLowerCase();
+  const name      = document.getElementById('pco-name').value.trim();
   const situation = document.getElementById('pco-situation').value.trim();
-  const btn = document.getElementById('pco-btn');
+  const btn       = document.getElementById('pco-btn');
+
+  if (!email || !email.includes('@') || !email.includes('.')) return;
+  if (situation.length < 20) return;
+
+  Q.email = email;
+  Q.name  = name;
+
+  posthog.identify(email, { name, attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+  track('checkout_initiated', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+
+  fetch('/api/account', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email,
+      name,
+      attachmentStyle: Q.myStyle,
+      partnerStyle:    Q.ptStyle,
+      quizData: { myAnswers: Q.myAnswers, ptAnswers: Q.ptAnswers, theme: resolveThemeFromStyles(Q.myStyle, Q.ptStyle), goal: 'feel safe in love' }
+    })
+  }).catch(() => {});
 
   btn.disabled = true;
   btn.textContent = 'Redirecting to checkout…';
@@ -1158,8 +1192,8 @@ async function startCheckout() {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email:           Q.email,
-        name:            Q.name,
+        email,
+        name,
         situation,
         attachmentStyle: Q.myStyle,
         partnerStyle:    Q.ptStyle
