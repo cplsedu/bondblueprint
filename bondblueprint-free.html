@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BondBlueprint™: Free Attachment Style Quiz</title>
+<script>
+  !function(t,e){var o,n,p,r;e.__SV||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]);t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+" (stub)"},o="init capture register register_once register_for_session unregister unregister_for_session getFeatureFlag getFeatureFlagPayload isFeatureEnabled reloadFeatureFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSessionId getSurveys getActiveMatchingSurveys renderSurvey canRenderSurvey identify alias setPersonProperties groupIdentify setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset get_distinct_id getGroups get_session_id get_session_replay_url createPersonProfile opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing clear_opt_in_out_capturing debug".split(" "),i=0;i<o.length;i++)g(u,o[i]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
+  posthog.init('phc_CXx2ezKhKjwXJWEWtShZgkYCf8q97VXgJEJ8GgaMiTUv', { api_host: 'https://us.i.posthog.com', person_profiles: 'identified_only' });
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%;height:100%}
+body{font-family:'Nunito',sans-serif;background:#FAF7F3;color:#1A1714;min-height:100vh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input{font-family:inherit;font-size:16px;-webkit-appearance:none}
+
+:root{
+  --bg:#FAF7F3;
+  --surface:#fff;
+  --primary:#2C4A35;
+  --primary-h:#1E3526;
+  --primary-lt:#E6F0E9;
+  --accent:#E07A3A;
+  --accent-lt:#FDF0E6;
+  --gold:#D4A843;
+  --text:#1A1714;
+  --text2:#5A5450;
+  --text3:#9A908A;
+  --border:#EAE3D9;
+  --sh:0 2px 12px rgba(0,0,0,.07);
+  --sh2:0 8px 32px rgba(0,0,0,.14);
+  --r:18px;
+  --rsm:12px;
+  --rpill:100px;
+
+  /* Style colors */
+  --sa:#2C4A35;    --sa-lt:#E6F0E9;
+  --aa:#C2793A;    --aa-lt:#FDF0E6;
+  --da:#3A5878;    --da-lt:#E6EEF5;
+  --fa:#6B4A85;    --fa-lt:#F0EAF8;
+}
+
+#app{min-height:100vh;display:flex;flex-direction:column}
+.screen{display:none;flex-direction:column;min-height:100vh}
+.screen.active{display:flex}
+
+/* ── LANDING ─────────────────────────── */
+#screen-landing{background:linear-gradient(160deg,#1E3526 0%,#2C4A35 60%,#3A5E44 100%)}
+.land-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 40px;text-align:center;max-width:520px;margin:0 auto;width:100%}
+.land-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:rgba(255,255,255,.65);margin-bottom:28px}
+.land-logo span{color:var(--gold)}
+.land-free-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(212,168,67,.18);border:1.5px solid rgba(212,168,67,.45);border-radius:var(--rpill);padding:6px 18px;font-size:.8rem;font-weight:900;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;margin-bottom:18px}
+.land-h{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,7.5vw,2.9rem);font-weight:800;line-height:1.12;color:#fff;margin-bottom:14px}
+.land-h em{color:var(--gold);font-style:italic}
+.land-sub{font-size:.97rem;font-weight:600;color:rgba(255,255,255,.72);line-height:1.7;margin-bottom:32px;max-width:410px}
+.land-what{display:flex;flex-direction:column;gap:9px;width:100%;max-width:360px;margin-bottom:34px}
+.lw-item{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.07);border-radius:var(--rsm);padding:11px 15px;text-align:left}
+.lw-icon{font-size:1.2rem;flex-shrink:0}
+.lw-text{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.82);line-height:1.35}
+.land-cta{width:100%;max-width:340px;padding:18px;border-radius:var(--rpill);background:var(--accent);color:#fff;font-size:1.08rem;font-weight:900;box-shadow:0 6px 24px rgba(224,122,58,.4);transition:all .2s}
+.land-cta:hover{background:#C96B2B;transform:translateY(-2px)}
+.land-note{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.38);margin-top:12px}
+
+/* ── EMAIL GATE ──────────────────────── */
+#screen-gate{background:var(--bg)}
+.gate-wrap{flex:1;display:flex;flex-direction:column;max-width:480px;margin:0 auto;width:100%;padding:40px 24px 40px;justify-content:center}
+.gate-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:var(--primary);text-align:center;margin-bottom:36px}
+.gate-logo span{color:var(--accent)}
+.gate-icon{font-size:2.8rem;text-align:center;margin-bottom:14px}
+.gate-h{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:800;color:var(--text);text-align:center;line-height:1.2;margin-bottom:10px}
+.gate-sub{font-size:.92rem;font-weight:600;color:var(--text2);text-align:center;line-height:1.65;margin-bottom:28px}
+.gate-field{margin-bottom:14px}
+.gate-label{display:block;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:7px}
+.gate-input{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:14px 16px;font-size:1rem;font-weight:600;color:var(--text);outline:none;transition:border-color .18s}
+.gate-input:focus{border-color:var(--primary)}
+.gate-input::placeholder{color:var(--text3)}
+.gate-error{font-size:.82rem;font-weight:700;color:#DC2626;margin-top:6px;display:none}
+.gate-error.show{display:block}
+.gate-cta{width:100%;padding:16px;border-radius:var(--rpill);background:var(--primary);color:#fff;font-size:1.05rem;font-weight:900;box-shadow:0 4px 20px rgba(44,74,53,.22);transition:all .18s;margin-top:6px}
+.gate-cta:hover{background:var(--primary-h);transform:translateY(-2px)}
+.gate-cta:disabled{opacity:.4;pointer-events:none}
+.gate-privacy{font-size:.73rem;font-weight:700;color:var(--text3);text-align:center;line-height:1.55;margin-top:12px}
+
+/* ── QUIZ ────────────────────────────── */
+#screen-quiz{background:var(--bg)}
+.quiz-wrap{flex:1;display:flex;flex-direction:column;max-width:520px;margin:0 auto;width:100%;padding:24px 20px 40px}
+.quiz-header{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.quiz-logo{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;color:var(--primary);flex-shrink:0}
+.quiz-logo span{color:var(--accent)}
+.quiz-progress-wrap{flex:1}
+.quiz-progress-track{height:7px;background:var(--border);border-radius:4px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;transition:width .4s ease}
+.quiz-progress-label{font-size:.7rem;font-weight:800;color:var(--text3);margin-top:3px;text-align:right}
+
+.quiz-section-badge{display:inline-flex;align-items:center;gap:6px;background:var(--primary-lt);border-radius:var(--rpill);padding:5px 14px;font-size:.75rem;font-weight:900;color:var(--primary);margin-bottom:12px}
+
+/* ── SECTION TRANSITION CARD ── */
+.section-transition{animation:qFadeIn .35s ease forwards;text-align:center;padding:32px 24px;display:flex;flex-direction:column;align-items:center;gap:16px}
+.st-divider{width:100%;display:flex;align-items:center;gap:10px;margin-bottom:4px}
+.st-divider-line{flex:1;height:2px;border-radius:2px}
+.st-label{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;padding:3px 10px;border-radius:var(--rpill)}
+.st-emoji{font-size:3rem}
+.st-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;line-height:1.2}
+.st-sub{font-size:.9rem;font-weight:600;color:var(--text2);line-height:1.6;max-width:320px}
+.st-next-btn{padding:14px 36px;border-radius:var(--rpill);font-size:1rem;font-weight:900;color:#fff;transition:all .18s;box-shadow:0 4px 18px rgba(0,0,0,.15)}
+
+/* ── QUIZ THEMING by section ── */
+#screen-quiz.section-you{background:var(--bg)}
+#screen-quiz.section-partner{background:#1A0D26}
+#screen-quiz.section-partner .quiz-logo{color:rgba(255,255,255,.7)}
+#screen-quiz.section-partner .quiz-logo span{color:var(--gold)}
+#screen-quiz.section-partner .quiz-progress-track{background:rgba(255,255,255,.15)}
+#screen-quiz.section-partner .quiz-progress-label{color:rgba(255,255,255,.45)}
+#screen-quiz.section-partner .quiz-q-num{color:var(--gold)}
+#screen-quiz.section-partner .quiz-q-text{color:#fff}
+#screen-quiz.section-partner .quiz-opt{background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15);color:#fff}
+#screen-quiz.section-partner .quiz-opt:hover{border-color:var(--fa);background:rgba(107,74,133,.25)}
+#screen-quiz.section-partner .quiz-opt.sel{border-color:var(--fa);background:var(--fa)}
+#screen-quiz.section-partner .quiz-opt-letter{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.5)}
+#screen-quiz.section-partner .quiz-opt-text{color:rgba(255,255,255,.85)}
+#screen-quiz.section-partner .quiz-opt.sel .quiz-opt-text{color:#fff}
+#screen-quiz.section-partner .quiz-next-btn{background:var(--fa);box-shadow:0 4px 18px rgba(107,74,133,.4)}
+#screen-quiz.section-partner .quiz-next-btn:hover{background:#5A3A72}
+#screen-quiz.section-partner .section-transition .st-title{color:#fff}
+#screen-quiz.section-partner .section-transition .st-sub{color:rgba(255,255,255,.65)}
+.quiz-card{animation:qFadeIn .28s ease forwards}
+@keyframes qFadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.quiz-q-num{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:6px}
+.quiz-q-text{font-family:'Playfair Display',serif;font-size:clamp(1.25rem,4.5vw,1.6rem);font-weight:800;color:var(--text);line-height:1.25;margin-bottom:20px}
+
+.quiz-options{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
+.quiz-opt{padding:15px 18px;border-radius:var(--r);border:2.5px solid var(--border);background:var(--surface);cursor:pointer;transition:all .15s;text-align:left;display:flex;align-items:flex-start;gap:12px}
+.quiz-opt:hover{border-color:var(--primary);background:var(--primary-lt)}
+.quiz-opt.sel{border-color:var(--primary);background:var(--primary);color:#fff}
+.quiz-opt-letter{width:26px;height:26px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:900;flex-shrink:0;color:var(--text3);transition:all .15s}
+.quiz-opt.sel .quiz-opt-letter{border-color:#fff;color:#fff;background:rgba(255,255,255,.2)}
+.quiz-opt-text{font-size:.93rem;font-weight:700;line-height:1.45;padding-top:2px}
+.quiz-opt.sel .quiz-opt-text{color:#fff}
+
+.quiz-next-btn{width:100%;padding:15px;border-radius:var(--rpill);background:var(--primary);color:#fff;font-size:1rem;font-weight:900;transition:all .18s;box-shadow:0 4px 18px rgba(44,74,53,.2)}
+.quiz-next-btn:hover{background:var(--primary-h)}
+.quiz-next-btn:disabled{opacity:.38;pointer-events:none}
+
+/* ── PROCESSING ──────────────────────── */
+#screen-processing{background:var(--bg);align-items:center;justify-content:center}
+.proc-inner{text-align:center;padding:40px 24px;max-width:380px}
+.proc-icon{font-size:3rem;margin-bottom:16px;animation:procSpin 2s ease-in-out infinite}
+@keyframes procSpin{0%,100%{transform:rotate(0deg)}50%{transform:rotate(8deg)}}
+.proc-h{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--text);margin-bottom:8px}
+.proc-sub{font-size:.9rem;font-weight:600;color:var(--text2);margin-bottom:24px}
+.proc-bar-track{height:7px;background:var(--border);border-radius:4px;overflow:hidden;max-width:280px;margin:0 auto}
+.proc-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;width:0%;transition:width .5s ease}
+
+/* ── RESULTS ─────────────────────────── */
+#screen-results{background:var(--bg)}
+.results-wrap{flex:1;max-width:540px;margin:0 auto;width:100%;padding:0 0 32px}
+
+.results-header{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.results-logo{font-family:'Playfair Display',serif;font-size:.95rem;font-weight:800;color:var(--primary)}
+.results-logo span{color:var(--accent)}
+.results-free-badge{font-size:.72rem;font-weight:900;background:var(--primary-lt);color:var(--primary);border-radius:var(--rpill);padding:4px 12px}
+
+/* Style cards side by side */
+.style-cards-row{display:flex;gap:10px;padding:20px 20px 0}
+.style-card{flex:1;border-radius:var(--r);padding:16px 14px;text-align:center}
+.sc-label{font-size:.65rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;opacity:.75;margin-bottom:6px}
+.sc-emoji{font-size:2rem;margin-bottom:6px;display:block}
+.sc-name{font-size:.88rem;font-weight:900;line-height:1.2;margin-bottom:3px}
+.sc-tag{font-size:.72rem;font-weight:700;opacity:.8;line-height:1.3}
+
+/* vs divider */
+.style-vs{display:flex;align-items:center;justify-content:center;padding:12px 0 0}
+.vs-line{flex:1;height:1.5px;background:var(--border);margin:0 20px}
+.vs-text{font-size:.78rem;font-weight:900;color:var(--text3);background:var(--bg);padding:0 6px}
+
+/* Sections */
+.results-body{padding:20px}
+.rsec{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:14px;box-shadow:var(--sh)}
+.rsec-label{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px}
+.rsec-h{font-size:1.05rem;font-weight:900;color:var(--text);margin-bottom:10px;line-height:1.3}
+.rsec-body{font-size:.92rem;font-weight:600;color:var(--text2);line-height:1.7}
+.rsec-body + .rsec-body{margin-top:10px}
+
+/* Dynamic bullets */
+.dynamic-bullets{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.dyn-bullet{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;font-weight:700;color:var(--text2);line-height:1.45}
+.dyn-bullet-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px}
+
+/* Science callout */
+.science-callout{background:linear-gradient(135deg,#EEF2FF,#E6F0E9);border-radius:var(--r);padding:16px 18px;margin-top:12px;border:1.5px solid rgba(44,74,53,.12)}
+.sci-tag{display:inline-flex;align-items:center;gap:5px;background:#fff;border-radius:var(--rpill);padding:3px 10px;font-size:.7rem;font-weight:900;color:var(--primary);margin-bottom:8px;border:1.5px solid rgba(44,74,53,.15)}
+.sci-text{font-size:.88rem;font-weight:600;color:var(--text);line-height:1.65}
+
+/* CTA section */
+.results-cta-section{margin:0 20px 14px}
+.cta-primary{background:linear-gradient(135deg,#1E3526,var(--primary));border-radius:var(--r);padding:22px 20px 20px;color:#fff}
+.cta-prime-label{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--gold);margin-bottom:6px}
+.cta-prime-h{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:#fff;margin-bottom:8px;line-height:1.2}
+.cta-prime-desc{font-size:.88rem;font-weight:600;color:rgba(255,255,255,.75);line-height:1.6;margin-bottom:16px}
+.cta-prime-btn{display:block;text-align:center;padding:15px;border-radius:var(--rpill);background:var(--accent);color:#fff;font-size:1rem;font-weight:900;text-decoration:none;box-shadow:0 4px 18px rgba(224,122,58,.35);transition:all .18s}
+.cta-prime-btn:hover{background:#C96B2B;transform:translateY(-2px)}
+.cta-prime-secure{font-size:.72rem;font-weight:700;color:rgba(255,255,255,.45);text-align:center;margin-top:8px}
+
+
+/* Style detail cards */
+.style-detail{border-radius:var(--r);padding:18px;margin-bottom:12px;border:2px solid transparent}
+.sd-header{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.sd-emoji-wrap{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0}
+.sd-title-wrap{flex:1}
+.sd-who{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;opacity:.75;margin-bottom:2px}
+.sd-name{font-size:1rem;font-weight:900}
+.sd-body{font-size:.9rem;font-weight:600;line-height:1.65}
+
+/* Edu bar */
+.edu-bar{background:#F5F2EE;padding:10px 16px;text-align:center;font-size:.7rem;font-weight:700;color:var(--text3);line-height:1.5}
+.edu-bar a{color:var(--text3);text-decoration:underline}
+
+@media(max-width:360px){.land-h{font-size:1.7rem}.quiz-q-text{font-size:1.15rem}}
+
+/* ── PRE-CHECKOUT SCREEN ─────────────────── */
+#screen-precheckout{background:var(--bg)}
+.pco-wrap{flex:1;display:flex;flex-direction:column;max-width:480px;margin:0 auto;width:100%;padding:36px 24px 40px;justify-content:flex-start}
+.pco-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:var(--primary);text-align:center;margin-bottom:28px}
+.pco-logo span{color:var(--accent)}
+.pco-badge{display:inline-flex;align-items:center;gap:6px;background:var(--primary-lt);border-radius:var(--rpill);padding:5px 14px;font-size:.75rem;font-weight:900;color:var(--primary);margin-bottom:14px}
+.pco-h{font-family:'Playfair Display',serif;font-size:1.65rem;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:8px}
+.pco-sub{font-size:.93rem;font-weight:600;color:var(--text2);line-height:1.65;margin-bottom:24px}
+.pco-features{display:flex;flex-direction:column;gap:8px;margin-bottom:24px;padding:16px;background:var(--surface);border:2px solid var(--border);border-radius:var(--r)}
+.pco-feat{display:flex;align-items:flex-start;gap:10px;font-size:.88rem;font-weight:700;color:var(--text);line-height:1.4}
+.pco-feat-icon{color:var(--primary);font-size:1rem;flex-shrink:0;margin-top:1px}
+.pco-field{margin-bottom:14px}
+.pco-label{display:block;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:7px}
+.pco-label span{font-weight:600;text-transform:none;letter-spacing:0;color:var(--text3)}
+.pco-textarea{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:14px 16px;font-size:.97rem;font-weight:600;color:var(--text);outline:none;resize:vertical;min-height:110px;font-family:inherit;line-height:1.6;transition:border-color .18s}
+.pco-textarea:focus{border-color:var(--primary)}
+.pco-textarea::placeholder{color:var(--text3);font-weight:600}
+.pco-price-row{display:flex;align-items:center;justify-content:space-between;background:var(--primary-lt);border:2px solid var(--primary);border-radius:var(--r);padding:14px 18px;margin-bottom:16px}
+.pco-price-label{font-size:.85rem;font-weight:700;color:var(--primary)}
+.pco-price-amount{font-size:1.5rem;font-weight:900;color:var(--primary)}
+.pco-price-note{font-size:.72rem;font-weight:700;color:var(--primary);opacity:.7}
+.pco-btn{width:100%;padding:18px;border-radius:var(--rpill);background:var(--accent);color:#fff;font-size:1.05rem;font-weight:900;box-shadow:0 6px 24px rgba(224,122,58,.35);transition:all .2s;border:none;cursor:pointer}
+.pco-btn:hover{background:#C96B2B;transform:translateY(-2px)}
+.pco-btn:disabled{opacity:.45;pointer-events:none}
+.pco-secure{font-size:.72rem;font-weight:700;color:var(--text3);text-align:center;margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
+.pco-back{background:none;border:none;color:var(--text3);font-size:.85rem;font-weight:700;cursor:pointer;padding:10px 0;text-align:center;width:100%;margin-top:4px}
+.pco-back:hover{color:var(--text2)}
+
+/* ── SUCCESS SCREEN ──────────────────────── */
+#screen-success{background:var(--bg)}
+.success-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;max-width:480px;margin:0 auto;width:100%;padding:40px 24px;text-align:center}
+.success-icon{font-size:4rem;margin-bottom:16px;animation:successPop .5s ease}
+@keyframes successPop{0%{transform:scale(0.5);opacity:0}70%{transform:scale(1.15)}100%{transform:scale(1);opacity:1}}
+.success-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:var(--primary);margin-bottom:20px}
+.success-logo span{color:var(--accent)}
+.success-h{font-family:'Playfair Display',serif;font-size:1.9rem;font-weight:800;color:var(--text);line-height:1.15;margin-bottom:12px}
+.success-sub{font-size:.97rem;font-weight:600;color:var(--text2);line-height:1.7;margin-bottom:28px;max-width:380px}
+.success-steps{display:flex;flex-direction:column;gap:10px;width:100%;max-width:360px;margin-bottom:28px}
+.success-step{display:flex;align-items:center;gap:12px;background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:12px 16px;text-align:left}
+.ss-num{width:28px;height:28px;border-radius:50%;background:var(--primary);color:#fff;font-size:.8rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ss-text{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.35}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ══════════════ LANDING ══════════════ -->
+<div id="screen-landing" class="screen active">
+  <div class="land-inner">
+    <div class="land-logo">Bond<span>Blueprint</span>™</div>
+    <h1 class="land-h">Why does it <em>always</em> feel like this?</h1>
+    <p class="land-sub">9 questions. You'll finally understand the pattern, why it keeps happening, and what to do about it.</p>
+    <button class="land-cta" onclick="startQuiz()">Find Out →</button>
+    <p class="land-note">9 questions. 2 minutes.</p>
+  </div>
+  <div class="edu-bar">BondBlueprint™ is psychoeducational content based on peer-reviewed research. Not therapy or clinical advice.</div>
+</div>
+
+<!-- ══════════════ EMAIL GATE ══════════════ -->
+<div id="screen-gate" class="screen">
+  <div class="gate-wrap">
+    <div class="gate-logo">Bond<span>Blueprint</span>™</div>
+    <div class="gate-icon">🔮</div>
+    <h2 class="gate-h">Your reading is ready.</h2>
+    <p class="gate-sub">Enter your email to unlock your full relationship dynamic — the pattern, why it keeps happening, and your next move.</p>
+    <div class="gate-field">
+      <label class="gate-label" for="gate-name">First name <span style="color:var(--text3);font-weight:600;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input class="gate-input" id="gate-name" type="text" placeholder="What should we call you?" autocomplete="given-name">
+    </div>
+    <div class="gate-field">
+      <label class="gate-label" for="gate-email">Email address <span style="color:#DC2626">*</span></label>
+      <input class="gate-input" id="gate-email" type="email" placeholder="you@example.com" autocomplete="email" oninput="onEmailInput()">
+      <div class="gate-error" id="gate-error"></div>
+    </div>
+    <button class="gate-cta" id="gate-cta" onclick="submitGate()" disabled>Unlock My Reading →</button>
+    <p class="gate-privacy">Your email is used to send your reading. No spam. Unsubscribe anytime.</p>
+  </div>
+  <div class="edu-bar">BondBlueprint™ is psychoeducational content. Not therapy or clinical advice.</div>
+</div>
+
+<!-- ══════════════ QUIZ ══════════════ -->
+<div id="screen-quiz" class="screen">
+  <div class="quiz-wrap">
+    <div class="quiz-header">
+      <div class="quiz-logo">Bond<span>Blueprint</span>™</div>
+      <div class="quiz-progress-wrap">
+        <div class="quiz-progress-track"><div class="quiz-progress-fill" id="quiz-prog-fill"></div></div>
+        <div class="quiz-progress-label" id="quiz-prog-label">1 of 9</div>
+      </div>
+    </div>
+    <div id="quiz-section-badge"></div>
+    <div id="quiz-card-wrap"></div>
+  </div>
+</div>
+
+<!-- ══════════════ PROCESSING ══════════════ -->
+<div id="screen-processing" class="screen">
+  <div class="proc-inner">
+    <div class="proc-icon">🧬</div>
+    <h2 class="proc-h">Analyzing your styles...</h2>
+    <p class="proc-sub">Matching your answers to the attachment science. Just a moment.</p>
+    <div class="proc-bar-track"><div class="proc-bar-fill" id="proc-bar"></div></div>
+  </div>
+</div>
+
+<!-- ══════════════ RESULTS ══════════════ -->
+<div id="screen-results" class="screen">
+  <div class="results-wrap">
+
+    <div class="results-header">
+      <div class="results-logo">Bond<span>Blueprint</span>™</div>
+      
+    </div>
+
+    <!-- Style cards row -->
+    <div class="style-cards-row" id="style-cards-row"></div>
+    <div class="style-vs"><div class="vs-line"></div><span class="vs-text">meeting</span><div class="vs-line"></div></div>
+
+    <!-- CTA section — first thing they see after the cards -->
+    <div class="results-cta-section" id="results-cta"></div>
+
+    <!-- Explanation below the button -->
+    <div class="results-body" id="results-body"></div>
+
+  </div>
+  <div class="edu-bar">This quiz is psychoeducational content based on peer-reviewed attachment research. It is not a clinical diagnosis or therapy. <a href="https://www.psychologytoday.com/us/therapists" target="_blank">Find a therapist</a></div>
+</div>
+
+<!-- ══════════════ PRE-CHECKOUT ══════════════ -->
+<div id="screen-precheckout" class="screen">
+  <div class="pco-wrap">
+    <div class="pco-logo">Bond<span>Blueprint</span>™</div>
+    <div class="pco-badge">✦ Personalized for you</div>
+    <h2 class="pco-h">Your custom blueprint is one step away.</h2>
+    <p class="pco-sub">Tell us what's actually going on in your own words. Claude reads it, and builds your blueprint around your exact situation — not a template.</p>
+
+    <div class="pco-features">
+      <div class="pco-feat"><span class="pco-feat-icon">📖</span><span>Situation breakdown — your words, decoded</span></div>
+      <div class="pco-feat"><span class="pco-feat-icon">💬</span><span>5 exact scripts for your specific dynamic</span></div>
+      <div class="pco-feat"><span class="pco-feat-icon">📅</span><span>7-day action plan built around your pattern</span></div>
+      <div class="pco-feat"><span class="pco-feat-icon">🔬</span><span>Research citations specific to your combination</span></div>
+      <div class="pco-feat"><span class="pco-feat-icon">📄</span><span>Delivered as a PDF to your inbox instantly</span></div>
+    </div>
+
+    <div class="pco-field">
+      <label class="pco-label" for="pco-situation">Describe what's going on <span>(in your own words)</span></label>
+      <textarea
+        class="pco-textarea"
+        id="pco-situation"
+        placeholder="e.g. We've been together 8 months. Everything feels great, then out of nowhere they go cold and distant for days. I ask if something's wrong and they say 'nothing' but pull back even more. I end up feeling desperate and needy which I hate..."
+        oninput="onSituationInput()"
+      ></textarea>
+    </div>
+
+    <div class="pco-price-row">
+      <div>
+        <div class="pco-price-label">Bond Blueprint™</div>
+        <div class="pco-price-note">One-time · Instant PDF delivery</div>
+      </div>
+      <div style="text-align:right">
+        <div style="font-size:.82rem;font-weight:700;color:var(--text3);text-decoration:line-through;margin-bottom:1px">$100</div>
+        <div class="pco-price-amount" id="pco-price">$19</div>
+      </div>
+    </div>
+
+    <button class="pco-btn" id="pco-btn" onclick="startCheckout()">Get My Blueprint — $19 →</button>
+    <p class="pco-secure">🔒 Secure checkout via Stripe · No account needed</p>
+    <button class="pco-back" onclick="goTo('screen-results')">← Back to my results</button>
+  </div>
+  <div class="edu-bar">Secure payment powered by Stripe. PDF delivered to your email within minutes.</div>
+</div>
+
+<!-- ══════════════ SUCCESS ══════════════ -->
+<div id="screen-success" class="screen">
+  <div class="success-wrap">
+    <div class="success-logo">Bond<span>Blueprint</span>™</div>
+    <div class="success-icon">📬</div>
+    <h2 class="success-h">Your blueprint is on its way.</h2>
+    <p class="success-sub">Check your inbox — your personalized PDF will arrive within a few minutes. Don't forget to check spam just in case.</p>
+    <div class="success-steps">
+      <div class="success-step">
+        <div class="ss-num">1</div>
+        <div class="ss-text">Open the email from Ashley @ CouplesEducator</div>
+      </div>
+      <div class="success-step">
+        <div class="ss-num">2</div>
+        <div class="ss-text">Download your Bond Blueprint PDF</div>
+      </div>
+      <div class="success-step">
+        <div class="ss-num">3</div>
+        <div class="ss-text">Start with the Scripts section — use them today</div>
+      </div>
+    </div>
+    <p style="font-size:.8rem;font-weight:700;color:var(--text3);line-height:1.6;max-width:340px">Questions? Reply to the email and Ashley will get back to you personally.</p>
+  </div>
+  <div class="edu-bar">BondBlueprint™ is psychoeducational content. Not therapy or clinical advice.</div>
+</div>
+
+</div><!-- #app -->
+<script>
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const Q = {
+  currentIdx: 0,
+  myAnswers:  [],  // A/B/C/D for each of 5 questions
+  ptAnswers:  [],  // A/B/C/D for each of 4 questions
+  myStyle:    null,
+  ptStyle:    null,
+  name:       '',
+  email:      ''
+};
+
+/* ═══════════════════════════════════════════
+   ATTACHMENT STYLE METADATA
+═══════════════════════════════════════════ */
+const STYLES = {
+  SA: {
+    code:'SA', name:'Securely Attached', emoji:'🔐',
+    color:'var(--sa)', bg:'var(--sa-lt)', border:'rgba(44,74,53,.25)',
+    shortDesc:'You feel comfortable with both closeness and independence. Conflict does not send you into panic.',
+    fullDesc:'You are feeling mostly okay, even in hard moments. You can stay present through conflict without shutting down or spiraling. What you want to keep is the steadiness, the ability to show up without losing yourself. What you need now is to understand your partner\'s pattern so you can stay your own anchor without taking on their anxiety.',
+    theyShortDesc:'They feel comfortable with closeness and can stay present through hard moments without shutting down.',
+    theyFullDesc:'Their steadiness is real. They show up consistently, handle conflict, and come back after distance without drama. They are not trying to fix you. They are just stable. Let that in.'
+  },
+  AA: {
+    code:'AA', name:'Anxiously Attached', emoji:'💭',
+    color:'var(--aa)', bg:'var(--aa-lt)', border:'rgba(194,121,58,.3)',
+    shortDesc:'You feel like you are always waiting for something to go wrong. When they go quiet, your whole nervous system goes into alert.',
+    fullDesc:'You are feeling unsettled even when things are okay. Small moments of distance feel like a threat. You replay conversations looking for what went wrong. You need constant reassurance and even when you get it, it does not last long. You want to stop feeling like you are one unanswered message away from losing everything. The constant monitoring, the checking, the anxiety that never fully goes away. What you need is to learn how to regulate yourself so you are not dependent on their responses to feel okay. Your nervousness is not a flaw. It is a learned pattern and it can change.',
+    theyShortDesc:'They need a lot of reassurance and feel threatened by distance. Their pursuit of you is not neediness. It is a nervous system on high alert.',
+    theyFullDesc:'They are not trying to pressure you. They are scared. Their nervous system reads any distance as a sign that something is wrong. The monitoring, the checking in, the need for reassurance, it all started long before you. Understanding that changes how you respond to it.'
+  },
+  DA: {
+    code:'DA', name:'Dismissive Avoidant', emoji:'🧊',
+    color:'var(--da)', bg:'var(--da-lt)', border:'rgba(58,88,120,.25)',
+    shortDesc:'You need space to feel okay. When things get emotionally intense, something in you pulls back without fully choosing it.',
+    fullDesc:'You are feeling like emotional conversations are draining and sometimes pointless. When things get too intense, you need distance fast. Being seen as cold or unavailable is frustrating because that is not how you see yourself. You want to stop feeling suffocated by other people\'s emotional needs. And you do not want to keep losing people who matter because of something you cannot fully explain. What you need is to understand that your walls are costing you real connection, and that there is a way to stay independent without losing depth.',
+    theyShortDesc:'They pull back when things get emotionally intense. It is not coldness. Their nervous system learned to handle things alone.',
+    theyFullDesc:'Their withdrawal is not a verdict on you. They built self-sufficiency because closeness did not always feel safe growing up. When things get intense, they need distance to regulate. That is not rejection. Understanding that changes everything about how you respond to their silence.'
+  },
+  FA: {
+    code:'FA', name:'Fearful Avoidant', emoji:'🌀',
+    color:'var(--fa)', bg:'var(--fa-lt)', border:'rgba(107,74,133,.25)',
+    shortDesc:'You want deep connection and you are scared of it at the same time. You go hot and cold and you do not always understand why yourself.',
+    fullDesc:'You are feeling caught between wanting to be close and needing to run. When things get good, something in you pulls back. You want love and you are scared of it at the same time. The inconsistency in yourself is confusing and exhausting. You want to stop the push-pull, going close and then backing away without understanding why. Wanting someone and then finding reasons to create distance. What you need is to understand what triggers your withdrawal so you can pause before the pattern takes over. Your system is not broken. It is running two programs at once and that can change.',
+    theyShortDesc:'They want closeness and fear it at the same time. Their hot and cold is not about you. Their nervous system is caught between two opposite drives.',
+    theyFullDesc:'Their inconsistency is not manipulation. When they go cold, it is not rejection. Their nervous system gets overwhelmed by closeness and needs to retreat to regulate. The warmth is real. The distance is real. Both are happening at the same time inside them. Understanding that will completely change how you respond to their shifts.'
+  }
+};
+
+/* ═══════════════════════════════════════════
+   QUIZ QUESTIONS
+   A = AA, B = DA, C = FA, D = SA
+═══════════════════════════════════════════ */
+const MY_QUESTIONS = [
+  {
+    text: 'When your partner seems a little distant or slower to respond than usual, what do you feel inside?',
+    options: [
+      { val:'A', text:'Anxious. My brain immediately goes to "did I do something wrong?"' },
+      { val:'B', text:'Honestly? Not that much. I give them space and focus on my own stuff.' },
+      { val:'C', text:'Scared and overwhelmed. I want to reach out but I also worry I will push them away.' },
+      { val:'D', text:'A little curious but mostly okay. I trust we will reconnect when they are ready.' }
+    ]
+  },
+  {
+    text: 'When things are going really well in your relationship, how do you tend to feel?',
+    options: [
+      { val:'A', text:'Happy, but there is a part of me waiting for it to fall apart.' },
+      { val:'B', text:'Good, but I sometimes pull back when things feel too intense or close.' },
+      { val:'C', text:'Happy and also kind of terrified. Like I need this too much.' },
+      { val:'D', text:'Really good. I can enjoy it without worrying about losing it.' }
+    ]
+  },
+  {
+    text: 'When you and your partner have a conflict, your instinct is usually to:',
+    options: [
+      { val:'A', text:'Want to resolve it right now. I cannot rest until things feel okay between us.' },
+      { val:'B', text:'Need space first. I shut down if pushed to talk before I am ready.' },
+      { val:'C', text:'Feel completely torn. Part of me wants to talk it out and part of me wants to disappear.' },
+      { val:'D', text:'Try to talk through it. I can stay present even when it is hard.' }
+    ]
+  },
+  {
+    text: 'When it comes to asking for emotional support, you:',
+    options: [
+      { val:'A', text:'Need a lot of reassurance and find it hard to feel okay without it.' },
+      { val:'B', text:'Rarely ask. You prefer to handle things on your own.' },
+      { val:'C', text:'Want support deeply but feel vulnerable or scared to actually ask for it.' },
+      { val:'D', text:'Can ask for what you need and also give support comfortably.' }
+    ]
+  },
+  {
+    text: 'Deep emotional intimacy, being truly known by someone, makes you feel:',
+    options: [
+      { val:'A', text:'Like this is everything you want, but you worry it might be too much for them.' },
+      { val:'B', text:'Slightly uncomfortable. You value closeness but need independence too.' },
+      { val:'C', text:'Both deeply wanted and terrifying at the same time.' },
+      { val:'D', text:'Safe and good. You can go deep without losing yourself.' }
+    ]
+  }
+];
+
+const PT_QUESTIONS = [
+  {
+    text: 'When you clearly need emotional support, your partner usually:',
+    options: [
+      { val:'A', text:'Wants to help but sometimes seems overwhelmed by your needs.' },
+      { val:'B', text:'Pulls away, gets busy, or does not seem to fully notice.' },
+      { val:'C', text:'Is sometimes very present and sometimes completely unavailable, hard to predict.' },
+      { val:'D', text:'Shows up for you and tries to genuinely be there.' }
+    ]
+  },
+  {
+    text: 'When there is tension or conflict between you, your partner tends to:',
+    options: [
+      { val:'A', text:'Get very anxious or emotional and want to resolve things immediately.' },
+      { val:'B', text:'Go quiet, leave the room, or change the subject to avoid it.' },
+      { val:'C', text:'Engage sometimes and completely shut down other times, hard to predict.' },
+      { val:'D', text:'Stay present and try to work through it with you.' }
+    ]
+  },
+  {
+    text: 'After an especially close or loving moment between you, your partner usually:',
+    options: [
+      { val:'A', text:'Stays very warm and engaged, maybe even a little clingy.' },
+      { val:'B', text:'Sometimes pulls back or creates a little distance afterward.' },
+      { val:'C', text:'Goes through phases where they are very warm and then suddenly distant.' },
+      { val:'D', text:'Stays warm and consistent.' }
+    ]
+  },
+  {
+    text: "How would you describe your partner's relationship with their own emotions?",
+    options: [
+      { val:'A', text:'Very expressive and emotional. Needs to process things out loud and often.' },
+      { val:'B', text:'Mostly keeps emotions inside. Seems self-sufficient and does not share much.' },
+      { val:'C', text:'Big swings. Hard to read from one day to the next.' },
+      { val:'D', text:'Emotionally available and balanced. Can feel and share without it being overwhelming.' }
+    ]
+  }
+];
+
+/* ═══════════════════════════════════════════
+   COMBO CONTENT + ROUTING
+═══════════════════════════════════════════ */
+const COMBOS = {
+
+  'AA-FA': {
+    route: 'rollercoaster',
+    headline: 'The Rollercoaster',
+    summary: 'You are chasing something that keeps moving. They want closeness and run from it at the same time. The more distant they go, the more you reach for them. The more you reach, the more they pull away. This is one of the most exhausting cycles in relationships.',
+    dynamic: [
+      { dot:'var(--aa)', text:'You never feel like you truly know where you stand. One day it feels amazing, the next they are completely checked out.' },
+      { dot:'var(--fa)', text:'Their inconsistency is not personal. They literally cannot explain it. Their nervous system is caught between two opposite drives at once.' },
+      { dot:'#9A908A', text:'This cycle gets harder over time unless something changes. The right tools can break it.' }
+    ],
+    science: 'Sue Johnson (EFT) called this the pursue-withdraw cycle. Both people are asking the same question, "Will you be there for me?" in completely opposite ways.'
+  },
+
+  'FA-DA': {
+    route: 'pullaway',
+    headline: 'The Double Distance',
+    summary: 'You want closeness but sometimes pull away from it yourself. They built a life that does not need much emotional connection at all. So both of you are oriented away from intimacy. Connection stays just out of reach, not from lack of care, but because both nervous systems are pointing in the same direction.',
+    dynamic: [
+      { dot:'var(--fa)', text:'You feel the gap between how close you want to be and how things actually feel between you.' },
+      { dot:'var(--da)', text:'They are not cold on purpose. Intimacy is genuinely harder to access for their nervous system.' },
+      { dot:'#9A908A', text:'Two avoidant patterns create stability at the cost of real depth. It is fixable, but it takes intentional effort from both sides.' }
+    ],
+    science: 'Mikulincer and Shaver found both avoidant patterns involve suppression of closeness needs, one for independence and one from fear. When both are in the same relationship, intimacy requires intentional work.'
+  },
+
+  'AA-DA': {
+    route: 'pullaway',
+    headline: 'The Classic Trap',
+    summary: 'You reach for closeness. They pull back. The more you reach, the more they retreat. Gottman tracked this across thousands of couples. It is the most common painful relationship pattern there is.',
+    dynamic: [
+      { dot:'var(--aa)', text:'Your need for closeness is completely legitimate. The problem is that pursuing harder in this dynamic gets you the opposite of what you need.' },
+      { dot:'var(--da)', text:'They are not withholding to hurt you. Emotional intensity overwhelms their system and distance is how they stay regulated.' },
+      { dot:'#9A908A', text:'Breaking this cycle requires changing the pattern, not winning the argument.' }
+    ],
+    science: 'Gottman\'s 40 years of couples research found this cycle is one of the top predictors of relationship breakdown. Both reactions are nervous system responses, not character flaws.'
+  },
+
+  'FA-AA': {
+    route: 'rollercoaster',
+    headline: 'You Go Hot and Cold',
+    summary: 'You move toward closeness and then away from it, often without knowing why yourself. Your partner craves consistency and keeps trying to read your signals. Both of you are stuck in a loop neither of you chose.',
+    dynamic: [
+      { dot:'var(--fa)', text:'Your hot and cold is not about your feelings for them. It is your nervous system getting overwhelmed and needing distance to regulate.' },
+      { dot:'var(--aa)', text:'The more they pursue, the more your system triggers retreat. The more you retreat, the more they pursue. Both reactions make each other worse.' },
+      { dot:'#9A908A', text:'Both people need to understand their own role before the cycle can stop. That starts with self-awareness, not blame.' }
+    ],
+    science: 'Main and Hesse found the push-pull intensifies under stress. Mikulincer and Shaver confirmed anxious pursuit triggers avoidant retreat. It is a self-reinforcing loop.'
+  },
+
+  'DA-AA': {
+    route: 'pullaway',
+    headline: 'The Pullaway Pattern',
+    summary: 'You pull toward independence when things get intense. Your partner monitors for any sign you might pull away. When you go quiet, they feel it as a threat. That triggers their pursuit, which triggers your retreat. Classic push-pull.',
+    dynamic: [
+      { dot:'var(--da)', text:'Your need for space is real. But taking it without giving any signal of safety first activates your partner\'s deepest fear.' },
+      { dot:'var(--aa)', text:'Their anxiety is not neediness. It is a nervous system doing exactly what it was built to do when it feels disconnected.' },
+      { dot:'#9A908A', text:'Small moments of reassurance cost you almost nothing and mean everything to them. That is the highest-leverage change in this dynamic.' }
+    ],
+    science: 'Levine and Heller documented this self-reinforcing cycle: deactivating strategies directly trigger hyperactivating strategies, and vice versa, until both people understand what the other\'s behavior actually means.'
+  },
+
+  'FA-FA': {
+    route: 'pip',
+    headline: 'Intense, Beautiful, and Unstable',
+    summary: 'Both of you want deep connection. Both of you sometimes run from it. When you are both open at the same time, it feels unlike anything. When you are both in protect mode at the same time, things go cold fast with nobody meaning it to.',
+    dynamic: [
+      { dot:'var(--fa)', text:'When you are both open: intense, deeply understood, and real.' },
+      { dot:'var(--fa)', text:'When you are both in protect mode: things escalate or go cold with nobody choosing it.' },
+      { dot:'#9A908A', text:'Individual self-awareness is the most important work here. When you both understand yourselves, there is real potential.' }
+    ],
+    science: 'Fonagy\'s research found individual self-awareness is the top predictor of change in fearful avoidant patterns. Two people with this pattern need their own clarity before the dynamic can shift.'
+  },
+
+  'AA-AA': {
+    route: 'pip',
+    headline: 'High Feeling, High Friction',
+    summary: 'Both of you feel everything deeply. When things are good, the connection is real and warm. When things get hard, both nervous systems go into alert at the same time and neither person feels stable enough to be the calm one.',
+    dynamic: [
+      { dot:'var(--aa)', text:'Both in a good place: deeply connected, emotionally alive, and genuinely warm.' },
+      { dot:'var(--aa)', text:'Both in a hard place: things escalate fast because neither of you can anchor the other when you are both activated.' },
+      { dot:'#9A908A', text:'The key skill is learning to self-soothe so not every hard moment requires the other person to fix it first.' }
+    ],
+    science: 'Mikulincer and Shaver found hyperactivating strategies, where the threat-detection system is turned up high, become mutually reinforcing when both partners carry them.'
+  },
+
+  'DA-DA': {
+    route: 'pip',
+    headline: 'Stable, But Emotionally Distant',
+    summary: 'Both of you are independent and self-sufficient. Low conflict. Stable. But real emotional depth can stay consistently out of reach because neither nervous system is pulling toward intimacy.',
+    dynamic: [
+      { dot:'var(--da)', text:'Low conflict, good at space, neither of you too demanding of the other.' },
+      { dot:'var(--da)', text:'The cost is a relationship that can feel comfortable but not deeply connected.' },
+      { dot:'#9A908A', text:'Intimacy here requires intentional effort from both sides. It does not happen naturally with two people wired for independence.' }
+    ],
+    science: 'Bowlby and Ainsworth found avoidant attachment involves systematic suppression of closeness needs. Two people with this pattern can build a stable life while missing the depth research shows is central to lasting satisfaction.'
+  },
+
+  'SA-AA': {
+    route: 'pip',
+    headline: 'You Are the Stable Ground',
+    summary: 'You bring consistency and calm. Your partner\'s anxiety is not about you. It is a nervous system pattern they brought into this relationship. Your steadiness is more healing than you realize.',
+    dynamic: [
+      { dot:'var(--sa)', text:'Your calm consistency is more powerful than you think. For someone wired for anxiety, a steady partner is genuinely healing.' },
+      { dot:'var(--aa)', text:'Their anxiety is not a reflection of you. It predates this relationship by years.' },
+      { dot:'#9A908A', text:'Be the steady presence without becoming their therapist. That balance is where the real work is.' }
+    ],
+    science: 'Bowlby found that one consistently safe relationship can genuinely update someone\'s expectations about whether closeness is safe. You are that person for them.'
+  },
+
+  'SA-DA': {
+    route: 'pip',
+    headline: 'Patience Will Be Required',
+    summary: 'Their emotional distance is probably frustrating and confusing. But your steady presence is exactly what makes it safer for them to slowly lower their walls, if you do not take the distance personally.',
+    dynamic: [
+      { dot:'var(--sa)', text:'You are doing more of the emotional work in this relationship. That is real and worth acknowledging.' },
+      { dot:'var(--da)', text:'Their walls are not a verdict on you. They were built long before this relationship started.' },
+      { dot:'#9A908A', text:'Low pressure and consistent presence works. Pressure does the opposite.' }
+    ],
+    science: 'Johnson\'s EFT research found avoidant partners do shift toward openness, but it requires slow-building safety, not pressure. Your consistency creates that safety over time.'
+  },
+
+  'SA-FA': {
+    route: 'pip',
+    headline: 'You Are a Gift, and It Will Test You',
+    summary: 'Their hot-and-cold pattern is genuinely hard to be in, even for someone who is steady. Your consistency is the most healing thing you can offer. The work is staying steady without burning out.',
+    dynamic: [
+      { dot:'var(--sa)', text:'Their distance after closeness is not about you. Their nervous system got overwhelmed and needed to regulate.' },
+      { dot:'var(--fa)', text:'Your steady presence is one of the most powerful forces for change in their pattern. That is not nothing.' },
+      { dot:'#9A908A', text:'Know the difference between being a safe presence and absorbing their anxiety. You both need your own tools.' }
+    ],
+    science: 'Fonagy found secure partnership is one of the strongest predictors of earned security in fearful avoidant people, but only if the secure partner keeps their own boundaries intact.'
+  },
+
+  'FA-SA': {
+    route: 'pip',
+    headline: 'You Are the Variable',
+    summary: 'Your partner shows up consistently. You are the one who goes hot and cold, not because of how you feel about them, but because closeness itself sometimes triggers your nervous system to retreat. Their steadiness is a gift. The work is yours to do.',
+    dynamic: [
+      { dot:'var(--fa)', text:'Your push-pull is not about them. It is your system getting overwhelmed by intimacy and needing to create distance to regulate.' },
+      { dot:'var(--sa)', text:'Their consistency is not boring. It is exactly what your nervous system needs to slowly learn that closeness is safe.' },
+      { dot:'#9A908A', text:'The gap between how close you want to be and how close you let yourself get is the work. Tools exist for this.' }
+    ],
+    science: 'Fonagy found that a secure partner is one of the strongest catalysts for earned security in fearful avoidant people, but only if the FA develops their own self-awareness and tools alongside it.'
+  },
+
+  'DA-FA': {
+    route: 'pullaway',
+    headline: 'Both Pointing Away from Closeness',
+    summary: 'You need space and handle things internally. Your partner wants closeness and sometimes runs from it at the same time. Neither of you naturally pulls toward emotional intimacy, so real depth can feel consistently just out of reach.',
+    dynamic: [
+      { dot:'var(--da)', text:'Your independence is real, but your partner\'s unpredictable hot-and-cold can feel confusing even to someone who prefers distance.' },
+      { dot:'var(--fa)', text:'Their push-pull is not manipulation. Their nervous system is genuinely caught between wanting closeness and fearing it.' },
+      { dot:'#9A908A', text:'Two avoidant patterns rarely drift toward deeper connection on their own. It takes intentional effort from both sides.' }
+    ],
+    science: 'Mikulincer and Shaver found both avoidant patterns involve suppression of closeness needs in different forms. Together, this creates stability at the cost of real intimacy without deliberate work.'
+  },
+
+  'DA-SA': {
+    route: 'pip',
+    headline: 'They Can Handle You. Can You Show Up?',
+    summary: 'Your partner is emotionally available and consistent. You are wired to pull toward independence when things get intense. They are not threatened by your distance, but over time, consistently low emotional investment takes a toll even on steady people.',
+    dynamic: [
+      { dot:'var(--da)', text:'Your need for space is legitimate. But distance without any reassurance slowly erodes even the most steady partner.' },
+      { dot:'var(--sa)', text:'Their patience and steadiness is real. They are not going to chase you, but they do need to know you are actually in this.' },
+      { dot:'#9A908A', text:'Small, consistent emotional presence costs you very little and means everything in this dynamic.' }
+    ],
+    science: 'Johnson\'s EFT research found avoidant partners can shift toward openness, but only when they feel no pressure to. A secure partner creates that condition. The window is there if you use it.'
+  },
+
+  'AA-SA': {
+    route: 'pip',
+    headline: 'You Have the Best Possible Situation',
+    summary: 'Your partner can give you consistency and stay present through conflict. Your anxiety is not about them. It is a nervous system pattern you brought in. The work is learning to trust what is actually in front of you.',
+    dynamic: [
+      { dot:'var(--aa)', text:'Your need for reassurance is real. But chasing reassurance in a steady relationship can slowly push away the very safety you need.' },
+      { dot:'var(--sa)', text:'Their consistency is the answer to your fear, if you can let yourself receive it without testing it.' },
+      { dot:'#9A908A', text:'Building your own self-soothing tools so you are not fully dependent on them for regulation is the most important move here.' }
+    ],
+    science: 'Bowlby found one consistently safe relationship can genuinely update anxious patterns over time. You already have that. The work is internalizing it.'
+  },
+
+  'SA-SA': {
+    route: 'secure',
+    headline: 'You are both securely attached.',
+    summary: 'This is genuinely rare. Both of you came in with nervous systems that can handle closeness, conflict, and independence without either one shutting down or spiraling.',
+    dynamic: [
+      { dot:'var(--sa)', text:'Conflict does not threaten the relationship for either of you.' },
+      { dot:'var(--sa)', text:'Closeness feels safe. Distance does not panic either of you.' },
+      { dot:'#9A908A', text:'Keep investing in communication and growth. The tools that got you here are the ones that keep you here.' }
+    ],
+    science: 'Bowlby and Ainsworth\'s research consistently found secure attachment is the strongest predictor of long-term relationship satisfaction.'
+  },
+
+  'default': {
+    route: 'pip',
+    headline: 'Your Specific Combination',
+    summary: 'Your specific combination creates its own dynamic. Attachment patterns are not fixed. They change with the right tools and a partner willing to do the work.',
+    dynamic: [
+      { dot:'var(--primary)', text:'Understanding your own pattern is step one. Things make a lot more sense through an attachment lens.' },
+      { dot:'var(--accent)', text:'Understanding their pattern is step two. Their behavior will start making sense too.' },
+      { dot:'#9A908A', text:'Step three is the specific tools for your exact combination.' }
+    ],
+    science: 'Bowlby, Mikulincer, and Shaver all confirmed: earned security is real. Your pattern is workable.'
+  }
+};
+
+const PRODUCTS = {
+  pullaway: {
+    label: 'Recommended for your combination',
+    name: 'The Pullaway Antidote',
+    desc: 'The exact scripts, strategies, and step-by-step framework for when your partner keeps pulling away or shutting down. Based on attachment science. Written in plain English.',
+    url: 'https://stan.store/Ashcoupleseducator/p/the-pullaway-antidote',
+    btnText: 'Get The Pullaway Antidote →'
+  },
+  rollercoaster: {
+    label: 'Recommended for your combination',
+    name: 'Stop the Rollercoaster',
+    desc: 'The research-backed guide to breaking the hot-and-cold cycle for good. Built specifically for the anxious + fearful avoidant dynamic. Real scripts, real steps, plain language.',
+    url: 'https://stan.store/Ashcoupleseducator/p/stop-the-rollercoaster',
+    btnText: 'Get Stop the Rollercoaster →'
+  },
+  pip: {
+    label: 'Recommended for your combination',
+    name: 'The Relationship PIP',
+    desc: 'A structured improvement plan you and your partner work through together to build real accountability, communication, and lasting change. Based on actual relationship science.',
+    url: 'https://stan.store/Ashcoupleseducator/p/the-relationship-pip',
+    btnText: 'Get The Relationship PIP →'
+  }
+};
+
+/* ═══════════════════════════════════════════
+   SCORE + RESOLVE STYLE
+   A = AA, B = DA, C = FA, D = SA
+═══════════════════════════════════════════ */
+function resolveStyle(answers) {
+  const counts = { A: 0, B: 0, C: 0, D: 0 };
+  answers.forEach(a => { if (counts[a] !== undefined) counts[a]++; });
+  const sorted = Object.entries(counts).sort((x, y) => y[1] - x[1]);
+  const top = sorted[0][0];
+  const map = { A:'AA', B:'DA', C:'FA', D:'SA' };
+  return map[top];
+}
+
+function getComboKey(my, pt) {
+  const key = my + '-' + pt;
+  // Check if we have specific content for this combo
+  if (COMBOS[key]) return key;
+  // Fallback mappings for symmetric or partial matches
+  const fallbacks = {};
+  if (fallbacks[key] && COMBOS[fallbacks[key]]) return fallbacks[key];
+  return 'default';
+}
+
+function getRoute(comboKey) {
+  const combo = COMBOS[comboKey];
+  return combo ? combo.route : 'pip';
+}
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+function startQuiz() {
+  Q.currentIdx = 0;
+  Q.myAnswers = [];
+  Q.ptAnswers = [];
+  renderQuestion();
+  goTo('screen-quiz');
+  posthog.capture('quiz_started');
+}
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ═══════════════════════════════════════════
+   EMAIL GATE
+═══════════════════════════════════════════ */
+function onEmailInput() {
+  const val = document.getElementById('gate-email').value.trim();
+  const btn = document.getElementById('gate-cta');
+  btn.disabled = !val || !val.includes('@') || !val.includes('.');
+  document.getElementById('gate-error').classList.remove('show');
+}
+
+async function submitGate() {
+  const email = document.getElementById('gate-email').value.trim().toLowerCase();
+  const name  = document.getElementById('gate-name').value.trim();
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    const err = document.getElementById('gate-error');
+    err.textContent = 'Please enter a valid email address.';
+    err.classList.add('show');
+    return;
+  }
+
+  Q.email = email;
+  Q.name  = name;
+
+  // Identify in PostHog
+  posthog.identify(email, { name, attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+  posthog.capture('email_captured', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+
+  // Save lead to backend + subscribe to ConvertKit (fire and forget)
+  fetch('/api/account', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email,
+      name,
+      attachmentStyle: Q.myStyle,
+      partnerStyle:    Q.ptStyle,
+      quizData: {
+        myAnswers: Q.myAnswers,
+        ptAnswers: Q.ptAnswers,
+        theme:     resolveThemeFromStyles(Q.myStyle, Q.ptStyle),
+        goal:      'feel safe in love'
+      }
+    })
+  }).catch(() => {});
+
+  goTo('screen-results');
+  posthog.capture('results_viewed', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+}
+
+/* ═══════════════════════════════════════════
+   QUIZ ENGINE
+═══════════════════════════════════════════ */
+const TOTAL_Q = MY_QUESTIONS.length + PT_QUESTIONS.length; // 9
+
+function renderQuizQuestion() {
+  const idx   = Q.currentIdx;
+  const isMy  = idx < MY_QUESTIONS.length;
+  const qIdx  = isMy ? idx : idx - MY_QUESTIONS.length;
+  const q     = isMy ? MY_QUESTIONS[qIdx] : PT_QUESTIONS[qIdx];
+  const pct   = Math.round((idx / TOTAL_Q) * 100);
+  const savedAns = isMy ? Q.myAnswers[qIdx] : Q.ptAnswers[qIdx];
+
+  // Theme the whole screen based on section
+  const screen = document.getElementById('screen-quiz');
+  screen.classList.toggle('section-you', isMy);
+  screen.classList.toggle('section-partner', !isMy);
+
+  document.getElementById('quiz-prog-fill').style.width  = pct + '%';
+  document.getElementById('quiz-prog-label').textContent = `${idx + 1} of ${TOTAL_Q}`;
+
+  // Section badge
+  const badge = document.getElementById('quiz-section-badge');
+  if (isMy) {
+    badge.innerHTML = `<div class="quiz-section-badge" style="background:var(--primary-lt);color:var(--primary)">🙋 About You &nbsp;·&nbsp; ${qIdx + 1} of ${MY_QUESTIONS.length}</div>`;
+  } else {
+    badge.innerHTML = `<div class="quiz-section-badge" style="background:rgba(107,74,133,.25);color:var(--fa)">💜 About Your Partner &nbsp;·&nbsp; ${qIdx + 1} of ${PT_QUESTIONS.length}</div>`;
+  }
+
+  const wrap = document.getElementById('quiz-card-wrap');
+  wrap.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'quiz-card';
+
+  const letters = ['A','B','C','D'];
+  card.innerHTML = `
+    <div class="quiz-q-num">${isMy ? 'About You' : 'About Your Partner'} &middot; ${qIdx + 1} of ${isMy ? MY_QUESTIONS.length : PT_QUESTIONS.length}</div>
+    <h2 class="quiz-q-text">${q.text}</h2>
+    <div class="quiz-options" id="quiz-opts">
+      ${q.options.map((o, i) => `
+        <button class="quiz-opt ${savedAns === o.val ? 'sel' : ''}" data-val="${o.val}" onclick="pickOpt(this, '${isMy}')">
+          <div class="quiz-opt-letter">${letters[i]}</div>
+          <div class="quiz-opt-text">${o.text}</div>
+        </button>`).join('')}
+    </div>
+    <button class="quiz-next-btn" id="quiz-next" onclick="nextQuizQ()" ${savedAns ? '' : 'disabled'}>
+      ${idx === TOTAL_Q - 1 ? 'See My Results →' : 'Next →'}
+    </button>`;
+
+  wrap.appendChild(card);
+}
+
+function pickOpt(el, isMy) {
+  document.querySelectorAll('.quiz-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  const val = el.dataset.val;
+  const idx  = Q.currentIdx;
+  if (isMy === 'true') {
+    Q.myAnswers[idx] = val;
+  } else {
+    Q.ptAnswers[idx - MY_QUESTIONS.length] = val;
+  }
+  document.getElementById('quiz-next').disabled = false;
+}
+
+function nextQuizQ() {
+  Q.currentIdx++;
+  if (Q.currentIdx >= TOTAL_Q) {
+    beginProcessing();
+  } else if (Q.currentIdx === MY_QUESTIONS.length) {
+    // Transition moment — switching from "about you" to "about partner"
+    showPartnerTransition();
+  } else {
+    renderQuizQuestion();
+  }
+}
+
+function showPartnerTransition() {
+  const screen = document.getElementById('screen-quiz');
+  screen.classList.remove('section-you');
+  screen.classList.add('section-partner');
+
+  document.getElementById('quiz-section-badge').innerHTML = '';
+  document.getElementById('quiz-prog-fill').style.width = Math.round((MY_QUESTIONS.length / TOTAL_Q) * 100) + '%';
+  document.getElementById('quiz-prog-label').textContent = 'Halfway there';
+
+  const wrap = document.getElementById('quiz-card-wrap');
+  wrap.innerHTML = `
+    <div class="section-transition">
+      <div class="st-emoji">💜</div>
+      <h2 class="st-title">Now let's talk about your partner.</h2>
+      <p class="st-sub">Same format, but this time answer based on how <em>they</em> usually act.</p>
+      <button class="st-next-btn" style="background:var(--fa)" onclick="renderQuizQuestion()">Let's go →</button>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   PROCESSING + RESOLVE
+═══════════════════════════════════════════ */
+function beginProcessing() {
+  goTo('screen-processing');
+  const bar = document.getElementById('proc-bar');
+  let pct = 0;
+  const iv = setInterval(() => {
+    pct += 12;
+    bar.style.width = Math.min(pct, 95) + '%';
+    if (pct >= 95) {
+      clearInterval(iv);
+      Q.myStyle = resolveStyle(Q.myAnswers);
+      Q.ptStyle = resolveStyle(Q.ptAnswers);
+      setTimeout(() => {
+        bar.style.width = '100%';
+        setTimeout(() => { buildResults(); goTo('screen-gate'); }, 300);
+      }, 400);
+    }
+  }, 140);
+}
+
+/* ═══════════════════════════════════════════
+   RESULTS BUILDER
+═══════════════════════════════════════════ */
+function buildResults() {
+  const my    = STYLES[Q.myStyle];
+  const pt    = STYLES[Q.ptStyle];
+  const cKey  = getComboKey(Q.myStyle, Q.ptStyle);
+  const combo = COMBOS[cKey];
+  const route = combo.route;
+  const prod  = route !== 'secure' ? PRODUCTS[route] : null;
+
+  /* ── Style cards ── */
+  document.getElementById('style-cards-row').innerHTML = `
+    <div class="style-card" style="background:${my.bg};border:2px solid ${my.border}">
+      <div class="sc-label" style="color:${my.color}">🙋 How you feel</div>
+      <span class="sc-emoji">${my.emoji}</span>
+      <div class="sc-tag" style="color:${my.color};font-size:.8rem;line-height:1.4">${my.shortDesc}</div>
+    </div>
+    <div class="style-card" style="background:${pt.bg};border:2px solid ${pt.border}">
+      <div class="sc-label" style="color:${pt.color}">💜 How they feel</div>
+      <span class="sc-emoji">${pt.emoji}</span>
+      <div class="sc-tag" style="color:${pt.color};font-size:.8rem;line-height:1.4">${pt.theyShortDesc}</div>
+    </div>`;
+
+  /* ── CTA — first thing after cards ── */
+  const ctaWrap = document.getElementById('results-cta');
+
+  if (route === 'secure') {
+    // Both securely attached — celebrate, no product push
+    ctaWrap.innerHTML = `
+      <div class="cta-primary" style="background:linear-gradient(135deg,#1E3526,var(--primary));text-align:center">
+        <div style="font-size:2.5rem;margin-bottom:12px">🎉</div>
+        <div class="cta-prime-label" style="text-align:center">You are both securely attached.</div>
+        <div class="cta-prime-h" style="text-align:center">This is genuinely rare.</div>
+        <div class="cta-prime-desc" style="text-align:center">Both of your nervous systems can handle closeness and conflict without shutting down or spiraling. Keep nurturing what you have.</div>
+        <div class="cta-prime-secure" style="margin-top:12px;opacity:.6">Keep investing in each other. The tools that got you here are the ones that keep you here.</div>
+      </div>`;
+  } else {
+    ctaWrap.innerHTML = `
+      <div class="cta-primary">
+        <div class="cta-prime-label">✦ Built for your exact situation</div>
+        <div class="cta-prime-h">Get Your Personalized Bond Blueprint</div>
+        <div class="cta-prime-desc">Claude reads what you write about your situation and generates a custom PDF — your specific dynamic decoded, 5 exact scripts, a 7-day plan, and the research behind all of it. Delivered to your inbox in minutes.</div>
+        <button class="cta-prime-btn" onclick="goToPreCheckout()">Get My Blueprint — <s style="opacity:.55;font-weight:700">$100</s> $19 →</button>
+        <div class="cta-prime-secure">🔒 Secure payment · Instant PDF delivery · One-time charge</div>
+      </div>`;
+  }
+
+  /* ── Explanation below the button ── */
+  const body = document.getElementById('results-body');
+  body.innerHTML = `
+    <div class="rsec">
+      <div class="rsec-h">${combo.headline}</div>
+      <div class="rsec-body">${combo.summary}</div>
+      <div class="dynamic-bullets">
+        ${combo.dynamic.map(d => `
+          <div class="dyn-bullet">
+            <div class="dyn-bullet-dot" style="background:${d.dot}"></div>
+            <span>${d.text}</span>
+          </div>`).join('')}
+      </div>
+      <div class="science-callout">
+        <div class="sci-tag">🔬 The science</div>
+        <div class="sci-text">${combo.science}</div>
+      </div>
+    </div>
+    <div class="style-detail" style="background:${my.bg};border-color:${my.border}">
+      <div class="sd-header">
+        <div class="sd-emoji-wrap" style="background:${my.color}">${my.emoji}</div>
+        <div class="sd-title-wrap">
+          <div class="sd-who" style="color:${my.color}">How you feel</div>
+          <div class="sd-name" style="color:${my.color}">What you want to stop feeling</div>
+        </div>
+      </div>
+      <div class="sd-body">${my.fullDesc}</div>
+    </div>
+    <div class="style-detail" style="background:${pt.bg};border-color:${pt.border}">
+      <div class="sd-header">
+        <div class="sd-emoji-wrap" style="background:${pt.color}">${pt.emoji}</div>
+        <div class="sd-title-wrap">
+          <div class="sd-who" style="color:${pt.color}">Why they do what they do</div>
+          <div class="sd-name" style="color:${pt.color}">What is behind their behavior</div>
+        </div>
+      </div>
+      <div class="sd-body">${pt.theyFullDesc}</div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   PRE-CHECKOUT + STRIPE FLOW
+═══════════════════════════════════════════ */
+function goToPreCheckout() {
+  posthog.capture('checkout_initiated', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+  goTo('screen-precheckout');
+}
+
+function onSituationInput() {
+  const val = document.getElementById('pco-situation').value.trim();
+  const btn = document.getElementById('pco-btn');
+  btn.disabled = val.length < 20;
+}
+
+async function startCheckout() {
+  const situation = document.getElementById('pco-situation').value.trim();
+  const btn = document.getElementById('pco-btn');
+
+  btn.disabled = true;
+  btn.textContent = 'Redirecting to checkout…';
+
+  try {
+    const res = await fetch('/api/create-checkout', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email:           Q.email,
+        name:            Q.name,
+        situation,
+        attachmentStyle: Q.myStyle,
+        partnerStyle:    Q.ptStyle
+      })
+    });
+
+    const data = await res.json();
+    if (data.url) {
+      posthog.capture('stripe_redirect', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+      window.location.href = data.url;
+    } else {
+      throw new Error(data.error || 'No checkout URL returned');
+    }
+  } catch (err) {
+    console.error('Checkout error:', err);
+    btn.disabled = false;
+    btn.textContent = 'Get My Blueprint →';
+    alert('Something went wrong. Please try again.');
+  }
+}
+
+function resolveThemeFromStyles(myStyle, ptStyle) {
+  const s = (myStyle + ptStyle).toUpperCase();
+  if (s.includes('AA') && (s.includes('DA') || s.includes('FA'))) return 'pullaway';
+  if (s.includes('FA')) return 'rollercoaster';
+  return 'pip';
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const paid   = params.get('paid');
+
+  if (paid === 'success') {
+    posthog.capture('purchase_completed');
+    goTo('screen-success');
+    // Clean URL without reload
+    window.history.replaceState({}, '', window.location.pathname);
+  } else if (paid === 'cancelled') {
+    posthog.capture('checkout_cancelled');
+    // Show landing — user just navigates normally
+  }
+});
+</script>
+</body>
+</html>

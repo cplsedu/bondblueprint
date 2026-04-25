@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Breaking Up With an Avoidant</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+
+:root {
+  --navy:    #1E2D4E;
+  --coral:   #C85A45;
+  --gold:    #B8860B;
+  --sage:    #3D7A6A;
+  --plum:    #6B4E8C;
+  --cream:   #F7F3EE;
+  --card:    #FFFFFF;
+  --border:  #DDD7CE;
+  --text:    #1E1E1E;
+  --muted:   #6B6560;
+  --lt-coral:  #FCEEE9;
+  --lt-gold:   #FBF5E2;
+  --lt-sage:   #EAF4F0;
+  --lt-plum:   #F2EEF8;
+  --lt-navy:   #EBF0F8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.page { width: 816px; margin: 0 auto; }
+
+/* ── COVER ── */
+.cover {
+  background: linear-gradient(145deg, #0E1A0E 0%, #1A2A1A 40%, #1E2D4E 100%);
+  min-height: 1056px;
+  display: flex;
+  flex-direction: column;
+  padding: 56px 52px;
+  position: relative;
+  overflow: hidden;
+}
+.cover-orb-1 {
+  position: absolute; right: -80px; top: -80px;
+  width: 440px; height: 440px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(200,90,69,0.16) 0%, transparent 70%);
+}
+.cover-orb-2 {
+  position: absolute; left: -100px; bottom: -100px;
+  width: 420px; height: 420px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(107,78,140,0.15) 0%, transparent 70%);
+}
+.cover-orb-3 {
+  position: absolute; right: 80px; bottom: 280px;
+  width: 180px; height: 180px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(61,122,106,0.12) 0%, transparent 70%);
+}
+
+.cover-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--coral); margin-bottom: 24px;
+}
+
+.cover-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 100px; padding: 6px 16px; margin-bottom: 28px; width: fit-content;
+}
+.cover-badge span { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.65); }
+
+.cover h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 58px; font-weight: 800;
+  color: #FFFFFF; line-height: 1.05;
+  margin-bottom: 8px; max-width: 560px;
+}
+.cover h1 em { color: #F0A898; font-style: normal; }
+
+.cover-sub {
+  font-size: 15px; font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 36px; max-width: 500px; line-height: 1.65;
+}
+
+.cover-divider { width: 48px; height: 3px; background: var(--coral); margin-bottom: 32px; border-radius: 2px; }
+
+.cover-truth-box {
+  background: rgba(200,90,69,0.12); border: 1px solid rgba(200,90,69,0.3);
+  border-left: 4px solid var(--coral);
+  border-radius: 0 12px 12px 0;
+  padding: 16px 22px; max-width: 580px; margin-bottom: 36px;
+}
+.cover-truth-box p {
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.85); line-height: 1.65;
+}
+.cover-truth-box strong { color: #F0A898; }
+
+.cover-stat-row { display: flex; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+.cover-stat {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.11);
+  border-radius: 12px; padding: 14px 18px; flex: 1; min-width: 110px;
+}
+.cover-stat .num { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #fff; }
+.cover-stat .lbl { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 2px; }
+
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 580px; margin-bottom: 40px; }
+.toc-item {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.05); border-radius: 8px; padding: 9px 14px;
+}
+.toc-num {
+  font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700;
+  color: rgba(255,255,255,0.18); flex-shrink: 0; width: 22px;
+}
+.toc-text { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.65); line-height: 1.3; }
+
+.cover-footer {
+  margin-top: auto;
+  font-size: 10px; color: rgba(255,255,255,0.2);
+  font-weight: 600; letter-spacing: 1px;
+}
+
+/* ── SECTION PAGES ── */
+.section-page {
+  background: var(--cream);
+  padding: 28px 48px;
+  min-height: 1056px;
+  page-break-before: always;
+}
+
+.page-header {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 18px; padding-bottom: 14px;
+  border-bottom: 2px solid var(--border);
+}
+.page-header-num {
+  font-family: 'Playfair Display', serif; font-size: 52px;
+  font-weight: 700; line-height: 1; opacity: 0.08;
+  color: var(--text); flex-shrink: 0; margin-top: -4px;
+}
+.page-header-content { flex: 1; }
+.page-header-label {
+  font-size: 9.5px; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase; margin-bottom: 2px;
+}
+.page-header-title {
+  font-family: 'Playfair Display', serif; font-size: 24px;
+  font-weight: 700; line-height: 1.15; color: var(--text);
+}
+.page-header-sub {
+  font-size: 11.5px; font-weight: 600; color: var(--muted); margin-top: 3px;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--card); border-radius: 12px;
+  border: 1.5px solid var(--border); padding: 14px 18px; margin-bottom: 10px;
+}
+.card-title {
+  font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;
+}
+
+/* ── GRIDS ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+
+/* ── COLOR VARIANTS ── */
+.bg-coral  { background: var(--lt-coral);  border-color: #DDA898; }
+.bg-gold   { background: var(--lt-gold);   border-color: #D4C08A; }
+.bg-sage   { background: var(--lt-sage);   border-color: #90CCBC; }
+.bg-plum   { background: var(--lt-plum);   border-color: #C4B3D8; }
+.bg-navy   { background: var(--lt-navy);   border-color: #A8BCE0; }
+
+.ac-coral  { color: var(--coral); }
+.ac-gold   { color: var(--gold); }
+.ac-sage   { color: var(--sage); }
+.ac-plum   { color: var(--plum); }
+.ac-navy   { color: var(--navy); }
+
+/* ── SCIENCE BLOCK ── */
+.science-block {
+  background: var(--navy); border-radius: 12px;
+  padding: 14px 18px; color: rgba(255,255,255,0.9);
+  margin: 10px 0; display: flex; gap: 14px; align-items: flex-start;
+}
+.science-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.science-label { font-size: 9px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 3px; }
+.science-text { font-size: 11.5px; font-weight: 600; line-height: 1.6; color: rgba(255,255,255,0.88); }
+.science-cite { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); margin-top: 4px; font-style: italic; }
+
+/* ── CALLOUTS ── */
+.callout {
+  border-radius: 12px; padding: 14px 18px; margin: 10px 0;
+  border-left: 4px solid; display: flex; gap: 12px; align-items: flex-start;
+}
+.callout-icon { font-size: 20px; flex-shrink: 0; }
+.callout-text { font-size: 12px; font-weight: 600; line-height: 1.6; }
+.callout-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+
+.callout-coral { background: var(--lt-coral);  border-color: var(--coral); }
+.callout-gold  { background: var(--lt-gold);   border-color: var(--gold); }
+.callout-sage  { background: var(--lt-sage);   border-color: var(--sage); }
+.callout-plum  { background: var(--lt-plum);   border-color: var(--plum); }
+
+/* ── BULLETS ── */
+.bullet-list { list-style: none; }
+.bullet-list li {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 12px; font-weight: 600; line-height: 1.5;
+  padding: 5px 0; border-bottom: 1px solid var(--border);
+}
+.bullet-list li:last-child { border-bottom: none; }
+.bullet-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+
+/* ── SECTION LABEL ── */
+.section-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin: 18px 0 10px; display: flex; align-items: center; gap: 10px;
+}
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-block; padding: 3px 10px; border-radius: 100px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px; margin: 2px;
+}
+.tag-coral { background: var(--lt-coral); color: var(--coral); }
+.tag-gold  { background: var(--lt-gold);  color: var(--gold); }
+.tag-sage  { background: var(--lt-sage);  color: var(--sage); }
+.tag-plum  { background: var(--lt-plum);  color: var(--plum); }
+.tag-navy  { background: var(--lt-navy);  color: var(--navy); }
+
+/* ── STEPS ── */
+.step-list { list-style: none; }
+.step-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.step-item:last-child { border-bottom: none; }
+.step-num {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; color: #fff;
+}
+.step-title { font-size: 12.5px; font-weight: 800; margin-bottom: 2px; }
+.step-body { font-size: 11.5px; font-weight: 600; color: var(--muted); line-height: 1.55; }
+
+/* ── ICON GRID ── */
+.icon-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 10px 0; }
+.icon-box {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 12px 8px; text-align: center;
+}
+.icon-box .emoji { font-size: 24px; margin-bottom: 5px; }
+.icon-box .lbl { font-size: 10px; font-weight: 800; line-height: 1.3; }
+
+/* ── TIMELINE ── */
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before {
+  content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+  width: 2px; background: var(--border); border-radius: 2px;
+}
+.timeline-item {
+  position: relative; padding: 0 0 16px 18px;
+}
+.timeline-dot {
+  position: absolute; left: -20px; top: 3px;
+  width: 14px; height: 14px; border-radius: 50%; border: 2px solid #fff;
+  box-shadow: 0 0 0 2px var(--border);
+}
+.timeline-title { font-size: 12.5px; font-weight: 800; margin-bottom: 3px; }
+.timeline-body { font-size: 11.5px; font-weight: 600; color: var(--muted); line-height: 1.55; }
+
+/* ── SCRIPT BOX ── */
+.script-box {
+  background: linear-gradient(135deg, #1A1A0E 0%, #2A1E10 100%);
+  border-radius: 12px; padding: 18px 22px; margin: 10px 0;
+}
+.script-label {
+  font-size: 9px; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px;
+}
+.script-line {
+  background: rgba(255,255,255,0.07); border-radius: 8px;
+  padding: 10px 14px; margin-bottom: 6px;
+  font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9);
+  line-height: 1.55; border-left: 3px solid rgba(200,90,69,0.5);
+}
+.script-line:last-child { margin-bottom: 0; }
+
+/* ── DOPAMINE CHART ── */
+.dopamine-bar-container { margin: 10px 0; }
+.dopamine-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.dopamine-label { font-size: 11px; font-weight: 700; width: 160px; flex-shrink: 0; }
+.dopamine-bar-bg { flex: 1; height: 12px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.dopamine-bar { height: 100%; border-radius: 100px; }
+.dopamine-val { font-size: 10px; font-weight: 800; width: 30px; text-align: right; }
+
+/* ── AFFIRMATION GRID ── */
+.affirmation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.affirmation-card {
+  background: linear-gradient(135deg, #1A2A1A, #1E2D4E);
+  border-radius: 10px; padding: 14px 16px; text-align: center;
+}
+.affirmation-card p { font-size: 12px; font-weight: 800; line-height: 1.5; color: rgba(255,255,255,0.88); }
+
+/* ── AVOIDANT RESPONSE ── */
+.response-card {
+  border-radius: 12px; padding: 14px 18px; margin-bottom: 8px;
+  border: 1.5px solid; display: flex; gap: 14px; align-items: flex-start;
+}
+.response-type {
+  font-size: 10px; font-weight: 800; letter-spacing: 1.5px;
+  text-transform: uppercase; margin-bottom: 4px;
+}
+.response-behavior { font-size: 12px; font-weight: 600; line-height: 1.55; }
+.response-why { font-size: 11px; font-weight: 700; margin-top: 4px; }
+
+@media print {
+  .section-page { page-break-before: always; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══════════ COVER ══════════ -->
+<div class="cover">
+  <div class="cover-orb-1"></div>
+  <div class="cover-orb-2"></div>
+  <div class="cover-orb-3"></div>
+
+  <div class="cover-label">By Ash · Couples Educator</div>
+
+  <div class="cover-badge">
+    <span>🔬 Science-Backed · ADHD-Friendly Breakup Guide</span>
+  </div>
+
+  <h1>Breaking Up<br>With <em>an Avoidant</em></h1>
+
+  <div class="cover-sub">
+    Why you can't stop going back. Why the grief hits differently. And how to actually leave — for good.
+  </div>
+
+  <div class="cover-divider"></div>
+
+  <div class="cover-truth-box">
+    <p>Leaving an avoidant isn't just a decision — it's a <strong>neurobiological battle</strong>. Your brain is literally addicted to them. This guide gives you the science, the scripts, and the step-by-step protocol to break free and heal.</p>
+  </div>
+
+  <div class="cover-stat-row">
+    <div class="cover-stat">
+      <div class="num">3x</div>
+      <div class="lbl">Harder to Leave</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">8</div>
+      <div class="lbl">Sections Inside</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">12</div>
+      <div class="lbl">Healing Affirmations</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">7</div>
+      <div class="lbl">Step Protocol</div>
+    </div>
+  </div>
+
+  <div class="toc-grid">
+    <div class="toc-item"><div class="toc-num">1</div><div class="toc-text">Why Leaving Feels Impossible</div></div>
+    <div class="toc-item"><div class="toc-num">2</div><div class="toc-text">Your Brain on an Avoidant</div></div>
+    <div class="toc-item"><div class="toc-num">3</div><div class="toc-text">How They Respond to a Breakup</div></div>
+    <div class="toc-item"><div class="toc-num">4</div><div class="toc-text">The Grief Is Different</div></div>
+    <div class="toc-item"><div class="toc-num">5</div><div class="toc-text">Why You Keep Going Back</div></div>
+    <div class="toc-item"><div class="toc-num">6</div><div class="toc-text">The Breakup Protocol</div></div>
+    <div class="toc-item"><div class="toc-num">7</div><div class="toc-text">No Contact — The Science</div></div>
+    <div class="toc-item"><div class="toc-num">8</div><div class="toc-text">Healing Affirmations & Prompts</div></div>
+  </div>
+
+  <div class="cover-footer">© Ash · Couples Educator · @chingonamendoza · For educational purposes only</div>
+</div>
+
+<!-- ══════════ SECTION 1: Why Leaving Feels Impossible ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">1</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-coral">The Hard Truth</div>
+      <div class="page-header-title">Why Leaving an Avoidant Feels Impossible</div>
+      <div class="page-header-sub">It's not weakness. It's neuroscience.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-coral">
+    <div class="callout-icon">🧠</div>
+    <div>
+      <div class="callout-title" style="color:var(--coral)">You Are Not Weak for Staying</div>
+      <div class="callout-text">Leaving an avoidant partner is one of the hardest breakups to complete — not because you love them "too much," but because the intermittent reinforcement pattern has created <strong>a neurological attachment that mimics addiction</strong>. This is about your brain chemistry, not your willpower.</div>
+    </div>
+  </div>
+
+  <div class="section-label">The 5 Reasons Leaving Feels Impossible</div>
+
+  <ul class="step-list">
+    <li class="step-item">
+      <div class="step-num" style="background:var(--coral)">1</div>
+      <div class="step-content">
+        <div class="step-title">The Intermittent Reinforcement Loop</div>
+        <div class="step-body">When they were warm and available, it felt electric. When they pulled away, the pain was crushing. This on-off pattern trained your brain to crave their approval like a gambler craves the next win. The inconsistency IS the addiction.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--coral)">2</div>
+      <div class="step-content">
+        <div class="step-title">The Unfinished Business Effect</div>
+        <div class="step-body">Avoidants rarely give you proper closure. They fade, dismiss, or minimize. This leaves your nervous system in a "problem unsolved" state — your brain cannot rest until it finds resolution, so it keeps pulling you back toward them.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--gold)">3</div>
+      <div class="step-content">
+        <div class="step-title">The Potential Trap</div>
+        <div class="step-body">You saw who they could be in those rare moments of vulnerability and warmth. You fell in love with their potential, not their pattern. Leaving means grieving both the person AND the future you imagined.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--gold)">4</div>
+      <div class="step-content">
+        <div class="step-title">Childhood Wound Re-Activation</div>
+        <div class="step-body">If you have anxious attachment, their avoidance triggered your deepest wound: "I'm not enough." Staying feels like a chance to finally prove you ARE enough. Leaving means accepting the wound without that validation.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--plum)">5</div>
+      <div class="step-content">
+        <div class="step-title">The Trauma Bond</div>
+        <div class="step-body">Cycles of tension → explosion → reconciliation create powerful emotional bonding through shared cortisol and oxytocin spikes. The more intense the conflict and repair, the stronger the bond feels — even when it's harmful.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="science-block">
+    <div class="science-icon">🔬</div>
+    <div>
+      <div class="science-label">Trauma Bonding Research</div>
+      <div class="science-text">Relationships with high emotional intensity — even negative intensity — produce <strong>elevated oxytocin and cortisol bonding</strong>. The stress-relief cycle (tension → conflict → reconciliation) creates a bond that is neurobiologically similar to trauma bonding seen in clinical settings.</div>
+      <div class="science-cite">van der Kolk (1994) — The Body Keeps the Score; Herman (1992) — Trauma & Recovery; Patrick Carnes — Betrayal Bonds</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 2: Your Brain on an Avoidant ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">2</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-coral">Neuroscience</div>
+      <div class="page-header-title">Your Brain on an Avoidant</div>
+      <div class="page-header-sub">Why breaking up literally feels like withdrawal from a drug</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🧠</div>
+    <div>
+      <div class="science-label">fMRI Research</div>
+      <div class="science-text">Brain scans of people looking at photos of their ex show activation in the <strong>nucleus accumbens</strong> (the brain's reward center), the <strong>ventral tegmental area</strong> (dopamine production), and the <strong>anterior cingulate cortex</strong> (pain regulation) — the same regions activated by <em>cocaine cravings</em>. Love and addiction share the same neural pathways.</div>
+      <div class="science-cite">Fisher et al. (2010) — "Reward, Addiction, and Emotion Regulation Systems" (Journal of Neurophysiology)</div>
+    </div>
+  </div>
+
+  <div class="section-label">The Dopamine Comparison</div>
+
+  <div class="card">
+    <div class="card-title ac-coral">📊 Why Their Rare Good Moments Hooked You Harder</div>
+    <div class="dopamine-bar-container" style="margin-top:8px;">
+      <div class="dopamine-row">
+        <div class="dopamine-label">Secure partner (consistent)</div>
+        <div class="dopamine-bar-bg"><div class="dopamine-bar" style="width:55%; background:var(--sage);"></div></div>
+        <div class="dopamine-val ac-sage">55%</div>
+      </div>
+      <div class="dopamine-row">
+        <div class="dopamine-label">Avoidant (unpredictable)</div>
+        <div class="dopamine-bar-bg"><div class="dopamine-bar" style="width:95%; background:var(--coral);"></div></div>
+        <div class="dopamine-val ac-coral">95%</div>
+      </div>
+      <div class="dopamine-row">
+        <div class="dopamine-label">After breakup (craving)</div>
+        <div class="dopamine-bar-bg"><div class="dopamine-bar" style="width:88%; background:var(--plum);"></div></div>
+        <div class="dopamine-val ac-plum">88%</div>
+      </div>
+    </div>
+    <div style="font-size:10.5px; font-weight:600; color:var(--muted); margin-top:8px; font-style:italic;">Illustrative based on variable ratio reinforcement research. Unpredictable rewards produce the highest dopamine response.</div>
+  </div>
+
+  <div class="two-col">
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">⬇️ What Drops When You Leave</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Dopamine</strong> — reward anticipation plummets</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Serotonin</strong> — drops sharply (like depression)</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Oxytocin</strong> — bonding hormone crashes</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Norepinephrine</strong> — hypervigilance without target</span></li>
+      </ul>
+    </div>
+    <div class="card bg-sage">
+      <div class="card-title ac-sage">⬆️ What These Symptoms Look Like</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>Constant intrusive thoughts about them</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>Inability to focus on anything else</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>Physical symptoms: chest pain, nausea, insomnia</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>Intense urge to "just check in" on them</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-gold">
+    <div class="callout-icon">💡</div>
+    <div>
+      <div class="callout-title" style="color:var(--gold)">This Is Literal Withdrawal</div>
+      <div class="callout-text">The symptoms you feel after breaking up with an avoidant are neurologically identical to opioid withdrawal. It peaks at 2–5 days, then begins to subside. <strong>Every time you go back, you reset the clock.</strong> No contact is not cruelty — it's medicine.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🎯</div>
+    <div>
+      <div class="science-label">Key Insight</div>
+      <div class="science-text">The urge to reach out after a breakup is <strong>not love</strong> — it's the brain seeking to resolve the dopamine deficit. This distinction is crucial: <em>you are not missing them, you are missing the neurochemicals they triggered in you.</em> These can be restored through other means.</div>
+      <div class="science-cite">Aron et al. (2005) — Early-Stage Intense Romantic Love; Berridge & Robinson (1998) — Wanting vs. Liking in Reward Systems</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 3: How They Respond to a Breakup ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">3</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-plum">Know What's Coming</div>
+      <div class="page-header-title">How Avoidants Respond to a Breakup</div>
+      <div class="page-header-sub">Understanding their behavior so you're not blindsided — or pulled back in</div>
+    </div>
+  </div>
+
+  <div class="callout callout-plum">
+    <div class="callout-icon">⚠️</div>
+    <div>
+      <div class="callout-title" style="color:var(--plum)">Why You Need to Know This First</div>
+      <div class="callout-text">Avoidants have specific, predictable responses to breakups. Some will seem confusing, some will seem cruel, and some might pull you right back in. Knowing what to expect <strong>before it happens</strong> is the best protection you have.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Dismissive Avoidant (DA) Breakup Responses</div>
+
+  <div class="response-card" style="background:var(--lt-navy); border-color:#A8BCE0;">
+    <div style="font-size:28px; flex-shrink:0;">🧊</div>
+    <div>
+      <div class="response-type" style="color:var(--navy)">Immediate Deactivation</div>
+      <div class="response-behavior">They seem completely unbothered. Cold, calm, almost robotic. They may say "okay" and walk away without visible emotion. They don't cry. They don't beg.</div>
+      <div class="response-why" style="color:var(--navy);">Why: DA's suppress emotions instantly. Their deactivating strategies kick in — it looks like they don't care. Internally, they feel it later. But you won't see it.</div>
+    </div>
+  </div>
+
+  <div class="response-card" style="background:var(--lt-navy); border-color:#A8BCE0;">
+    <div style="font-size:28px; flex-shrink:0;">🏃</div>
+    <div>
+      <div class="response-type" style="color:var(--navy)">Relief, Then Regret (Weeks Later)</div>
+      <div class="response-behavior">DA's often feel immediate relief after a breakup — the intimacy pressure is gone. But weeks later, when the relationship felt "safe" in retrospect, they experience loss and may reach out.</div>
+      <div class="response-why" style="color:var(--navy);">Warning: This is the "avoidant breadcrumb." It is NOT a sign they've changed. It's their nervous system seeking what it lost only once it feels safe to miss it.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Fearful Avoidant (FA) Breakup Responses</div>
+
+  <div class="response-card" style="background:var(--lt-plum); border-color:#C4B3D8;">
+    <div style="font-size:28px; flex-shrink:0;">🌪️</div>
+    <div>
+      <div class="response-type" style="color:var(--plum)">Chaos and Contradiction</div>
+      <div class="response-behavior">FA's may cry, beg, then disappear, then reach out again, then say "I don't want a relationship" — all in the same week. Their abandonment fear AND intimacy fear are both firing simultaneously.</div>
+      <div class="response-why" style="color:var(--plum);">Why: Both attachment systems activate at once — they want you back (abandonment fear) AND they want to flee (intimacy fear). Expect emotional whiplash.</div>
+    </div>
+  </div>
+
+  <div class="response-card" style="background:var(--lt-plum); border-color:#C4B3D8;">
+    <div style="font-size:28px; flex-shrink:0;">💌</div>
+    <div>
+      <div class="response-type" style="color:var(--plum)">The "Hoovering" Attempt</div>
+      <div class="response-behavior">They resurface — a meme, a "thinking of you," an "I miss you" when you've finally started to heal. This often happens right when you've reached some peace. It's not a coincidence.</div>
+      <div class="response-why" style="color:var(--plum);">Why: FA's are intuitive about when you're detaching. Their abandonment fear activates. They don't want you close, but they don't want you gone either.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">📊</div>
+    <div>
+      <div class="science-label">Attachment Research</div>
+      <div class="science-text">Studies show avoidant partners are significantly more likely to seek contact post-breakup when their former partner has successfully deactivated (stopped pursuing). This is called the <strong>"Avoidant Boomerang Effect."</strong> The more secure and peaceful you appear, the more their abandoned attachment system activates.</div>
+      <div class="science-cite">Davis et al. (2003) — "Attachment Style and Responses to Relationship Threat"; Spielmann et al. (2013)</div>
+    </div>
+  </div>
+
+  <div class="callout callout-coral">
+    <div class="callout-icon">🛑</div>
+    <div>
+      <div class="callout-title" style="color:var(--coral)">The Most Important Thing to Know</div>
+      <div class="callout-text">If they come back after the breakup without having done <strong>real attachment healing work</strong>, returning to them will reproduce the same cycle. Different season, same pattern. You deserve a person who chose growth — not just you when they were scared to lose you.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 4: The Grief Is Different ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">4</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-gold">Your Grief Is Valid</div>
+      <div class="page-header-title">Why This Grief Hits Differently</div>
+      <div class="page-header-sub">You're not just grieving a person — you're grieving a whole system</div>
+    </div>
+  </div>
+
+  <div class="callout callout-gold">
+    <div class="callout-icon">💛</div>
+    <div>
+      <div class="callout-title" style="color:var(--gold)">This Is a Compound Grief</div>
+      <div class="callout-text">Breaking up with an avoidant isn't a standard breakup. You are grieving multiple losses simultaneously — and your nervous system doesn't have language for all of them at once. That's why it feels overwhelming and non-linear.</div>
+    </div>
+  </div>
+
+  <div class="section-label">What You're Actually Grieving</div>
+
+  <div class="icon-grid">
+    <div class="icon-box">
+      <div class="emoji">👤</div>
+      <div class="lbl">The Person They Were In Good Moments</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🌅</div>
+      <div class="lbl">The Future You Imagined Together</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🔑</div>
+      <div class="lbl">The Validation You Never Got</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🧩</div>
+      <div class="lbl">The Version of Yourself In That Dynamic</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🧒</div>
+      <div class="lbl">Your Inner Child's Wound Re-Opened</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">⏳</div>
+      <div class="lbl">Time You Spent Trying to Fix It</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">💭</div>
+      <div class="lbl">The Story You Told Yourself About It</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">💞</div>
+      <div class="lbl">The Idea That THIS Was "the one"</div>
+    </div>
+  </div>
+
+  <div class="section-label">The Non-Linear Grief Timeline</div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--coral);"></div>
+      <div class="timeline-title">Days 1–5: Acute Withdrawal</div>
+      <div class="timeline-body">Intrusive thoughts, physical chest pain, insomnia, compulsive checking of their profile. This is neurochemical withdrawal at its peak. <strong>Do not contact them during this window.</strong></div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--gold);"></div>
+      <div class="timeline-title">Week 1–3: The Bargaining Storm</div>
+      <div class="timeline-body">"What if I just explained myself better? What if they've changed? One message won't hurt." This is your brain trying to restore the lost neurochemical. Almost everyone relapses here. Have a plan.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--plum);"></div>
+      <div class="timeline-title">Week 3–8: The Fog</div>
+      <div class="timeline-body">Numbness, low motivation, "what's the point" energy. This is grief settling in. It doesn't mean you made the wrong choice. It means your nervous system is processing a significant loss.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--sage);"></div>
+      <div class="timeline-title">Month 2–4: Clarity Starts Breaking Through</div>
+      <div class="timeline-body">You start to see the dynamic more clearly. You stop romanticizing only the good moments. You begin to remember who you were before them. This is the beginning of rebuilding.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#3D7A6A;"></div>
+      <div class="timeline-title">Month 4+: Integration</div>
+      <div class="timeline-body">You grieve without it consuming you. You understand the lessons. You stop needing the story to be different. This is healing — not the absence of pain, but no longer being controlled by it.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">💆</div>
+    <div>
+      <div class="science-label">Grief & Neuroscience</div>
+      <div class="science-text">The brain processes social loss in the <strong>same regions as physical pain</strong> (anterior cingulate cortex). Heartbreak is not metaphorical — it is a genuine pain signal. Validating the grief as real is step one of regulating it. Self-compassion practices have been shown to significantly accelerate recovery timelines.</div>
+      <div class="science-cite">Eisenberger & Lieberman (2004) — "Does Rejection Hurt?"; Zaki (2020) — Compassion Self-Practice Studies</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 5: Why You Keep Going Back ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">5</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-coral">The Relapse Pattern</div>
+      <div class="page-header-title">Why You Keep Going Back</div>
+      <div class="page-header-sub">Awareness of the trap is the first step out of it</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🔄</div>
+    <div>
+      <div class="science-label">The Cycle Research</div>
+      <div class="science-text">On average, people in anxious-avoidant relationships <strong>cycle back 2–7 times</strong> before a final separation. This is not weakness or stupidity — it is a predictable consequence of the neurobiological pattern created by the relationship itself.</div>
+      <div class="science-cite">Rollie & Duck (2006) — Relationship Dissolution Processes; Halpern-Meekin et al. (2013) — On-Again/Off-Again Relationships</div>
+    </div>
+  </div>
+
+  <div class="section-label">The 6 Triggers That Pull You Back</div>
+
+  <div class="three-col">
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">💭 Memory Flooding</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">A song, a place, a smell. Your hippocampus has catalogued thousands of sensory memories. They activate without warning and make the brain re-experience the relationship as if it's happening now.</div>
+    </div>
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">📲 Their Reach-Out</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">The avoidant boomerang — they sense you detaching and reach out. The timing is almost always when you've started to feel better. Don't mistake their fear of losing you for growth.</div>
+    </div>
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">😔 Loneliness Spike</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">Late nights, low moods, weekends. When social support is low, the brain defaults to the familiar — even if the familiar was painful. Plan for these predictable vulnerable windows.</div>
+    </div>
+  </div>
+
+  <div class="three-col">
+    <div class="card bg-gold">
+      <div class="card-title ac-gold">💰 The Sunk Cost</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">"I've put so much into this — if I leave now, it was all for nothing." This is a cognitive bias, not a reason to stay. Past investment is not a reason to continue losing. The best time to stop is always now.</div>
+    </div>
+    <div class="card bg-gold">
+      <div class="card-title ac-gold">✨ Selective Memory</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">Your brain naturally replays the highlights — the perfect date, the vulnerable moment. It edits out the 6 days of silence, the minimizing, the hot-and-cold. Journaling helps counteract this bias.</div>
+    </div>
+    <div class="card bg-gold">
+      <div class="card-title ac-gold">😨 Fear of Starting Over</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">"What if no one else loves me?" This fear is your wounded attachment system speaking — not reality. It's designed to keep you in the familiar. It is not the truth about your future.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-sage">
+    <div class="callout-icon">🛡️</div>
+    <div>
+      <div class="callout-title" style="color:var(--sage)">The Relapse Prevention Plan</div>
+      <div class="callout-text">Before you spiral — write this down right now: <em>"I know I will want to go back. When I do, I will call [friend's name] instead. I will wait 48 hours before making any contact decision. I remember that the urge is withdrawal, not love."</em> Having a plan before the urge hits is everything.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 6: The Breakup Protocol ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">6</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-sage">The Protocol</div>
+      <div class="page-header-title">The 7-Step Breakup Protocol</div>
+      <div class="page-header-sub">A science-informed step-by-step to actually leaving and staying gone</div>
+    </div>
+  </div>
+
+  <div class="callout callout-sage">
+    <div class="callout-icon">📋</div>
+    <div>
+      <div class="callout-title" style="color:var(--sage)">How to Use This</div>
+      <div class="callout-text">Go in order. Don't skip steps. Each step is designed to address a specific neurological or psychological barrier to leaving. Read it before you need it — so it's in your brain when emotions make thinking hard.</div>
+    </div>
+  </div>
+
+  <ul class="step-list">
+    <li class="step-item">
+      <div class="step-num" style="background:var(--coral)">1</div>
+      <div class="step-content">
+        <div class="step-title">Write Your "Why I'm Leaving" Letter — Unsealed</div>
+        <div class="step-body">Write out every reason you're leaving, every pattern you've experienced, every time you felt small. Don't send it. Keep it. Read it every time you want to go back. This counteracts selective memory.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--coral)">2</div>
+      <div class="step-content">
+        <div class="step-title">Tell Someone Who Will Hold You Accountable</div>
+        <div class="step-body">Not someone who will enable going back. A friend who has witnessed the dynamic, a therapist, or a support community. Accountability partners reduce relapse rates significantly.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--gold)">3</div>
+      <div class="step-content">
+        <div class="step-title">Have the Actual Conversation — Clear and Direct</div>
+        <div class="step-body">In person or by phone (not text). Keep it clean: <em>"This relationship isn't working for me. I'm ending it and I need space to heal. I won't be reaching out."</em> No lengthy explanation. Clarity is kind.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--gold)">4</div>
+      <div class="step-content">
+        <div class="step-title">Immediately Remove Digital Access</div>
+        <div class="step-body">Mute or unfollow on all social platforms. Remove from your phone's suggested contacts. Archive the conversation. You don't need to block — but you must remove the passive exposure that keeps them in your nervous system.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--plum)">5</div>
+      <div class="step-content">
+        <div class="step-title">Restructure the First 72 Hours</div>
+        <div class="step-body">Plan every waking hour for the first 3 days. This is neurochemical peak withdrawal. Don't white-knuckle it alone — schedule calls with friends, physical activity, new environments. Novelty interrupts the craving loop.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--plum)">6</div>
+      <div class="step-content">
+        <div class="step-title">Create a Physical Reminder of the Pattern</div>
+        <div class="step-body">A note on your phone. A journal page. A voice memo you recorded when you were in pain. Something that reconnects you to reality — not the highlight reel — when the longing hits.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--sage)">7</div>
+      <div class="step-content">
+        <div class="step-title">Start Attachment Healing Work Immediately</div>
+        <div class="step-body">Therapy, somatic work, journaling, books (Attached, The Body Keeps the Score). Don't wait until you "feel ready." Starting the healing work is what makes you ready. Your nervous system needs to learn a new pattern — and that takes intentional input.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="script-box">
+    <div class="script-label">🗣️ The Breakup Script — Clean, Clear, Final</div>
+    <div class="script-line">"This relationship hasn't been working for me, and I've made the decision to end it."</div>
+    <div class="script-line">"I'm not looking for a discussion or to be talked out of it. This is my decision."</div>
+    <div class="script-line">"I need space to heal and I won't be in contact. I wish you well."</div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 7: No Contact ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">7</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-navy">The Science</div>
+      <div class="page-header-title">No Contact — Why It's the Only Way</div>
+      <div class="page-header-sub">This is not punishment. This is medicine.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🧬</div>
+    <div>
+      <div class="science-label">Neuroplasticity Research</div>
+      <div class="science-text">The brain's craving pathways are maintained by <strong>intermittent contact and exposure</strong>. Every text exchange, social media check, or "quick conversation" restarts the dopamine anticipation cycle. True neural rewiring requires a sustained period of <em>zero input</em> — no new data for the craving to feed on.</div>
+      <div class="science-cite">Volkow et al. (2012) — Addiction & Neural Pathways; Doidge (2007) — The Brain That Changes Itself</div>
+    </div>
+  </div>
+
+  <div class="callout callout-coral">
+    <div class="callout-icon">🚨</div>
+    <div>
+      <div class="callout-title" style="color:var(--coral)">No Contact Is Not "Being Dramatic"</div>
+      <div class="callout-text">It is <em>neurologically necessary</em> for your healing. Every time you check their Instagram, text to "see how they're doing," or accept their breadcrumbs — you are choosing to extend your own pain. No contact is a form of self-care, not a punishment to them.</div>
+    </div>
+  </div>
+
+  <div class="section-label">What No Contact Actually Means</div>
+
+  <div class="two-col">
+    <div class="card bg-sage">
+      <div class="card-title ac-sage">✅ No Contact Includes</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>No texts, calls, or DMs (from either side)</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>No checking their social media (mute/unfollow)</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>No asking mutual friends about them</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>No "accidental" appearances at their spots</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>No reading old texts "just to feel close"</span></li>
+      </ul>
+    </div>
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">⚠️ Common No Contact Breaks</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span>"Just to get closure" — there is no closure text</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span>"Just to check if they're okay" — they are fine</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span>"Just to return their stuff" — mail it or donate it</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span>"Just one last conversation" — there is no last one</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span>Replying when they reach out "to be polite"</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">How Long Does No Contact Need to Last?</div>
+
+  <div class="card">
+    <div class="card-title" style="color:#555;">⏳ The Research-Based Answer</div>
+    <ul class="bullet-list">
+      <li><span class="bullet-dot" style="background:var(--navy)"></span><span><strong>Minimum:</strong> 30–60 days for acute neurochemical withdrawal to subside</span></li>
+      <li><span class="bullet-dot" style="background:var(--navy)"></span><span><strong>Recommended:</strong> 90 days for the brain to begin resetting dopamine baselines</span></li>
+      <li><span class="bullet-dot" style="background:var(--navy)"></span><span><strong>Ideal for AP healing:</strong> Long enough until you can think about them without emotional flooding</span></li>
+      <li><span class="bullet-dot" style="background:var(--navy)"></span><span><strong>Signs you're ready to end NC:</strong> You're not hoping they'll notice. You're not hoping they'll change. You can think of them neutrally, like an old chapter.</span></li>
+    </ul>
+  </div>
+
+  <div class="callout callout-plum">
+    <div class="callout-icon">💜</div>
+    <div>
+      <div class="callout-title" style="color:var(--plum)">What to Do When the Urge Hits</div>
+      <div class="callout-text"><strong>HALT first:</strong> Am I Hungry? Angry? Lonely? Tired? These four states lower impulse control and spike the urge to reach out. Address the real need first. Then call your accountability person. Then wait 48 hours. If you still want to reach out after that — write the message but don't send it.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">📈</div>
+    <div>
+      <div class="science-label">Recovery Research</div>
+      <div class="science-text">Studies of relationship recovery show that <strong>sustained non-contact</strong> — especially paired with active support (therapy, community, physical activity) — produces significantly better outcomes than "slow fade" or sporadic contact patterns. The nervous system needs a clear signal that the old pattern is over to begin forming new ones.</div>
+      <div class="science-cite">Sbarra & Hazan (2008) — "Coregulation, Dysregulation, Self-Regulation"; Field (2011) — Romantic Breakup Distress</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 8: Healing Affirmations ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">8</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-plum">Your Healing</div>
+      <div class="page-header-title">Affirmations & Journal Prompts</div>
+      <div class="page-header-sub">Reprogram your nervous system — one truth at a time</div>
+    </div>
+  </div>
+
+  <div class="callout callout-plum">
+    <div class="callout-icon">🌱</div>
+    <div>
+      <div class="callout-title" style="color:var(--plum)">Why Affirmations Work (The Science)</div>
+      <div class="callout-text">Repeated affirmations activate the <strong>medial prefrontal cortex</strong> and create new neural pathways that compete with the old shame and fear-based loops. They work best when said out loud, repeated daily, and said with emotion. You are literally building a new brain.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Daily Affirmations — Say These Out Loud</div>
+
+  <div class="affirmation-grid">
+    <div class="affirmation-card">
+      <p>I am allowed to leave what no longer honors me.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>The urge to go back is withdrawal. It is not love. It will pass.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>My nervous system is healing. Every day of no contact is medicine.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>I do not need closure from them. I give myself the closure I need.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>I am not too much. I was with someone who couldn't meet me where I am.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>Secure love exists and it is coming to me. I am becoming ready for it.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>I am breaking a pattern — not just a relationship. That takes courage.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>The version of me that heals from this will be the most powerful version yet.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>I grieve the good moments without forgetting the whole pattern.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>My healing is not conditional on their apology or their awareness.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>I chose me. That is the most loving thing I have ever done.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>I trust the process. I trust myself. I am going to be okay.</p>
+    </div>
+  </div>
+
+  <div class="section-label">Healing Journal Prompts</div>
+
+  <div class="card">
+    <div class="card-title ac-plum">📓 Use These Daily — 5–10 Minutes Each</div>
+    <ul class="bullet-list">
+      <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Pattern Clarity:</strong> "What pattern do I now see clearly that I couldn't see when I was in it?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Grief Inventory:</strong> "What am I actually grieving today — the person, the potential, or the wound?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--gold)"></span><span><strong>Wound Work:</strong> "When did I first learn that I had to work this hard for love? How old was I?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--gold)"></span><span><strong>Future Self:</strong> "What will my life feel like in 6 months if I stay in no contact and do this work?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--plum)"></span><span><strong>Identity:</strong> "Who was I before this relationship? What parts of me did I abandon to make it work?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--plum)"></span><span><strong>Standards:</strong> "What does secure love actually look like? What am I no longer willing to accept?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--sage)"></span><span><strong>Self-Compassion:</strong> "What would I say to my best friend if they were going through exactly this?"</span></li>
+    </ul>
+  </div>
+
+  <div style="margin-top:22px; text-align:center; padding:18px; border-top: 2px solid var(--border);">
+    <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--navy); margin-bottom:6px;">You did the hard thing.</div>
+    <div style="font-size:12px; font-weight:600; color:var(--muted); max-width:480px; margin:0 auto 12px; line-height:1.65;">Leaving an avoidant when every part of you wants to stay — that is not weakness. That is one of the bravest acts of self-love there is. Your nervous system will catch up to the decision your spirit already made.</div>
+    <div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:10px;">@chingonamendoza · BA Psychology · MA MFT (in progress)</div>
+    <div>
+      <span class="tag tag-coral">Breakup Recovery</span>
+      <span class="tag tag-plum">Avoidant Attachment</span>
+      <span class="tag tag-sage">Nervous System Healing</span>
+      <span class="tag tag-navy">Science-Backed</span>
+      <span class="tag tag-gold">Attachment Theory</span>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

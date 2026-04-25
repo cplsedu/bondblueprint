@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BondBlueprint™ — What's Your Attachment Style?</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'Nunito',sans-serif;background:#FAF7F3;color:#1A1714;min-height:100vh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,textarea{font-family:inherit;font-size:16px}
+textarea{resize:none}
+
+:root{
+  --bg:#FAF7F3;
+  --surface:#fff;
+  --primary:#2C4A35;
+  --primary-h:#1E3526;
+  --primary-lt:#E6F0E9;
+  --accent:#E07A3A;
+  --accent-lt:#FDF0E6;
+  --gold:#D4A843;
+  --text:#1A1714;
+  --text2:#5A5450;
+  --text3:#9A908A;
+  --border:#EAE3D9;
+  --sh:0 2px 12px rgba(0,0,0,.08);
+  --sh2:0 8px 32px rgba(0,0,0,.12);
+  --r:18px;
+  --rsm:12px;
+  --rpill:100px;
+  --secure:#3A7D5C; --secure-lt:#EAF6F1;
+  --anxious:#8B4FA0; --anxious-lt:#F5EDFB;
+  --avoidant:#2E6499; --avoidant-lt:#EAF1FA;
+  --fearful:#A05A2E; --fearful-lt:#FAF0E8;
+}
+
+/* ── CONFETTI ──────────────────────────────────── */
+.confetti-piece{position:fixed;width:10px;height:10px;top:-10px;opacity:0;animation:confettiFall linear forwards;pointer-events:none;z-index:9999;border-radius:2px}
+@keyframes confettiFall{0%{opacity:1;transform:translateY(0) rotate(0deg)}100%{opacity:0;transform:translateY(110vh) rotate(720deg)}}
+
+/* ── SCREENS ──────────────────────────────────── */
+#app{min-height:100vh}
+.screen{display:none;flex-direction:column;min-height:100vh}
+.screen.active{display:flex}
+.container{width:100%;max-width:520px;margin:0 auto;padding:0 20px}
+
+/* ── PROGRESS BAR ─────────────────────────────── */
+#pbar{position:fixed;top:0;left:0;height:4px;background:linear-gradient(90deg,var(--accent),var(--gold));border-radius:0 2px 2px 0;transition:width .5s ease;z-index:200;width:0%}
+
+/* ── NAV ──────────────────────────────────────── */
+.topnav{display:flex;align-items:center;justify-content:space-between;padding:14px 20px;position:sticky;top:0;background:var(--bg);z-index:100}
+.logo{font-family:'Playfair Display',serif;font-size:1.25rem;font-weight:800;color:var(--primary)}
+.logo span{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.quiz-counter{font-size:.82rem;font-weight:700;color:var(--text3);background:var(--border);padding:4px 10px;border-radius:var(--rpill)}
+.back-btn{display:flex;align-items:center;gap:4px;font-size:.85rem;font-weight:700;color:var(--text2);padding:6px 10px;border-radius:var(--rpill);transition:all .15s;background:var(--border)}
+.back-btn:hover{background:#ddd}
+.back-btn:disabled{opacity:.3;pointer-events:none}
+
+/* ── BUTTONS ──────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:16px 28px;border-radius:var(--rpill);font-size:1rem;font-weight:800;transition:all .18s;min-height:56px;letter-spacing:-.01em}
+.btn-full{width:100%}
+.btn-primary{background:var(--primary);color:#fff;box-shadow:0 4px 20px rgba(44,74,53,.25)}
+.btn-primary:hover{background:var(--primary-h);transform:translateY(-2px);box-shadow:0 8px 28px rgba(44,74,53,.3)}
+.btn-primary:active{transform:translateY(0)}
+.btn-accent{background:var(--accent);color:#fff;box-shadow:0 4px 20px rgba(224,122,58,.25)}
+.btn-accent:hover{opacity:.92;transform:translateY(-2px)}
+.btn-ghost{background:transparent;color:var(--text2);border:2px solid var(--border)}
+.btn-ghost:hover{border-color:var(--text3)}
+
+/* ── LANDING ──────────────────────────────────── */
+#screen-landing{background:var(--bg)}
+.land-hero{padding:40px 20px 32px;text-align:center;max-width:520px;margin:0 auto}
+.land-badge{display:inline-flex;align-items:center;gap:6px;background:var(--primary-lt);color:var(--primary);font-size:.78rem;font-weight:800;padding:6px 16px;border-radius:var(--rpill);margin-bottom:20px;letter-spacing:.04em;text-transform:uppercase}
+.land-h1{font-family:'Playfair Display',serif;font-size:clamp(2rem,8vw,3.2rem);font-weight:800;line-height:1.1;color:var(--text);margin-bottom:16px}
+.land-h1 em{color:var(--accent);font-style:italic}
+.land-sub{font-size:1.05rem;color:var(--text2);line-height:1.65;margin-bottom:28px;max-width:400px;margin-left:auto;margin-right:auto}
+.land-trust{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:28px}
+.trust-pill{font-size:.75rem;font-weight:700;color:var(--text3);padding:5px 12px;border-radius:var(--rpill);background:var(--surface);border:1.5px solid var(--border)}
+.land-cta{max-width:360px;margin:0 auto}
+.land-note{text-align:center;font-size:.78rem;color:var(--text3);margin-top:10px;font-weight:600}
+.types-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px;margin:36px auto 0;padding:0 20px}
+.type-card{background:var(--surface);border-radius:var(--r);padding:18px 16px;border:2px solid var(--border);transition:all .2s}
+.type-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:var(--sh)}
+.type-icon{font-size:2rem;margin-bottom:8px;display:block}
+.type-name{font-weight:800;font-size:1rem;color:var(--text);margin-bottom:4px}
+.type-blurb{font-size:.78rem;color:var(--text2);line-height:1.5}
+.social-proof{text-align:center;padding:32px 20px 40px;max-width:520px;margin:0 auto}
+.sp-num{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:800;color:var(--primary)}
+.sp-label{font-size:.88rem;color:var(--text3);font-weight:600;margin-top:2px}
+
+/* ── QUIZ INTRO ───────────────────────────────── */
+.intro-body{flex:1;display:flex;flex-direction:column;justify-content:center;padding:32px 20px 40px;max-width:520px;margin:0 auto;width:100%}
+.intro-emoji{font-size:3.5rem;margin-bottom:16px}
+.intro-steps{list-style:none;margin:24px 0;display:flex;flex-direction:column;gap:14px}
+.intro-steps li{display:flex;align-items:center;gap:12px;font-size:.95rem;color:var(--text2);line-height:1.5;font-weight:600}
+.step-num{width:28px;height:28px;border-radius:50%;background:var(--primary-lt);color:var(--primary);font-size:.78rem;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+
+/* ── QUIZ ─────────────────────────────────────── */
+.quiz-body{flex:1;display:flex;flex-direction:column;max-width:520px;margin:0 auto;width:100%;padding:16px 20px 40px}
+.quiz-progress-bar{height:8px;background:var(--border);border-radius:var(--rpill);margin-bottom:8px;overflow:hidden}
+.quiz-progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:var(--rpill);transition:width .5s ease}
+.quiz-progress-label{font-size:.78rem;font-weight:700;color:var(--text3);margin-bottom:24px;text-align:right}
+.quiz-q{font-family:'Playfair Display',serif;font-size:clamp(1.3rem,5vw,1.75rem);font-weight:700;line-height:1.35;color:var(--text);margin-bottom:32px;flex:1}
+.answers{display:flex;flex-direction:column;gap:10px}
+.ans-btn{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 20px;text-align:left;font-size:.97rem;font-weight:700;color:var(--text);transition:all .18s;display:flex;align-items:center;gap:14px;min-height:62px;box-shadow:var(--sh)}
+.ans-btn:hover{border-color:var(--primary);background:var(--primary-lt);transform:translateX(4px)}
+.ans-btn.selected{border-color:var(--primary);background:var(--primary-lt);color:var(--primary)}
+.ans-emoji{font-size:1.5rem;flex-shrink:0;width:36px;text-align:center}
+.ans-label{flex:1;line-height:1.3}
+.ans-sub{font-size:.75rem;font-weight:600;color:var(--text3);display:block;margin-top:2px}
+.midpoint-cheer{background:var(--gold);color:#fff;text-align:center;padding:10px 16px;border-radius:var(--rsm);font-size:.88rem;font-weight:800;margin-bottom:16px;display:none}
+.midpoint-cheer.show{display:block}
+
+/* ── PROCESSING ───────────────────────────────── */
+#screen-processing{justify-content:center;align-items:center;text-align:center;padding:40px 20px}
+.proc-inner{max-width:340px}
+.proc-spin{width:72px;height:72px;border-radius:50%;border:4px solid var(--border);border-top-color:var(--primary);animation:spin 1s linear infinite;margin:0 auto 28px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.proc-h{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;margin-bottom:8px}
+.proc-steps{margin-top:24px;display:flex;flex-direction:column;gap:10px;text-align:left}
+.proc-step{display:flex;align-items:center;gap:10px;font-size:.9rem;font-weight:600;color:var(--text3);opacity:0;transform:translateY(6px);transition:all .4s}
+.proc-step.vis{opacity:1;transform:translateY(0)}
+.proc-step.done{color:var(--primary)}
+
+/* ── RESULTS ──────────────────────────────────── */
+.results-wrap{flex:1;display:flex;flex-direction:column}
+.results-top{padding:36px 20px 0;max-width:520px;margin:0 auto;width:100%}
+.res-pre{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);margin-bottom:8px}
+.res-name{font-family:'Playfair Display',serif;font-size:clamp(2.2rem,9vw,3.6rem);font-weight:800;line-height:1.1;margin-bottom:6px}
+.res-sub{font-size:1.05rem;font-weight:700;color:var(--text2);margin-bottom:24px}
+.res-card{background:var(--surface);border-radius:var(--r);padding:20px;border:2px solid var(--border);margin-bottom:14px;box-shadow:var(--sh)}
+.res-card-title{font-size:.95rem;font-weight:800;color:var(--text);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.res-card p{font-size:.92rem;color:var(--text2);line-height:1.65;font-weight:600}
+.score-row{margin-top:10px}
+.score-lbl{display:flex;justify-content:space-between;font-size:.78rem;font-weight:800;color:var(--text3);margin-bottom:6px}
+.score-track{height:10px;background:var(--border);border-radius:var(--rpill);overflow:hidden}
+.score-fill{height:100%;border-radius:var(--rpill);transition:width 1.2s ease}
+.res-badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+.res-badge{font-size:.78rem;font-weight:800;padding:5px 12px;border-radius:var(--rpill)}
+.res-cta-wrap{padding:20px 20px 40px;max-width:520px;margin:0 auto;width:100%}
+.res-cta-box{background:var(--surface);border-radius:var(--r);padding:24px;border:2px solid var(--border);box-shadow:var(--sh);text-align:center;margin-bottom:16px}
+.res-cta-box h3{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800;margin-bottom:10px}
+.res-cta-box p{font-size:.9rem;color:var(--text2);line-height:1.6;font-weight:600;margin-bottom:18px}
+.lock-list{text-align:left;display:flex;flex-direction:column;gap:10px;margin-bottom:22px}
+.lock-item{display:flex;align-items:flex-start;gap:10px;font-size:.9rem;font-weight:700;color:var(--text2)}
+
+/* ── CONTEXT ──────────────────────────────────── */
+.ctx-body{flex:1;display:flex;flex-direction:column;max-width:520px;margin:0 auto;width:100%;padding:16px 20px 40px}
+.ctx-label{font-size:.78rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.ctx-q{font-family:'Playfair Display',serif;font-size:clamp(1.35rem,5.5vw,1.75rem);font-weight:700;line-height:1.3;color:var(--text);margin-bottom:28px;flex:1}
+.ctx-opts{display:flex;flex-direction:column;gap:10px}
+.ctx-btn{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 18px;text-align:left;font-size:.95rem;font-weight:700;color:var(--text);transition:all .18s;display:flex;align-items:flex-start;gap:12px;box-shadow:var(--sh);line-height:1.35}
+.ctx-btn:hover{border-color:var(--accent);background:var(--accent-lt);transform:translateX(3px)}
+.ctx-btn.selected{border-color:var(--accent);background:var(--accent-lt)}
+.ctx-btn .cb-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.ctx-btn .cb-text{flex:1}
+.ctx-btn .cb-sub{font-size:.75rem;color:var(--text3);margin-top:3px;display:block;font-weight:600}
+.ctx-textarea{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 18px;font-size:1rem;font-weight:600;color:var(--text);line-height:1.6;min-height:120px;outline:none;transition:border-color .18s;box-shadow:var(--sh)}
+.ctx-textarea:focus{border-color:var(--accent)}
+.ctx-textarea::placeholder{color:var(--text3);font-weight:600}
+.ctx-actions{margin-top:18px;display:flex;flex-direction:column;gap:10px}
+.skip-btn{background:none;font-size:.82rem;font-weight:700;color:var(--text3);text-decoration:underline;text-underline-offset:3px;text-align:center;padding:4px}
+
+/* ── PAYWALL ──────────────────────────────────── */
+#screen-paywall{background:var(--bg)}
+.pw-hero{text-align:center;padding:36px 20px 0;max-width:520px;margin:0 auto;width:100%}
+.pw-badge{display:inline-block;background:var(--gold);color:#fff;font-size:.78rem;font-weight:800;padding:6px 16px;border-radius:var(--rpill);margin-bottom:14px;letter-spacing:.04em;text-transform:uppercase}
+.pw-hero h2{font-family:'Playfair Display',serif;font-size:clamp(1.7rem,6vw,2.4rem);font-weight:800;line-height:1.15;margin-bottom:8px}
+.pw-hero p{font-size:.92rem;color:var(--text2);font-weight:600;line-height:1.6}
+.pw-preview{background:var(--surface);border-radius:var(--r);padding:20px;border:2px solid var(--border);box-shadow:var(--sh);margin:20px 20px 0;max-width:480px;margin-left:auto;margin-right:auto;position:relative;overflow:hidden}
+.pw-preview::after{content:'';position:absolute;bottom:0;left:0;right:0;height:70px;background:linear-gradient(transparent,var(--surface));pointer-events:none}
+.pw-prev-title{font-weight:800;font-size:.95rem;color:var(--text);margin-bottom:8px}
+.pw-prev-text{font-size:.88rem;color:var(--text2);line-height:1.6;font-weight:600;filter:blur(4px);user-select:none}
+.pw-lock{text-align:center;font-size:.85rem;font-weight:700;color:var(--text3);margin-top:14px;display:flex;align-items:center;justify-content:center;gap:6px}
+.plan-opts{display:flex;flex-direction:column;gap:14px;padding:20px 20px 0;max-width:520px;margin:0 auto;width:100%}
+.plan-opt{background:var(--surface);border:2.5px solid var(--border);border-radius:var(--r);padding:20px;cursor:pointer;transition:all .2s;position:relative;box-shadow:var(--sh)}
+.plan-opt:hover{border-color:var(--primary);box-shadow:var(--sh2)}
+.plan-opt.sel{border-color:var(--primary);background:var(--primary-lt)}
+.pop-tag{position:absolute;top:-1px;right:16px;background:var(--accent);color:#fff;font-size:.7rem;font-weight:800;padding:4px 12px;border-radius:0 0 10px 10px;letter-spacing:.04em;text-transform:uppercase}
+.opt-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:10px}
+.opt-name{font-weight:800;font-size:1rem;color:var(--text)}
+.opt-price{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;color:var(--primary);white-space:nowrap}
+.opt-price small{font-family:'Nunito',sans-serif;font-size:.75rem;font-weight:700;color:var(--text3)}
+.opt-desc{font-size:.82rem;font-weight:700;color:var(--text2);margin-bottom:10px}
+.opt-feats{list-style:none;display:flex;flex-direction:column;gap:6px}
+.opt-feats li{font-size:.82rem;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:7px}
+.opt-feats li::before{content:'✓';color:var(--primary);font-weight:900}
+.pw-cta{padding:22px 20px 40px;max-width:520px;margin:0 auto;width:100%}
+.secure-line{text-align:center;font-size:.78rem;font-weight:700;color:var(--text3);margin-top:10px;display:flex;align-items:center;justify-content:center;gap:5px}
+
+/* ── PLAN ─────────────────────────────────────── */
+.plan-hdr{padding:36px 20px 28px;color:#fff}
+.plan-hdr-in{max-width:520px;margin:0 auto}
+.plan-hdr-label{font-size:.78rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.65;margin-bottom:8px}
+.plan-hdr h1{font-family:'Playfair Display',serif;font-size:clamp(1.8rem,6vw,2.6rem);font-weight:800;color:#fff;line-height:1.15;margin-bottom:8px}
+.plan-hdr-sub{font-size:.9rem;opacity:.75;line-height:1.5;font-weight:600}
+.plan-bdy{max-width:520px;margin:0 auto;padding:22px 20px 60px;display:flex;flex-direction:column;gap:16px}
+.psec{background:var(--surface);border-radius:var(--r);padding:22px;border:2px solid var(--border);box-shadow:var(--sh)}
+.psec-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.psec-icon{width:38px;height:38px;border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
+.psec-title{font-family:'Playfair Display',serif;font-size:1.15rem;font-weight:800;color:var(--text)}
+.psec p{font-size:.92rem;color:var(--text2);line-height:1.65;font-weight:600;margin-bottom:10px}
+.psec p:last-child{margin-bottom:0}
+.psec p em{color:var(--text);font-style:normal;font-weight:800}
+
+/* Science drop box */
+.sci-drop{background:#EEF6FF;border-radius:var(--rsm);padding:14px 16px;border-left:4px solid #3B82F6;margin:10px 0}
+.sci-drop-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:#3B82F6;margin-bottom:5px}
+.sci-drop p{font-size:.85rem;color:#1E40AF;margin:0;font-weight:700;line-height:1.55}
+
+/* Do this NOW box */
+.now-box{background:var(--accent-lt);border-radius:var(--rsm);padding:14px 16px;border-left:4px solid var(--accent);margin:10px 0}
+.now-label{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:5px}
+.now-box p{font-size:.88rem;color:#7A3A10;margin:0;font-weight:700;line-height:1.55}
+
+/* Technique card */
+.tech-card{background:#F8F5F1;border-radius:var(--rsm);padding:18px;margin-bottom:12px;border-left:4px solid var(--primary)}
+.tech-card:last-child{margin-bottom:0}
+.tech-name{font-weight:800;font-size:.95rem;color:var(--primary);margin-bottom:6px}
+.tech-desc{font-size:.87rem;color:var(--text2);line-height:1.6;font-weight:600}
+.tech-steps{list-style:none;margin-top:10px;counter-reset:li;display:flex;flex-direction:column;gap:7px}
+.tech-steps li{font-size:.84rem;color:var(--text2);padding-left:22px;position:relative;line-height:1.5;font-weight:700;counter-increment:li}
+.tech-steps li::before{content:counter(li);position:absolute;left:0;color:var(--primary);font-weight:900;font-size:.8rem;width:18px;height:18px;background:var(--primary-lt);border-radius:50%;display:flex;align-items:center;justify-content:center;top:1px}
+
+/* Script box */
+.script-box{background:var(--primary-lt);border-radius:var(--rsm);padding:16px;margin-bottom:10px;border:1.5px solid rgba(44,74,53,.15)}
+.script-lbl{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);margin-bottom:8px}
+.script-text{font-size:.92rem;color:var(--text);line-height:1.6;font-style:italic;font-weight:600}
+
+/* Roadmap */
+.roadmap-item{border-left:2px solid var(--border);padding:0 0 18px 18px;position:relative}
+.roadmap-item:last-child{border-left-color:transparent;padding-bottom:0}
+.roadmap-item::before{content:'';width:12px;height:12px;border-radius:50%;background:var(--primary);position:absolute;left:-7px;top:3px}
+.road-week{font-size:.72rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--primary);margin-bottom:3px}
+.road-title{font-weight:800;font-size:.95rem;color:var(--text);margin-bottom:5px}
+.road-text{font-size:.85rem;color:var(--text2);line-height:1.6;font-weight:600}
+
+/* Goal */
+.goal-quote{font-family:'Playfair Display',serif;font-size:1.25rem;font-style:italic;color:var(--text);line-height:1.45;margin-bottom:12px;text-align:center;font-weight:700}
+
+/* Return hooks */
+.return-box{background:linear-gradient(135deg,var(--primary),#1A3020);border-radius:var(--r);padding:24px;text-align:center;color:#fff}
+.return-box h3{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;margin-bottom:8px}
+.return-box p{font-size:.88rem;opacity:.8;font-weight:600;line-height:1.55;margin-bottom:18px}
+.return-btns{display:flex;flex-direction:column;gap:10px}
+.btn-white{background:#fff;color:var(--primary);font-weight:800;padding:14px 20px;border-radius:var(--rpill);font-size:.9rem}
+.btn-outline-white{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4);font-weight:800;padding:14px 20px;border-radius:var(--rpill);font-size:.9rem}
+
+.disclaimer{background:#F5F2EE;border-radius:var(--rsm);padding:14px 16px;display:flex;gap:10px}
+.disclaimer-icon{font-size:.9rem;flex-shrink:0;margin-top:1px}
+.disclaimer p{font-size:.75rem;color:var(--text3);line-height:1.5;margin:0;font-weight:700}
+
+/* ── ANIMATIONS ───────────────────────────────── */
+.fadein{animation:fadeIn .4s ease forwards}
+.fadein-1{animation:fadeIn .4s ease .1s forwards;opacity:0}
+.fadein-2{animation:fadeIn .4s ease .2s forwards;opacity:0}
+.fadein-3{animation:fadeIn .4s ease .35s forwards;opacity:0}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:360px){
+  .types-grid{grid-template-columns:1fr}
+  .opt-price{font-size:1.3rem}
+}
+
+/* ── ADHD-FRIENDLY ────────────────────────── */
+.tldr-box{background:#FFFBEB;border:2px solid #F59E0B;border-radius:var(--rsm);padding:13px 15px;margin-bottom:14px;display:flex;align-items:flex-start;gap:10px}
+.tldr-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.tldr-text{font-size:.9rem;font-weight:800;color:#92400E;line-height:1.45}
+.tldr-label{font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#D97706;display:block;margin-bottom:3px}
+.step-dot-row{display:flex;align-items:center;justify-content:center;gap:8px;padding:14px 20px 0;max-width:520px;margin:0 auto}
+.step-dot{width:32px;height:8px;border-radius:var(--rpill);background:var(--border);transition:background .3s}
+.step-dot.done{background:var(--primary)}
+.step-dot.active{background:var(--accent)}
+
+/* ── STORY BOX ────────────────────────────── */
+.story-box{background:linear-gradient(135deg,#FDF4FF,#EEF2FF);border-radius:var(--r);padding:22px;border:2px solid #C4B5FD;margin-bottom:14px}
+.story-intro{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#7C3AED;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.story-quote{font-family:'Playfair Display',serif;font-size:1.05rem;color:var(--text);line-height:1.6;font-style:italic;margin-bottom:12px;padding:12px 16px;background:rgba(255,255,255,.65);border-radius:10px;border-left:3px solid #7C3AED}
+.story-body{font-size:.9rem;color:var(--text2);line-height:1.7;font-weight:600}
+
+/* ── CROSS-STYLE COMM ─────────────────────── */
+.combo-header{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.combo-badge{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--rpill);font-size:.82rem;font-weight:800}
+.cross-card{background:var(--surface);border-radius:var(--r);border:2px solid var(--border);padding:18px;margin-bottom:12px;box-shadow:var(--sh)}
+.cross-card-hdr{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.cross-card-icon{font-size:1.3rem}
+.cross-card-title{font-weight:800;font-size:.95rem;color:var(--text)}
+.cross-rule{font-size:.87rem;color:var(--text2);font-weight:700;padding:10px 0;border-bottom:1px solid var(--border);line-height:1.55}
+.cross-rule:last-child{border-bottom:none;padding-bottom:0}
+.cross-rule strong{color:var(--text)}
+.pq-box{background:var(--primary-lt);border-radius:var(--rsm);padding:16px;margin-top:14px}
+.pq-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);margin-bottom:10px}
+.pq-item{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+.pq-item:last-child{margin-bottom:0}
+.pq-num{width:24px;height:24px;border-radius:50%;background:var(--primary);color:#fff;font-size:.75rem;font-weight:900;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.pq-text{font-size:.88rem;color:var(--text);font-weight:700;line-height:1.45}
+.avoid-box{background:#FFF1F2;border-radius:var(--rsm);padding:14px 16px;border-left:4px solid #F43F5E;margin-top:12px}
+.avoid-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#F43F5E;margin-bottom:6px}
+.avoid-box p{font-size:.85rem;color:#9F1239;font-weight:700;line-height:1.5;margin:0}
+
+/* ── ACCOUNT SYSTEM ───────────────────────── */
+.acct-form{display:flex;flex-direction:column;gap:12px;margin-top:16px}
+.acct-field{display:flex;flex-direction:column;gap:6px}
+.acct-label{font-size:.78rem;font-weight:800;color:var(--text2);letter-spacing:.03em}
+.acct-input{background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:14px 16px;font-size:1rem;font-weight:600;color:var(--text);outline:none;transition:border-color .18s;width:100%}
+.acct-input:focus{border-color:var(--primary)}
+.acct-input::placeholder{color:var(--text3);font-weight:600}
+.acct-skip{background:none;font-size:.8rem;font-weight:700;color:var(--text3);text-decoration:underline;text-underline-offset:3px;text-align:center;padding:6px;margin-top:2px}
+.welcome-back{background:var(--primary-lt);border-radius:var(--r);padding:18px 20px;margin:16px 20px 0;max-width:480px;margin-left:auto;margin-right:auto;border:2px solid rgba(44,74,53,.15);display:flex;align-items:flex-start;gap:14px}
+.wb-avatar{width:42px;height:42px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:900;color:#fff;flex-shrink:0}
+.wb-text{flex:1}
+.wb-name{font-weight:800;font-size:.95rem;color:var(--text);margin-bottom:3px}
+.wb-sub{font-size:.8rem;color:var(--text2);font-weight:600;line-height:1.4}
+.wb-plans{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.wb-plan-chip{font-size:.72rem;font-weight:800;padding:4px 10px;border-radius:var(--rpill);background:var(--primary);color:#fff;cursor:pointer}
+.history-panel{background:var(--surface);border-radius:var(--r);padding:20px;border:2px solid var(--border);box-shadow:var(--sh);margin-top:16px}
+.history-title{font-weight:800;font-size:.9rem;color:var(--text);margin-bottom:12px;display:flex;align-items:center;gap:7px}
+.history-item{display:flex;align-items:flex-start;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.history-item:last-child{border-bottom:none;padding-bottom:0}
+.h-icon{font-size:1.2rem;flex-shrink:0;margin-top:1px}
+.h-body{flex:1}
+.h-style{font-weight:800;font-size:.88rem;color:var(--text)}
+.h-date{font-size:.75rem;color:var(--text3);font-weight:600;margin-top:2px}
+.h-rel{font-size:.78rem;color:var(--text2);font-weight:700}
+
+/* ── AI REFLECTION ────────────────────────── */
+.ai-reflection-box{background:linear-gradient(135deg,#F0F9FF,#F5F3FF);border-radius:var(--r);padding:22px;border:2px solid #BAE6FD;margin-bottom:14px}
+.ai-reflection-hdr{display:flex;align-items:center;gap:10px;margin-bottom:14px}
+.ai-pulse{width:10px;height:10px;border-radius:50%;background:#0EA5E9;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+.ai-reflection-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:#0EA5E9}
+.ai-reflection-text{font-size:.92rem;color:var(--text2);line-height:1.75;font-weight:600}
+.ai-reflection-text p{margin-bottom:12px}
+.ai-reflection-text p:last-child{margin-bottom:0}
+
+/* ── LEGAL BANNER ─────────────────────────── */
+.legal-banner{background:#F8F9FA;border-top:2px solid var(--border);padding:14px 20px;text-align:center;font-size:.72rem;color:var(--text3);font-weight:700;line-height:1.5;margin-top:8px}
+.legal-banner a{color:var(--text3);text-decoration:underline}
+
+/* ── AI PROCESSING ────────────────────────── */
+.proc-ai-label{display:inline-flex;align-items:center;gap:6px;background:var(--primary-lt);color:var(--primary);font-size:.72rem;font-weight:900;padding:5px 12px;border-radius:var(--rpill);margin-bottom:20px;letter-spacing:.04em;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div id="pbar"></div>
+<div id="app">
+
+<!-- ═══════════════ LANDING ═══════════════ -->
+<div id="screen-landing" class="screen active">
+  <nav class="topnav"><span class="logo">Bond<span>Blueprint</span>™</span></nav>
+  <div id="welcome-back-banner" style="display:none"></div>
+  <div class="land-hero fadein">
+    <div class="land-badge">🧠 Backed by 40 years of science</div>
+    <h1 class="land-h1">Why do your relationships <em>always</em> go this way?</h1>
+    <p class="land-sub">It's not bad luck. It's not you being "too much." It's your attachment style — and once you see it, <strong>everything makes sense.</strong></p>
+    <div class="land-trust">
+      <span class="trust-pill">📖 Attached – Levine & Heller</span>
+      <span class="trust-pill">❤️ Gottman Institute</span>
+      <span class="trust-pill">🔬 Bowlby & Ainsworth</span>
+    </div>
+    <div class="land-cta">
+      <button class="btn btn-accent btn-full" onclick="goTo('quiz-intro')">Find My Type — It's Free →</button>
+      <p class="land-note">✅ 3 minutes · No email · 100% free quiz</p>
+    </div>
+  </div>
+  <div class="types-grid fadein-1">
+    <div class="type-card"><span class="type-icon">🌿</span><div class="type-name">Secure</div><div class="type-blurb">Comfortable with love AND independence</div></div>
+    <div class="type-card"><span class="type-icon">🌊</span><div class="type-name">Anxious</div><div class="type-blurb">Loves hard, fears losing it constantly</div></div>
+    <div class="type-card"><span class="type-icon">🪨</span><div class="type-name">Avoidant</div><div class="type-blurb">Walls up. Lonely. Doesn't know why.</div></div>
+    <div class="type-card"><span class="type-icon">🌪️</span><div class="type-name">Fearful</div><div class="type-blurb">Wants love. Also terrified of it.</div></div>
+  </div>
+  <div class="social-proof fadein-2">
+    <div class="sp-num">14,300+</div>
+    <div class="sp-label">people found their type this week 🔥</div>
+  </div>
+</div>
+
+<!-- ═══════════════ QUIZ INTRO ═══════════════ -->
+<div id="screen-quiz-intro" class="screen">
+  <nav class="topnav"><span class="logo">Bond<span>Blueprint</span>™</span></nav>
+  <div class="intro-body">
+    <div class="intro-emoji">🧪</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;line-height:1.2">Quick science check — 12 questions</h2>
+    <p style="font-size:.95rem;color:var(--text2);margin-top:10px;line-height:1.65;font-weight:600">Based on the <strong>ECR-R scale</strong> — the most-used attachment test in psychology research. No wrong answers.</p>
+    <ul class="intro-steps">
+      <li><span class="step-num">1</span>Think about your close relationships in general</li>
+      <li><span class="step-num">2</span>Go with your gut — first instinct is most accurate</li>
+      <li><span class="step-num">3</span>You can go back and change any answer ✌️</li>
+    </ul>
+    <button class="btn btn-primary btn-full" onclick="startQuiz()">Let's Go! 🚀</button>
+  </div>
+</div>
+
+<!-- ═══════════════ QUIZ ═══════════════ -->
+<div id="screen-quiz" class="screen">
+  <nav class="topnav">
+    <button class="back-btn" id="quiz-back-btn" onclick="quizBack()">← Back</button>
+    <span class="logo">Bond<span>Blueprint</span>™</span>
+    <span class="quiz-counter" id="quiz-counter">1/12</span>
+  </nav>
+  <div class="quiz-body">
+    <div class="quiz-progress-bar"><div class="quiz-progress-fill" id="quiz-pfill" style="width:0%"></div></div>
+    <div class="quiz-progress-label" id="quiz-plabel">Just getting started...</div>
+    <div class="midpoint-cheer" id="cheer-box">🎉 Halfway there — you're doing great!</div>
+    <div class="quiz-q" id="quiz-q-text"></div>
+    <div class="answers" id="answers-container"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ PROCESSING ═══════════════ -->
+<div id="screen-processing" class="screen">
+  <div class="proc-inner">
+    <div class="proc-spin"></div>
+    <div class="proc-ai-label">🤖 Analyzing your responses</div>
+    <div class="proc-h" id="proc-h">Reading your attachment patterns... 🧬</div>
+    <p style="font-size:.9rem;color:var(--text3);font-weight:600" id="proc-sub">Cross-referencing 40 years of peer-reviewed research</p>
+    <div class="proc-steps" id="proc-steps">
+      <div class="proc-step"><span>📊</span> Scoring anxiety + avoidance dimensions</div>
+      <div class="proc-step"><span>🔍</span> Identifying your attachment pattern</div>
+      <div class="proc-step"><span>🧠</span> Mapping to Hazan & Shaver research</div>
+      <div class="proc-step"><span>📚</span> Cross-referencing Gottman + EFT studies</div>
+      <div class="proc-step"><span>✨</span> Results ready for you</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ AI PROCESSING ═══════════════ -->
+<div id="screen-ai-processing" class="screen">
+  <div class="proc-inner">
+    <div class="proc-spin"></div>
+    <div class="proc-ai-label">✨ AI Personalization active</div>
+    <div class="proc-h">Reflecting on your specific situation...</div>
+    <p style="font-size:.9rem;color:var(--text3);font-weight:600">Reading your exact words · Matching to research</p>
+    <div class="proc-steps" id="ai-proc-steps">
+      <div class="proc-step"><span>📖</span> Reading what you shared</div>
+      <div class="proc-step"><span>🔗</span> Connecting to your attachment pattern</div>
+      <div class="proc-step"><span>🎯</span> Identifying what research suggests for your situation</div>
+      <div class="proc-step"><span>💬</span> Building your cross-style communication guide</div>
+      <div class="proc-step"><span>✨</span> Your personalized reflection is ready</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ RESULTS ═══════════════ -->
+<div id="screen-results" class="screen">
+  <nav class="topnav"><span class="logo">Bond<span>Blueprint</span>™</span></nav>
+  <div class="results-wrap">
+    <div class="results-top" id="results-top"></div>
+    <div class="res-cta-wrap" id="results-cta"></div>
+  </div>
+</div>
+
+<!-- ═══════════════ CONTEXT ═══════════════ -->
+<div id="screen-context" class="screen">
+  <nav class="topnav">
+    <button class="back-btn" id="ctx-back-btn" onclick="ctxBack()">← Back</button>
+    <span class="logo">Bond<span>Blueprint</span>™</span>
+    <span class="quiz-counter" id="ctx-counter">1/6</span>
+  </nav>
+  <div id="ctx-step-dots" class="step-dot-row"></div>
+  <div class="ctx-body">
+    <div class="ctx-label" id="ctx-label">Personalizing your plan</div>
+    <div class="ctx-q" id="ctx-q-text"></div>
+    <div id="ctx-opts-wrap"></div>
+    <div class="ctx-actions">
+      <button class="btn btn-primary btn-full" id="ctx-next-btn" onclick="ctxNext()" style="display:none">Continue →</button>
+      <button class="skip-btn" onclick="ctxSkip()">Skip this one</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAYWALL ═══════════════ -->
+<div id="screen-paywall" class="screen">
+  <nav class="topnav"><span class="logo">Bond<span>Blueprint</span>™</span></nav>
+  <div class="pw-hero">
+    <div class="pw-badge">🔒 Your Blueprint Is Ready</div>
+    <h2>Your personalized plan<br>is waiting for you</h2>
+    <p style="margin-top:8px">Built for YOUR type and YOUR specific situation</p>
+  </div>
+  <div class="pw-preview">
+    <div class="pw-prev-title" id="pw-prev-title">Why you do what you do in relationships</div>
+    <p class="pw-prev-text" id="pw-prev-text">Your nervous system learned this pattern before you were old enough to choose. The science is clear — once you understand exactly what's happening, the change happens fast. Here's your full breakdown...</p>
+  </div>
+  <div class="pw-lock">🔒 Unlock to read everything</div>
+  <div class="plan-opts" id="plan-opts">
+    <div class="plan-opt" id="opt-credits" onclick="selectPlan('credits')">
+      <div class="opt-top">
+        <div><div class="opt-name">Pay as you go</div><div class="opt-desc">Perfect for trying it out</div></div>
+        <div class="opt-price">$9 <small>for 3 plans</small></div>
+      </div>
+      <ul class="opt-feats">
+        <li>3 full personalized BondBlueprints</li>
+        <li>New plan = new situation, new advice</li>
+        <li>Credits never expire</li>
+      </ul>
+    </div>
+    <div class="plan-opt sel" id="opt-monthly" onclick="selectPlan('monthly')">
+      <div class="pop-tag">Best Value</div>
+      <div class="opt-top">
+        <div><div class="opt-name">Monthly access</div><div class="opt-desc">Unlimited plans, track your growth</div></div>
+        <div class="opt-price">$19 <small>/month</small></div>
+      </div>
+      <ul class="opt-feats">
+        <li>Unlimited personalized plans</li>
+        <li>Different situations → different advice</li>
+        <li>Track your progress over time</li>
+        <li>Cancel anytime</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pw-cta">
+    <div class="res-cta-box" style="margin-bottom:16px">
+      <div style="font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);margin-bottom:8px">💾 Save your Blueprint (free)</div>
+      <p style="font-size:.88rem;color:var(--text2);font-weight:600;margin-bottom:0;line-height:1.5">Create a free account so your results + history are remembered every time you come back.</p>
+      <div class="acct-form" id="paywall-acct-form">
+        <div class="acct-field">
+          <label class="acct-label" for="acct-name-input">Your first name</label>
+          <input class="acct-input" id="acct-name-input" type="text" placeholder="e.g. Ashley" autocomplete="given-name">
+        </div>
+        <div class="acct-field">
+          <label class="acct-label" for="acct-email-input">Email address</label>
+          <input class="acct-input" id="acct-email-input" type="email" placeholder="you@email.com" autocomplete="email">
+        </div>
+      </div>
+    </div>
+    <button class="btn btn-accent btn-full" onclick="mockPay()">Unlock My BondBlueprint™ →</button>
+    <div class="secure-line">🔒 Secure · 7-day money-back guarantee</div>
+    <button class="acct-skip" onclick="mockPay()">Skip account — continue without saving</button>
+  </div>
+</div>
+
+<!-- ═══════════════ PLAN ═══════════════ -->
+<div id="screen-plan" class="screen">
+  <div class="plan-hdr" id="plan-hdr"></div>
+  <div class="plan-bdy" id="plan-bdy"></div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const S = {
+  quiz: { q: 0, answers: [], style: null, aScore: 0, vScore: 0 },
+  ctx: { step: 0, relationship: null, situation: null, pain: null, description: '', want: null, otherStyle: null },
+  payment: { plan: 'monthly' },
+  aiReflection: null,   // populated by Claude API or smart JS fallback
+  account: null,        // populated from localStorage or server
+  serverAvail: false    // detected on init
+};
+
+/* ═══════════════════════════════════════════
+   ACCOUNT SYSTEM
+   Tries server first, falls back to localStorage
+═══════════════════════════════════════════ */
+const ACCOUNT = {
+  KEY: 'bb_account_v2',
+  get() { try { return JSON.parse(localStorage.getItem(this.KEY)); } catch { return null; } },
+  save(data) { try { localStorage.setItem(this.KEY, JSON.stringify(data)); } catch {} },
+  savePlan(planData) {
+    const acc = this.get() || { plans: [] };
+    acc.plans = acc.plans || [];
+    acc.plans.unshift({ ...planData, savedAt: new Date().toISOString() });
+    acc.plans = acc.plans.slice(0, 20);
+    this.save(acc);
+    if (S.serverAvail && acc.id) {
+      fetch('/api/account/' + acc.id + '/plan', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(planData) }).catch(() => {});
+    }
+  }
+};
+
+async function checkServer() {
+  try {
+    const r = await fetch('/api/health', { signal: AbortSignal.timeout(800) });
+    S.serverAvail = r.ok;
+  } catch { S.serverAvail = false; }
+}
+
+async function createOrLoadAccount(email, name) {
+  const saved = ACCOUNT.get();
+  if (S.serverAvail && email) {
+    try {
+      const r = await fetch('/api/account', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ email, name }) });
+      const { account } = await r.json();
+      ACCOUNT.save(account);
+      S.account = account;
+      return account;
+    } catch {}
+  }
+  // localStorage fallback
+  const id = btoa(email || ('anon_' + Date.now())).replace(/[^a-z0-9]/gi,'').slice(0,16);
+  const acc = { id, email: email||'', name: name||'', createdAt: new Date().toISOString(), plans: saved?.plans || [] };
+  ACCOUNT.save(acc);
+  S.account = acc;
+  return acc;
+}
+
+/* ═══════════════════════════════════════════
+   AI REFLECTION FETCH
+   Tries Claude API via server; falls back to
+   enhanced JS personalization
+═══════════════════════════════════════════ */
+async function fetchAIReflection() {
+  if (S.serverAvail) {
+    try {
+      const r = await fetch('/api/reflect', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ style: S.quiz.style, ...S.ctx })
+      });
+      if (r.ok) {
+        const { reflection } = await r.json();
+        if (reflection) { S.aiReflection = reflection; return; }
+      }
+    } catch {}
+  }
+  // Smart JS fallback — sets S.aiReflection to null so plan uses getMyStory()
+  S.aiReflection = null;
+}
+
+/* ═══════════════════════════════════════════
+   QUIZ DATA
+═══════════════════════════════════════════ */
+const QS = [
+  // Anxiety (1-6)
+  { text: "I worry that the people I love don't feel as strongly about me as I do about them.", dim: 'a' },
+  { text: "If someone I care about takes a while to reply, I start assuming something is wrong.", dim: 'a' },
+  { text: "I need a lot of reassurance to feel really secure in my relationships.", dim: 'a' },
+  { text: "I catch myself replaying conversations, looking for signs that someone might be pulling away.", dim: 'a' },
+  { text: "The idea of being left or abandoned is one of my biggest fears.", dim: 'a' },
+  { text: "I've pushed my own needs aside just to keep someone from leaving.", dim: 'a' },
+  // Avoidance (7-12)
+  { text: "I feel uncomfortable when people try to get really emotionally close to me.", dim: 'v' },
+  { text: "When I'm struggling, I'd rather handle it alone than lean on someone.", dim: 'v' },
+  { text: "My independence matters so much that deep commitment can feel suffocating.", dim: 'v' },
+  { text: "When things get intense in a relationship, my instinct is to pull back.", dim: 'v' },
+  { text: "I downplay how much I actually need people — even to myself.", dim: 'v' },
+  { text: "Even when I want to let someone in, I find it really hard to do.", dim: 'v' }
+];
+
+const OPTS = [
+  { v: 1, emoji: '😌', label: 'Nope, not me', sub: 'Doesn\'t really apply' },
+  { v: 2, emoji: '🤷', label: 'Kinda sometimes', sub: 'Occasionally, but not really' },
+  { v: 3, emoji: '😬', label: 'More than I\'d like', sub: 'Yeah, more often than not' },
+  { v: 4, emoji: '💯', label: 'This is literally me', sub: 'Absolutely, 100%' }
+];
+
+const CHEER = [
+  '', '', '', '🔥 You\'re on a roll — keep going!',
+  '', '', '', '💪 Almost there — stay honest!',
+  '', '', '', '🎉 Last one! You crushed it!'
+];
+
+const PROG_LABELS = [
+  'Just getting started…', 'Keep going!', 'You\'re doing great!', 'Halfway there!',
+  'More than halfway!', 'Almost done!', 'So close!', 'Last stretch!', 'Almost!', 'One more!', 'Last question!', 'Done! 🎉'
+];
+
+/* ═══════════════════════════════════════════
+   STYLE DATA
+═══════════════════════════════════════════ */
+const STYLES = {
+  secure: {
+    name: 'Secure', icon: '🌿', color: 'var(--secure)', bg: 'var(--secure-lt)',
+    tagline: 'You\'ve got the foundation most people spend years trying to build.',
+    short: 'The healthiest of the four — you can be close AND independent.',
+    desc1: 'You\'re comfortable with intimacy without being swallowed by it. You trust that love doesn\'t have to be earned every single day. That\'s actually rare — only about 55% of people get here.',
+    desc2: 'That said, you\'re reading this for a reason. Maybe you keep attracting anxious or avoidant partners. Maybe things are good but you want them to be great. Let\'s go deeper.',
+    strengths: ['Direct communicator 💬', 'Bounces back from conflict', 'Gives others benefit of the doubt', 'Comfortable with vulnerability'],
+    growthEdge: 'You might accidentally trigger insecure partners without realizing it — your calm can feel like you don\'t care to someone who\'s anxious.',
+    prevalence: '~55% of people', cite: 'Hazan & Shaver, 1987'
+  },
+  anxious: {
+    name: 'Anxious', icon: '🌊', color: 'var(--anxious)', bg: 'var(--anxious-lt)',
+    tagline: 'You love fiercely. And it\'s exhausting you.',
+    short: 'You crave deep connection — and live in fear of losing it.',
+    desc1: 'Your love is real and intense. But underneath it is a nervous system that\'s ALWAYS scanning for danger — for signs that someone is pulling away, that you\'re not enough, that it\'s all about to fall apart. That scanner runs 24/7. No wonder you\'re tired.',
+    desc2: 'Here\'s the plot twist: <em>this is not a personality flaw.</em> Your brain literally learned this. Science explains exactly why — and science also shows how to fix it.',
+    strengths: ['Deeply empathetic 💛', 'Tuned in to others\' feelings', 'Passionate and committed', 'Highly self-aware (once you know this)'],
+    growthEdge: 'Your protest behaviors — the checking, the intensity, the reassurance-seeking — actually push people away. The very thing you fear, you\'re accidentally creating.',
+    prevalence: '~19% of people', cite: 'Hazan & Shaver, 1987'
+  },
+  avoidant: {
+    name: 'Avoidant', icon: '🪨', color: 'var(--avoidant)', bg: 'var(--avoidant-lt)',
+    tagline: 'Your walls feel like freedom. They\'re also keeping you lonely.',
+    short: 'You\'re self-sufficient to a fault — closeness feels like a threat.',
+    desc1: 'You built an incredible independence. You handle things yourself. You don\'t "need" people — and that feels like a superpower. Except sometimes, late at night, it feels like something else.',
+    desc2: 'Here\'s what the research actually shows: <em>avoidant people feel just as much emotion as everyone else.</em> You just learned to suppress it so fast, even you don\'t notice. Your blueprint fixes that — without making you into someone you\'re not.',
+    strengths: ['Calm under pressure 🧊', 'Fiercely self-reliant', 'Strong sense of self', 'Thoughtful, not reactive'],
+    growthEdge: 'Your shutdowns (going silent, getting "too busy," finding sudden flaws in people) feel like relief — but they\'re costing you real connection.',
+    prevalence: '~25% of people', cite: 'Fraley & Shaver, 1997'
+  },
+  fearful: {
+    name: 'Fearful-Avoidant', icon: '🌪️', color: 'var(--fearful)', bg: 'var(--fearful-lt)',
+    tagline: 'You want love more than anything. It also terrifies you.',
+    short: 'Push and pull. Hot and cold. Wanting someone then running.',
+    desc1: 'You\'re living with a biological contradiction. Part of your brain is screaming "get close!" while another part is screaming "danger!" at the exact same time. That\'s not you being difficult. That\'s a nervous system that learned something really hard, really early.',
+    desc2: 'This is the most complex type — and the one with the <em>most room to grow.</em> Research shows fearful-avoidant people who do the work heal faster and deeper than almost anyone else. You\'re not broken. You\'re primed.',
+    strengths: ['Incredibly intuitive 🌀', 'Deep capacity for empathy', 'Motivated to change', 'Self-aware once you understand this'],
+    growthEdge: 'The push-pull cycle feels uncontrollable — but it follows a predictable pattern. Once you see the pattern, you can interrupt it.',
+    prevalence: '~10–15%', cite: 'Main & Hesse, 1990'
+  }
+};
+
+/* ═══════════════════════════════════════════
+   CROSS-STYLE COMMUNICATION DATA
+   Science: Johnson (2008), Levine & Heller (2010),
+   Tatkin (2011), Gottman & Levenson, Wallin (2007)
+═══════════════════════════════════════════ */
+const CROSS_COMM = {
+  anxious_avoidant:{headline:'The Pursue-Withdraw Cycle',summary:'You pursue. They withdraw. You pursue harder. They withdraw more. The more you push, the further they go — not because they don\'t care, but because their system is overloading.',sciNote:'Johnson (2008) identified this as the #1 destructive pattern in couples. The good news: it\'s fully reversible once both people understand what\'s actually happening underneath.',tips:[{title:'Lead with calm, not fear',body:'Your nervous system is screaming "say something!" Their nervous system is screaming "get space!" The only way through is to deliver your message from a calm place. Anxious communication sounds like an alarm to an avoidant brain — even when the words are reasonable.'},{title:'Give them a specific return time',body:'When they pull away, the worst thing you can do is panic-text. The best: "I notice you\'re quiet. I\'m here when you\'re ready — I\'ll check in tonight." That communicates security, not desperation. The clock is everything.'},{title:'Ask for ONE need, not all of them',body:'Your brain wants to bring up everything at once when you finally have their attention. Their brain can only process one thing before shutting down. Pick your most important need. State it once, directly.'}],scripts:[{lbl:'When they go quiet (instead of spiraling)',text:'"Hey, I\'ve noticed some quiet from you and I want to name that I\'m okay — I just miss talking. No pressure. I\'m here when you\'re ready."'},{lbl:'Asking for what you actually need',text:'"I need to share something without it turning into a big thing. I\'ve been feeling a bit disconnected and it would mean a lot if we could spend some intentional time together this week. That\'s it — nothing\'s wrong."'},{lbl:'After you\'ve already spiraled',text:'"I know I\'ve been a lot lately. What\'s underneath it is I\'ve been feeling insecure and I expressed it badly. Can we reset? I\'d love to actually talk."'}],pqs:['What do you need from me when you\'re feeling overwhelmed?','Is there a way I can bring something up that doesn\'t put you on the defensive?','What does "space" mean to you — and how do I know when you\'re coming back?'],avoid:'Escalating silence with more messages. Each unanswered text confirms your fear — but to them, it\'s a signal to withdraw further. One message, then wait.'},
+  anxious_anxious:{headline:'Two Activated Systems',summary:'When two anxious people get activated at the same time, it spirals incredibly fast. The research shows the only way through is co-regulation — which requires one person to anchor first.',sciNote:'Mikulincer & Shaver (2007) found that two hyperactivated attachment systems mutually amplify each other. Co-regulation only works when one person grounds themselves first.',tips:[{title:'Agree on a "first responder" role',body:'You can\'t both spiral at once. Have a pre-agreed signal: "You go first — I\'ll anchor for you." Then switch. This prevents the mutual amplification that turns a small thing into a crisis.'},{title:'Validate before problem-solving',body:'Both of you need to feel heard before you can think straight. Use Gottman\'s softened startup: "I feel X when Y. I need Z." One person at a time — then swap.'},{title:'Celebrate repair explicitly',body:'Anxious pairs can fight intensely and then feel devastated by it. Explicitly name the repair: "We just had a hard moment and we stayed. That\'s everything."'}],scripts:[{lbl:'When you\'re both activated',text:'"I can feel us both getting big right now. Can we take 15 minutes and come back? I\'m not going anywhere — I just want us both to be regulated when we actually talk."'},{lbl:'Naming the pattern together',text:'"I think we just did our thing — both of us went to worst-case at the same time. Can I just say: I\'m still here and I still want this?"'}],pqs:['What\'s the one thing you most need to hear from me when you\'re really anxious?','Can we agree on a signal for when we both need to pause before we say something we regret?','What reassures you the most when things feel uncertain between us?'],avoid:'Competing for who\'s more hurt. When both people are anxious there\'s a risk of escalating pain into a contest. The goal is co-regulation, not comparison.'},
+  anxious_fearful:{headline:'Your Pursuit Meets Their Chaos',summary:'Your anxiety activates and you move toward them. Their fearful system sees your intensity as threat and swings away. Then you pursue harder. Then they disappear. Then they come back. The cycle can be brutal.',sciNote:'Fearful-avoidant attachment (Main & Hesse, 1990) means the approach AND avoidance systems activate simultaneously. Your anxious pursuit is simultaneously what they want and what scares them.',tips:[{title:'Create safety before seeking connection',body:'Before trying to get close, explicitly create safety: "I just want you to know there\'s no pressure here. I\'m not going anywhere and I\'m not going to blow up if things get hard." Say this directly and often — fearful systems update slowly.'},{title:'Match their rhythm, not your need',body:'Your need is constant connection. Their need alternates between connection and space. The more you push during their space phase, the more extreme the next withdrawal gets. Pacing yourself is not rejection — it\'s strategy.'},{title:'Use curiosity instead of urgency',body:'Urgency ("I need a response NOW") feels threatening to a fearful system. Curiosity ("I\'ve been wondering how you\'re actually feeling") feels safe. Replace the demand with genuine interest.'}],scripts:[{lbl:'When they go hot and cold',text:'"I notice you\'ve been quieter. I\'m not panicking — I\'m curious. When you\'re ready to talk, I\'m here. No rush."'},{lbl:'Naming the pattern together',text:'"I think we have a pattern where I get anxious and then you feel overwhelmed and pull back, which makes me more anxious. I don\'t want to keep doing this to each other. Can we figure out something different together?"'}],pqs:['What do I do that unintentionally makes you want to pull away?','What\'s the difference between closeness that feels safe and closeness that feels like too much?','When you go quiet, what do you most need from me?'],avoid:'Interpreting their pull-back as rejection. To a fearful person, pulling back is regulation — not abandonment. Reacting with panic creates the exact cycle you\'re trying to break.'},
+  anxious_secure:{headline:'You\'ve Hit the Jackpot (And Your Brain Doesn\'t Trust It)',summary:'Secure partners are calm, consistent, and don\'t play games. Your anxious brain interprets this as suspicious. "Why aren\'t they reacting? Do they even care?" They care. They\'re just regulated.',sciNote:'Levine & Heller (2010) found anxious-secure pairings have the highest healing potential. The secure person\'s consistency literally regulates the anxious nervous system over time — if you let it.',tips:[{title:'Trust the calm — it\'s not distance',body:'Secure people don\'t need conflict to show they care. Their steadiness IS their love language. When you don\'t get a dramatic response, it means things are fine — not that they\'re checked out.'},{title:'Tell them your patterns',body:'"I have anxious attachment and sometimes I need explicit reassurance even when things are objectively fine. I\'m working on it, but occasional check-ins mean the world to me." Most secure people respond beautifully to this honesty.'},{title:'Use their calm as a model',body:'When you feel your system activating, pause and ask: what would a regulated person do right now? Often the answer is nothing yet. The secure person next to you is literally showing you how.'}],scripts:[{lbl:'Explaining your anxiety honestly',text:'"I want to be upfront about something — I have anxious attachment, which means sometimes I need more reassurance than feels logical. I\'m not asking you to fix it. I just want you to understand where it comes from when it shows up."'},{lbl:'Asking for what you need without over-apologizing',text:'"I\'m feeling a bit insecure today — nothing you did. It would really help if you could just tell me we\'re solid. I know it seems like I should already know that, but sometimes I just need to hear it."'}],pqs:['What does "secure" feel like to you from the inside? I\'m genuinely trying to learn that.','How do you stay calm when things get tense? Walk me through what happens.','Is there anything I do that makes it hard for you to give me the reassurance I need?'],avoid:'Mistaking their stability for lack of passion. Secure people often show love through consistency rather than intensity. Learn to read their language — it\'s quieter than what you\'re used to.'},
+  avoidant_anxious:{headline:'Your Withdrawal Is Their Worst Fear',summary:'Every time you pull away to regulate, they experience it as abandonment. They protest harder to get you back. You get more overwhelmed and withdraw further. This is the most researched destructive cycle in relationship science.',sciNote:'Gottman & Levenson found this pursue-withdraw dynamic predicted divorce with over 80% accuracy. But Johnson\'s EFT (2008) shows it reverses completely when both people understand the cycle instead of blaming each other.',tips:[{title:'Leave a bridge, not a wall',body:'Instead of just going dark, say: "I need space for about an hour — I\'ll be back at 7." That specific return time is everything. Their brain goes from "they\'re gone" to "they\'re coming back." Completely different nervous system response.'},{title:'Proactive reassurance prevents the panic',body:'Don\'t wait until they\'re spiraling to tell them you\'re okay. Do it pre-emptively. A quick "hey, just thinking of you" on a normal Tuesday does more for an anxious person than an hour of reassurance during a crisis.'},{title:'Name your state before you withdraw',body:'"I\'m feeling overwhelmed and need to decompress — this is about me, not you." Three sentences that prevent a spiral. Their brain needs to know: you\'re regulating, not leaving.'}],scripts:[{lbl:'When you need space (use this EVERY time)',text:'"I\'m going to take some time to decompress. I need about [time]. I\'m coming back — this isn\'t me pulling away from you. Just letting my system settle."'},{lbl:'Proactive check-in (build this habit)',text:'"Hey — just wanted to check in. Thinking of you. Everything\'s good on my end. 😊"'},{lbl:'After you\'ve gone silent without explaining',text:'"I realize I went quiet and I\'m sorry for the silence. I wasn\'t trying to disappear — I needed to regulate and I didn\'t explain. Are you okay? Can we reconnect?"'}],pqs:['What would help you feel more secure when I need some space?','What\'s the difference for you between me needing time alone vs. me pulling away?','Is there a way I could check in that actually helps you — rather than making things worse?'],avoid:'Using "I need space" without a timeframe. To an anxious person, "space" without a return time IS abandonment. Always add the clock.'},
+  avoidant_avoidant:{headline:'Two Islands Who Need a Bridge',summary:'Things seem peaceful. Maybe too peaceful. Two avoidants can build a stable but emotionally hollow connection — coexisting without ever really meeting. The absence of conflict isn\'t the same as connection.',sciNote:'Feeney (1994) found avoidant-avoidant pairs report lower relationship satisfaction over time despite low conflict. The absence of protest behavior doesn\'t mean the absence of loneliness.',tips:[{title:'Schedule the vulnerability',body:'You won\'t get there spontaneously — neither of you will initiate. Build explicit rituals: "Every Sunday we talk about how we\'re actually doing." The structure makes it easier for both avoidant systems to show up.'},{title:'Name the avoidance together',body:'"I think we both have avoidant patterns. Which means we\'re probably both suppressing more than we\'re sharing. I want to try to change that." Naming it together removes the shame from it.'},{title:'Start with interests, not feelings',body:'For two avoidants, shared passions and experiences are the on-ramp to emotional intimacy. You get there through connection around ideas and activities — not by forcing emotional confrontation cold.'}],scripts:[{lbl:'Opening the emotional space',text:'"I want to try something that might feel a bit awkward. Can you tell me something that\'s been on your mind lately — not just events, but something that actually matters to you?"'},{lbl:'Naming the dynamic',text:'"I think we\'ve been coexisting really well but I\'ve been wondering if we\'re actually connected. I miss you even when you\'re right here. Is that weird to say?"'}],pqs:['What would make it easier for you to share something you\'re actually feeling?','What\'s one thing you think I don\'t know about what\'s going on inside you lately?','What would real emotional closeness look like for you, if it didn\'t feel scary?'],avoid:'Assuming silence is contentment. Two avoidants can be deeply lonely inside a comfortable-seeming relationship. Check in explicitly and often.'},
+  avoidant_fearful:{headline:'Your Steady Withdrawal Meets Their Chaos',summary:'Your deactivation looks like safety to you. To them it looks like abandonment. They react intensely. You get overwhelmed and pull further away. They panic harder. This cycle escalates fast without explicit agreements.',sciNote:'Wallin (2007) identifies avoidant-fearful pairings as requiring the most explicit communication. The avoidant\'s natural default (silence + distance) directly triggers the fearful person\'s most extreme fears.',tips:[{title:'You are, by default, their regulator',body:'Your steadiness is medicine to a fearful person. When you stay present and consistent, their system settles. When you disappear, their system escalates. This is a lot of responsibility — but also a lot of power.'},{title:'Explain your process out loud',body:'"When things get intense, I get quiet. It doesn\'t mean I\'m leaving or done with you — it means I need time to figure out what I\'m feeling." Say this version of yourself to them before they need it in a crisis.'},{title:'Ask before assuming they\'re okay',body:'Fearful people often say "fine" when they\'re not — because they fear that needing things will push you away. Ask with genuine curiosity: "How are you actually doing? I mean really."'}],scripts:[{lbl:'When they\'re escalating and you\'re overwhelmed',text:'"I hear you\'re really activated right now. I need a little space to regulate — not to disappear. 20 minutes. I will come back."'},{lbl:'Creating explicit safety',text:'"I want you to know that me being quiet doesn\'t mean I\'m done with you. That\'s my processing style, not a verdict on us. When I go quiet, that\'s actually a good time to ask if I\'m okay — and I\'ll tell you honestly."'}],pqs:['What does it feel like inside you when I go quiet?','What would help you trust that I\'m coming back when I need space?','What\'s one small thing I could do consistently that would make you feel safer?'],avoid:'Going silent without context during their distress. To a fearful person your disappearance during their worst moments confirms their deepest belief: "When I need someone, they leave."'},
+  avoidant_secure:{headline:'The Match That Can Actually Change You',summary:'Secure partners won\'t chase you when you pull away — but they also won\'t disappear. That predictable, non-desperate presence is exactly what your nervous system needs to start updating its threat model.',sciNote:'Levine & Heller (2010) found avoidant-secure pairings show the fastest attachment style evolution for the avoidant person. The secure person\'s non-reactive presence acts as a corrective emotional experience.',tips:[{title:'Let their calm land on you',body:'Secure people won\'t escalate when you withdraw. Notice this. Let it register. Your brain expects protest behavior when you pull back — and it\'s not coming. That gap is where your healing is.'},{title:'Disclose one small thing per week',body:'Start with something small: "I was feeling a bit off today." That\'s enough. Watch how they receive it without using it against you. Your brain is building a new case file — evidence that sharing is safe.'},{title:'Tell them you\'re working on it',body:'"I have avoidant patterns and I\'m aware I sometimes go quiet or get distant. I\'m not trying to pull away — I\'m just figuring out how to be closer. Thank you for not taking it personally." Secure people receive this beautifully.'}],scripts:[{lbl:'Explaining your process',text:'"I\'m not great at being emotionally present in real time — I need to process before I can talk. I want you to know: I\'m not checking out, I\'m just slow. Can you give me time and I\'ll always come back?"'},{lbl:'A small opening',text:'"I don\'t usually share this kind of thing — but something\'s been on my mind and I think I want to say it out loud. Is now okay?"'}],pqs:['What\'s the most helpful way I could signal I\'m just processing, not withdrawing?','What does "secure" actually feel like from the inside for you? I genuinely want to understand.','Is there anything I do that makes you feel like I\'m not really in this?'],avoid:'Interpreting their lack of reaction to your withdrawal as disinterest. When a secure person gives you space without chasing you, it\'s a gift — not evidence they don\'t care.'},
+  fearful_anxious:{headline:'Two People Who Both Fear Abandonment',summary:'You fear closeness AND abandonment simultaneously. They fear abandonment. When you pull back (fear of closeness), they panic (fear of abandonment). When their panic triggers your overwhelm, you pull further. Fast, painful cycle.',sciNote:'Brennan & Shaver (1995) found fearful-anxious pairings experience the highest emotional reactivity of any combination. Both need individual regulation work before the dyadic pattern can shift.',tips:[{title:'Narrate your state before acting on it',body:'When you feel the pull-away coming, say it before you do it: "I can feel my system wanting to retreat right now. It\'s not about you. I\'m taking a few minutes and coming back." That one act changes everything.'},{title:'Respond to their need, not their behavior',body:'Their excessive texting and checking is protest behavior for an underlying need: "Am I still safe with you?" When you can respond to the need instead of the behavior, everything de-escalates quickly.'},{title:'Co-regulate before talking',body:'Neither of your systems can think clearly when activated. Agree in advance: before any hard conversation, do 5 minutes of something calming. Walk, breathe, physical touch. Regulate first, then talk.'}],scripts:[{lbl:'When you feel the pull-away coming',text:'"I can feel myself wanting to disappear right now. I\'m not going to act on it. I\'m still here. Can we just be quiet together for a minute instead of me running?"'},{lbl:'Naming the dynamic together',text:'"I think we both have patterns that trigger each other. You get scared I\'m leaving, I get scared of being too close. Neither of us is wrong — we\'re both just scared. Can we figure this out together?"'}],pqs:['What\'s the fear underneath it when you reach out a lot?','When I go quiet, what does it feel like inside you?','What would it look like if we both tried to comfort each other\'s fear at the same time?'],avoid:'Promising more than you can currently deliver. Anxious partners take your words extremely literally. Under-promise and over-deliver while you\'re in early recovery.'},
+  fearful_avoidant:{headline:'Your Hot-Cold Meets Their Cool Distance',summary:'You approach and they get overwhelmed and retreat. You then retreat too — yours from hurt, theirs from overload. Both of you disappear and neither knows how to come back.',sciNote:'Bartholomew & Horowitz (1991) found fearful-avoidant pairings show the most complex interpersonal dynamics in attachment research. Both styles have high avoidance — but very different motivations.',tips:[{title:'Create explicit reconnection rituals',body:'Both of you default to distance when things get hard. You need a built-in reconnection mechanism that doesn\'t require vulnerability first. Agree in advance: "If we both go quiet for more than a day, one of us sends a check-in emoji. No pressure, no conversation required."'},{title:'Decode their shutdown for yourself',body:'Their withdrawal is not the same as yours. Yours comes from hurt and overwhelm. Theirs comes from emotional capacity limits. Ask yourself: "Is this about me, or about them reaching their edge?" Most of the time, it\'s them.'},{title:'Name what safety means specifically',body:'"Safety for me looks like: you tell me when you need space instead of just disappearing. I\'ll do the same." Make it concrete. Both avoidant styles need explicit agreements to function.'}],scripts:[{lbl:'When both of you have gone quiet',text:'"Hey. I know we\'ve both been quiet. I miss you. I\'m not sure what to do with that. Are you open to talking?"'},{lbl:'After the push-pull cycle',text:'"I know I\'ve been really inconsistent. Here\'s what happened on my side: [brief]. I think we both get scared and handle it by pulling away. I\'d love to try something different."'}],pqs:['When you go quiet, what would you need from me that would actually help?','What does "too close" feel like for you — where\'s the line?','How would you want to reconnect after we\'ve both pulled away?'],avoid:'Assuming their withdrawal is a verdict on you. Two avoidant styles create a lot of silence. Not all of it means something is wrong. Ask before you assume.'},
+  fearful_fearful:{headline:'Two Systems That Both Want and Fear Everything',summary:'This is the most complex pairing — and also the one with the most potential for profound healing when both people are willing to do the work.',sciNote:'Fearful-fearful pairs show the highest likelihood of attachment evolution when both partners engage in therapeutic work (Wallin, 2007). The shared motivation and shared wound are both real — use them.',tips:[{title:'Synchronize your windows of tolerance',body:'You both have narrow windows of being regulated. Learn to say: "I\'m in my window right now" and "I\'m outside it." Only attempt real conversations when both windows are open. This alone reduces the damage significantly.'},{title:'Have the meta-conversation first',body:'"We both have fearful-avoidant patterns. We\'re going to trigger each other. That\'s not a failure — that\'s our reality. Can we agree that when it happens, we name the pattern instead of blaming each other?"'},{title:'Outside support is not optional',body:'Two fearful systems trying to regulate each other without external support is a heavy lift. Individual therapy, couples work, or a shared accountability structure dramatically improves outcomes.'}],scripts:[{lbl:'Naming the shared pattern',text:'"I think we both have really similar wounds. Which means we understand each other deeply — and we also know how to trigger each other perfectly. I want to work with that, not against it."'},{lbl:'When both systems are activated',text:'"We\'re both in it right now and neither of us can think straight. Can we come back to this when we\'re both regulated? I\'m not abandoning this conversation — I\'m protecting it."'}],pqs:['What does it feel like for you when we get triggered at the same time?','What\'s the one thing that most helps you feel safe with me?','What would you need to see from me consistently to start trusting I\'m not going anywhere?'],avoid:'Mutual activation spirals. Whoever notices it first has the responsibility to say: "I think we\'re both outside our windows. I\'m taking 10 minutes. I\'m coming back."'},
+  fearful_secure:{headline:'The Most Healing Relationship You Can Have',summary:'A secure partner is scientifically the best person for you. Their consistency and predictability is the corrective emotional experience your nervous system has been starving for. The challenge is letting yourself trust it.',sciNote:'Siegel (2010) and Wallin (2007) both identify consistent, responsive caregiving — from a secure partner or therapist — as the primary mechanism of earned security. This relationship, done well, literally rewires you.',tips:[{title:'Tell them about your pattern early',body:'"I want to be upfront. I have fearful-avoidant attachment, which means sometimes I\'ll want to get close and then suddenly feel the urge to run. That\'s not about you — it\'s a trauma pattern. I\'m working on it. The most helpful thing you can do is stay steady."'},{title:'Let their consistency land',body:'Every time they show up — especially after you\'ve been difficult — let it register. Consciously: "They stayed. They came back." You\'re building a new case file to override the old one.'},{title:'Ask for specific types of safety',body:'"I feel safest when you tell me explicitly that things are okay between us" or "I need a heads-up before you need space." Secure people are flexible — they need to know what you need.'}],scripts:[{lbl:'The upfront conversation',text:'"There\'s something I want you to know before we go deeper. I have a pattern where I sometimes pull away or get confusing when things start feeling really close. It\'s not about you — it\'s old programming. I wanted to name it so it doesn\'t blindside you."'},{lbl:'When you feel the pull-away coming',text:'"I can feel my system wanting to retreat and I don\'t want to act on it this time. Can you just stay with me for a minute? I want to practice staying."'}],pqs:['How do you stay so steady when I get inconsistent?','What do you need from me to feel like I\'m actually in this with you?','When I pull away, what\'s the best way for you to respond that actually helps me come back?'],avoid:'Pushing them away to "test" if they\'ll stay. Fearful patterns sometimes involve testing secure partners with difficult behavior — to confirm the old belief. Notice this impulse. Name it. Don\'t act on it.'},
+  secure_anxious:{headline:'Your Calm Can Look Like Indifference',summary:'To an anxious person, your stability looks like you don\'t care. Your ability to handle things alone looks like you don\'t need them. Your lack of escalation looks like you\'re checked out. You need to translate your love into their language.',sciNote:'Levine & Heller (2010) note that secure-anxious pairings succeed when the secure partner learns to give verbal reassurance proactively — not because they lack security, but because they understand how their partner\'s brain works.',tips:[{title:'Verbalize what you feel but don\'t say',body:'You think "we\'re fine" and don\'t say it. They spiral wondering if you\'re fine. The fix is simple: say the things you\'re already feeling. "Just wanted you to know I\'m thinking about you." "We\'re really good right now." Verbalize the stability.'},{title:'Don\'t wait for a crisis to reassure',body:'Random unprompted reassurance prevents spirals. "I\'m really glad you\'re in my life" on a normal Tuesday does more than an hour of reassurance during a meltdown.'},{title:'When they escalate, go toward — not away',body:'Your instinct is to give space when someone gets intense. Anxious people interpret space as confirmation something is wrong. Try: "I can see you\'re really activated. I\'m right here. What do you need right now?"'}],scripts:[{lbl:'Proactive reassurance (build this habit)',text:'"Hey — nothing specific, just wanted to say I\'m really happy with us. That\'s all. 😊"'},{lbl:'During a spiral',text:'"I can see you\'re really anxious right now. I want to be super clear: nothing is wrong between us. I\'m right here. Let\'s breathe for a second — then tell me what you need."'},{lbl:'After they\'ve expressed anxiety "badly"',text:'"I know that came out differently than you meant it. I\'m not upset. I can see you\'re scared. And I want you to know — I\'m not going anywhere."'}],pqs:['What\'s one thing I could do regularly that would help you feel more secure?','How do you know when I\'m really invested in us — what does that look like to you?','When you start to spiral, what\'s the most helpful thing I can do?'],avoid:'Giving space when they\'re activated. Your logic: "they need room to calm down." Their experience: "they left when I needed them most." Stay present. Let your presence do the regulating.'},
+  secure_avoidant:{headline:'They Need You to NOT Chase (But Also Not Disappear)',summary:'Your instinct to pursue connection when they go quiet is actually what makes them go more quiet. Your job is to signal safety without signaling demand — available, but not pursuing.',sciNote:'Gottman & Levenson\'s research shows consistent, non-demanding presence is the most effective intervention for avoidant partners. The avoidant system deactivates when it feels safe from pressure.',tips:[{title:'Open the door, then step back',body:'When they go quiet: one calm, low-pressure message — then wait. "Hey, just checking in. No pressure — I\'m here whenever you want to talk." That communicates availability without demand. That\'s their window into closeness.'},{title:'Celebrate small disclosures',body:'When they share something emotional, treat it like the significant act it is. Don\'t over-react (that\'s overwhelming) — just acknowledge it warmly: "I\'m really glad you told me that." They\'re taking a real risk.'},{title:'Don\'t interpret independence as rejection',body:'They need alone time and self-reliance the way you need connection. It\'s not about you. "You do you — I\'ll be here when you\'re back" is genuinely the most attractive thing you can say.'}],scripts:[{lbl:'Low-pressure check-in when they\'re withdrawing',text:'"Hey. Not trying to pull you back in — just wanted you to know I\'m here. No rush, no pressure. Talk whenever."'},{lbl:'Celebrating a disclosure',text:'"Thank you for telling me that. I know that\'s not always easy for you. It means a lot that you shared it."'},{lbl:'Giving space without disappearing',text:'"I can see you need some time. I\'m going to give you that. And I\'m not going anywhere — come find me when you\'re ready."'}],pqs:['What does "too much" feel like for you — how do I know when I\'m crossing that line?','What would make it easier for you to come back after you\'ve needed space?','Is there something I do that makes it harder for you to open up?'],avoid:'Calling out their withdrawal with frustration. "You always do this" activates their deactivation system like an alarm. Use curiosity: "I notice you\'ve been quiet — is something going on?" Invitation, not accusation.'},
+  secure_fearful:{headline:'You Are Their Safe Haven — If You Stay Consistent',summary:'Fearful people have rarely experienced truly safe love. When you show up consistently over time, their nervous system starts to update. You\'re not just loving this person — you\'re rewriting their model of what love can be.',sciNote:'Siegel (2010) identifies the secure partner as a primary vehicle for earned security. The mechanism: repeated experiences of reaching for someone and having them stay. Simple, but powerful.',tips:[{title:'Consistency over grand gestures',body:'To a fearful person, one big romantic moment means less than 100 small reliable ones. Show up every time. Especially the boring times. That accumulation of evidence is what changes their brain.'},{title:'Don\'t take the push-pull personally',body:'Their hot-cold isn\'t about you. It\'s two competing attachment programs running simultaneously. When they push you away, they simultaneously want you to stay. Your response: stay, calmly. "I\'m here. Take the time you need."'},{title:'Name what you\'re doing',body:'Fearful people are suspicious of safety — they\'ve learned it\'s temporary. Make your consistency explicit: "I want you to know I\'m not going anywhere. Not today, not when things get hard." Say it regularly.'}],scripts:[{lbl:'When they push you away',text:'"I\'m not going anywhere. Take the space you need. I\'ll be right here when you\'re ready to come back."'},{lbl:'Regular naming of your presence',text:'"I just want to say — I\'m in this. Even when it gets hard. I\'m not scared of your patterns. I see you underneath them."'},{lbl:'After a push-pull cycle',text:'"I know that was hard. I want you to know: I\'m not tired of you. I\'m not reconsidering. I\'m still right here. How are you doing?"'}],pqs:['What would help you believe I\'m not going anywhere?','What does safety feel like for you — what would it take to really trust this?','When you go hot and cold, what\'s actually happening inside you? I want to understand.'],avoid:'Withdrawing when they get difficult. This is the single most damaging thing you can do. To a fearful person, you leaving during their chaos confirms every belief they have about love. Stay. Speak calmly. Come back.'},
+  unknown:{headline:'Not Sure of Their Style Yet',summary:'No problem — here\'s how to identify it, plus universal communication principles that work across all four styles.',sciNote:'The ECR-R (Brennan, Clark & Shaver, 1998) is the gold standard for identifying attachment style in research settings. But you can get a good read just by watching someone\'s patterns over time.',tips:[{title:'Anxious signals',body:'Texts quickly and often. Seeks frequent reassurance. Gets activated by small things. Intense and warm. Explicitly fears being left or replaced.'},{title:'Avoidant signals',body:'Needs a lot of alone time. Goes quiet during conflict. Deflects emotional conversations. Seems "too independent." Gets visibly uncomfortable with closeness.'},{title:'Fearful-Avoidant signals',body:'Hot and cold — deeply close one day, distant the next. Self-sabotaging. Wants closeness and pushes it away simultaneously. Often describes past relationships as chaotic.'},{title:'Secure signals',body:'Handles conflict without escalating. Asks for what they need directly. Comfortable with both closeness and independence. Recovers from hard moments without spiraling.'}],scripts:[{lbl:'Opening the attachment conversation',text:'"I\'ve been learning about attachment styles and it\'s been kind of blowing my mind. Have you ever looked into that? I\'d love to know what you think yours is."'},{lbl:'A gentle direct question',text:'"Can I ask you something? When things get tense between people, what\'s your instinct — do you tend to move toward or pull away?  I\'m genuinely curious about how you work."'}],pqs:['What do you need from me when you\'re stressed or overwhelmed?','How do you know when you feel really secure in a relationship?','What\'s the biggest thing that makes you pull away from people?','What\'s the best way to bring something up with you that doesn\'t go badly?'],avoid:'Labeling them without asking. Telling someone "you\'re avoidant" without their buy-in creates defensiveness. Lead with curiosity, not diagnosis.'}
+};
+
+/* ═══════════════════════════════════════════
+   NAVIGATION
+═══════════════════════════════════════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById('screen-' + id);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+  const pct = { landing:0, 'quiz-intro':5, quiz:15, processing:80, results:85, context:90, 'ai-processing':93, paywall:96, plan:100 };
+  document.getElementById('pbar').style.width = (pct[id] || 0) + '%';
+}
+
+/* ═══════════════════════════════════════════
+   QUIZ
+═══════════════════════════════════════════ */
+function startQuiz() {
+  S.quiz.q = 0;
+  S.quiz.answers = [];
+  goTo('quiz');
+  renderQ(0);
+}
+
+function renderQ(idx) {
+  const total = QS.length;
+  const pct = Math.round((idx / total) * 100);
+  document.getElementById('quiz-pfill').style.width = pct + '%';
+  document.getElementById('quiz-plabel').textContent = PROG_LABELS[Math.min(idx, PROG_LABELS.length - 1)];
+  document.getElementById('quiz-counter').textContent = (idx + 1) + '/' + total;
+
+  // cheer messages
+  const cheer = document.getElementById('cheer-box');
+  if (CHEER[idx]) { cheer.textContent = CHEER[idx]; cheer.classList.add('show'); }
+  else { cheer.classList.remove('show'); }
+
+  // back button
+  document.getElementById('quiz-back-btn').disabled = (idx === 0);
+
+  document.getElementById('quiz-q-text').textContent = QS[idx].text;
+
+  const container = document.getElementById('answers-container');
+  container.innerHTML = '';
+  OPTS.forEach(opt => {
+    const btn = document.createElement('button');
+    btn.className = 'ans-btn fadein';
+    btn.innerHTML = `<span class="ans-emoji">${opt.emoji}</span><span class="ans-label">${opt.label}<span class="ans-sub">${opt.sub}</span></span>`;
+    // Highlight if previously answered
+    if (S.quiz.answers[idx] === opt.v) btn.classList.add('selected');
+    btn.onclick = () => pickAnswer(idx, opt.v, btn);
+    container.appendChild(btn);
+  });
+}
+
+function pickAnswer(idx, val, btn) {
+  document.querySelectorAll('.ans-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  S.quiz.answers[idx] = val;
+  setTimeout(() => {
+    S.quiz.q = idx + 1;
+    if (S.quiz.q < QS.length) renderQ(S.quiz.q);
+    else processResults();
+  }, 340);
+}
+
+function quizBack() {
+  if (S.quiz.q > 0) { S.quiz.q--; renderQ(S.quiz.q); }
+}
+
+/* ═══════════════════════════════════════════
+   SCORING
+═══════════════════════════════════════════ */
+function processResults() {
+  goTo('processing');
+  let a = 0, v = 0;
+  QS.forEach((q, i) => {
+    const val = S.quiz.answers[i] || 2;
+    if (q.dim === 'a') a += val; else v += val;
+  });
+  S.quiz.aScore = a; S.quiz.vScore = v;
+  // Range 6–24, threshold 15 (midpoint)
+  if (a < 15 && v < 15) S.quiz.style = 'secure';
+  else if (a >= 15 && v < 15) S.quiz.style = 'anxious';
+  else if (a < 15 && v >= 15) S.quiz.style = 'avoidant';
+  else S.quiz.style = 'fearful';
+
+  const steps = document.querySelectorAll('.proc-step');
+  steps.forEach((s, i) => setTimeout(() => { s.classList.add('vis'); setTimeout(() => s.classList.add('done'), 300); }, i * 520));
+  setTimeout(() => { renderResults(); goTo('results'); confetti(); }, 3400);
+}
+
+/* ═══════════════════════════════════════════
+   CONFETTI
+═══════════════════════════════════════════ */
+function confetti() {
+  const colors = ['#E07A3A','#D4A843','#3A7D5C','#8B4FA0','#2E6499','#FF6B6B'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'confetti-piece';
+      el.style.cssText = `left:${Math.random()*100}%;background:${colors[Math.floor(Math.random()*colors.length)]};animation-duration:${1.5+Math.random()*2}s;animation-delay:${Math.random()*.5}s;width:${6+Math.random()*8}px;height:${6+Math.random()*8}px;border-radius:${Math.random()>0.5?'50%':'2px'}`;
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }, i * 30);
+  }
+}
+
+/* ═══════════════════════════════════════════
+   RESULTS
+═══════════════════════════════════════════ */
+function renderResults() {
+  const st = STYLES[S.quiz.style];
+  const aPct = Math.round(((S.quiz.aScore - 6) / 18) * 100);
+  const vPct = Math.round(((S.quiz.vScore - 6) / 18) * 100);
+
+  document.getElementById('results-top').innerHTML = `
+    <div class="res-pre fadein">Your Attachment Style ✨</div>
+    <div class="res-name fadein-1" style="color:${st.color}">${st.icon} ${st.name}</div>
+    <div class="res-sub fadein-1">${st.tagline}</div>
+
+    <div class="res-card fadein-2">
+      <div class="res-card-title">😮 What this actually means</div>
+      <p>${st.desc1}</p>
+    </div>
+    <div class="res-card fadein-2">
+      <div class="res-card-title">🔬 Wait, there's more</div>
+      <p>${st.desc2}</p>
+      <p style="margin-top:6px;font-size:.78rem;font-style:italic;color:var(--text3)">Source: ${st.cite} · ${st.prevalence} of adults</p>
+    </div>
+    <div class="res-card fadein-3">
+      <div class="res-card-title">📊 Your scores</div>
+      <div class="score-row">
+        <div class="score-lbl"><span>Anxiety (fear of losing love)</span><span>${aPct}%</span></div>
+        <div class="score-track"><div class="score-fill" id="bar-a" style="width:0%;background:var(--anxious)"></div></div>
+      </div>
+      <div class="score-row" style="margin-top:12px">
+        <div class="score-lbl"><span>Avoidance (fear of closeness)</span><span>${vPct}%</span></div>
+        <div class="score-track"><div class="score-fill" id="bar-v" style="width:0%;background:var(--avoidant)"></div></div>
+      </div>
+    </div>
+    <div class="res-card fadein-3">
+      <div class="res-card-title">💪 Your actual strengths</div>
+      <div class="res-badges">${st.strengths.map(s => `<span class="res-badge" style="background:${st.bg};color:${st.color}">${s}</span>`).join('')}</div>
+    </div>
+    <div class="res-card fadein-3">
+      <div class="res-card-title">⚠️ Your blind spot</div>
+      <p>${st.growthEdge}</p>
+    </div>
+  `;
+
+  document.getElementById('results-cta').innerHTML = `
+    <div class="res-cta-box fadein">
+      <h3>Want to actually fix this? 🙋</h3>
+      <p>Your BondBlueprint™ gives you the exact steps, scripts, and 30-day plan for YOUR specific situation.</p>
+      <div class="lock-list">
+        <div class="lock-item">🔒 Your BondStory™ — your situation, reflected back in science</div>
+        <div class="lock-item">🔒 Why your pattern formed (the real reason)</div>
+        <div class="lock-item">🔒 4 science-backed techniques to break the cycle</div>
+        <div class="lock-item">🔒 Word-for-word scripts for your hardest moments</div>
+        <div class="lock-item">🔒 How to talk to <em>their</em> attachment style specifically</div>
+        <div class="lock-item">🔒 Personalized questions to use with them</div>
+        <div class="lock-item">🔒 Your personalized 30-day action plan</div>
+      </div>
+      <button class="btn btn-accent btn-full" onclick="startContext()">Build My Plan →</button>
+      <p style="font-size:.78rem;color:var(--text3);margin-top:10px;font-weight:600">2 more mins · Plans from $3 each</p>
+    </div>
+  `;
+
+  setTimeout(() => {
+    const ba = document.getElementById('bar-a');
+    const bv = document.getElementById('bar-v');
+    if (ba) ba.style.width = aPct + '%';
+    if (bv) bv.style.width = vPct + '%';
+  }, 500);
+}
+
+/* ═══════════════════════════════════════════
+   CONTEXT QUESTIONS
+═══════════════════════════════════════════ */
+function getCtxQs() {
+  const style = S.quiz.style;
+  return [
+    {
+      label: 'Step 1 of 6 — Your situation',
+      q: 'Which relationship is this about right now?',
+      field: 'relationship',
+      opts: [
+        { v: 'romantic', icon: '💛', label: 'Romantic partner', sub: 'Someone I\'m with or trying to be with' },
+        { v: 'dating', icon: '🌹', label: 'Someone I\'m dating', sub: 'Not official yet — still figuring it out' },
+        { v: 'friendship', icon: '🤝', label: 'A close friend', sub: 'A friendship that matters a lot to me' },
+        { v: 'self', icon: '🪞', label: 'All my relationships', sub: 'I just want to understand my patterns' }
+      ]
+    },
+    {
+      label: 'Step 2 of 6 — Right now',
+      q: getQ2(style),
+      field: 'situation',
+      opts: getOpts2(style)
+    },
+    {
+      label: 'Step 3 of 6 — Your pain',
+      q: 'What\'s hurting you the most right now?',
+      field: 'pain',
+      opts: getPainOpts(style)
+    },
+    {
+      label: 'Step 4 of 6 — Your words',
+      q: 'Describe your situation in a few sentences (the more specific, the better your plan)',
+      field: 'description',
+      type: 'text',
+      placeholder: 'E.g. "We\'ve been together 8 months and I feel like I\'m always the one who cares more..."'
+    },
+    {
+      label: 'Step 5 of 6 — Your goal',
+      q: 'What do you most want after this?',
+      field: 'want',
+      opts: [
+        { v: 'stop_cycle', icon: '🔄', label: 'Stop the same pattern repeating', sub: 'It keeps happening no matter who I\'m with' },
+        { v: 'feel_safe', icon: '🔒', label: 'Feel actually secure in love', sub: 'Stop waiting for things to fall apart' },
+        { v: 'communicate', icon: '💬', label: 'Fight less, connect more', sub: 'Say what I need without it blowing up' },
+        { v: 'attract_better', icon: '🧲', label: 'Attract healthier partners', sub: 'Stop ending up with the same type of person' },
+        { v: 'heal', icon: '🌱', label: 'Heal the root, not just symptoms', sub: 'Actually understand where this all started' }
+      ]
+    },
+    {
+      label: 'Step 6 of 6 — Their style',
+      q: 'Do you know the attachment style of the person you\'re working on this for?',
+      field: 'otherStyle',
+      opts: [
+        { v: 'anxious', icon: '🌊', label: 'Anxious', sub: 'Needs lots of reassurance, fears being left' },
+        { v: 'avoidant', icon: '🪨', label: 'Avoidant', sub: 'Pulls away, hates feeling "too close"' },
+        { v: 'fearful', icon: '🌪️', label: 'Fearful-Avoidant', sub: 'Hot and cold — wants love but pushes it away' },
+        { v: 'secure', icon: '🌿', label: 'Secure', sub: 'Calm, consistent, handles conflict well' },
+        { v: 'unknown', icon: '🤷', label: 'Not sure yet', sub: 'I\'ll figure it out — just give me the tools' }
+      ]
+    }
+  ];
+}
+
+function getQ2(style) {
+  return { anxious: 'Which feels most like what\'s happening?', avoidant: 'Which one hits closest to home?', fearful: 'Which pattern do you recognize in yourself?', secure: 'Where are you at right now?' }[style];
+}
+function getOpts2(style) {
+  const M = {
+    anxious: [
+      { v: 'always_anxious', icon: '😰', label: 'I\'m in something good but always anxious', sub: 'Waiting for the other shoe to drop' },
+      { v: 'pulling_away', icon: '🌊', label: 'I can feel them pulling away', sub: 'And I don\'t know if it\'s real or in my head' },
+      { v: 'post_breakup', icon: '💔', label: 'I just got out of a painful relationship', sub: 'Trying to process and not repeat it' },
+      { v: 'scared_to_try', icon: '🙈', label: 'I\'m scared to put myself out there', sub: 'Dating feels terrifying after what happened' }
+    ],
+    avoidant: [
+      { v: 'sabotage', icon: '🪨', label: 'I keep killing good relationships', sub: 'When things get real, I find a reason to leave' },
+      { v: 'suffocated', icon: '🫁', label: 'I feel suffocated and lonely at the same time', sub: 'I hate being alone but hate being too close' },
+      { v: 'push_regret', icon: '🚪', label: 'I push people away and then regret it', sub: 'Only want them back once they\'re gone' },
+      { v: 'commitment', icon: '⛓️', label: 'Commitment freaks me out', sub: 'Even great relationships feel like traps' }
+    ],
+    fearful: [
+      { v: 'hot_cold', icon: '🌪️', label: 'I go hot and cold and confuse everyone', sub: 'Including myself honestly' },
+      { v: 'wrong_people', icon: '🎯', label: 'I keep attracting the wrong people', sub: 'The same toxic pattern no matter what' },
+      { v: 'self_sabotage', icon: '💣', label: 'I destroy things when they\'re going well', sub: 'Like I can\'t let myself have something good' },
+      { v: 'trust', icon: '🔓', label: 'I can\'t trust anyone, even safe people', sub: 'Always waiting to be betrayed or left' }
+    ],
+    secure: [
+      { v: 'insecure_partner', icon: '💛', label: 'My partner has insecure patterns', sub: 'Trying to understand and support them better' },
+      { v: 'deepen', icon: '🌱', label: 'Things are good — I want them to be great', sub: 'Take it to the next level' },
+      { v: 'past_patterns', icon: '🔍', label: 'I want to understand past relationship patterns', sub: 'Why I kept attracting certain people' },
+      { v: 'general', icon: '🧭', label: 'Just want to keep growing', sub: 'Awareness and depth' }
+    ]
+  };
+  return M[style] || M.secure;
+}
+function getPainOpts(style) {
+  const M = {
+    anxious: [
+      { v: 'overthink', icon: '🌀', label: 'The nonstop overthinking', sub: 'My brain won\'t shut off about them' },
+      { v: 'reassurance', icon: '📱', label: 'Needing constant reassurance', sub: 'It\'s exhausting me and them' },
+      { v: 'triggered', icon: '⚡', label: 'Getting triggered by tiny things', sub: 'My reactions feel way out of proportion' },
+      { v: 'abandon_fear', icon: '🚪', label: 'The fear of abandonment running my life', sub: 'It makes me act in ways I hate' }
+    ],
+    avoidant: [
+      { v: 'walls', icon: '🧱', label: 'I can\'t let people in', sub: 'The walls are automatic and I didn\'t choose them' },
+      { v: 'shutdown', icon: '🧊', label: 'I go cold in conflict', sub: 'I shut down instead of talking' },
+      { v: 'lonely', icon: '🏝️', label: 'I\'m lonely but don\'t want closeness', sub: 'A contradiction I can\'t seem to solve' },
+      { v: 'intimacy', icon: '💫', label: 'Intimacy feels unsafe', sub: 'Even with people I actually like' }
+    ],
+    fearful: [
+      { v: 'chaos', icon: '🌪️', label: 'The emotional chaos inside me', sub: 'I never feel stable or settled' },
+      { v: 'sabotage_pain', icon: '💔', label: 'Watching myself destroy good things', sub: 'I know I\'m doing it and can\'t stop' },
+      { v: 'trust_pain', icon: '🔓', label: 'Not being able to trust anyone', sub: 'I\'m always waiting for the betrayal' },
+      { v: 'identity', icon: '🪞', label: 'I lose myself in relationships', sub: 'I become a different person each time' }
+    ],
+    secure: [
+      { v: 'partner', icon: '🔄', label: 'My partner\'s patterns are affecting us', sub: 'Their anxiety or avoidance is wearing me down' },
+      { v: 'communicate', icon: '💬', label: 'Communication still breaks down sometimes', sub: 'Even secure people hit walls' },
+      { v: 'past', icon: '🕰️', label: 'Old hurts still surface sometimes', sub: 'Mostly healed but not completely' },
+      { v: 'growth', icon: '🌱', label: 'I just want to go deeper', sub: 'Understand more, not solving a crisis' }
+    ]
+  };
+  return M[style] || M.secure;
+}
+
+let CTX_QS = [];
+
+function startContext() {
+  CTX_QS = getCtxQs();
+  S.ctx.step = 0;
+  goTo('context');
+  renderCtxQ(0);
+}
+
+function renderCtxQ(step) {
+  if (step >= CTX_QS.length) { startAIProcessing(); return; }
+  const q = CTX_QS[step];
+  const total = CTX_QS.length;
+  document.getElementById('ctx-counter').textContent = (step + 1) + '/' + total;
+  document.getElementById('ctx-label').textContent = q.label;
+  document.getElementById('ctx-q-text').textContent = q.q;
+  document.getElementById('ctx-back-btn').disabled = (step === 0);
+  document.getElementById('ctx-next-btn').style.display = 'none';
+  // Render step dots
+  const dotsWrap = document.getElementById('ctx-step-dots');
+  dotsWrap.innerHTML = '';
+  for (let i = 0; i < total; i++) {
+    const d = document.createElement('div');
+    d.className = 'step-dot' + (i < step ? ' done' : i === step ? ' active' : '');
+    dotsWrap.appendChild(d);
+  }
+
+  const wrap = document.getElementById('ctx-opts-wrap');
+  wrap.innerHTML = '';
+
+  if (q.type === 'text') {
+    const ta = document.createElement('textarea');
+    ta.className = 'ctx-textarea';
+    ta.placeholder = q.placeholder;
+    ta.value = S.ctx[q.field] || '';
+    ta.oninput = () => {
+      S.ctx[q.field] = ta.value;
+      document.getElementById('ctx-next-btn').style.display = ta.value.trim() ? 'flex' : 'none';
+    };
+    wrap.appendChild(ta);
+    if (S.ctx[q.field]) document.getElementById('ctx-next-btn').style.display = 'flex';
+  } else {
+    const div = document.createElement('div');
+    div.className = 'ctx-opts';
+    q.opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'ctx-btn fadein';
+      if (S.ctx[q.field] === opt.v) btn.classList.add('selected');
+      btn.innerHTML = `<span class="cb-icon">${opt.icon}</span><span class="cb-text">${opt.label}${opt.sub ? `<span class="cb-sub">${opt.sub}</span>` : ''}</span>`;
+      btn.onclick = () => {
+        document.querySelectorAll('.ctx-btn').forEach(b => b.classList.remove('selected'));
+        btn.classList.add('selected');
+        S.ctx[q.field] = opt.v;
+        setTimeout(() => ctxNext(), 380);
+      };
+      div.appendChild(btn);
+    });
+    wrap.appendChild(div);
+  }
+}
+
+function ctxNext() { S.ctx.step++; renderCtxQ(S.ctx.step); }
+function ctxBack() { if (S.ctx.step > 0) { S.ctx.step--; renderCtxQ(S.ctx.step); } }
+function ctxSkip() { S.ctx.step++; renderCtxQ(S.ctx.step); }
+
+/* ═══════════════════════════════════════════
+   AI PROCESSING SCREEN
+═══════════════════════════════════════════ */
+async function startAIProcessing() {
+  goTo('ai-processing');
+  // Animate the steps
+  const steps = document.querySelectorAll('#ai-proc-steps .proc-step');
+  steps.forEach((s,i) => setTimeout(() => { s.classList.add('vis'); setTimeout(() => s.classList.add('done'), 300); }, i * 600));
+  // Kick off the AI fetch concurrently with the animation
+  await fetchAIReflection();
+  // Wait for animation to finish (at least 3.5s)
+  await new Promise(r => setTimeout(r, Math.max(3500, steps.length * 600 + 800)));
+  goTo('paywall');
+  renderPaywall();
+}
+
+/* ═══════════════════════════════════════════
+   PAYWALL
+═══════════════════════════════════════════ */
+function renderPaywall() {
+  const st = STYLES[S.quiz.style];
+  document.getElementById('pw-prev-title').textContent = `Why your ${st.name} pattern shows up`;
+  document.getElementById('pw-prev-text').textContent = `Your nervous system learned this before you could even choose. The good news? Science is very clear that attachment styles change — especially when you have a specific, personalized plan built around your exact situation. Here's everything...`;
+}
+
+function selectPlan(plan) {
+  S.payment.plan = plan;
+  document.getElementById('opt-credits').classList.remove('sel');
+  document.getElementById('opt-monthly').classList.remove('sel');
+  document.getElementById('opt-' + plan).classList.add('sel');
+}
+
+async function mockPay() {
+  // Collect account info from paywall form (if filled)
+  const nameEl  = document.getElementById('acct-name-input');
+  const emailEl = document.getElementById('acct-email-input');
+  const name  = nameEl  ? nameEl.value.trim()  : '';
+  const email = emailEl ? emailEl.value.trim() : '';
+  if (name || email) {
+    await createOrLoadAccount(email, name);
+  }
+  goTo('plan');
+  renderPlan();
+}
+
+/* ═══════════════════════════════════════════
+   PLAN RENDER
+═══════════════════════════════════════════ */
+function renderPlan() {
+  const st = STYLES[S.quiz.style];
+  const ctx = S.ctx;
+  const relMap = { romantic:'romantic', dating:'dating', friendship:'friendship', family:'family', self:'all' };
+  const relLabel = relMap[ctx.relationship] || 'your';
+
+  document.getElementById('plan-hdr').style.background = st.color;
+  document.getElementById('plan-hdr').innerHTML = `
+    <div class="plan-hdr-in">
+      <div class="plan-hdr-label">Your BondBlueprint™</div>
+      <h1>${st.icon} ${st.name} Attachment Plan</h1>
+      <p class="plan-hdr-sub">Personalized to your situation · Science-backed · Not a substitute for therapy</p>
+    </div>
+  `;
+
+  document.getElementById('plan-bdy').innerHTML = buildPlan(S.quiz.style, ctx);
+
+  // Save plan to account history
+  ACCOUNT.savePlan({
+    style: S.quiz.style,
+    relationship: ctx.relationship,
+    situation: ctx.situation,
+    pain: ctx.pain,
+    want: ctx.want,
+    otherStyle: ctx.otherStyle,
+    descPreview: ctx.description ? ctx.description.substring(0, 80) : ''
+  });
+}
+
+/* ═══════════════════════════════════════════
+   PLAN CONTENT
+═══════════════════════════════════════════ */
+function buildPlan(key, ctx) {
+  const st = STYLES[key];
+  const desc = ctx.description || '';
+  const rel = ctx.relationship || 'romantic';
+  const sit = ctx.situation || null;
+  const pain = ctx.pain || null;
+  const want = ctx.want || 'stop_cycle';
+
+  return `
+  <div class="psec fadein">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:linear-gradient(135deg,#F0F9FF,#F5F3FF)">✨</div>
+      <div class="psec-title">Your Personalized Reflection</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">About this section</span>This reflection is built around what YOU specifically shared — your words, your situation, your combination of answers. It is psychoeducational content based on peer-reviewed research, not therapy or clinical advice.</div></div>
+    ${S.aiReflection ? buildAIReflectionBlock(S.aiReflection) : buildJSReflectionBlock(key, ctx)}
+  </div>
+
+  <div class="psec fadein">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:${st.bg}">🎯</div>
+      <div class="psec-title">What's Actually Going On With You</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>Your pattern has a scientific name, a biological mechanism, and a research-backed fix. Here it is.</div></div>
+    ${getDiagnosis(key, rel, sit, desc)}
+  </div>
+
+  <div class="psec fadein-1">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:#EEF6FF">🔬</div>
+      <div class="psec-title">Why You Got Here (Not Your Fault)</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>Your pattern started as a survival strategy. It made total sense then. It's costing you now. Here's the science behind why.</div></div>
+    ${getScience(key)}
+  </div>
+
+  <div class="psec fadein-1">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:#FFF5F5">🔄</div>
+      <div class="psec-title">The Cycle You're Stuck In</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>You're not crazy — you're predictable. Once you see the exact loop you're running, you can interrupt it.</div></div>
+    ${getPattern(key, sit, pain)}
+  </div>
+
+  <div class="psec fadein-2">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:var(--accent-lt)">🛠️</div>
+      <div class="psec-title">Your Toolkit — 4 Things That Actually Work</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>Research-based approaches studied in peer-reviewed psychology research. These are possibilities to explore — not prescriptions. Some may resonate more than others. A licensed therapist can help you apply them to your specific situation.</div></div>
+    ${getTechniques(key, pain, rel)}
+  </div>
+
+  <div class="psec fadein-2">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:var(--primary-lt)">💬</div>
+      <div class="psec-title">Exact Words to Use</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>These are example phrases some people in similar situations have found worth adapting. Research suggests direct, needs-based communication tends to be more effective than protest behaviors — but every relationship is different. Use these as starting points, not scripts.</div></div>
+    ${getScripts(key, rel, sit)}
+  </div>
+
+  <div class="psec fadein-2">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:#F0FDF4">🗣️</div>
+      <div class="psec-title">How to Talk to Their Attachment Style</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>Different attachment styles need COMPLETELY different communication approaches. Here's exactly what works for the person you identified — backed by research.</div></div>
+    ${getCrossComm(key, ctx.otherStyle, rel)}
+  </div>
+
+  <div class="psec fadein-3">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:#F5FFF5">🗓️</div>
+      <div class="psec-title">Your 30-Day Game Plan</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>Week-by-week, one thing at a time. Don't try to do it all at once. Slow and consistent beats fast and overwhelming every time.</div></div>
+    ${getRoadmap(key, want)}
+  </div>
+
+  <div class="psec fadein-3">
+    <div class="psec-hdr">
+      <div class="psec-icon" style="background:${st.bg}">🌟</div>
+      <div class="psec-title">What Winning Actually Looks Like For You</div>
+    </div>
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>Here's the specific, concrete sign that this is working — so you know what you're aiming for.</div></div>
+    ${getGoal(key, want)}
+  </div>
+
+  <div class="return-box fadein-3">
+    <h3>Come back when things change 🔄</h3>
+    <p>Different situation = different plan. Your attachment style doesn't change the advice — your circumstances do. Come back anytime to get a new personalized blueprint.</p>
+    <div class="return-btns">
+      <button class="btn btn-white" onclick="startContext()">Get a Plan for a Different Situation →</button>
+      <button class="btn btn-outline-white" onclick="shareResults()">Share My Attachment Type 📤</button>
+    </div>
+  </div>
+
+  <div class="disclaimer">
+    <span class="disclaimer-icon">📚</span>
+    <p>Sources: Bowlby (1969), Ainsworth et al. (1978), Hazan & Shaver (1987), Levine & Heller (2010) <em>Attached</em>, Mikulincer & Shaver (2007), Johnson (2008) <em>Hold Me Tight</em>, Gottman Institute longitudinal research, Siegel (2010), Wallin (2007), Fraley & Shaver (1997).</p>
+  </div>
+  <div class="legal-banner">
+    ⚠️ <strong>Important:</strong> BondBlueprint™ is a <strong>psychoeducational tool only</strong> — not therapy, clinical advice, diagnosis, or treatment. Content reflects peer-reviewed research and is offered as possibilities to explore, not prescriptions or definitive answers. If you're experiencing significant distress, please consider speaking with a licensed therapist or counselor. <a href="https://www.psychologytoday.com/us/therapists" target="_blank">Find a therapist →</a>
+  </div>
+
+  <div style="text-align:center">
+    <button class="btn btn-ghost" style="font-size:.85rem;padding:12px 20px" onclick="goTo('results')">← Back to my results</button>
+  </div>
+  `;
+}
+
+function getDiagnosis(key, rel, sit, desc) {
+  const relW = { romantic: 'romantic', dating: 'dating', friendship: 'friendship', family: 'family', self: 'relationship' }[rel] || 'relationship';
+  const D = {
+    anxious: `<p>Your nervous system has one job it takes <em>extremely seriously</em>: making sure the people you love don't leave. So it runs 24/7 security — scanning every text, every tone of voice, every slight change in energy for signs of danger. That's exhausting. And here's the wild part: <em>it's not your fault at all.</em></p>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>Levine & Heller call this a hyperactivated attachment system. Your brain literally has a higher sensitivity to relationship threats than other people's brains. It's biological, not dramatic.</p></div>
+    <p>In your ${relW} relationships, this shows up as intensity, overthinking, and those behaviors that feel out of control — the checking, the reassurance-seeking, the emotional spirals. Here's the good news: this is one of the most well-studied attachment patterns in the world, which means we know exactly how to fix it.</p>`,
+    avoidant: `<p>You built something impressive: a self that doesn't "need" anyone. It felt like strength. And it was — for a while. But somewhere along the way, <em>your independence became a cage</em> as much as a freedom. You want connection. You're just really, really good at talking yourself out of it.</p>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>fMRI research (Fraley & Shaver, 1997) shows that avoidant people feel just as much emotional activation as anyone else in relationship stress — they just suppress it so fast, it doesn't reach conscious awareness. You're not cold. You're suppressing.</p></div>
+    <p>In your ${relW} relationships, you've probably noticed a pattern: things get close, something shuts off, you create distance, feel relief, then feel empty. The blueprint below interrupts that cycle without asking you to become someone you're not.</p>`,
+    fearful: `<p>You want closeness more than almost anything. And closeness also feels like a threat to your survival. Both things are true at the same time — which means your brain is constantly at war with itself inside your ${relW} relationships. You're not "complicated." You're experiencing a <em>real biological contradiction.</em></p>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>Main & Hesse (1990) discovered disorganized attachment happens when the person who's supposed to be safe IS the source of fear. Your attachment system learned two opposite strategies simultaneously. Push-pull, hot-cold — it's both running at once.</p></div>
+    <p>The most important thing to know: fearful-avoidant people who do the work heal <em>deeply and permanently.</em> Your capacity for transformation is actually higher than most — because the motivation is real, and so is the pain that drives it.</p>`,
+    secure: `<p>You've got something most people are actively working toward: the ability to be close without losing yourself, and independent without being cold. In your ${relW} relationships, that shows up as genuine resilience — you communicate relatively directly, you recover from conflict, you don't spiral over small things.</p>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>Gottman Institute research shows secure attachers have 5x more positive interaction cycles than insecure ones — not because their lives are easier, but because their nervous systems stay regulated under stress.</p></div>
+    <p>You're here because something isn't working the way you want — maybe a partner's patterns are confusing you, or you want to go deeper than "pretty good." That's where this plan comes in.</p>`
+  };
+  return D[key] || D.secure;
+}
+
+function getScience(key) {
+  const S = {
+    anxious: `<p>Here's where your anxiety came from: early in your life, the love you received was <em>inconsistent.</em> Sometimes warm, sometimes withdrawn. Sometimes present, sometimes distant. Your brain had no idea what to predict — so it did the only logical thing: <em>it stayed permanently alert.</em></p>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>Bowlby called this the hyperactivation strategy. When love is unpredictable, children (and adults!) turn up the volume on their attachment system. They protest louder, cling harder, monitor more intensely. It's not manipulation. It's survival math.</p></div>
+    <div class="now-box"><div class="now-label">⚡ Worth exploring</div><p>Write down one time in your childhood when love felt unreliable or confusing. Just one. You don't need to fix it — just see it. That memory is the origin point of the pattern you're carrying today.</p></div>`,
+    avoidant: `<p>Your self-reliance started as a survival strategy. When you reached out for connection early in life and found emotional unavailability — a parent who was dismissive, critical, or simply not emotionally present — your brain made a very smart calculation: <em>"Needing people hurts. Self-reliance doesn't."</em></p>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>Ainsworth's Strange Situation studies showed avoidant children don't seem distressed when separated — but their cortisol levels spike exactly the same. They learned to HIDE the distress, not eliminate it. Your walls were protection. They were also very expensive.</p></div>
+    <div class="now-box"><div class="now-label">⚡ Worth exploring</div><p>Ask yourself: "When was the last time I let someone help me with something emotional?" If you're drawing a blank, that's your data. That gap is what we're closing.</p></div>`,
+    fearful: `<p>Your pattern has one origin: at some point, the person who was supposed to be your safe haven was also a source of fear. This creates an impossible problem — <em>seek comfort from the thing that scares you, or avoid the thing you need.</em> So your system learned to do both. Simultaneously.</p>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>Siegel (2010) and Wallin (2007) found that people with disorganized attachment who develop what they call "coherent narrative" — meaning they can tell their story without being overwhelmed by it — show attachment patterns that are functionally identical to people who were secure from the start. Earned security is 100% real.</p></div>
+    <div class="now-box"><div class="now-label">⚡ Worth exploring</div><p>Finish this sentence in your head (or better, write it): "Love has always felt dangerous because..." Don't judge the answer. Just let it surface. That sentence is where your healing starts.</p></div>`,
+    secure: `<p>Secure attachment developed because your early caregivers were — imperfectly but <em>consistently enough</em> — responsive to your needs. Your brain learned: "I matter. Others can be trusted. It's okay to need people." That's the foundation everything else is built on.</p>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>Hazan & Shaver's landmark 1987 research found secure attachers have measurably lower cortisol during conflict, recover faster from relationship stress, and report higher relationship satisfaction — not because their relationships are drama-free, but because their nervous systems process difficulty differently.</p></div>
+    <div class="now-box"><div class="now-label">⚡ Worth exploring</div><p>Think of one relationship in your past that felt genuinely safe. What made it feel that way? Write down 2-3 specific things. That's your secure base blueprint — and it's what you can intentionally create.</p></div>`
+  };
+  return S[key] || S.secure;
+}
+
+function getPattern(key, sit, pain) {
+  const P = {
+    anxious: `<p><em>The Reassurance Spiral:</em> Something small happens (late reply, distracted energy, shorter text). Anxiety spikes. You seek reassurance. If it doesn't come fast enough, anxiety spikes more. You escalate (more texts, withdrawal, picking a fight). Your partner feels pressure and pulls back. That confirms your fear. The spiral goes faster. You've been here. You know exactly what this feels like.</p>
+    <div class="now-box"><div class="now-label">🔍 Research suggests exploring</div><p>Next time you feel the spiral starting, set a timer for 20 minutes before you do anything. Studies show anxiety peaks and naturally drops within 20 minutes if you don't act on it. That timer is your circuit breaker. Try it once today.</p></div>`,
+    avoidant: `<p><em>The Distance-Loneliness Loop:</em> Things get emotionally close → your system goes on high alert → you create distance (get busy, go cold, find flaws, avoid) → relief! → then loneliness creeps back → you feel the pull toward connection → things get close again → repeat. Forever, until you interrupt it.</p>
+    <div class="now-box"><div class="now-label">🔍 Research suggests exploring</div><p>Today, when you feel the urge to create distance — recognize it as "my deactivation strategy turning on." Name it. Wait 10 minutes before acting on it. That 10-minute window is where your freedom lives.</p></div>`,
+    fearful: `<p><em>The Approach-Avoidance Loop:</em> You get close to someone → threat activates → you pull away or pick a fight → as distance increases, you want them back → you get close again → threat activates → repeat. You're not confused or broken. You have two competing programs running, and neither one wins.</p>
+    <div class="now-box"><div class="now-label">🔍 Research suggests exploring</div><p>Next time you feel the urge to push someone away, say OUT LOUD (even just to yourself): "My system is doing the thing. This is the loop. I don't have to complete it." You can't stop the feeling. But you can stop the action. That gap is everything.</p></div>`,
+    secure: `<p>Even with secure attachment, the most common pattern to examine is the <em>Translation Gap</em> — assuming the people around you operate with the same emotional vocabulary you do. Your "calm" can feel like indifference to an anxious partner. Your "giving space" can feel like abandonment to someone fearful.</p>
+    <div class="now-box"><div class="now-label">🔍 Worth reflecting on</div><p>Think of one recent conflict or misunderstanding. Ask: what attachment fear was the other person probably experiencing? Anxiety = fear of abandonment. Avoidance = fear of being controlled or overwhelmed. That reframe changes everything about how you respond.</p></div>`
+  };
+  return P[key] || P.secure;
+}
+
+function getTechniques(key, pain, rel) {
+  const T = {
+    anxious: [
+      { name: '⏱️ The 20-Minute Rule', desc: 'Your anxiety IS going to spike. The goal isn\'t to not feel it — it\'s to not act during the spike.', steps: ['The moment you feel activated (urge to text, check, spiral), set a 20-minute timer.','During that time: physical movement, cold water, or call a non-romantic friend. Move the energy out of your body.','After 20 minutes, ask: Is anything actually different from before I got triggered? (Usually: no.) Only reach out if there\'s something real to say.','Track how many times you use the rule this week. Even doing it once rewires the pattern.'] },
+      { name: '🪞 Protest Behavior Inventory', desc: 'You can\'t change what you can\'t see. This week, you\'re just watching.', steps: ['Common anxious protest behaviors: excessive texting, sudden silence (punishing), jealousy stunts, picking fights, threats to end it.','Every time you notice one — write it down. No judgment. Just: "There\'s the behavior."','Under each one, write: "The need behind this was ___." (Usually: reassurance, acknowledgment, feeling important.)','Next week: ask for the need directly instead of through the behavior.'] },
+      { name: '🗣️ The Direct Ask', desc: 'Protest behaviors are needs in disguise. Stop the disguise.', steps: ['Before reaching out when activated, complete this sentence: "What I actually need right now is ___."','Then say THAT, not a version designed to get a reaction. Example: "I\'m feeling anxious today — could you just let me know you\'re thinking of me? That would really help."','This works because: it\'s honest, it\'s not escalating, and it gives the other person a chance to actually show up for you.','Practice once a day — even in low-stakes situations.'] },
+      { name: '💪 Self-Soothe Without Them', desc: 'Building internal security means being able to calm yourself down. This is the core skill.', steps: ['List 5 things that reliably calm you that have nothing to do with the person. (Music, walks, shower, certain friends, journaling.)','Make this your "anxious protocol" — when activated, run the protocol before reaching out.','Do one item from the list every morning, regardless of whether you\'re anxious. You\'re training the muscle.','Goal by week 4: the protocol feels automatic, not effortful.'] }
+    ],
+    avoidant: [
+      { name: '🪜 The Vulnerability Ladder', desc: 'You\'re not going from zero to fully open. You\'re going one rung at a time.', steps: ['Write a ladder: bottom = tiny disclosure (sharing a preference), top = big disclosure (sharing a real fear).','This week: do one disclosure from the BOTTOM of the ladder with a trusted person.','Notice what happens. (Usually: nothing catastrophic. Often: the person responds warmly.)','Each week, move one rung up. Your nervous system updates its threat model from experience, not willpower.'] },
+      { name: '🏷️ Name It to Tame It', desc: 'Suppression is automatic. Labeling is your interrupt switch.', steps: ['Three times a day, pause and ask: "What am I actually feeling right now?"','Use specific words — not "fine" or "stressed" but "disconnected," "lonely," "irritated," "scared."','Research by Lieberman (2007): naming an emotion reduces its intensity by up to 50%. Your suppression system works less hard when you label first.','Share one emotional label per day with someone. Just the label, not a whole conversation. "I\'ve been feeling a bit disconnected lately." That\'s it.'] },
+      { name: '👋 Turn Toward (Gottman Technique)', desc: 'A bid for connection is any attempt to engage. You miss most of them.', steps: ['A bid is: a question, a comment, sharing something, a touch, a joke. They happen dozens of times a day.','This week: consciously notice bids. Every time someone reaches for you, notice it.','Practice turning TOWARD: engage with the bid, even briefly. "Hm, tell me more." "That sounds hard." 10 seconds of presence is a turn toward.','Stonewalling (no response) is Gottman\'s #1 predictor of relationship breakdown. One turn at a time changes that.'] },
+      { name: '⏸️ Deactivation Delay', desc: 'You can\'t stop the urge to create distance. But you can delay acting on it.', steps: ['Common deactivation moves: getting "suddenly busy," noticing flaws, going silent, comparing to an idealized alternative.','When you notice one starting, name it: "This is my deactivation strategy turning on."','Wait 10 minutes before completing the deactivation. Often, the impulse passes.','If it doesn\'t pass: take the distance, but leave a bridge. "I need some space — can we talk tonight?" instead of just going dark.'] }
+    ],
+    fearful: [
+      { name: '👁️ The Observer Position', desc: 'You can\'t stop the push-pull. But you can watch it instead of being controlled by it.', steps: ['When you feel the approach-avoidance loop starting, narrate it internally: "There it is. My system is doing the thing again."','This observer position creates a split second of choice. You can\'t manufacture the feeling differently. But you can choose what you do next.','Practice narrating without judgment every time you notice the loop — even if you still act the same way. The awareness comes first.','Keep a simple log: "Loop happened. I noticed it at [what stage]. What I did: ___."'] },
+      { name: '🪟 Window of Tolerance', desc: 'Your window of being okay is smaller than most people\'s. We\'re expanding it.', steps: ['The "window" is the zone where you\'re regulated — not overwhelmed, not shut down.','Notice: where in your body do you first feel the threat signal? Chest? Shoulders? Gut? That\'s your early warning system.','When you notice it: slow your breath (4 counts in, 6 out). This literally signals your nervous system you\'re safe.','Goal: stay in connection 5 minutes longer than feels comfortable before taking space. That small extension widens the window over time.'] },
+      { name: '🏆 Safety Inventory', desc: 'Your brain doesn\'t register safety very well. We\'re fixing that deliberately.', steps: ['Every night: write down one moment from today where you felt genuinely safe with another person. Even a tiny one.','Let it register for 20 seconds before moving on. Sit with it. This is deliberate positive neuroplasticity.','Fearful-avoidant brains have the same negativity bias as anxious brains but also suppress positive data like avoidant brains. You\'re rebuilding both.','After 2 weeks: read back through your list. Your brain starts to update its model of what\'s possible.'] },
+      { name: '🚧 Bridges Not Walls', desc: 'The goal isn\'t to never need space. It\'s to take space without cutting people off completely.', steps: ['When you feel the urge to disappear or blow things up, use this instead: "I need space right now — I\'ll be back in [specific time]."','That specific time is everything. "I\'ll be back in an hour" keeps the connection. "Bye" doesn\'t.','Practice this in low-stakes situations first: "Give me 10 minutes to decompress and then let\'s finish this."','You\'re teaching your nervous system AND the other person that distance doesn\'t mean abandonment.'] }
+    ],
+    secure: [
+      { name: '🌐 The Translation Frame', desc: 'Insecure behavior is almost always an attachment need in disguise. Translate it.', steps: ['Anxious behavior (escalation, excessive contact) = hidden message: "Am I still safe with you?"','Avoidant behavior (shutdown, withdrawal) = hidden message: "I\'m overwhelmed and don\'t know how to say that."','This week: when someone does something that frustrates you, ask: "What attachment fear is driving this behavior?"','Respond to the fear underneath, not the behavior on the surface. This is the single highest-leverage relationship skill.'] },
+      { name: '🔁 The 5:1 Ratio', desc: 'Gottman\'s most replicated finding: 5 positive interactions for every negative one keeps relationships healthy.', steps: ['This week, count your ratio. How many appreciations vs. criticisms? Engagement vs. dismissal?','One specific appreciation per day: not "you\'re great" but "I noticed you did X and it meant something to me."','Make "turning toward" automatic: when someone bids for connection, engage within 60 seconds.','For anxious partners: verbal reassurance goes a long way. "I\'m not going anywhere" during conflict is medicine.'] },
+      { name: '🎯 Your Trigger Map', desc: 'Even secure people have triggers. Knowing yours gives you a 5-second head start.', steps: ['What situations activate YOU? Feeling criticized? Controlled? Ignored? Dismissed?','Write down your top 2. Be specific — not "when they\'re mean" but "when they change plans last-minute without asking."','For each trigger, write your usual response. Then write a BETTER response you could try.','This week: when trigger #1 fires, use the better response. Even once.'] },
+      { name: '🌱 Deliberate Connection Rituals', desc: 'Small things, done often, beat grand gestures. Every time.', steps: ['Create one daily connection ritual with your most important person. 2 minutes. Undivided.','"How are you actually doing today?" — and mean it. Listen to the whole answer before responding.','At the end of each week: name one thing you appreciated about this person. Say it out loud.','Gottman\'s research: couples who do this consistently rate their relationship satisfaction 40% higher within 3 months.'] }
+    ]
+  };
+  const techs = T[key] || T.secure;
+  return techs.map(t => `<div class="tech-card"><div class="tech-name">${t.name}</div><div class="tech-desc">${t.desc}</div><ol class="tech-steps">${t.steps.map(s => `<li>${s}</li>`).join('')}</ol></div>`).join('');
+}
+
+function getScripts(key, rel, sit) {
+  const SC = {
+    anxious: [
+      { lbl: 'When anxiety spikes and you want to text', text: '"I\'m feeling some anxiety right now and I\'m going to sit with it for a bit instead of reaching out. It\'s not about you — it\'s my pattern. I\'ll check in when I\'m more regulated."' },
+      { lbl: 'When you need reassurance (say this directly)', text: '"I\'ve been feeling a bit insecure lately — not because you\'ve done anything wrong. My brain does this thing where it catastrophizes. It would really help if you could just tell me we\'re okay. I\'m asking directly instead of acting weird about it."' },
+      { lbl: 'After an anxious spiral', text: '"I want to acknowledge that I reacted really intensely the other day. What was happening for me was [fear]. What I actually needed was [thing]. I\'m working on asking directly instead of escalating."' },
+      { lbl: 'When you feel distance', text: '"I\'ve been sensing some distance and I\'m not sure if it\'s real or if I\'m reading into it. Can we just do a quick check-in? I\'d rather ask directly than spend a week analyzing."' }
+    ],
+    avoidant: [
+      { lbl: 'When you\'re shutting down', text: '"I can feel myself going quiet — I want to name that. I\'m not trying to punish you or end this. I\'m overwhelmed and I need about 20 minutes. I\'m coming back."' },
+      { lbl: 'When asked how you feel', text: '"I\'m still figuring out what I\'m feeling — I\'m not great at accessing it in real time. What I can say is I\'m not checked out on purpose. Give me a bit."' },
+      { lbl: 'Making a small opening', text: '"This is hard for me to say because I usually just keep things in — but I\'ve been feeling [emotion] about [thing]. Not asking you to fix it. Just wanted to say it out loud."' },
+      { lbl: 'When you need space without disappearing', text: '"I need some time to myself to recharge — that\'s just how I work. I\'ll be back tonight. This isn\'t me going away."' }
+    ],
+    fearful: [
+      { lbl: 'When you feel the pull-away coming', text: '"I need to be honest — I can feel myself wanting to disappear right now. That\'s not about you. My system is doing its thing. I don\'t want to act on it this time. Can we just sit together for a minute?"' },
+      { lbl: 'When you\'ve been hot and cold', text: '"I know I\'ve been inconsistent and that\'s confusing. Here\'s what\'s true: I want to be here AND it also scares me. Both things are real. I\'m not asking you to fix it — just to understand I\'m working on it."' },
+      { lbl: 'When you\'re triggered in a safe situation', text: '"I\'m having a reaction that I don\'t think is actually about you. It feels like an old pattern. I\'m going to take a few minutes and come back — this isn\'t me leaving."' },
+      { lbl: 'Reconnecting after pulling away', text: '"I went quiet. I know that. What was happening for me was [brief explanation]. I\'m back now. Are you open to reconnecting?"' }
+    ],
+    secure: [
+      { lbl: 'Supporting an anxious partner in a spike', text: '"I can see you\'re really anxious right now. I\'m not going anywhere. What do you actually need from me in this moment?"' },
+      { lbl: 'Inviting an avoidant partner back', text: '"I\'ve felt some distance lately and I\'m not upset about it — I just miss you. No pressure. Just wanted you to know the door\'s open."' },
+      { lbl: 'Raising a concern without triggering defensiveness', text: '"I want to bring something up and I want us to stay curious instead of defensive. Can we try that? What I\'ve noticed is [observation] — I\'d love to understand what\'s happening for you."' },
+      { lbl: 'After a repair', text: '"I\'m really glad we talked through that. I want you to know that conflict doesn\'t scare me — it\'s how we get better at knowing each other."' }
+    ]
+  };
+  const scripts = SC[key] || SC.secure;
+  return scripts.map(s => `<div class="script-box"><div class="script-lbl">${s.lbl}</div><div class="script-text">${s.text}</div></div>`).join('');
+}
+
+function getRoadmap(key, want) {
+  const R = {
+    anxious: [
+      { w: 'Week 1–2', t: 'Just Observe', d: 'Install the 20-minute timer. Your only goal: use it at least once. Don\'t try to change your feelings — just delay the action. Log when you get activated and what triggered it. Pattern recognition is step one.' },
+      { w: 'Week 3–4', t: 'Name the Protest Behaviors', d: 'Write down your top 3 protest behaviors. Under each one, translate the need: "When I do X, what I actually need is Y." That translation will change how you communicate everything.' },
+      { w: 'Week 5–6', t: 'The Direct Ask (Practice Round)', d: 'Use the direct ask script at least once. It\'ll feel weird. Do it anyway. Track how the other person responds. You\'ll be surprised. Most people respond much better to a direct request than to a protest behavior.' },
+      { w: 'Week 7–8', t: 'Self-Soothe Without Rescue', d: 'Build and use your self-soothing protocol every day. Morning, regardless of anxiety level. You\'re training the muscle. By the end of this month, the protocol should feel automatic — and your baseline anxiety in relationships should be measurably lower.' }
+    ],
+    avoidant: [
+      { w: 'Week 1–2', t: 'Catch Deactivation in Progress', d: 'Your only job: notice when deactivation starts. You\'ve been doing it automatically for years — now make it conscious. Where in your body does it start? What thought comes first? No behavior change yet — just noticing.' },
+      { w: 'Week 3–4', t: 'Emotion Labeling (Private First)', d: 'Three times a day: pause and name what you\'re feeling. Private. No sharing required. Build the neural pathway from sensation to language. Research shows this alone begins to reduce suppression within 2 weeks.' },
+      { w: 'Week 5–6', t: 'Micro-Disclosures', d: 'One small disclosure per week to a trusted person. Bottom of the ladder only. Track what happens. Spoiler: the rejection you\'ve been protecting against usually doesn\'t come. When it doesn\'t, your brain updates.' },
+      { w: 'Week 7–8', t: 'Turning Toward Count', d: 'Track how many bids for connection you turn toward vs. away from each day. Even the count shifts behavior. Aim for one more "turn toward" than last week. Slow and steady is the whole strategy.' }
+    ],
+    fearful: [
+      { w: 'Week 1–2', t: 'Document the Loop', d: 'Write down every time you notice the approach-avoidance cycle. When did you feel close? When did threat activate? What did you do? Pattern recognition is your first freedom — you can\'t interrupt what you can\'t see.' },
+      { w: 'Week 3–4', t: 'Observer Practice Daily', d: 'When the loop starts, narrate it internally: "There it is. My system is doing the thing." Don\'t try to change what you feel. Just watch it. This observer position is the gap between stimulus and response.' },
+      { w: 'Week 5–6', t: 'Safety Inventory Nightly', d: 'Every night: one moment of felt safety. Write it. Sit with it for 20 seconds. You\'re deliberately building positive neuroplasticity — overwriting the association between closeness and danger with closeness and safety.' },
+      { w: 'Week 7–8', t: 'Bridges Practice', d: 'Use the "bridges not walls" technique once this week in a real situation. Leave a specific time when you\'ll return instead of just disappearing. Let the evidence accumulate that distance doesn\'t have to mean abandonment.' }
+    ],
+    secure: [
+      { w: 'Week 1–2', t: 'Translation Practice', d: 'This week, when someone\'s behavior frustrates you: translate it. What attachment fear is driving it? Practice seeing behavior as encoded need. This one shift changes every difficult interaction.' },
+      { w: 'Week 3–4', t: 'Daily Connection Ritual', d: 'Implement one daily 2-minute check-in with your most important person. Undivided attention. "How are you actually?" And mean it. Gottman\'s research shows this single habit has outsized relationship impact.' },
+      { w: 'Week 5–6', t: 'Appreciation Ratio', d: 'Track your ratio. Aim for 5 positive interactions per negative one. One specific appreciation per day, stated directly. Not "you\'re great" but "I noticed you did X and it meant something." The specificity is what lands.' },
+      { w: 'Week 7–8', t: 'Your Own Trigger Work', d: 'Map your top 2 triggers. Write a better response for each. Use it once when trigger #1 fires. Even secure attachment has edges — owning yours is the mark of mastery.' }
+    ]
+  };
+  const weeks = R[key] || R.secure;
+  return `<div style="display:flex;flex-direction:column;gap:0">${weeks.map(w => `<div class="roadmap-item"><div class="road-week">${w.w}</div><div class="road-title">${w.t}</div><div class="road-text">${w.d}</div></div>`).join('')}</div>`;
+}
+
+function getGoal(key, want) {
+  const G = {
+    anxious: { q: '"You\'ll know it\'s working when someone goes quiet and your first thought is curiosity, not panic."', t: 'You\'re not trying to stop caring. You\'re trying to care from a stable place instead of a scared one. That version of you — regulated, warm, direct, deeply loving — is already there. It\'s just been running on anxiety instead of security. That changes now.' },
+    avoidant: { q: '"You\'ll know it\'s working when someone gets close and your first feeling is warmth, not alarm."', t: 'You\'re not trying to become someone who needs constant closeness. You\'re trying to expand your range — so you can choose connection instead of always choosing protection. The self-reliant, independent person you are stays intact. You just get to keep more people.' },
+    fearful: { q: '"You\'ll know it\'s working when love starts to feel possible without feeling like a trap."', t: 'Earned security is real. The research proves it. People with your history who do the work don\'t just "get better" — they often develop the deepest, most conscious relationships of anyone. Because they understand what love costs and what it\'s worth. That\'s where you\'re headed.' },
+    secure: { q: '"You\'ll know you\'re going deeper when your relationships feel less like luck and more like craft."', t: 'Your security is a gift — and it\'s one you can actively share. The people around you who are anxious or avoidant? Your consistency is literally medicine for them. Use it intentionally. Go beyond natural and go deliberate.' }
+  };
+  const g = G[key] || G.secure;
+  return `<div class="goal-quote">${g.q}</div><p>${g.t}</p>`;
+}
+
+/* ═══════════════════════════════════════════
+   REFLECTION BLOCK BUILDERS
+═══════════════════════════════════════════ */
+function buildAIReflectionBlock(text) {
+  // Split into paragraphs and render with the AI styling
+  const paras = text.split(/\n\n+/).filter(p => p.trim()).map(p => `<p>${p.trim()}</p>`).join('');
+  return `
+    <div class="ai-reflection-box">
+      <div class="ai-reflection-hdr">
+        <div class="ai-pulse"></div>
+        <span class="ai-reflection-label">AI-personalized · Based on your exact words</span>
+      </div>
+      <div class="ai-reflection-text">${paras}</div>
+    </div>
+    <div class="disclaimer" style="margin-top:0">
+      <span class="disclaimer-icon">⚠️</span>
+      <p>This reflection is psychoeducational content generated from peer-reviewed research — it is not therapy, diagnosis, or clinical advice. Research findings represent possibilities to explore, not definitive answers about your situation.</p>
+    </div>`;
+}
+
+function buildJSReflectionBlock(key, ctx) {
+  const desc = ctx.description && ctx.description.trim().length > 10 ? ctx.description.trim() : null;
+  return `
+    <div class="story-box">
+      <div class="story-intro">📖 Based on what you shared</div>
+      ${desc ? `<div class="story-quote">"${desc.length > 150 ? desc.substring(0,150)+'…' : desc}"</div>` : ''}
+      <p class="story-body">${getMyStory(key, ctx)}</p>
+    </div>
+    <div class="disclaimer" style="margin-top:0">
+      <span class="disclaimer-icon">⚠️</span>
+      <p>This reflection draws on peer-reviewed attachment research and is offered as possibilities to explore — not as therapy, diagnosis, or definitive answers. For real-time AI personalization, run the BondBlueprint server.</p>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   PERSONALIZED BONDSTORY (JS fallback)
+═══════════════════════════════════════════ */
+function getMyStory(key, ctx) {
+  const relLabels = { romantic:'your romantic relationship', dating:'someone you\'re dating', friendship:'a close friendship', self:'your relationships in general', family:'a family relationship' };
+  const relLabel = relLabels[ctx.relationship] || 'your relationships';
+  const painMap = { overthink:'the nonstop overthinking', reassurance:'needing constant reassurance', triggered:'getting triggered by small things', abandon_fear:'the fear of abandonment running your life', walls:'the walls that go up automatically', shutdown:'shutting down in conflict', lonely:'feeling lonely even when people are close', intimacy:'intimacy feeling unsafe', chaos:'the emotional chaos', sabotage_pain:'watching yourself destroy good things', trust_pain:'not being able to trust anyone', identity:'losing yourself in relationships', partner:'your partner\'s patterns affecting you', communicate:'communication breaking down', past:'old hurts still surfacing', growth:'wanting to go deeper' };
+  const painLabel = painMap[ctx.pain] || 'your relationship patterns';
+  const desc = ctx.description && ctx.description.trim().length > 10 ? ctx.description.trim() : null;
+  const N = {
+    anxious: `You love with everything you have${desc ? ` — and in your own words, it sounds like this: <em>"${desc.length > 110 ? desc.substring(0,110)+'…' : desc}"</em>` : ''}. The love is completely real. But underneath it there\'s a nervous system that never got the memo that it\'s safe to relax. In ${relLabel}, this shows up most as <em>${painLabel}</em>. Here\'s what the research actually says about that: it is not a character flaw, it\'s not you being "too much," and it is absolutely fixable. The ECR-R instrument used to score your type is the same tool used in hundreds of clinical studies on exactly this pattern — and those studies document people making the shift from anxious to earned-secure every day.`,
+    avoidant: `You\'ve built something that looks like independence but feels — on the quiet days — more like isolation${desc ? `. You described it yourself: <em>"${desc.length > 110 ? desc.substring(0,110)+'…' : desc}"</em>` : ''}. In ${relLabel}, <em>${painLabel}</em> is where the gap lives. Here\'s what 40 years of attachment research has to say about that: you didn\'t choose this. Your nervous system made a very rational calculation early in life and it\'s been running on that calculation ever since. But the calculation is outdated. The blueprint below is built on peer-reviewed interventions that have been shown to update it — without asking you to become someone you\'re not.`,
+    fearful: `You\'re carrying something genuinely heavy: the experience of wanting closeness and fearing it at exactly the same time${desc ? `. You put it this way: <em>"${desc.length > 110 ? desc.substring(0,110)+'…' : desc}"</em>` : ''}. In ${relLabel}, <em>${painLabel}</em> is where this contradiction shows up most visibly. Main & Hesse (1990) would recognize your pattern immediately — it has a name, a mechanism, and a research-backed path through it. What you\'re experiencing is not you being broken. It\'s a nervous system running two opposite programs simultaneously. This plan interrupts that loop one step at a time, using approaches validated in clinical studies on disorganized attachment recovery.`,
+    secure: `You have a real foundation — and you\'re here because you want to go deeper, not because something is catastrophically wrong${desc ? `. You described what\'s happening: <em>"${desc.length > 110 ? desc.substring(0,110)+'…' : desc}"</em>` : ''}. In ${relLabel}, <em>${painLabel}</em> is where the edge lives. Gottman Institute research would say this: secure attachment isn\'t a destination — it\'s a practice. The most securely attached people aren\'t the ones who have it all figured out. They\'re the ones who keep being deliberate. This plan gives you the next layer of that deliberateness.`
+  };
+  return N[key] || N.secure;
+}
+
+/* ═══════════════════════════════════════════
+   CROSS-STYLE COMMUNICATION RENDERER
+═══════════════════════════════════════════ */
+function getCrossComm(myStyle, theirStyle, rel) {
+  const relLabel = { romantic:'partner', dating:'person you\'re dating', friendship:'friend', self:'person', family:'family member' }[rel] || 'person';
+  const key = (!theirStyle || theirStyle === 'unknown') ? 'unknown' : myStyle + '_' + theirStyle;
+  const data = CROSS_COMM[key] || CROSS_COMM.unknown;
+  const theirSt = (theirStyle && theirStyle !== 'unknown') ? STYLES[theirStyle] : null;
+  const mySt = STYLES[myStyle];
+
+  const comboHeader = theirSt
+    ? `<div class="combo-header">
+        <span class="combo-badge" style="background:${mySt.bg};color:${mySt.color}">${mySt.icon} You (${mySt.name})</span>
+        <span style="font-size:1rem;color:var(--text3)">↔️</span>
+        <span class="combo-badge" style="background:${theirSt.bg};color:${theirSt.color}">${theirSt.icon} Them (${theirSt.name})</span>
+      </div>`
+    : `<div class="combo-header"><span class="combo-badge" style="background:${mySt.bg};color:${mySt.color}">${mySt.icon} You (${mySt.name})</span> <span style="font-size:.85rem;color:var(--text3);font-weight:700">+ figuring out their style</span></div>`;
+
+  return `
+    ${comboHeader}
+    <div class="tldr-box"><span class="tldr-icon">⚡</span><div class="tldr-text"><span class="tldr-label">Short version</span>${data.summary}</div></div>
+    <div class="sci-drop"><div class="sci-drop-label">🔬 Science drop</div><p>${data.sciNote}</p></div>
+    <div class="cross-card">
+      <div class="cross-card-hdr"><span class="cross-card-icon">🎯</span><span class="cross-card-title">${theirSt ? '3 Things That Work With Their Style' : 'How to Spot Their Style'}</span></div>
+      ${data.tips.map(t => `<div class="cross-rule"><strong>${t.title}.</strong> ${t.body}</div>`).join('')}
+    </div>
+    <div class="cross-card">
+      <div class="cross-card-hdr"><span class="cross-card-icon">💬</span><span class="cross-card-title">Exact Scripts for Your ${relLabel}</span></div>
+      ${data.scripts.map(s => `<div class="script-box"><div class="script-lbl">${s.lbl}</div><div class="script-text">${s.text}</div></div>`).join('')}
+    </div>
+    <div class="pq-box">
+      <div class="pq-label">🙋 Questions to Ask Them (Personalized for This Pairing)</div>
+      ${data.pqs.map((q,i) => `<div class="pq-item"><span class="pq-num">${i+1}</span><span class="pq-text">${q}</span></div>`).join('')}
+    </div>
+    <div class="avoid-box"><div class="avoid-label">🚫 #1 Thing to Avoid With Their Style</div><p>${data.avoid}</p></div>
+  `;
+}
+
+function shareResults() {
+  const st = STYLES[S.quiz.style];
+  if (navigator.share) {
+    navigator.share({ title: 'My Attachment Style', text: `I just discovered I have ${st.name} Attachment! Find out yours at BondBlueprint™ — it's free.`, url: window.location.href });
+  } else {
+    const text = `I have ${st.name} Attachment! Find out yours free at BondBlueprint™`;
+    navigator.clipboard.writeText(text).then(() => alert('Copied to clipboard! Share with friends 🙌'));
+  }
+}
+
+/* ═══════════════════════════════════════════
+   RETURNING USER WELCOME
+═══════════════════════════════════════════ */
+function renderWelcomeBack(account) {
+  const banner = document.getElementById('welcome-back-banner');
+  if (!banner || !account) return;
+  const plans = account.plans || [];
+  const styleIcons = { secure:'🌿', anxious:'🌊', avoidant:'🪨', fearful:'🌪️' };
+  const relLabels  = { romantic:'romantic', dating:'dating', friendship:'friendship', self:'all relationships' };
+  const planChips  = plans.slice(0,3).map((p,i) => `<span class="wb-plan-chip" onclick="viewSavedPlan(${i})">Plan ${i+1}: ${styleIcons[p.style]||'📋'} ${(p.style||'').charAt(0).toUpperCase()+(p.style||'').slice(1)}</span>`).join('');
+  banner.style.display = 'block';
+  banner.innerHTML = `
+    <div class="welcome-back">
+      <div class="wb-avatar">${(account.name||'?').charAt(0).toUpperCase()}</div>
+      <div class="wb-text">
+        <div class="wb-name">Welcome back${account.name ? ', ' + account.name : ''}! 👋</div>
+        <div class="wb-sub">You have ${plans.length} saved blueprint${plans.length!==1?'s':''}. Your context is remembered.</div>
+        ${plans.length ? `<div class="wb-plans">${planChips}</div>` : ''}
+      </div>
+    </div>`;
+}
+
+function viewSavedPlan(idx) {
+  const account = ACCOUNT.get();
+  if (!account || !account.plans || !account.plans[idx]) return;
+  const p = account.plans[idx];
+  // Restore state and jump to plan
+  S.quiz.style = p.style;
+  S.ctx.relationship = p.relationship;
+  S.ctx.situation    = p.situation;
+  S.ctx.pain         = p.pain;
+  S.ctx.want         = p.want;
+  S.ctx.otherStyle   = p.otherStyle;
+  S.ctx.description  = p.descPreview || '';
+  S.aiReflection     = null;
+  goTo('plan');
+  renderPlan();
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async () => {
+  goTo('landing');
+  // Check if server is running (non-blocking)
+  checkServer();
+  // Show welcome-back if account exists
+  const existingAccount = ACCOUNT.get();
+  if (existingAccount && (existingAccount.name || existingAccount.email)) {
+    S.account = existingAccount;
+    renderWelcomeBack(existingAccount);
+  }
+});
+</script>
+</body>
+</html>

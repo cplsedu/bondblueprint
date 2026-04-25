@@ -1,0 +1,1263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BondBlueprint™: Talk Through It</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%;height:100%}
+body{font-family:'Nunito',sans-serif;background:#FAF7F3;color:#1A1714;min-height:100vh;overflow-x:hidden;height:100%}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,textarea{font-family:inherit;font-size:16px;-webkit-appearance:none}
+textarea{resize:none}
+
+:root{
+  --bg:#FAF7F3;
+  --surface:#fff;
+  --primary:#2C4A35;
+  --primary-h:#1E3526;
+  --primary-lt:#E6F0E9;
+  --accent:#E07A3A;
+  --accent-lt:#FDF0E6;
+  --gold:#D4A843;
+  --text:#1A1714;
+  --text2:#5A5450;
+  --text3:#9A908A;
+  --border:#EAE3D9;
+  --sh:0 2px 12px rgba(0,0,0,.07);
+  --sh2:0 8px 32px rgba(0,0,0,.12);
+  --r:18px;
+  --rsm:12px;
+  --rpill:100px;
+}
+
+/* ── SCREENS ─────────────────────────────── */
+#app{min-height:100vh;display:flex;flex-direction:column}
+.screen{display:none;flex-direction:column;min-height:100vh}
+.screen.active{display:flex}
+
+/* ── LANDING ─────────────────────────────── */
+#screen-landing{background:var(--bg)}
+.land-wrap{flex:1;display:flex;flex-direction:column;max-width:520px;margin:0 auto;width:100%;padding:28px 20px 32px}
+.land-logo{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:var(--primary);margin-bottom:32px}
+.land-logo span{color:var(--accent)}
+.land-h{font-family:'Playfair Display',serif;font-size:clamp(1.9rem,7vw,2.8rem);font-weight:800;line-height:1.15;color:var(--text);margin-bottom:10px}
+.land-h em{color:var(--accent);font-style:italic}
+.land-sub{font-size:.97rem;color:var(--text2);line-height:1.65;font-weight:600;margin-bottom:28px;max-width:440px}
+.situation-box{background:var(--surface);border:2.5px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:14px;transition:border-color .18s}
+.situation-box:focus-within{border-color:var(--primary)}
+.situation-textarea{width:100%;border:none;outline:none;font-size:1rem;font-weight:600;color:var(--text);line-height:1.65;min-height:120px;background:transparent;display:block}
+.situation-textarea::placeholder{color:var(--text3);font-weight:600}
+.char-hint{font-size:.72rem;font-weight:700;color:var(--text3);text-align:right;margin-top:6px}
+.context-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:20px}
+.ctx-chip{padding:8px 14px;border-radius:var(--rpill);font-size:.82rem;font-weight:800;border:2px solid var(--border);background:var(--surface);color:var(--text2);transition:all .15s;cursor:pointer}
+.ctx-chip.active{border-color:var(--primary);background:var(--primary-lt);color:var(--primary)}
+.ctx-section-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:8px}
+.start-btn{width:100%;padding:17px;border-radius:var(--rpill);background:var(--primary);color:#fff;font-size:1.05rem;font-weight:900;box-shadow:0 4px 20px rgba(44,74,53,.25);transition:all .18s;letter-spacing:-.01em}
+.start-btn:hover{background:var(--primary-h);transform:translateY(-2px);box-shadow:0 8px 28px rgba(44,74,53,.3)}
+.start-btn:disabled{opacity:.45;pointer-events:none}
+.land-note{text-align:center;font-size:.75rem;font-weight:700;color:var(--text3);margin-top:10px;line-height:1.5}
+
+/* Previous sessions */
+.sessions-section{margin-top:28px}
+.sessions-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin-bottom:10px}
+.session-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:16px 18px;display:flex;align-items:center;gap:12px;cursor:pointer;transition:all .18s;margin-bottom:8px;box-shadow:var(--sh)}
+.session-card:hover{border-color:var(--primary);transform:translateY(-1px)}
+.sc-icon{font-size:1.4rem;flex-shrink:0}
+.sc-body{flex:1;min-width:0}
+.sc-topic{font-size:.9rem;font-weight:800;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.sc-meta{font-size:.75rem;font-weight:700;color:var(--text3)}
+.sc-arrow{font-size:.9rem;color:var(--text3);font-weight:700;flex-shrink:0}
+.new-session-btn{width:100%;padding:13px;border-radius:var(--rpill);border:2px dashed var(--border);background:transparent;font-size:.9rem;font-weight:800;color:var(--text3);transition:all .18s;margin-top:4px}
+.new-session-btn:hover{border-color:var(--primary);color:var(--primary)}
+
+/* ── CHAT SCREEN ─────────────────────────── */
+#screen-chat{background:var(--bg);height:100vh;overflow:hidden}
+.chat-layout{display:flex;flex-direction:column;height:100vh;max-width:520px;margin:0 auto;width:100%}
+
+/* Chat header */
+.chat-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;background:var(--surface);border-bottom:2px solid var(--border);position:relative;z-index:10;flex-shrink:0;box-shadow:var(--sh)}
+.chat-back{display:flex;align-items:center;gap:5px;font-size:.85rem;font-weight:800;color:var(--text2);padding:6px 10px;border-radius:var(--rpill);background:var(--border);transition:all .15s}
+.chat-back:hover{background:#ddd}
+.chat-title{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:800;color:var(--primary);position:absolute;left:50%;transform:translateX(-50%)}
+.credits-badge{display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--rpill);font-size:.78rem;font-weight:900;cursor:pointer;transition:all .15s}
+.credits-badge.free{background:var(--primary-lt);color:var(--primary)}
+.credits-badge.low{background:#FEF3C7;color:#92400E}
+.credits-badge.empty{background:#FEE2E2;color:#991B1B}
+.credits-badge.paid{background:var(--primary-lt);color:var(--primary)}
+
+/* Messages */
+.messages-wrap{flex:1;overflow-y:auto;padding:20px 16px;display:flex;flex-direction:column;gap:14px;-webkit-overflow-scrolling:touch}
+.msg{display:flex;align-items:flex-end;gap:8px;animation:msgIn .3s ease forwards}
+@keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{justify-content:flex-end}
+.msg.ai{justify-content:flex-start}
+.msg-avatar{width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;font-weight:900}
+.msg-avatar.ai-av{background:var(--primary);color:#fff}
+.bubble{padding:14px 17px;border-radius:18px;max-width:82%;line-height:1.65;font-size:.95rem;font-weight:600}
+.msg.ai .bubble{background:var(--surface);color:var(--text);border-radius:18px 18px 18px 4px;box-shadow:var(--sh);border:1.5px solid var(--border)}
+.msg.user .bubble{background:var(--primary);color:#fff;border-radius:18px 18px 4px 18px}
+.bubble p{margin-bottom:8px}
+.bubble p:last-child{margin-bottom:0}
+.msg-time{font-size:.68rem;font-weight:700;color:var(--text3);margin-top:4px;text-align:right}
+.msg.user .msg-time{text-align:right}
+.msg.ai .msg-time{text-align:left;padding-left:38px}
+
+/* Typing indicator */
+.typing-wrap{display:flex;align-items:flex-end;gap:8px}
+.typing-bubble{background:var(--surface);border:1.5px solid var(--border);padding:14px 18px;border-radius:18px 18px 18px 4px;box-shadow:var(--sh);display:flex;gap:5px;align-items:center}
+.typing-dot{width:7px;height:7px;border-radius:50%;background:var(--text3);animation:typingBounce 1.2s ease infinite}
+.typing-dot:nth-child(2){animation-delay:.2s}
+.typing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+
+/* Science tag inside AI messages */
+.science-tag{display:inline-flex;align-items:center;gap:5px;background:#EEF6FF;border-radius:var(--rpill);padding:3px 10px;font-size:.72rem;font-weight:800;color:#1E40AF;margin-top:6px}
+
+/* Input bar */
+.input-bar{padding:12px 16px;background:var(--surface);border-top:2px solid var(--border);flex-shrink:0}
+.input-row{display:flex;align-items:flex-end;gap:8px;background:#F5F2EE;border-radius:20px;padding:8px 8px 8px 16px;border:2px solid transparent;transition:border-color .18s}
+.input-row:focus-within{border-color:var(--primary);background:var(--surface)}
+.msg-input{flex:1;border:none;outline:none;background:transparent;font-size:.97rem;font-weight:600;color:var(--text);max-height:120px;overflow-y:auto;line-height:1.5;padding:4px 0}
+.msg-input::placeholder{color:var(--text3)}
+.send-btn{width:38px;height:38px;border-radius:50%;background:var(--primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;transition:all .15s}
+.send-btn:hover{background:var(--primary-h);transform:scale(1.08)}
+.send-btn:disabled{opacity:.4;pointer-events:none}
+.input-hint{font-size:.7rem;font-weight:700;color:var(--text3);text-align:center;margin-top:7px}
+
+/* ── PAYWALL OVERLAY ─────────────────────── */
+.paywall-overlay{position:fixed;inset:0;background:rgba(26,23,20,.6);z-index:100;display:none;align-items:flex-end;justify-content:center;padding:20px}
+.paywall-overlay.show{display:flex}
+.paywall-sheet{background:var(--surface);border-radius:var(--r) var(--r) 0 0;padding:28px 24px 40px;width:100%;max-width:520px;animation:slideUp .35s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.pw-emoji{font-size:2.8rem;text-align:center;margin-bottom:12px}
+.pw-sheet-h{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;text-align:center;margin-bottom:8px;line-height:1.2}
+.pw-sheet-p{font-size:.9rem;color:var(--text2);text-align:center;line-height:1.6;font-weight:600;margin-bottom:24px}
+.credit-options{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.credit-opt{background:#F8F6F2;border:2.5px solid var(--border);border-radius:var(--r);padding:18px 20px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:space-between}
+.credit-opt:hover{border-color:var(--primary)}
+.credit-opt.sel{border-color:var(--primary);background:var(--primary-lt)}
+.credit-opt-left{display:flex;flex-direction:column;gap:3px}
+.credit-opt-name{font-weight:900;font-size:.97rem;color:var(--text)}
+.credit-opt-desc{font-size:.8rem;font-weight:700;color:var(--text2)}
+.credit-opt-price{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;color:var(--primary)}
+.pw-cta-btn{width:100%;padding:17px;border-radius:var(--rpill);background:var(--accent);color:#fff;font-size:1.05rem;font-weight:900;box-shadow:0 4px 20px rgba(224,122,58,.25);transition:all .18s}
+.pw-cta-btn:hover{opacity:.92;transform:translateY(-2px)}
+.pw-secure{text-align:center;font-size:.75rem;font-weight:700;color:var(--text3);margin-top:10px}
+.pw-dismiss{display:block;text-align:center;font-size:.8rem;font-weight:700;color:var(--text3);text-decoration:underline;text-underline-offset:3px;margin-top:12px;cursor:pointer}
+
+/* ── DISCLAIMER BAR ──────────────────────── */
+.edu-bar{background:#F5F2EE;padding:10px 16px;text-align:center;font-size:.7rem;font-weight:700;color:var(--text3);line-height:1.5;flex-shrink:0}
+.edu-bar a{color:var(--text3);text-decoration:underline}
+
+/* ── WELCOME BACK ────────────────────────── */
+.wb-strip{background:var(--primary-lt);border-radius:var(--r);padding:14px 18px;display:flex;align-items:center;gap:12px;margin-bottom:24px;border:1.5px solid rgba(44,74,53,.15)}
+.wb-av{width:36px;height:36px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:.9rem;font-weight:900;color:#fff;flex-shrink:0}
+.wb-copy{flex:1}
+.wb-name{font-weight:800;font-size:.9rem;color:var(--text)}
+.wb-sub{font-size:.75rem;font-weight:700;color:var(--text2);margin-top:1px}
+
+/* ── CHAT DATE DIVIDER ───────────────────── */
+.date-divider{text-align:center;font-size:.72rem;font-weight:800;color:var(--text3);padding:4px 0;position:relative}
+.date-divider::before,.date-divider::after{content:'';position:absolute;top:50%;width:30%;height:1px;background:var(--border)}
+.date-divider::before{left:0}
+.date-divider::after{right:0}
+
+/* ── OPENING STATE ───────────────────────── */
+.opening-card{background:linear-gradient(135deg,#E6F0E9,#EEF2FF);border-radius:var(--r);padding:20px;border:1.5px solid rgba(44,74,53,.12);margin-bottom:6px}
+.opening-label{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);margin-bottom:6px}
+.opening-text{font-size:.9rem;color:var(--text2);line-height:1.6;font-weight:600}
+
+/* ── PLAN TEASER ─────────────────────────── */
+.plan-teaser{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);padding:20px;margin:8px 16px 16px;box-shadow:var(--sh)}
+.pt-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:8px}
+.pt-h{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:var(--text);margin-bottom:8px;line-height:1.25}
+.pt-body{font-size:.85rem;color:var(--text2);line-height:1.6;font-weight:600;margin-bottom:14px}
+.pt-locks{display:flex;flex-direction:column;gap:7px;margin-bottom:16px}
+.pt-lock{font-size:.85rem;font-weight:700;color:var(--text2);display:flex;align-items:center;gap:7px}
+.pt-btn{width:100%;padding:14px;border-radius:var(--rpill);background:var(--primary);color:#fff;font-size:.95rem;font-weight:900;transition:all .18s}
+.pt-btn:hover{background:var(--primary-h)}
+
+/* ── ACCOUNT FORM (inside paywall) ───────── */
+.acct-mini{margin-top:16px;border-top:1.5px solid var(--border);padding-top:16px}
+.acct-mini-label{font-size:.75rem;font-weight:800;color:var(--text2);margin-bottom:10px}
+.acct-row{display:flex;gap:8px}
+.acct-in{flex:1;background:#F5F2EE;border:2px solid var(--border);border-radius:var(--rsm);padding:11px 14px;font-size:.9rem;font-weight:600;color:var(--text);outline:none;transition:border-color .18s}
+.acct-in:focus{border-color:var(--primary)}
+.acct-in::placeholder{color:var(--text3)}
+
+@media(max-width:360px){
+  .bubble{max-width:90%}
+  .land-h{font-size:1.7rem}
+}
+
+/* ── ACCOUNT GATE ────────────────────────── */
+#screen-gate{background:var(--bg)}
+.gate-wrap{flex:1;display:flex;flex-direction:column;max-width:480px;margin:0 auto;width:100%;padding:40px 24px 40px;justify-content:center}
+.gate-logo{font-family:'Playfair Display',serif;font-size:1.2rem;font-weight:800;color:var(--primary);margin-bottom:40px;text-align:center}
+.gate-logo span{color:var(--accent)}
+.gate-icon{font-size:2.6rem;text-align:center;margin-bottom:16px}
+.gate-h{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--text);text-align:center;line-height:1.2;margin-bottom:10px}
+.gate-sub{font-size:.92rem;font-weight:600;color:var(--text2);text-align:center;line-height:1.65;margin-bottom:32px}
+.gate-field{margin-bottom:14px}
+.gate-label{display:block;font-size:.78rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--text2);margin-bottom:7px}
+.gate-input{width:100%;background:var(--surface);border:2px solid var(--border);border-radius:var(--rsm);padding:14px 16px;font-size:1rem;font-weight:600;color:var(--text);outline:none;transition:border-color .18s}
+.gate-input:focus{border-color:var(--primary)}
+.gate-input::placeholder{color:var(--text3);font-weight:600}
+.gate-error{font-size:.82rem;font-weight:700;color:#DC2626;margin-top:8px;display:none}
+.gate-error.show{display:block}
+.gate-privacy{font-size:.75rem;font-weight:700;color:var(--text3);text-align:center;line-height:1.55;margin-bottom:20px}
+.gate-privacy a{color:var(--text3);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+.gate-cta{width:100%;padding:16px;border-radius:var(--rpill);background:var(--primary);color:#fff;font-size:1.05rem;font-weight:900;box-shadow:0 4px 20px rgba(44,74,53,.25);transition:all .18s;letter-spacing:-.01em}
+.gate-cta:hover{background:var(--primary-h);transform:translateY(-2px)}
+.gate-cta:disabled{opacity:.45;pointer-events:none}
+.gate-situation-preview{background:var(--primary-lt);border-radius:var(--r);padding:14px 18px;margin-bottom:28px;border:1.5px solid rgba(44,74,53,.15)}
+.gate-preview-label{font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);margin-bottom:5px}
+.gate-preview-text{font-size:.9rem;font-weight:600;color:var(--text);line-height:1.55;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+
+/* ── PRIVACY MODAL ───────────────────────── */
+.privacy-overlay{position:fixed;inset:0;background:rgba(26,23,20,.6);z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+.privacy-overlay.show{display:flex}
+.privacy-sheet{background:var(--surface);border-radius:var(--r);padding:28px 24px 32px;width:100%;max-width:480px;max-height:80vh;overflow-y:auto;animation:fadeScaleIn .25s ease}
+@keyframes fadeScaleIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.priv-h{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:800;color:var(--text);margin-bottom:6px}
+.priv-intro{font-size:.88rem;color:var(--text2);line-height:1.65;font-weight:600;margin-bottom:20px}
+.priv-section{margin-bottom:18px}
+.priv-section-h{font-size:.75rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--primary);margin-bottom:8px}
+.priv-section p{font-size:.88rem;color:var(--text2);line-height:1.65;font-weight:600;margin-bottom:6px}
+.priv-section p:last-child{margin-bottom:0}
+.priv-delete{width:100%;padding:13px;border-radius:var(--rpill);border:2px solid #DC2626;background:transparent;color:#DC2626;font-size:.9rem;font-weight:800;transition:all .18s;margin-top:8px}
+.priv-delete:hover{background:#FEF2F2}
+.priv-close{width:100%;padding:13px;border-radius:var(--rpill);background:var(--primary);color:#fff;font-size:.9rem;font-weight:800;transition:all .18s;margin-top:8px}
+.priv-close:hover{background:var(--primary-h)}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════════════ LANDING ═══════════════ -->
+<div id="screen-landing" class="screen active">
+  <div class="land-wrap">
+    <div class="land-logo">Bond<span>Blueprint</span>™</div>
+    <div id="wb-strip-wrap"></div>
+    <h1 class="land-h">Something is happening.<br><em>Let's figure it out.</em></h1>
+    <p class="land-sub">Describe what's going on in your relationship right now. The more specific you are, the more useful this gets. Powered by peer-reviewed attachment science.</p>
+
+    <div class="situation-box">
+      <textarea class="situation-textarea" id="situation-input" placeholder="Something happened, or maybe it's been building for a while... Type it out here. Be as specific as you want." maxlength="800" oninput="onSituationInput()" rows="5"></textarea>
+      <div class="char-hint" id="char-hint">0 / 800</div>
+    </div>
+
+    <div class="ctx-section-label">Who is this about? (optional)</div>
+    <div class="context-chips" id="rel-chips">
+      <button class="ctx-chip" data-val="romantic" onclick="toggleChip(this,'rel')">💑 Romantic partner</button>
+      <button class="ctx-chip" data-val="dating" onclick="toggleChip(this,'rel')">🌹 Someone I'm dating</button>
+      <button class="ctx-chip" data-val="friendship" onclick="toggleChip(this,'rel')">🤝 Friend</button>
+      <button class="ctx-chip" data-val="self" onclick="toggleChip(this,'rel')">🪞 Just me + my patterns</button>
+    </div>
+
+    <div class="ctx-section-label" style="margin-top:4px">What do you most want right now? (optional)</div>
+    <div class="context-chips" id="want-chips">
+      <button class="ctx-chip" data-val="understand" onclick="toggleChip(this,'want')">🔍 Understand what's happening</button>
+      <button class="ctx-chip" data-val="say" onclick="toggleChip(this,'want')">💬 Figure out what to say</button>
+      <button class="ctx-chip" data-val="feel" onclick="toggleChip(this,'want')">💛 Feel less alone in this</button>
+      <button class="ctx-chip" data-val="decide" onclick="toggleChip(this,'want')">🤔 Help me decide what to do</button>
+    </div>
+
+    <button class="start-btn" id="start-btn" onclick="startChat()" disabled>Talk it through →</button>
+    <p class="land-note">3 free messages to start. Not therapy, just relationship science, made personal. <a style="color:var(--text3);text-decoration:underline;text-underline-offset:2px;cursor:pointer" onclick="showPrivacyModal()">Privacy</a></p>
+
+    <div class="sessions-section" id="sessions-section" style="display:none">
+      <div class="sessions-label">Your recent conversations</div>
+      <div id="sessions-list"></div>
+      <button class="new-session-btn" onclick="clearForNewSession()">+ Start a new conversation</button>
+    </div>
+  </div>
+  <div class="edu-bar">
+    BondBlueprint™ is psychoeducational content based on peer-reviewed research. It is not therapy, diagnosis, or clinical advice. <a href="https://www.psychologytoday.com/us/therapists" target="_blank">Find a therapist</a>
+  </div>
+</div>
+
+<!-- ═══════════ ACCOUNT GATE ════════════ -->
+<div id="screen-gate" class="screen">
+  <div class="gate-wrap">
+    <div class="gate-logo">Bond<span>Blueprint</span>™</div>
+    <div class="gate-icon">🔐</div>
+    <h2 class="gate-h">One quick thing before we start</h2>
+    <p class="gate-sub">Enter your email so we can save this conversation. You can come back to it anytime, and we'll remember your context for future sessions.</p>
+
+    <div class="gate-situation-preview" id="gate-preview">
+      <div class="gate-preview-label">Your situation</div>
+      <div class="gate-preview-text" id="gate-preview-text"></div>
+    </div>
+
+    <div class="gate-field">
+      <label class="gate-label" for="gate-email">Email address <span style="color:#DC2626">*</span></label>
+      <input class="gate-input" id="gate-email" type="email" placeholder="you@example.com" autocomplete="email" oninput="onGateEmailInput()">
+      <div class="gate-error" id="gate-email-error"></div>
+    </div>
+
+    <div class="gate-field">
+      <label class="gate-label" for="gate-name">First name <span style="color:var(--text3);font-weight:600;text-transform:none;letter-spacing:0">(optional)</span></label>
+      <input class="gate-input" id="gate-name" type="text" placeholder="What should we call you?" autocomplete="given-name">
+    </div>
+
+    <p class="gate-privacy">Your data is stored privately and never sold or shared. <a onclick="showPrivacyModal()">Read our privacy promise →</a></p>
+
+    <button class="gate-cta" id="gate-cta" onclick="submitAccountGate()" disabled>Start my conversation →</button>
+  </div>
+  <div class="edu-bar">BondBlueprint™ is psychoeducational content. Not therapy. <a href="https://www.psychologytoday.com/us/therapists" target="_blank">Find a therapist</a></div>
+</div>
+
+<!-- ═══════════════ CHAT ═══════════════ -->
+<div id="screen-chat" class="screen">
+  <div class="chat-layout">
+    <div class="chat-header">
+      <button class="chat-back" onclick="goToLanding()">← Back</button>
+      <div class="chat-title">Bond<span style="color:var(--accent)">Blueprint</span>™</div>
+      <div class="credits-badge free" id="credits-badge" onclick="showPaywall()">💬 3 free</div>
+    </div>
+
+    <div class="messages-wrap" id="messages-wrap"></div>
+
+    <div id="plan-teaser-wrap"></div>
+
+    <div class="input-bar">
+      <div class="input-row">
+        <textarea class="msg-input" id="msg-input" placeholder="Type your message..." rows="1" oninput="autoResizeInput(this)" onkeydown="handleMsgKeydown(event)"></textarea>
+        <button class="send-btn" id="send-btn" onclick="sendMessage()">→</button>
+      </div>
+      <div class="input-hint" id="input-hint">Reply to continue the conversation</div>
+    </div>
+
+    <div class="edu-bar">Not therapy. Peer-reviewed relationship science only. For clinical support, <a href="https://www.psychologytoday.com/us/therapists" target="_blank">find a therapist</a>.</div>
+  </div>
+</div>
+
+<!-- ═══════════════ PAYWALL OVERLAY ═══════════════ -->
+<div class="paywall-overlay" id="paywall-overlay" onclick="closePaywallOnBg(event)">
+  <div class="paywall-sheet" id="paywall-sheet">
+    <div class="pw-emoji">💬</div>
+    <h2 class="pw-sheet-h">Keep the conversation going</h2>
+    <p class="pw-sheet-p">You've used your 3 free messages. Top up to continue this conversation and start new ones whenever something comes up.</p>
+
+    <div class="credit-options">
+      <div class="credit-opt sel" id="opt-10" onclick="selectCredit('10')">
+        <div class="credit-opt-left">
+          <div class="credit-opt-name">20 messages</div>
+          <div class="credit-opt-desc">Good for 2 to 3 conversations</div>
+        </div>
+        <div class="credit-opt-price">$10</div>
+      </div>
+      <div class="credit-opt" id="opt-25" onclick="selectCredit('25')">
+        <div class="credit-opt-left">
+          <div class="credit-opt-name">60 messages</div>
+          <div class="credit-opt-desc">Best value. Works out to ~$0.42 each</div>
+        </div>
+        <div class="credit-opt-price">$25</div>
+      </div>
+    </div>
+
+    <div class="acct-mini">
+      <div class="acct-mini-label">Save your conversations (free)</div>
+      <div class="acct-row">
+        <input class="acct-in" id="pw-name" type="text" placeholder="First name" autocomplete="given-name">
+        <input class="acct-in" id="pw-email" type="email" placeholder="Email address" autocomplete="email">
+      </div>
+    </div>
+
+    <button class="pw-cta-btn" style="margin-top:16px" onclick="mockAddCredits()">Add Credits →</button>
+    <div class="pw-secure">🔒 Secure checkout · Credits never expire</div>
+    <span class="pw-dismiss" onclick="closePaywall()">Maybe later</span>
+  </div>
+</div>
+
+<!-- ═══════════════ PRIVACY MODAL ═══════════════ -->
+<div class="privacy-overlay" id="privacy-overlay" onclick="closePrivacyOnBg(event)">
+  <div class="privacy-sheet" id="privacy-sheet">
+    <h2 class="priv-h">🔒 Our Privacy Promise</h2>
+    <p class="priv-intro">We take your privacy seriously. Here's exactly what we do and don't do with your information.</p>
+
+    <div class="priv-section">
+      <div class="priv-section-h">What we store</div>
+      <p>Your name and email address (to identify your account and save your conversations).</p>
+      <p>Your conversation history, stored locally on your device and optionally on our server so you can access it across sessions.</p>
+      <p>Your message credit balance.</p>
+    </div>
+
+    <div class="priv-section">
+      <div class="priv-section-h">What we never do</div>
+      <p>We never sell your data to third parties. Ever.</p>
+      <p>We never share your conversation content with advertisers, marketers, or data brokers.</p>
+      <p>We never use your personal situation to train AI models without explicit consent.</p>
+      <p>We never display ads inside BondBlueprint.</p>
+    </div>
+
+    <div class="priv-section">
+      <div class="priv-section-h">How your conversations are used</div>
+      <p>Your situation description is sent to our AI service (Anthropic Claude) to generate a personalized response. Anthropic processes this under their privacy policy and does not use it to train models per their enterprise terms.</p>
+      <p>Conversations are stored encrypted and accessible only to you via your account.</p>
+    </div>
+
+    <div class="priv-section">
+      <div class="priv-section-h">Your rights</div>
+      <p>You can delete all your data at any time using the button below. This removes everything stored on this device immediately.</p>
+    </div>
+
+    <button class="priv-delete" onclick="deleteAllData()">🗑 Delete all my data</button>
+    <button class="priv-close" onclick="closePrivacyModal()">Got it, I'm comfortable</button>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script>
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const CHAT = {
+  messages: [],          // {role, content, ts}
+  credits: 3,            // free messages to start
+  isPaid: false,
+  sessionId: null,
+  context: { rel: null, want: null },
+  situation: '',
+  serverAvail: false,
+  account: null,
+  selectedCredit: '10'
+};
+
+/* ═══════════════════════════════════════════
+   DEVICE FINGERPRINT + ANTI-ABUSE
+   Tracks free usage across localStorage,
+   sessionStorage, and a 2-year cookie so
+   clearing one store alone doesn't reset it.
+═══════════════════════════════════════════ */
+const DEVICE = {
+  LS_KEY:  'bb2_fp',
+  SS_KEY:  'bb2_fp_s',
+  CK_NAME: 'bb2fp',
+  USED_KEY:'bb2_fp_used',
+
+  _hash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) { h = Math.imul(31, h) + str.charCodeAt(i) | 0; }
+    return Math.abs(h).toString(36);
+  },
+
+  _build() {
+    return this._hash([
+      navigator.userAgent,
+      screen.width + 'x' + screen.height,
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      navigator.hardwareConcurrency || 0,
+      (window.devicePixelRatio || 1).toFixed(1),
+      navigator.language || ''
+    ].join('|')) + '_' + Date.now().toString(36);
+  },
+
+  _getCookie() {
+    const m = document.cookie.match(new RegExp('(?:^|; )' + this.CK_NAME + '=([^;]*)'));
+    return m ? decodeURIComponent(m[1]) : null;
+  },
+
+  _setCookie(val) {
+    const exp = new Date(); exp.setFullYear(exp.getFullYear() + 2);
+    document.cookie = `${this.CK_NAME}=${encodeURIComponent(val)};expires=${exp.toUTCString()};path=/;SameSite=Strict`;
+  },
+
+  getId() {
+    const stored = localStorage.getItem(this.LS_KEY)
+                || sessionStorage.getItem(this.SS_KEY)
+                || this._getCookie();
+    const id = stored || this._build();
+    try { localStorage.setItem(this.LS_KEY, id); } catch {}
+    try { sessionStorage.setItem(this.SS_KEY, id); } catch {}
+    this._setCookie(id);
+    return id;
+  },
+
+  getUsed() {
+    // Cross-storage: use max value found (most restrictive)
+    const fromLS = parseInt(localStorage.getItem(this.USED_KEY) || '0', 10);
+    const fromSS = parseInt(sessionStorage.getItem(this.USED_KEY + '_s') || '0', 10);
+    return Math.max(fromLS, fromSS);
+  },
+
+  recordUsed(n) {
+    try { localStorage.setItem(this.USED_KEY, String(n)); } catch {}
+    try { sessionStorage.setItem(this.USED_KEY + '_s', String(n)); } catch {}
+  },
+
+  hasFreeLeft() { return this.getUsed() < 3; },
+
+  consumeFree() {
+    const n = this.getUsed() + 1;
+    this.recordUsed(n);
+    return n;
+  },
+
+  clearAll() {
+    try { localStorage.removeItem(this.LS_KEY); localStorage.removeItem(this.USED_KEY); } catch {}
+    try { sessionStorage.removeItem(this.SS_KEY); sessionStorage.removeItem(this.USED_KEY + '_s'); } catch {}
+    this._setCookie('');
+  }
+};
+
+/* ═══════════════════════════════════════════
+   TEMP EMAIL DETECTION
+═══════════════════════════════════════════ */
+const TEMP_DOMAINS = new Set([
+  'mailinator.com','guerrillamail.com','guerrillamail.org','guerrillamail.biz',
+  'guerrillamail.de','guerrillamail.net','guerrillamail.info','grr.la',
+  'tempmail.com','temp-mail.org','10minutemail.com','10minutemail.net',
+  'throwam.com','throwam.net','yopmail.com','yopmail.fr','cool.fr.nf',
+  'jetable.fr.nf','nospam.ze.tc','nomail.xl.cx','mega.zik.dj',
+  'speed.1s.fr','courriel.fr.nf','moncourrier.fr.nf','monemail.fr.nf',
+  'monmail.fr.nf','spamgourmet.com','trashmail.at','trashmail.com',
+  'trashmail.me','trashmail.io','trashmail.net','mailnull.com',
+  'spamcero.com','filzmail.com','sharklasers.com','guerrillamailblock.com',
+  'spam4.me','spamfree24.org','spamfree24.de','mytrashmailer.com',
+  'fakeinbox.com','dispostable.com','maildrop.cc','discard.email',
+  'spamgob.com','fakemail.net','mailnesia.com','spamfree.eu',
+  'owlpic.com','fleckens.hu','cuvox.de','dayrep.com','einrot.com',
+  'fleckens.hu','gustr.com','h8s.org','hashsend.com','hulapla.de',
+  'incognitomail.com','incognitomail.net','incognitomail.org','inoutmail.de',
+  'inoutmail.eu','inoutmail.info','inoutmail.net','jetable.com','jetable.net',
+  'jetable.org','jetable.pp.ua','kasmail.com','klzlk.com','kurzepost.de',
+  'lhsdv.com','lifebyfood.com','link2mail.net','litedrop.com',
+  'mail1a.de','mailbidon.com','mailblocks.com','mailbucket.org',
+  'mailcat.biz','mailcatch.com','maildx.com','mailfreeonline.com',
+  'mailguard.me','mailimate.com','mailinater.com','mailme.lv',
+  'mailnew.com','mailnull.com','mailseal.de','mailshell.com',
+  'mailslapping.com','mailslite.com','mailspam.me','mailspam.xyz',
+  'mailzilla.com','mailzilla.org','meltmail.com','momentics.ru',
+  'moncourrier.fr.nf','monemail.fr.nf','monmail.fr.nf','mytrashmail.com',
+  'nobulk.com','obobbo.com','onewaymail.com','pjjkp.com',
+  'privy-mail.com','privy-mail.de','privymail.de','proxymail.eu',
+  'rklips.com','rmqkr.net','royal.net','rppkn.com','rtrtr.com',
+  'sandelf.de','sharedmailbox.org','she.loves.madrid.com','sibmail.com',
+  'slopsbox.com','slushmail.com','smashmail.de','spamcon.org',
+  'spamdecoy.net','spamfree.eu','spamgob.com','spamhereplease.com',
+  'spamthisplease.com','speed.1s.fr','supergreatmail.com','suremail.info',
+  'tempe-mail.com','temporaryemail.net','thankyou2010.com','thisisnotmyrealemail.com',
+  'throwam.com','throwam.net','throwly.com','trbvm.com','trillianpro.com',
+  'tyldd.com','uggsrock.com','uroid.com','was-null.de','webm4il.info',
+  'wegwerfadresse.de','wetrainbayarea.com','wilemail.com','willhackforfood.biz',
+  'wuzupmail.net','www.e4ward.com','xagloo.com','xcompress.com',
+  'xemaps.com','xents.com','xmaily.com','xoxy.net','xyzfree.net',
+  'yep.it','yogamaven.com','yopmail.pp.ua','yuurok.com',
+  'za.com','zehnminuten.de','zehnminutenmail.de','zippymail.info',
+  'zoemail.net','zomg.info'
+]);
+
+function isTempEmail(email) {
+  const domain = email.split('@')[1]?.toLowerCase();
+  return !domain || TEMP_DOMAINS.has(domain);
+}
+
+/* ═══════════════════════════════════════════
+   SESSION / ACCOUNT STORE
+═══════════════════════════════════════════ */
+const STORE = {
+  KEY: 'bb2_v1',
+  get()       { try { return JSON.parse(localStorage.getItem(this.KEY)) || {}; } catch { return {}; } },
+  save(d)     { try { localStorage.setItem(this.KEY, JSON.stringify(d)); } catch {} },
+  getSessions() { return (this.get().sessions || []).slice(0, 6); },
+  saveSession(sess) {
+    const d = this.get();
+    d.sessions = d.sessions || [];
+    // Replace if same id, otherwise prepend
+    const idx = d.sessions.findIndex(s => s.id === sess.id);
+    if (idx > -1) d.sessions[idx] = sess; else d.sessions.unshift(sess);
+    d.sessions = d.sessions.slice(0, 10);
+    this.save(d);
+  },
+  getAccount()  { return this.get().account || null; },
+  saveAccount(a){ const d = this.get(); d.account = a; this.save(d); },
+  getCredits()  { return this.get().credits ?? 3; },
+  saveCredits(n){ const d = this.get(); d.credits = n; this.save(d); }
+};
+
+/* ═══════════════════════════════════════════
+   UTILITIES
+═══════════════════════════════════════════ */
+function cleanAI(text) {
+  // Remove em-dashes and double hyphens
+  return text.replace(/\u2014/g, ',').replace(/\u2013/g, ',').replace(/ -- /g, ', ').replace(/--/g, ',');
+}
+
+function timeAgo(isoStr) {
+  const diff = (Date.now() - new Date(isoStr)) / 1000;
+  if (diff < 60)    return 'just now';
+  if (diff < 3600)  return Math.floor(diff/60) + 'm ago';
+  if (diff < 86400) return Math.floor(diff/3600) + 'h ago';
+  if (diff < 604800)return Math.floor(diff/86400) + 'd ago';
+  return new Date(isoStr).toLocaleDateString('en-US', {month:'short',day:'numeric'});
+}
+
+function formatTime(isoStr) {
+  return new Date(isoStr).toLocaleTimeString('en-US', {hour:'numeric',minute:'2-digit'});
+}
+
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2); }
+
+async function checkServer() {
+  try {
+    const r = await fetch('/api/health', { signal: AbortSignal.timeout(700) });
+    CHAT.serverAvail = r.ok;
+  } catch { CHAT.serverAvail = false; }
+}
+
+/* ═══════════════════════════════════════════
+   LANDING PAGE
+═══════════════════════════════════════════ */
+function onSituationInput() {
+  const ta   = document.getElementById('situation-input');
+  const hint = document.getElementById('char-hint');
+  const btn  = document.getElementById('start-btn');
+  hint.textContent = ta.value.length + ' / 800';
+  btn.disabled = ta.value.trim().length < 15;
+}
+
+function toggleChip(el, group) {
+  document.querySelectorAll(`#${group === 'rel' ? 'rel' : 'want'}-chips .ctx-chip`).forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  CHAT.context[group] = el.dataset.val;
+}
+
+function clearForNewSession() {
+  document.getElementById('situation-input').value = '';
+  document.getElementById('char-hint').textContent = '0 / 800';
+  document.getElementById('start-btn').disabled = true;
+  document.querySelectorAll('.ctx-chip').forEach(c => c.classList.remove('active'));
+  CHAT.context = { rel: null, want: null };
+}
+
+function renderSessions() {
+  const sessions = STORE.getSessions();
+  if (!sessions.length) return;
+  const section = document.getElementById('sessions-section');
+  const list    = document.getElementById('sessions-list');
+  section.style.display = 'block';
+  list.innerHTML = sessions.map(s => `
+    <div class="session-card" onclick="resumeSession('${s.id}')">
+      <span class="sc-icon">💬</span>
+      <div class="sc-body">
+        <div class="sc-topic">${s.topic || 'Conversation'}</div>
+        <div class="sc-meta">${timeAgo(s.updatedAt)} · ${s.messageCount || 0} messages</div>
+      </div>
+      <span class="sc-arrow">→</span>
+    </div>`).join('');
+}
+
+function renderWelcomeBack() {
+  const account = STORE.getAccount();
+  if (!account || !account.name) return;
+  const wrap = document.getElementById('wb-strip-wrap');
+  wrap.innerHTML = `
+    <div class="wb-strip">
+      <div class="wb-av">${account.name.charAt(0).toUpperCase()}</div>
+      <div class="wb-copy">
+        <div class="wb-name">Welcome back, ${account.name} 👋</div>
+        <div class="wb-sub">${CHAT.credits} messages left · Your conversations are saved</div>
+      </div>
+    </div>`;
+}
+
+function resumeSession(id) {
+  const sessions  = STORE.getSessions();
+  const sess      = sessions.find(s => s.id === id);
+  if (!sess) return;
+  CHAT.sessionId  = sess.id;
+  CHAT.messages   = sess.messages || [];
+  CHAT.context    = sess.context  || {};
+  CHAT.situation  = sess.situation || '';
+  goToChat();
+  renderMessages();
+  scrollToBottom();
+}
+
+function goToLanding() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-landing').classList.add('active');
+  window.scrollTo(0,0);
+}
+
+/* ═══════════════════════════════════════════
+   ACCOUNT GATE SCREEN
+═══════════════════════════════════════════ */
+function goToAccountGate() {
+  // Show situation preview
+  const preview = document.getElementById('gate-preview-text');
+  if (preview) preview.textContent = CHAT.situation;
+
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-gate').classList.add('active');
+  window.scrollTo(0, 0);
+  setTimeout(() => document.getElementById('gate-email')?.focus(), 300);
+}
+
+function onGateEmailInput() {
+  const email = document.getElementById('gate-email').value.trim();
+  const btn   = document.getElementById('gate-cta');
+  btn.disabled = !email || !email.includes('@') || !email.includes('.');
+  document.getElementById('gate-email-error').classList.remove('show');
+}
+
+function showGateError(msg) {
+  const el = document.getElementById('gate-email-error');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+
+async function submitAccountGate() {
+  const email = document.getElementById('gate-email').value.trim().toLowerCase();
+  const name  = document.getElementById('gate-name').value.trim();
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    showGateError('Please enter a valid email address.');
+    return;
+  }
+  if (isTempEmail(email)) {
+    showGateError('Please use a permanent email. Temporary email addresses are not supported.');
+    return;
+  }
+
+  // Disable button during async
+  const btn = document.getElementById('gate-cta');
+  btn.disabled = true;
+  btn.textContent = 'Just a moment...';
+
+  const acc = { name, email, createdAt: new Date().toISOString() };
+  STORE.saveAccount(acc);
+  CHAT.account = acc;
+
+  // Sync to server if available
+  if (CHAT.serverAvail) {
+    try {
+      const r = await fetch('/api/account', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name })
+      });
+      if (r.ok) {
+        const { account } = await r.json();
+        const merged = { ...acc, ...account };
+        STORE.saveAccount(merged);
+        CHAT.account = merged;
+      }
+    } catch {}
+  }
+
+  await beginChat();
+}
+
+/* ═══════════════════════════════════════════
+   START CHAT (routes through gate if needed)
+═══════════════════════════════════════════ */
+async function startChat() {
+  const situation = document.getElementById('situation-input').value.trim();
+  if (!situation || situation.length < 15) return;
+
+  CHAT.situation = situation;
+
+  // If account already exists, skip the gate
+  const existingAccount = STORE.getAccount();
+  if (existingAccount && existingAccount.email) {
+    CHAT.account = existingAccount;
+    await beginChat();
+  } else {
+    goToAccountGate();
+  }
+}
+
+async function beginChat() {
+  CHAT.sessionId = uid();
+  CHAT.messages  = [];
+
+  // Load credits — use device fingerprint to catch abuse
+  const storedCredits = STORE.getCredits();
+  const fpUsed = DEVICE.getUsed();
+  // If device fingerprint shows 3+ free uses but credits appear fresh (3),
+  // this might be a storage-clear attempt. Use fingerprint as tiebreaker.
+  if (fpUsed >= 3 && storedCredits >= 3 && !STORE.get().everPaid) {
+    CHAT.credits = 0;
+    STORE.saveCredits(0);
+  } else {
+    CHAT.credits = storedCredits;
+  }
+  CHAT.isPaid = !!STORE.get().everPaid;
+
+  goToChat();
+  updateCreditsBadge();
+
+  appendMessage('user', CHAT.situation);
+  showTyping();
+
+  const aiReply = await getAIResponse();
+  hideTyping();
+  appendMessage('ai', aiReply);
+
+  // Track fingerprint usage on first message
+  DEVICE.consumeFree();
+
+  saveCurrentSession();
+}
+
+function goToChat() {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-chat').classList.add('active');
+  document.getElementById('plan-teaser-wrap').innerHTML = '';
+  window.scrollTo(0,0);
+}
+
+/* ═══════════════════════════════════════════
+   CHAT SEND / RECEIVE
+═══════════════════════════════════════════ */
+async function sendMessage() {
+  const input = document.getElementById('msg-input');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  // Check credits
+  if (CHAT.credits <= 0) {
+    showPaywall();
+    return;
+  }
+
+  input.value = '';
+  input.style.height = 'auto';
+  appendMessage('user', text);
+  scrollToBottom();
+
+  // Deduct credit
+  CHAT.credits = Math.max(0, CHAT.credits - 1);
+  STORE.saveCredits(CHAT.credits);
+  updateCreditsBadge();
+
+  showTyping();
+  const reply = await getAIResponse();
+  hideTyping();
+  appendMessage('ai', reply);
+  scrollToBottom();
+  saveCurrentSession();
+
+  // Show paywall when credits hit 0
+  if (CHAT.credits === 0) {
+    setTimeout(showPaywall, 1200);
+  }
+
+  // After 5+ AI messages, tease the full plan
+  const aiCount = CHAT.messages.filter(m => m.role === 'ai').length;
+  if (aiCount >= 5 && !document.getElementById('plan-teaser-wrap').innerHTML) {
+    renderPlanTeaser();
+  }
+}
+
+function handleMsgKeydown(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
+
+function autoResizeInput(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+}
+
+/* ═══════════════════════════════════════════
+   AI RESPONSE
+═══════════════════════════════════════════ */
+async function getAIResponse() {
+  if (CHAT.serverAvail) {
+    try {
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages:  CHAT.messages,
+          context:   CHAT.context,
+          situation: CHAT.situation
+        })
+      });
+      if (r.ok) {
+        const { reply } = await r.json();
+        if (reply) return cleanAI(reply);
+      }
+    } catch {}
+  }
+  // Smart JS fallback
+  return cleanAI(generateFallback());
+}
+
+/* ═══════════════════════════════════════════
+   SMART JS FALLBACK
+   Context-aware, reads their words
+═══════════════════════════════════════════ */
+function generateFallback() {
+  const msgs     = CHAT.messages;
+  const aiTurns  = msgs.filter(m => m.role === 'ai').length;
+  const allUser  = msgs.filter(m => m.role === 'user').map(m => m.content.toLowerCase()).join(' ');
+  const lastUser = (msgs.filter(m => m.role === 'user').pop()?.content || '').toLowerCase();
+  const situation = CHAT.situation.toLowerCase();
+
+  // Theme detection (on the situation text for first reply, on last message for subsequent)
+  const t = {
+    pullAway:   /(pull.?away|pulled back|distant|cold|gone quiet|less|barely|stopped|withdrew|space)/i.test(situation + lastUser),
+    anxious:    /(anxious|anxiety|worr|overthink|spiral|panic|obsess|can't stop thinking)/i.test(allUser),
+    breakup:    /(break.?up|broke up|ended|over|done|walked out|left me|leaving)/i.test(situation),
+    avoidant:   /(walls|space|independent|won't commit|shuts down|disappear|pushes away|deactivat)/i.test(situation + lastUser),
+    hotCold:    /(hot and cold|mixed signal|inconsistent|one day|then suddenly|push.?pull)/i.test(situation),
+    fear:       /(scared|fear|terrif|abandonment|left alone|reject|not enough)/i.test(allUser),
+    communication:(/(can't talk|won't communicate|shut down|silent treatment|stonewalling|argue|fight)/i.test(situation)),
+    jealous:    /(jealous|possessive|insecure|comparison|other|ex)/i.test(allUser),
+    trust:      /(trust|lied|cheat|betray|honest)/i.test(allUser),
+    selfsabotage:/(sabotage|ruin|push away|blow up|destroy)/i.test(allUser)
+  };
+
+  const rel = CHAT.context.rel || 'romantic';
+
+  // FIRST AI response — rich, 5 paragraphs, hyper-specific, 2-3 citations
+  if (aiTurns === 0) {
+    // Pull first ~120 chars of their actual words to echo back
+    const theirWords = CHAT.situation.length > 120
+      ? CHAT.situation.substring(0, 120).trim() + '...'
+      : CHAT.situation.trim();
+
+    let p1 = '', p2 = '', p3 = '', p4 = '', p5 = '';
+
+    if (t.pullAway && !t.avoidant) {
+      p1 = `You wrote: "${theirWords}". That shift from warm and present to distant and hard to reach is genuinely one of the most disorienting things to experience. You can feel something changing, but you can't point to one thing that proves it. That's the specific kind of painful that messes with your head.`;
+      p2 = `Here's what the science says about why you're picking up on this so strongly. Researchers Mikulincer and Shaver spent decades studying people in relationships and found something important: if closeness ever felt unpredictable growing up, your nervous system basically becomes a really sensitive detector. It picks up tiny changes in availability before your brain even processes them. So you're not being paranoid. Your internal alarm system is reading real signals. It's just calibrated very high.`;
+      p3 = `There's also a pattern that Dr. John Gottman (who studied thousands of couples over 40+ years) identified that might be happening here. When one person starts pulling back, the other naturally tries to get closer to fix the gap. But that often makes the first person pull back even more. It becomes a loop. Nobody planned it. Both people are just following what their nervous system knows how to do. Neither one is the villain.`;
+      p4 = `One thing worth thinking about, and there's no rush on this: is the feeling of them pulling away new to this relationship, or does it remind you of something older? Researchers Levine and Heller found that when a partner gets distant, some people aren't just reacting to that person. They're also reacting to an old familiar feeling from a past relationship or even childhood. Both can be true at the same time. Knowing which part is which changes what to do next.`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(Quick note: I'm sharing what peer-reviewed research suggests about patterns like yours. This is educational, not therapy. If it's getting to a really hard place, a licensed therapist can go deeper in ways I can't.)`;
+    } else if (t.avoidant) {
+      p1 = `You wrote: "${theirWords}". Being on the receiving end of someone who pulls back every time things get close is exhausting and confusing. The hard part is that from the outside, it can look like they don't care. But the research tells a really different story about what's actually happening inside them.`;
+      p2 = `Psychologist John Bowlby was the first to map this out, and later research by Main and Weston (1981) showed something surprising: people who pull away in relationships didn't grow up wanting less connection. They grew up in environments where showing they needed someone didn't work, or even backfired. So their brain learned to turn the volume down on attachment needs. The adult version of that is someone who genuinely wants closeness but whose nervous system treats it like a threat. They're not being cold on purpose. They're running an old protective program.`;
+      p3 = `Researchers Mikulincer and Shaver found that stress makes this worse, not better. The more emotionally intense things get, the more the avoidant nervous system retreats. That's why it can feel like the closer you get, the further away they go. More intimacy equals more withdrawal. It's not about you specifically. It's a very automated self-protection response.`;
+      p4 = `Worth reflecting on: there's a real difference between someone with avoidant tendencies who is willing to slowly build safety with you, and someone whose pattern is so locked in that the emotional cost to you stays consistently too high. Researcher Sue Johnson (who developed Emotionally Focused Therapy) found that even people with strong avoidant patterns can shift, but it happens slowly and only when they feel safe enough to lower the defenses. Pressure tends to have the opposite effect.`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(This is based on peer-reviewed relationship science, not a clinical opinion about anyone specifically. A licensed therapist can help you work through this with real depth.)`;
+    } else if (t.hotCold) {
+      p1 = `You wrote: "${theirWords}". The hot and cold thing might be the most destabilizing pattern there is in a relationship, and here's why: the good moments are real. They're not fake. Which makes the sudden distance that follows feel completely insane. You're not imagining either side of it. Both are actually happening, and there's a real scientific reason why.`;
+      p2 = `Researchers Main and Hesse studied this in the 1990s and found that some people grow up in situations where the person who was supposed to be safe was also unpredictable or scary. The brain's response to that? It tries to move toward safety and away from danger at the same time. In adulthood, that plays out as someone who genuinely wants closeness, gets close, feels overwhelmed by it, and then pulls back, often without knowing why. This is called disorganized attachment. It's not manipulation. It's a nervous system trying to do two opposite things at once.`;
+      p3 = `Dr. John Gottman's research found that the inconsistency itself, not just the conflict, is one of the hardest things to be inside of. When you can't predict whether a moment of closeness will be met with warmth or withdrawal, your nervous system stays on low-level alert all the time. Over time that becomes your baseline. You might feel more emotionally tired than the situation seems to explain, and that's exactly why.`;
+      p4 = `One thing that can be useful is looking for any pattern in the timing. Does the switch happen at a certain level of emotional intensity? After certain conversations? Researchers Levine and Heller found that hot-cold dynamics usually have some internal logic, it just isn't visible at first. Finding the trigger doesn't fix everything, but it shifts the experience from "I can't make sense of this" to "I understand what's happening," and that's a different place to make decisions from.`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(This is educational content based on peer-reviewed attachment science. A licensed therapist can give you the kind of personalized support that goes well beyond what I can offer here.)`;
+    } else if (t.anxious) {
+      p1 = `You wrote: "${theirWords}". The spiral, the overthinking, the way you can't just turn your brain off about this, it has a name in the research, and more importantly, it has an explanation. It's not a personality flaw. It's not you being "too much." It's a very specific nervous system response, and once you understand it, it makes a lot of sense.`;
+      p2 = `Researchers Mikulincer and Shaver studied this extensively and called it "hyperactivation" of the attachment system. Here's the plain English version: if closeness ever felt unreliable in your past, your brain essentially becomes a relationship alarm that's set to the highest sensitivity. The intrusive thoughts, the urge to check in, the difficulty focusing on anything else when something feels off, those aren't signs you're losing your mind. They're a threat-response system doing exactly what it was built to do. It's just built for a threat level that might not match what's actually in front of you right now.`;
+      p3 = `Hazan and Shaver (1987) were the first researchers to connect adult romantic love to early attachment science, and what they found was striking: people with anxious attachment don't just feel more distress in relationships. They also tend to read ambiguous situations as threatening, even when the facts don't fully support that. The pain is 100% real. But some of what's fueling it might be older and bigger than the current situation is actually causing.`;
+      p4 = `What tends to actually shift this over time, and researchers including Bowlby himself described this in his later work, is accumulating experiences of closeness that don't end in the way the old fear says they will. Even one relationship, whether romantic, a friendship, or a good therapist, that consistently stays available can slowly begin to update what your brain expects. The spiral you're in right now is not permanent, even when it feels like it is.`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(This is psychoeducational content based on peer-reviewed research. If the anxiety is significantly affecting your daily life, a therapist trained in attachment approaches can give you tools I'm not able to offer here.)`;
+    } else if (t.breakup) {
+      p1 = `You wrote: "${theirWords}". What you're going through right now is one of the most physically painful experiences in human life, and that's not an exaggeration. Research has confirmed that losing a close relationship activates the exact same parts of the brain that process physical pain. What you're feeling isn't being dramatic. It's biology.`;
+      p2 = `John Bowlby, who spent his career studying what happens to people when they lose someone they're attached to, described what you're likely experiencing right now as protest, the nervous system's first response to losing an attachment figure. It's the urge to reach out, to fix it, to make contact, to undo what happened. Hazan and Shaver (1994) extended this to adult romantic relationships and found that the desire to reconnect after a breakup can feel almost physical because neurologically, it is. Your brain is trying to restore something it coded as essential to your safety.`;
+      p3 = `Mikulincer and Shaver's research also found something important about how people move through loss: the ones who do better faster are usually the ones who can shift from "protest mode" (doing something to reverse the loss) to "grieving mode" (actually processing that it happened). The nervous system defaults to protest first because that's what kept people alive evolutionarily. But staying in protest for too long is what keeps pain going. The first step is just recognizing which mode you're in right now.`;
+      p4 = `Something worth being honest with yourself about, at your own pace: is the level of pain you're feeling proportional to this specific relationship, or does it feel bigger than that? Bowlby noted that adult grief can feel disproportionate when it's touching an older wound. That's not a criticism. It's actually useful information, because it means some of what you're carrying has a longer history, and understanding that changes how you tend to it.`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(This is educational content based on peer-reviewed research, not clinical advice. If you're really struggling right now, a grief-informed therapist can offer the kind of support that goes much deeper than this.)`;
+    } else if (t.communication) {
+      p1 = `You wrote: "${theirWords}". The communication wall, where one person tries to talk and the other shuts down or goes silent, is one of the most studied and most frustrating dynamics in relationship research. And the thing most people don't know is that it almost never comes down to someone not caring or not trying. It's almost always about what's happening in the body under stress.`;
+      p2 = `Dr. John Gottman tracked thousands of couples over decades and identified something he called "physiological flooding." When stress gets high enough in a difficult conversation, the heart rate spikes, cortisol floods the body, and the part of the brain that handles nuanced communication and empathy literally goes offline. The person who goes silent or leaves the room isn't usually making a strategic choice. Their brain has classified the situation as a threat and hit the emergency shutdown. It's involuntary. It's not indifference.`;
+      p3 = `Researcher Sue Johnson, who developed Emotionally Focused Therapy, adds something really useful to this: underneath most communication breakdowns, both people are actually trying to get the same question answered. Usually some version of "Are you there for me? Do I matter to you? Can I count on you?" When that question feels desperate and unanswered, the surface conversation becomes almost impossible because neither person is actually talking about what they're really trying to say.`;
+      p4 = `Gottman's team found that 69% of relationship conflicts are what they call "perpetual problems" that never actually get fully resolved. What separated couples who stayed happy from those who didn't wasn't solving those problems. It was learning to have the conversation without it feeling like the relationship itself was under attack. Worth thinking about: which part of the conversation feels most threatening to each of you, and why?`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(This is psychoeducational content based on peer-reviewed research. A couples therapist trained in EFT or the Gottman Method can work through this kind of dynamic with you in a way I'm not able to replicate here.)`;
+    } else if (t.trust) {
+      p1 = `You wrote: "${theirWords}". Being in a place where you want to trust someone but something in you just can't fully get there is exhausting in a specific way. Your head might be saying one thing and your gut saying another. That split is real, and it's not something you can just decide your way out of.`;
+      p2 = `Researcher Mikulincer published a series of studies specifically on trust and attachment, and what he found is that after a betrayal, the nervous system essentially goes into low-grade monitoring mode. You start scanning for signs of being deceived or let down again, often without even realizing you're doing it. This isn't paranoia. It's the brain doing exactly what it's built to do: remember what hurt you and watch for it coming again. The hard part is that this protective mode can also make it harder to accurately read whether things have genuinely changed.`;
+      p3 = `Gottman's research on couples recovering from betrayals found that whether trust could actually be rebuilt came down to two specific things: whether the person who broke trust could fully acknowledge the impact without getting defensive about it, and whether the injured person saw consistent changed behavior over time, not just words. Words without changed behavior never worked. Changed behavior without real acknowledgment didn't fully resolve the distrust either. Both pieces had to be there.`;
+      p4 = `One thing worth sitting with, no pressure: research suggests there's a real difference between "is this specific person trustworthy now?" and "am I capable of trusting again in general?" Sometimes what looks like a problem with one person is actually a more widespread injury. Hazan and Shaver found that significant betrayals can update how a person sees relationships overall, not just their view of the person involved. Knowing which one you're dealing with changes what healing looks like.`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(This is educational content based on peer-reviewed research, not clinical advice. If you're working through a significant betrayal, a trauma-informed therapist can offer support that's much more tailored to your specific situation.)`;
+    } else if (t.selfsabotage) {
+      p1 = `You wrote: "${theirWords}". When things are going well and something in you still seems to blow it up, or when you can see yourself creating distance even though that's the last thing you actually want, it's one of the most frustrating feelings there is. Because it looks like self-destruction from the outside, but it doesn't feel like a choice from the inside. And it isn't, not really.`;
+      p2 = `Researchers Main and Hesse identified a pattern called disorganized attachment, which happens when someone grew up in a situation where the person they needed for safety was also the person who scared them, or was just unpredictably unavailable. The brain ends up with two conflicting programs running at the same time: "get close, you need them" and "get away, closeness isn't safe." In adulthood, this shows up as exactly what you're describing. You move toward connection, feel overwhelmed by it, and your nervous system finds a way to create distance again. It's not weakness. It's two wires crossed.`;
+      p3 = `Bowlby's research, and the large body of work that followed it, consistently found this pattern starts because closeness and fear got linked together early on. Your nervous system couldn't settle on a reliable strategy. Mikulincer and Shaver's later work confirmed that the adult version is someone who is genuinely drawn to intimacy but whose internal alarm fires when they get close enough to actually need someone. The loop goes: get close, feel unsafe, create distance to calm down, then regret the distance.`;
+      p4 = `Here's what the research says actually shifts this, and it's not a quick fix, but it's real: accumulated experiences of closeness that don't end the way the old fear says they will. Researcher Peter Fonagy found that one of the strongest predictors of change is the ability to reflect on your own patterns and feelings, which is exactly what you're doing right now. The fact that you're trying to understand this instead of just reacting to it puts you in a genuinely different position than most people in this loop.`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(This is psychoeducational content based on peer-reviewed research. This particular pattern often responds well to attachment-focused therapy. A licensed therapist can offer the kind of consistent environment where these patterns actually shift.)`;
+    } else {
+      // General / no strong theme detected
+      p1 = `You wrote: "${theirWords}". You're trying to make sense of something that probably feels murky right now, and the fact that you're doing that rather than just reacting says something. Most people don't stop to ask why. They just respond and hope for the best.`;
+      p2 = `The most useful framework for understanding what happens between people in close relationships comes from attachment theory, which researcher John Bowlby developed starting in the 1950s. The core idea is simple: the way we learned to manage closeness, distance, and emotional need in our earliest relationships becomes a kind of internal template. That template runs in the background of every relationship we have as adults, often in ways we don't consciously recognize. It shapes what we expect, what we fear, and what we do when we feel threatened or close to someone.`;
+      p3 = `Hazan and Shaver (1987) were the first to formally connect Bowlby's infant attachment research to adult romantic love, and what decades of research since then has confirmed is that while these patterns are deeply ingrained, they are not fixed. Mikulincer and Shaver's 2007 review of the field found that relationship experiences, particularly with someone who is consistently emotionally available, can genuinely update the template a person carries. Change is real and possible. It usually starts exactly where you are right now, trying to understand the pattern rather than just being inside it.`;
+      p4 = `One of the most consistent findings from Gottman's long-term research on couples is that the people who navigate relationship difficulty best aren't the ones who feel the least. They're the ones who can tell the difference between what this current moment is bringing up versus what older material the moment is touching. That distinction tends to completely change what feels possible to do next.`;
+      p5 = `${getFollowUpQuestion(t, rel, 0)}\n\n(What I'm sharing is based on peer-reviewed attachment research. I'm here to reflect on what the science might suggest about patterns like yours, not to provide therapy. A licensed therapist can offer much more tailored support if you need it.)`;
+    }
+
+    return `${p1}\n\n${p2}\n\n${p3}\n\n${p4}\n\n${p5}`;
+  }
+
+  // SECOND response
+  if (aiTurns === 1) {
+    const bridges = [
+      "That helps a lot. Here's what stands out to me about what you just said.",
+      "Okay, that fills in something important.",
+      "That adds real context. Let me share what the research says about that specifically."
+    ];
+    const bridge = bridges[Math.floor(Math.random() * bridges.length)];
+
+    let reflection = '';
+    if (t.fear) {
+      reflection = `Fear of abandonment doesn't just sit quietly in the background. Researchers Bowlby and Hazan and Shaver both found that it actively shapes the decisions people make, often in ways that feel irrational in the moment but make complete sense once you trace them back to where they came from. The question worth sitting with: how much of what's happening right now is about this person, and how much might be an older fear that got activated by them?`;
+    } else if (t.pullAway) {
+      reflection = `When someone goes quiet or distant, it's almost impossible not to fill that space with interpretation. The Gottman Institute found that once a relationship reaches a certain level of tension, even completely neutral behaviors start getting read as threatening or negative. Worth asking yourself: what's the most generous possible explanation for what they're doing right now, and does any part of that feel true?`;
+    } else if (t.selfsabotage) {
+      reflection = `The pattern where things are going well and then something shifts, and you're the one who shifted it, shows up in the research on disorganized attachment. It's not about wanting to ruin things. It's a nervous system that learned somewhere along the way that closeness isn't completely safe. The loop usually goes: get close, feel unsafe, create some distance to feel okay again, then regret the distance. Does any of that feel familiar?`;
+    } else {
+      reflection = `Researchers Mikulincer and Shaver found something useful: when we're in real emotional pain about a close relationship, the threat-detection part of the brain gets louder and our ability to see things with nuance gets quieter. It's not a personality thing. It's how the brain is built. Sometimes just noticing that it's happening can create a tiny bit of breathing room in it.`;
+    }
+
+    const question = getFollowUpQuestion(t, rel, 1);
+    return `${bridge}\n\n${reflection}\n\n${question}`;
+  }
+
+  // THIRD+ responses
+  const continuations = [
+    `That's a really honest thing to sit with. The question that research consistently shows people avoid, but that's usually the most clarifying one: what do you actually want to be true here, separate from what you're afraid is true?`,
+    `Researcher Sue Johnson found that a lot of relationship conflict and disconnection is really just two people trying to get the same underlying question answered: "Are you there for me? Can I count on you?" It's worth asking yourself what you most need the answer to be right now.`,
+    `The fact that you're thinking this carefully about what's happening rather than just reacting to it is actually significant. Research suggests that insight, the kind you're building right now, is one of the strongest predictors of how people come through hard relationship moments. The people who do best aren't the ones who feel less. They're the ones who understand what they're feeling and why.`,
+    `Attachment research finds that the situations that feel most stuck are usually the ones where both people are reacting to a fear rather than responding to each other. What's the fear on your side right now, if you had to name it in one sentence?`,
+    `You're doing the hard thing, which is actually trying to understand this instead of just surviving it. That matters more than it might feel like right now. What's the part of this you haven't let yourself fully think about yet?`
+  ];
+  return continuations[Math.min(aiTurns - 2, continuations.length - 1)];
+}
+
+function getFollowUpQuestion(t, rel, turn) {
+  const questions = [];
+  if (t.pullAway)      questions.push("When did you first notice the shift? Was it a specific moment or more of a slow drift?");
+  if (t.anxious)       questions.push("When the anxiety spikes, what's the thought that tends to be underneath it? Not the spiral, but the core fear.");
+  if (t.avoidant)      questions.push("Do you have a sense of whether they know they do this, or does it seem more automatic?");
+  if (t.hotCold)       questions.push("What does it look like when they're 'on'? And what usually seems to trigger the switch to 'off'?");
+  if (t.fear)          questions.push("Where does the fear feel strongest, in your head or somewhere in your body?");
+  if (t.communication) questions.push("When you've tried to bring things up in the past, what tends to happen?");
+  if (t.breakup)       questions.push("Is this recent, or have you been sitting with this for a while?");
+  if (t.selfsabotage)  questions.push("What happened right before the last time things fell apart? Even a small thing.");
+  if (!questions.length) questions.push("What would you most want them to understand about how this is affecting you?", "What's the part of this you haven't said out loud yet, even just to yourself?");
+  // Alternate questions by turn
+  return questions[turn % questions.length] || questions[0];
+}
+
+/* ═══════════════════════════════════════════
+   RENDER MESSAGES
+═══════════════════════════════════════════ */
+function appendMessage(role, content, skipStore = false) {
+  const ts  = new Date().toISOString();
+  const msg = { role, content, ts };
+  CHAT.messages.push(msg);
+  renderSingleMessage(msg);
+  scrollToBottom();
+}
+
+function renderSingleMessage(msg) {
+  const wrap = document.getElementById('messages-wrap');
+  const div  = document.createElement('div');
+  div.className = `msg ${msg.role}`;
+
+  // Format content: split on double newlines into paragraphs
+  const formatted = msg.content.split(/\n\n+/).map(p => p.trim()).filter(Boolean).map(p => `<p>${p}</p>`).join('');
+
+  if (msg.role === 'ai') {
+    div.innerHTML = `
+      <div class="msg-avatar ai-av">B</div>
+      <div>
+        <div class="bubble">${formatted}</div>
+        <div class="msg-time">${formatTime(msg.ts)}</div>
+      </div>`;
+  } else {
+    div.innerHTML = `
+      <div>
+        <div class="bubble">${msg.content}</div>
+        <div class="msg-time">${formatTime(msg.ts)}</div>
+      </div>`;
+  }
+  wrap.appendChild(div);
+}
+
+function renderMessages() {
+  const wrap = document.getElementById('messages-wrap');
+  wrap.innerHTML = '';
+  CHAT.messages.forEach(m => renderSingleMessage(m));
+}
+
+function showTyping() {
+  const wrap = document.getElementById('messages-wrap');
+  const div  = document.createElement('div');
+  div.id = 'typing-indicator';
+  div.className = 'msg ai';
+  div.innerHTML = `
+    <div class="msg-avatar ai-av">B</div>
+    <div class="typing-bubble">
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+      <div class="typing-dot"></div>
+    </div>`;
+  wrap.appendChild(div);
+  scrollToBottom();
+  document.getElementById('send-btn').disabled = true;
+}
+
+function hideTyping() {
+  const el = document.getElementById('typing-indicator');
+  if (el) el.remove();
+  document.getElementById('send-btn').disabled = false;
+}
+
+function scrollToBottom() {
+  const wrap = document.getElementById('messages-wrap');
+  setTimeout(() => { wrap.scrollTop = wrap.scrollHeight; }, 50);
+}
+
+/* ═══════════════════════════════════════════
+   PLAN TEASER (after 5 AI messages)
+═══════════════════════════════════════════ */
+function renderPlanTeaser() {
+  const wrap = document.getElementById('plan-teaser-wrap');
+  wrap.innerHTML = `
+    <div class="plan-teaser">
+      <div class="pt-label">Ready for something deeper?</div>
+      <div class="pt-h">Your personalized BondBlueprint™</div>
+      <div class="pt-body">Based on everything you've shared in this conversation, a full Blueprint gives you a science-backed breakdown of your exact pattern, why it started, and what the research suggests about next steps.</div>
+      <div class="pt-locks">
+        <div class="pt-lock">🔒 Why this pattern formed (the real science)</div>
+        <div class="pt-lock">🔒 4 research-based approaches for your specific situation</div>
+        <div class="pt-lock">🔒 How to communicate with their attachment style</div>
+        <div class="pt-lock">🔒 Your 30-day roadmap</div>
+      </div>
+      <button class="pt-btn" onclick="openV1Plan()">See my full Blueprint →</button>
+    </div>`;
+}
+
+function openV1Plan() {
+  window.open('bondblueprint.html', '_blank');
+}
+
+/* ═══════════════════════════════════════════
+   CREDITS + PAYWALL
+═══════════════════════════════════════════ */
+function updateCreditsBadge() {
+  const badge = document.getElementById('credits-badge');
+  if (!badge) return;
+  const c = CHAT.credits;
+  if (c > 5) {
+    badge.className = 'credits-badge paid';
+    badge.textContent = `💬 ${c} left`;
+  } else if (c > 1) {
+    badge.className = 'credits-badge low';
+    badge.textContent = `💬 ${c} left`;
+  } else if (c === 1) {
+    badge.className = 'credits-badge low';
+    badge.textContent = '💬 1 left';
+  } else {
+    badge.className = 'credits-badge empty';
+    badge.textContent = '💬 Add credits';
+  }
+  // Update input hint
+  const hint = document.getElementById('input-hint');
+  if (hint) hint.textContent = c <= 0 ? 'Add credits to keep going' : c === 1 ? '1 message remaining' : `${c} messages remaining`;
+}
+
+function showPaywall() {
+  document.getElementById('paywall-overlay').classList.add('show');
+}
+
+function closePaywall() {
+  document.getElementById('paywall-overlay').classList.remove('show');
+}
+
+function closePaywallOnBg(e) {
+  if (e.target.id === 'paywall-overlay') closePaywall();
+}
+
+function selectCredit(val) {
+  CHAT.selectedCredit = val;
+  document.querySelectorAll('.credit-opt').forEach(el => el.classList.remove('sel'));
+  document.getElementById('opt-' + val).classList.add('sel');
+}
+
+async function mockAddCredits() {
+  // Add credits based on selected option
+  const added = CHAT.selectedCredit === '25' ? 60 : 20;
+  CHAT.credits += added;
+  CHAT.isPaid   = true;
+  STORE.saveCredits(CHAT.credits);
+  // Mark as paid so fingerprint check doesn't interfere
+  const d = STORE.get(); d.everPaid = true; STORE.save(d);
+  closePaywall();
+  updateCreditsBadge();
+
+  // Confirm in chat
+  const confirmMsg = `Credits added. You now have ${CHAT.credits} messages. Let's keep going.`;
+  appendMessage('ai', confirmMsg);
+  scrollToBottom();
+}
+
+/* ═══════════════════════════════════════════
+   PRIVACY MODAL
+═══════════════════════════════════════════ */
+function showPrivacyModal() {
+  document.getElementById('privacy-overlay').classList.add('show');
+}
+
+function closePrivacyModal() {
+  document.getElementById('privacy-overlay').classList.remove('show');
+}
+
+function closePrivacyOnBg(e) {
+  if (e.target.id === 'privacy-overlay') closePrivacyModal();
+}
+
+function deleteAllData() {
+  if (!confirm('This will permanently delete all your conversations, account info, and credits stored on this device. Are you sure?')) return;
+  // Clear localStorage
+  try { localStorage.clear(); } catch {}
+  // Clear sessionStorage
+  try { sessionStorage.clear(); } catch {}
+  // Clear cookies
+  DEVICE.clearAll();
+  // Reset CHAT state
+  CHAT.messages = [];
+  CHAT.credits  = 3;
+  CHAT.isPaid   = false;
+  CHAT.account  = null;
+  CHAT.sessionId = null;
+  closePrivacyModal();
+  goToLanding();
+  // Reload to guarantee clean state
+  setTimeout(() => location.reload(), 300);
+}
+
+/* ═══════════════════════════════════════════
+   SESSION PERSISTENCE
+═══════════════════════════════════════════ */
+function saveCurrentSession() {
+  if (!CHAT.sessionId) return;
+  const firstUserMsg = CHAT.messages.find(m => m.role === 'user')?.content || '';
+  STORE.saveSession({
+    id:           CHAT.sessionId,
+    topic:        firstUserMsg.substring(0, 70) + (firstUserMsg.length > 70 ? '...' : ''),
+    situation:    CHAT.situation,
+    context:      CHAT.context,
+    messages:     CHAT.messages,
+    messageCount: CHAT.messages.length,
+    updatedAt:    new Date().toISOString()
+  });
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', async () => {
+  // Non-blocking server check
+  checkServer();
+  // Load persisted credits
+  CHAT.credits = STORE.getCredits();
+  // Welcome back banner
+  renderWelcomeBack();
+  // Show session history
+  renderSessions();
+});
+</script>
+</body>
+</html>

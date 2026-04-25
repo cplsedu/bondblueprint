@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(grep -n \"pco-price\\\\|pco-btn\\\\|\\\\$27\\\\|\\\\$19\\\\|\\\\$100\" /Users/ashleysoto/Desktop/Ash/bondblueprint-free.html)",
+      "Bash(curl -s \"https://api.convertkit.com/v3/tags?api_key=yK9lYivvXxHsCPQ6NLZZTw\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(curl -s -X POST \"https://api.convertkit.com/v3/tags\" -H \"Content-Type: application/json\" -d '{\"api_key\":\"yK9lYivvXxHsCPQ6NLZZTw\",\"tag\":{\"name\":\"quiz_lead\"}}')",
+      "Bash(curl -s -X POST \"https://api.convertkit.com/v3/tags\" -H \"Content-Type: application/json\" -d '{\"api_key\":\"yK9lYivvXxHsCPQ6NLZZTw\",\"tag\":{\"name\":\"viewed_checkout\"}}')",
+      "Bash(curl -s -X POST \"https://api.convertkit.com/v3/tags\" -H \"Content-Type: application/json\" -d '{\"api_key\":\"yK9lYivvXxHsCPQ6NLZZTw\",\"tag\":{\"name\":\"paid\"}}')",
+      "Bash(curl -s \"https://api.convertkit.com/v3/forms?api_key=yK9lYivvXxHsCPQ6NLZZTw\")",
+      "Bash(curl -s \"https://api.convertkit.com/v3/sequences?api_key=yK9lYivvXxHsCPQ6NLZZTw\")"
+    ]
+  }
+}

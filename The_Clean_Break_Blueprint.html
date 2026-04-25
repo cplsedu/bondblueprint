@@ -1,0 +1,1025 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Clean Break Blueprint</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+
+:root {
+  --navy:    #1E2D4E;
+  --coral:   #C85A45;
+  --gold:    #B8860B;
+  --sage:    #3D7A6A;
+  --plum:    #6B4E8C;
+  --cream:   #F7F3EE;
+  --card:    #FFFFFF;
+  --border:  #DDD7CE;
+  --text:    #1E1E1E;
+  --muted:   #6B6560;
+  --lt-coral:  #FCEEE9;
+  --lt-gold:   #FBF5E2;
+  --lt-sage:   #EAF4F0;
+  --lt-plum:   #F2EEF8;
+  --lt-navy:   #EBF0F8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: 'Nunito', sans-serif; background: var(--cream); color: var(--text); font-size: 13px; line-height: 1.6; }
+.page { width: 816px; margin: 0 auto; }
+
+/* COVER */
+.cover { background: linear-gradient(145deg, #0E1A0E 0%, #1A2A1A 40%, #1E2D4E 100%); min-height: 1056px; display: flex; flex-direction: column; padding: 56px 52px; position: relative; overflow: hidden; }
+.cover-orb-1 { position: absolute; right: -80px; top: -80px; width: 440px; height: 440px; border-radius: 50%; background: radial-gradient(circle, rgba(200,90,69,0.16) 0%, transparent 70%); }
+.cover-orb-2 { position: absolute; left: -100px; bottom: -100px; width: 420px; height: 420px; border-radius: 50%; background: radial-gradient(circle, rgba(107,78,140,0.15) 0%, transparent 70%); }
+.cover-orb-3 { position: absolute; right: 80px; bottom: 280px; width: 180px; height: 180px; border-radius: 50%; background: radial-gradient(circle, rgba(61,122,106,0.12) 0%, transparent 70%); }
+.cover-label { font-size: 10px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: var(--coral); margin-bottom: 24px; }
+.cover-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.14); border-radius: 100px; padding: 6px 16px; margin-bottom: 28px; width: fit-content; }
+.cover-badge span { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.65); }
+.cover h1 { font-family: 'Playfair Display', serif; font-size: 58px; font-weight: 800; color: #FFFFFF; line-height: 1.05; margin-bottom: 8px; max-width: 560px; }
+.cover h1 em { color: #F0A898; font-style: normal; }
+.cover-sub { font-size: 15px; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 36px; max-width: 500px; line-height: 1.65; }
+.cover-divider { width: 48px; height: 3px; background: var(--coral); margin-bottom: 32px; border-radius: 2px; }
+.cover-truth-box { background: rgba(200,90,69,0.12); border: 1px solid rgba(200,90,69,0.3); border-left: 4px solid var(--coral); border-radius: 0 12px 12px 0; padding: 16px 22px; max-width: 580px; margin-bottom: 36px; }
+.cover-truth-box p { font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.85); line-height: 1.65; }
+.cover-truth-box strong { color: #F0A898; }
+.cover-stat-row { display: flex; gap: 16px; margin-bottom: 36px; flex-wrap: wrap; }
+.cover-stat { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.11); border-radius: 12px; padding: 14px 18px; flex: 1; min-width: 110px; }
+.cover-stat .num { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; color: #fff; }
+.cover-stat .lbl { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-top: 2px; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 580px; margin-bottom: 40px; }
+.toc-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 9px 14px; }
+.toc-num { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: rgba(255,255,255,0.18); flex-shrink: 0; width: 22px; }
+.toc-text { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.65); line-height: 1.3; }
+.cover-footer { margin-top: auto; font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; letter-spacing: 1px; }
+
+/* SECTION PAGES */
+.section-page { background: var(--cream); padding: 28px 48px; min-height: 1056px; page-break-before: always; }
+.page-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 2px solid var(--border); }
+.page-header-num { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 700; line-height: 1; opacity: 0.08; color: var(--text); flex-shrink: 0; margin-top: -4px; }
+.page-header-content { flex: 1; }
+.page-header-label { font-size: 9.5px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2px; }
+.page-header-title { font-family: 'Playfair Display', serif; font-size: 24px; font-weight: 700; line-height: 1.15; color: var(--text); }
+.page-header-sub { font-size: 12px; font-weight: 600; color: var(--muted); margin-top: 3px; }
+
+/* CARDS */
+.card { background: var(--card); border-radius: 12px; border: 1.5px solid var(--border); padding: 14px 18px; margin-bottom: 10px; }
+.card-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
+
+/* GRIDS */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+
+/* COLORS */
+.bg-coral  { background: var(--lt-coral);  border-color: #DDA898; }
+.bg-gold   { background: var(--lt-gold);   border-color: #D4C08A; }
+.bg-sage   { background: var(--lt-sage);   border-color: #90CCBC; }
+.bg-plum   { background: var(--lt-plum);   border-color: #C4B3D8; }
+.bg-navy   { background: var(--lt-navy);   border-color: #A8BCE0; }
+.ac-coral  { color: var(--coral); }
+.ac-gold   { color: var(--gold); }
+.ac-sage   { color: var(--sage); }
+.ac-plum   { color: var(--plum); }
+.ac-navy   { color: var(--navy); }
+
+/* SCIENCE BLOCK */
+.science-block { background: var(--navy); border-radius: 12px; padding: 14px 18px; color: rgba(255,255,255,0.9); margin: 10px 0; display: flex; gap: 14px; align-items: flex-start; }
+.science-icon { font-size: 22px; flex-shrink: 0; margin-top: 1px; }
+.science-label { font-size: 9px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 3px; }
+.science-text { font-size: 12px; font-weight: 600; line-height: 1.65; color: rgba(255,255,255,0.88); }
+.science-cite { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4); margin-top: 4px; font-style: italic; }
+
+/* CALLOUTS */
+.callout { border-radius: 12px; padding: 14px 18px; margin: 10px 0; border-left: 4px solid; display: flex; gap: 12px; align-items: flex-start; }
+.callout-icon { font-size: 20px; flex-shrink: 0; }
+.callout-text { font-size: 12.5px; font-weight: 600; line-height: 1.65; }
+.callout-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.callout-coral { background: var(--lt-coral); border-color: var(--coral); }
+.callout-gold  { background: var(--lt-gold);  border-color: var(--gold); }
+.callout-sage  { background: var(--lt-sage);  border-color: var(--sage); }
+.callout-plum  { background: var(--lt-plum);  border-color: var(--plum); }
+
+/* PULL QUOTE */
+.pull-quote { position: relative; padding: 18px 20px 18px 56px; border-radius: 12px; margin: 12px 0; }
+.pull-quote::before { content: '\201C'; position: absolute; left: 10px; top: -4px; font-family: 'Playfair Display', serif; font-size: 80px; line-height: 1; }
+.pull-quote p { font-size: 14px; font-weight: 700; line-height: 1.65; font-style: italic; }
+.pq-coral { background: var(--lt-coral); border-left: 4px solid var(--coral); }
+.pq-coral::before { color: rgba(200,90,69,0.25); }
+.pq-coral p { color: #6A1E0E; }
+.pq-sage { background: var(--lt-sage); border-left: 4px solid var(--sage); }
+.pq-sage::before { color: rgba(61,122,106,0.25); }
+.pq-sage p { color: #0E3A2A; }
+.pq-plum { background: var(--lt-plum); border-left: 4px solid var(--plum); }
+.pq-plum::before { color: rgba(107,78,140,0.25); }
+.pq-plum p { color: #3A1E6A; }
+
+/* BIG STAT STRIP */
+.big-stat-strip { display: grid; grid-template-columns: repeat(4,1fr); gap: 0; border-radius: 12px; overflow: hidden; margin: 12px 0; border: 1.5px solid var(--border); }
+.big-stat-cell { padding: 16px 12px; text-align: center; border-right: 1px solid var(--border); }
+.big-stat-cell:last-child { border-right: none; }
+.big-stat-num { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 800; line-height: 1; }
+.big-stat-lbl { font-size: 10.5px; font-weight: 700; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+/* WARNING BANNER */
+.warning-banner { background: linear-gradient(135deg, #8B1A1A 0%, #C85A45 100%); border-radius: 12px; padding: 14px 20px; margin: 12px 0; display: flex; align-items: center; gap: 14px; }
+.warning-banner-icon { font-size: 28px; flex-shrink: 0; }
+.warning-banner-text { font-size: 12.5px; font-weight: 700; color: #fff; line-height: 1.6; }
+.warning-banner-title { font-size: 10px; font-weight: 900; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.6); margin-bottom: 3px; }
+
+/* FACT BADGES */
+.fact-badges { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0; }
+.fact-badge { background: var(--navy); color: rgba(255,255,255,0.88); padding: 8px 14px; border-radius: 100px; font-size: 11.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.fact-badge .badge-icon { font-size: 14px; }
+
+/* PHONE MOCKUP */
+.phone-wrap { background: #18181B; border-radius: 18px; padding: 16px; margin: 12px 0; }
+.phone-header { font-size: 10px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 12px; text-align: center; }
+.bubble-row { display: flex; margin-bottom: 6px; }
+.bubble-row.sent { justify-content: flex-end; }
+.bubble { max-width: 72%; padding: 9px 14px; font-size: 12px; font-weight: 600; line-height: 1.5; border-radius: 18px; }
+.bubble.received { background: #2C2C30; color: rgba(255,255,255,0.88); border-radius: 18px 18px 18px 4px; }
+.bubble.sent-sage { background: var(--sage); color: #fff; border-radius: 18px 18px 4px 18px; }
+.bubble-time { font-size: 10px; color: rgba(255,255,255,0.3); text-align: center; margin: 6px 0 10px; font-weight: 600; }
+.bubble-note { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.45); font-style: italic; padding: 4px 0; }
+
+/* DOPAMINE CHART */
+.dopamine-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.dopamine-label { font-size: 12px; font-weight: 700; width: 185px; flex-shrink: 0; }
+.dopamine-bar-bg { flex: 1; height: 14px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.dopamine-bar { height: 100%; border-radius: 100px; }
+.dopamine-val { font-size: 10px; font-weight: 800; width: 34px; text-align: right; }
+
+/* TIMELINE */
+.timeline { position: relative; padding-left: 24px; }
+.timeline::before { content: ''; position: absolute; left: 8px; top: 0; bottom: 0; width: 2px; background: var(--border); border-radius: 2px; }
+.timeline-item { position: relative; padding: 0 0 16px 18px; }
+.timeline-dot { position: absolute; left: -20px; top: 3px; width: 14px; height: 14px; border-radius: 50%; border: 2px solid var(--cream); box-shadow: 0 0 0 2px var(--border); }
+.timeline-title { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
+.timeline-body { font-size: 12px; font-weight: 600; color: var(--muted); line-height: 1.6; }
+
+/* SCENARIO BOX */
+.scenario-box { background: linear-gradient(135deg, #2A1A3A, #1E2D4E); border-radius: 12px; padding: 16px 20px; margin: 10px 0; }
+.scenario-label { font-size: 9px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 8px; }
+.scenario-text { font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.9); line-height: 1.7; font-style: italic; }
+.scenario-explain { font-size: 11.5px; font-weight: 700; color: rgba(255,255,255,0.6); margin-top: 8px; font-style: normal; }
+
+/* BULLETS */
+.bullet-list { list-style: none; }
+.bullet-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; font-weight: 600; line-height: 1.55; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.bullet-list li:last-child { border-bottom: none; }
+.bullet-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+/* CHECKLIST */
+.checklist { list-style: none; }
+.checklist li { display: flex; gap: 10px; align-items: flex-start; font-size: 12.5px; font-weight: 600; line-height: 1.55; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.checklist li:last-child { border-bottom: none; }
+.check-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; margin-top: 1px; color: #fff; }
+.check-yes { background: var(--sage); }
+.check-no  { background: var(--coral); }
+
+/* SECTION LABEL */
+.section-label { font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin: 18px 0 10px; display: flex; align-items: center; gap: 10px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+/* TAGS */
+.tag { display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 10px; font-weight: 800; letter-spacing: 0.5px; margin: 2px; }
+.tag-coral { background: var(--lt-coral); color: var(--coral); }
+.tag-gold  { background: var(--lt-gold);  color: var(--gold); }
+.tag-sage  { background: var(--lt-sage);  color: var(--sage); }
+.tag-plum  { background: var(--lt-plum);  color: var(--plum); }
+.tag-navy  { background: var(--lt-navy);  color: var(--navy); }
+
+/* STEPS */
+.step-list { list-style: none; }
+.step-item { display: flex; gap: 14px; align-items: flex-start; padding: 13px 0; border-bottom: 1px solid var(--border); }
+.step-item:last-child { border-bottom: none; }
+.step-num { width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; color: #fff; }
+.step-title { font-size: 13px; font-weight: 800; margin-bottom: 3px; }
+.step-body { font-size: 12px; font-weight: 600; color: var(--muted); line-height: 1.6; }
+.step-why { font-size: 11.5px; font-weight: 700; color: var(--sage); margin-top: 5px; line-height: 1.5; }
+
+/* ICON GRID */
+.icon-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 10px 0; }
+.icon-box { background: var(--card); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 8px; text-align: center; }
+.icon-box .emoji { font-size: 24px; margin-bottom: 5px; }
+.icon-box .lbl { font-size: 10px; font-weight: 800; line-height: 1.3; }
+
+/* SCRIPT BOX */
+.script-box { background: linear-gradient(135deg, #1A1A0E 0%, #2A1E10 100%); border-radius: 12px; padding: 18px 22px; margin: 10px 0; }
+.script-label { font-size: 9px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.script-line { background: rgba(255,255,255,0.07); border-radius: 8px; padding: 10px 14px; margin-bottom: 6px; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.9); line-height: 1.6; border-left: 3px solid rgba(200,90,69,0.5); }
+.script-line:last-child { margin-bottom: 0; }
+
+/* GRADIENT HIGHLIGHT */
+.gradient-highlight { background: linear-gradient(135deg, #1A1A0E, #2A1A10, #1E2D4E); border-radius: 14px; padding: 20px 24px; margin: 12px 0; color: rgba(255,255,255,0.9); }
+.gh-label { font-size: 9px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.gh-big { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 8px; }
+.gh-sub { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7); line-height: 1.6; }
+
+/* AFFIRMATIONS */
+.affirmation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.affirmation-card { background: linear-gradient(135deg, #1A2A1A, #1E2D4E); border-radius: 10px; padding: 14px 16px; text-align: center; }
+.affirmation-card p { font-size: 12.5px; font-weight: 800; line-height: 1.55; color: rgba(255,255,255,0.88); }
+
+/* CRAVING WAVE */
+.wave-wrap { background: var(--navy); border-radius: 14px; padding: 18px 20px; margin: 12px 0; }
+.wave-label { font-size: 9px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 14px; }
+.wave-chart { display: flex; align-items: flex-end; gap: 4px; height: 70px; }
+.wave-bar { flex: 1; border-radius: 4px 4px 0 0; position: relative; transition: all 0.3s; }
+.wave-bar .wave-tip { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); font-size: 9px; font-weight: 800; color: rgba(255,255,255,0.7); white-space: nowrap; }
+.wave-days { display: flex; gap: 4px; margin-top: 6px; }
+.wave-day { flex: 1; text-align: center; font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); }
+.wave-note { font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.6); margin-top: 10px; line-height: 1.55; }
+
+/* DANGER ZONES */
+.danger-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 12px 0; }
+.danger-card { border-radius: 12px; padding: 13px 15px; border: 1.5px solid; }
+.danger-card .danger-icon { font-size: 26px; margin-bottom: 6px; }
+.danger-card .danger-title { font-size: 11.5px; font-weight: 800; margin-bottom: 4px; }
+.danger-card .danger-body { font-size: 11.5px; font-weight: 600; color: var(--muted); line-height: 1.55; }
+.danger-card .danger-fix { font-size: 11px; font-weight: 700; margin-top: 6px; padding-top: 6px; border-top: 1px dashed var(--border); }
+
+/* NO CONTACT TRACKER */
+.nc-tracker { background: var(--card); border-radius: 14px; border: 1.5px solid var(--border); padding: 16px 18px; margin: 12px 0; }
+.nc-tracker-label { font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 12px; }
+.nc-milestones { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+.nc-milestone { border-radius: 10px; padding: 12px 10px; text-align: center; }
+.nc-days { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 800; line-height: 1; }
+.nc-days-lbl { font-size: 10px; font-weight: 700; color: var(--muted); margin-bottom: 6px; }
+.nc-what { font-size: 10.5px; font-weight: 700; line-height: 1.4; }
+
+/* RELAPSE RISK VISUAL */
+.risk-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.risk-label { font-size: 12px; font-weight: 700; width: 175px; flex-shrink: 0; }
+.risk-bar-bg { flex: 1; height: 14px; background: var(--border); border-radius: 100px; overflow: hidden; }
+.risk-bar { height: 100%; border-radius: 100px; }
+.risk-emoji { font-size: 16px; flex-shrink: 0; }
+
+/* BEFORE/AFTER BRAIN */
+.brain-compare { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+.brain-card { border-radius: 12px; padding: 14px 16px; border: 1.5px solid; }
+.brain-card-title { font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; }
+.brain-item { display: flex; gap: 8px; align-items: flex-start; font-size: 12px; font-weight: 600; line-height: 1.5; padding: 4px 0; }
+.brain-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+@media print { .section-page { page-break-before: always; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- COVER -->
+<div class="cover">
+  <div class="cover-orb-1"></div><div class="cover-orb-2"></div><div class="cover-orb-3"></div>
+  <div class="cover-label">By Ash · Couples Educator</div>
+  <div class="cover-badge"><span>Science-Backed · Easy to Read Guide</span></div>
+  <h1>The Clean Break<br><em>Blueprint</em></h1>
+  <div class="cover-sub">You know you need to leave. Your brain will not let you. This guide explains why, and gives you a step-by-step plan to actually do it.</div>
+  <div class="cover-divider"></div>
+  <div class="cover-truth-box"><p>Leaving an avoidant is not just an emotional decision. It is a <strong>brain chemistry battle.</strong> The on-and-off pattern has literally trained your brain to crave them. Understanding this changes everything about how you approach the break.</p></div>
+  <div class="cover-stat-row">
+    <div class="cover-stat"><div class="num">8</div><div class="lbl">Sections Inside</div></div>
+    <div class="cover-stat"><div class="num">7</div><div class="lbl">Step Protocol</div></div>
+    <div class="cover-stat"><div class="num">12</div><div class="lbl">Affirmations</div></div>
+    <div class="cover-stat"><div class="num">7</div><div class="lbl">Journal Prompts</div></div>
+  </div>
+  <div class="toc-grid">
+    <div class="toc-item"><div class="toc-num">1</div><div class="toc-text">Why Leaving Feels Impossible</div></div>
+    <div class="toc-item"><div class="toc-num">2</div><div class="toc-text">Your Brain on an Avoidant</div></div>
+    <div class="toc-item"><div class="toc-num">3</div><div class="toc-text">How They Respond to a Breakup</div></div>
+    <div class="toc-item"><div class="toc-num">4</div><div class="toc-text">Why This Grief Is Different</div></div>
+    <div class="toc-item"><div class="toc-num">5</div><div class="toc-text">Why You Keep Going Back</div></div>
+    <div class="toc-item"><div class="toc-num">6</div><div class="toc-text">The 7-Step Breakup Plan</div></div>
+    <div class="toc-item"><div class="toc-num">7</div><div class="toc-text">No Contact and Why It Works</div></div>
+    <div class="toc-item"><div class="toc-num">8</div><div class="toc-text">Affirmations and Journal Prompts</div></div>
+  </div>
+  <div class="cover-footer">For educational purposes only</div>
+</div>
+
+<!-- SECTION 1 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">1</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-coral">The Hard Truth</div>
+      <div class="page-header-title">Why Leaving Feels Impossible</div>
+      <div class="page-header-sub">It is not weakness. Your brain is working against you on purpose.</div>
+    </div>
+  </div>
+
+  <div class="pull-quote pq-coral">
+    <p>I know I should leave. I have known for months. But every time I get close to doing it, something pulls me back. I feel crazy. I feel weak. Why can I not just GO?</p>
+  </div>
+
+  <div class="callout callout-coral">
+    <div class="callout-icon">🧠</div>
+    <div>
+      <div class="callout-title" style="color:var(--coral)">You Are Not Weak for Staying</div>
+      <div class="callout-text">Leaving an avoidant is one of the hardest breakups to complete. Not because you love them too much, but because the on-and-off pattern literally rewired your brain over time. This is not about willpower. It is about brain chemistry.</div>
+    </div>
+  </div>
+
+  <div class="section-label">The 5 Real Reasons You Cannot Leave</div>
+
+  <ul class="step-list">
+    <li class="step-item">
+      <div class="step-num" style="background:var(--coral)">1</div>
+      <div class="step-content">
+        <div class="step-title">The On-and-Off Pattern Became an Addiction</div>
+        <div class="step-body">Every time they came back after going cold, your brain got a hit of relief and excitement. Those moments felt amazing. Now your brain is addicted to chasing that feeling. The inconsistency is not just annoying. It is what hooked you hardest.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--coral)">2</div>
+      <div class="step-content">
+        <div class="step-title">You Never Got Real Closure</div>
+        <div class="step-body">Avoidants rarely give you a clear ending. They fade, minimize, or go quiet. Your brain is wired to solve problems. When a situation stays unresolved, it keeps circling back to it. You are not obsessing. You are trying to close a loop that was never shut.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--gold)">3</div>
+      <div class="step-content">
+        <div class="step-title">You Fell in Love with Their Potential</div>
+        <div class="step-body">You saw who they could be in those rare, open moments. You are not grieving just them. You are also grieving the future you imagined. The trip you planned. The person they were on that one perfect night.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--gold)">4</div>
+      <div class="step-content">
+        <div class="step-title">Staying Felt Like a Chance to Finally Be Enough</div>
+        <div class="step-body">Their avoidance hits a very old wound: "Maybe if I try harder, stay longer, be better, they will fully choose me." Staying feels like unfinished business. Leaving feels like admitting you failed. You did not fail. The system was rigged from the start.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--plum)">5</div>
+      <div class="step-content">
+        <div class="step-title">The "High" After a Fight Felt Like Deep Love</div>
+        <div class="step-body">Big conflict followed by sweet reunion releases a flood of chemicals. Stress, then relief. Fear, then warmth. Your brain tagged this feeling as real love. It is actually a trauma bond. And it can feel stronger than calm, consistent love.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="science-block">
+    <div class="science-icon">🔬</div>
+    <div>
+      <div class="science-label">The Science of Trauma Bonding</div>
+      <div class="science-text">When relationships cycle between tension and relief, your body releases both cortisol (stress) and oxytocin (bonding) close together. This combination creates an extremely powerful emotional attachment. It is the same bonding mechanism that forms in other high-stress shared experiences. The bond feels powerful because it is. But powerful does not mean healthy.</div>
+      <div class="science-cite">van der Kolk (1994) — The Body Keeps the Score; Herman (1992) — Trauma and Recovery</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">2</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-coral">Brain Science Made Simple</div>
+      <div class="page-header-title">Your Brain on an Avoidant</div>
+      <div class="page-header-sub">Why breaking up literally feels like going through withdrawal from a drug</div>
+    </div>
+  </div>
+
+  <div class="gradient-highlight">
+    <div class="gh-label">Real Research Finding</div>
+    <div class="gh-big">Brain scans of people going through a breakup look identical to brain scans of someone addicted to cocaine.</div>
+    <div class="gh-sub">The same reward regions. The same craving pathways. The same desperate seeking. This is not a metaphor. Love and drug addiction share the same neural circuits.</div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🧠</div>
+    <div>
+      <div class="science-label">The Study</div>
+      <div class="science-text">Researchers showed people photos of their ex right after a breakup and scanned their brains. The nucleus accumbens (the brain's reward center) and the ventral tegmental area (dopamine production) both lit up. These are the same exact regions that activate during cocaine cravings. Love and addiction share the same brain pathways.</div>
+      <div class="science-cite">Fisher et al. (2010) — Journal of Neurophysiology</div>
+    </div>
+  </div>
+
+  <div class="big-stat-strip">
+    <div class="big-stat-cell" style="background:var(--lt-sage);">
+      <div class="big-stat-num ac-sage">55%</div>
+      <div class="big-stat-lbl">Dopamine with a secure partner</div>
+    </div>
+    <div class="big-stat-cell" style="background:var(--lt-gold);">
+      <div class="big-stat-num ac-gold">80%</div>
+      <div class="big-stat-lbl">With a dismissive avoidant</div>
+    </div>
+    <div class="big-stat-cell" style="background:var(--lt-coral);">
+      <div class="big-stat-num ac-coral">97%</div>
+      <div class="big-stat-lbl">With a fearful avoidant</div>
+    </div>
+    <div class="big-stat-cell" style="background:var(--lt-plum);">
+      <div class="big-stat-num ac-plum">88%</div>
+      <div class="big-stat-lbl">After the breakup (craving)</div>
+    </div>
+  </div>
+
+  <div class="scenario-box">
+    <div class="scenario-label">Real Life Example</div>
+    <div class="scenario-text">"He went cold for two weeks. You were devastated. Then he texted you like nothing happened, sent you a photo of something that reminded him of you, and said he had been thinking about you. You felt so much relief and excitement it was almost physical. That rush you felt? That was your brain flooding with dopamine after being starved of it."</div>
+    <div class="scenario-explain">The relief after the withdrawal is what creates the addiction. The more it happens, the stronger the hook becomes.</div>
+  </div>
+
+  <div class="wave-wrap">
+    <div class="wave-label">How Cravings Move After No Contact Starts</div>
+    <div class="wave-chart">
+      <div class="wave-bar" style="height:30%; background:rgba(200,90,69,0.5);"><div class="wave-tip">Day 1</div></div>
+      <div class="wave-bar" style="height:90%; background:rgba(200,90,69,0.9);"></div>
+      <div class="wave-bar" style="height:100%; background:var(--coral);"></div>
+      <div class="wave-bar" style="height:95%; background:rgba(200,90,69,0.88);"></div>
+      <div class="wave-bar" style="height:80%; background:rgba(200,90,69,0.7);"></div>
+      <div class="wave-bar" style="height:65%; background:rgba(200,90,69,0.58);"></div>
+      <div class="wave-bar" style="height:55%; background:rgba(184,134,11,0.6);"></div>
+      <div class="wave-bar" style="height:48%; background:rgba(184,134,11,0.55);"></div>
+      <div class="wave-bar" style="height:38%; background:rgba(107,78,140,0.5);"></div>
+      <div class="wave-bar" style="height:30%; background:rgba(107,78,140,0.45);"></div>
+      <div class="wave-bar" style="height:22%; background:rgba(61,122,106,0.5);"></div>
+      <div class="wave-bar" style="height:15%; background:rgba(61,122,106,0.6);"></div>
+      <div class="wave-bar" style="height:10%; background:rgba(61,122,106,0.7);"><div class="wave-tip" style="top:-20px;">Day 90</div></div>
+    </div>
+    <div class="wave-days">
+      <div class="wave-day" style="flex:3;">Days 1–5<br>Peak</div>
+      <div class="wave-day" style="flex:4;">Weeks 1–3<br>Bargaining</div>
+      <div class="wave-day" style="flex:3;">Weeks 3–8<br>Easing</div>
+      <div class="wave-day" style="flex:3;">Month 3+<br>Healing</div>
+    </div>
+    <div class="wave-note">Every time you break no contact, the craving resets to peak. This is why going back (even for "one conversation") makes leaving harder, not easier.</div>
+  </div>
+
+  <div class="two-col">
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">What Drops When You Leave</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Dopamine</strong> crashes. You stop anticipating their texts.</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Serotonin</strong> drops. You feel flat and unmotivated.</span></li>
+        <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Oxytocin</strong> is gone. The bonding feeling disappears.</span></li>
+      </ul>
+    </div>
+    <div class="card bg-sage">
+      <div class="card-title ac-sage">What That Feels Like</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>Thinking about them constantly even when you try not to</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>Stomach in knots. Trouble sleeping. Not hungry.</span></li>
+        <li><span class="bullet-dot" style="background:var(--sage)"></span><span>The urge to "just check in" even knowing you should not</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout callout-gold">
+    <div class="callout-icon">💡</div>
+    <div>
+      <div class="callout-title" style="color:var(--gold)">This Is Withdrawal. Not Weakness.</div>
+      <div class="callout-text">The pain peaks in the first 2 to 5 days and then slowly eases. Here is the most important thing to know: every time you go back, you restart the clock. No contact is not cruelty. It is the medicine that finally lets your brain heal.</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 3 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">3</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-plum">Know What Is Coming</div>
+      <div class="page-header-title">How They Will Respond to the Breakup</div>
+      <div class="page-header-sub">Know this before it happens so it does not pull you back in</div>
+    </div>
+  </div>
+
+  <div class="callout callout-plum">
+    <div class="callout-icon">⚠️</div>
+    <div>
+      <div class="callout-title" style="color:var(--plum)">Read This Before You Leave</div>
+      <div class="callout-text">Avoidants respond to breakups in specific, predictable ways. Some of those responses will confuse you. Some might feel like hope. If you know what to expect before it happens, you will not be caught off guard and pulled right back in.</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card bg-navy">
+      <div class="card-title ac-navy">🧊 Dismissive Avoidant Response</div>
+      <div style="font-size:12.5px; font-weight:600; line-height:1.65; color:var(--text); margin-bottom:8px;">They seem completely unbothered. No tears. No begging. "Okay." And they walk away. It looks like they do not care at all.</div>
+      <div style="background:rgba(30,45,78,0.08); border-radius:8px; padding:10px 12px;">
+        <div style="font-size:11.5px; font-weight:700; color:var(--navy);">Then, 3 to 6 weeks later, when the pressure is gone and they start missing the good parts, they resurface. This is not healing. This is their abandonment fear activating once losing you feels real.</div>
+      </div>
+    </div>
+    <div class="card bg-plum">
+      <div class="card-title ac-plum">🌪 Fearful Avoidant Response</div>
+      <div style="font-size:12.5px; font-weight:600; line-height:1.65; color:var(--text); margin-bottom:8px;">Chaos. They cry, then seem fine, then reach out, then disappear. They may beg you to stay, then two days later say it is for the best.</div>
+      <div style="background:rgba(107,78,140,0.08); border-radius:8px; padding:10px 12px;">
+        <div style="font-size:11.5px; font-weight:700; color:var(--plum);">Both their fear of being abandoned AND their fear of closeness are firing at once. They want you back and want to run at the same time. The contradiction is real, not manipulation.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="scenario-box">
+    <div class="scenario-label">The Boomerang in Real Life</div>
+    <div class="scenario-text">"You were finally starting to feel okay. Sleeping better. Going to the gym. Three weeks of no contact and you were proud of yourself. Then at 11pm on a Thursday he texted: 'Hey. I know I should not send this but I keep thinking about you.' Your heart jumped out of your chest. It felt like a sign."</div>
+    <div class="scenario-explain">This is called the Avoidant Boomerang. Research shows they are most likely to reach out right when you start healing and pulling away. Their abandonment fear activates when they sense you are truly moving on. It is not love returning. It is fear talking.</div>
+  </div>
+
+  <div class="warning-banner">
+    <div class="warning-banner-icon">🚨</div>
+    <div>
+      <div class="warning-banner-title">The Most Important Thing to Know</div>
+      <div class="warning-banner-text">If they come back after the breakup without doing real attachment healing work, going back will produce the same cycle. Different season. Same pattern. You deserve someone who chose growth, not just someone who got scared of losing you.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">📊</div>
+    <div>
+      <div class="science-label">Research Finding</div>
+      <div class="science-text">Studies show avoidant partners are significantly more likely to seek contact post-breakup when their ex has stopped pursuing them and appears to be moving on. The less you chase, the more they circle back. This is not love. This is the avoidant attachment system responding to perceived loss.</div>
+      <div class="science-cite">Davis et al. (2003) — Attachment Style and Relationship Threat; Spielmann et al. (2013)</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 4 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">4</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-gold">Your Grief Is Valid</div>
+      <div class="page-header-title">Why This Grief Hits Differently</div>
+      <div class="page-header-sub">You are not just grieving one person. You are grieving several things at once.</div>
+    </div>
+  </div>
+
+  <div class="pull-quote pq-sage">
+    <p>I keep telling myself I should be over it by now. But it keeps hitting me in waves. A song. A Sunday. The smell of their jacket. And I am right back at square one. What is wrong with me?</p>
+  </div>
+
+  <div class="callout callout-gold">
+    <div class="callout-icon">💛</div>
+    <div>
+      <div class="callout-title" style="color:var(--gold)">Nothing Is Wrong With You</div>
+      <div class="callout-text">This is a layered grief. You are not just losing the relationship. You are losing the person they could have been, the future you imagined, and the chance to finally feel like enough. That is a lot to carry at once. No wonder it feels so heavy.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Everything You Are Grieving Right Now</div>
+
+  <div class="icon-grid">
+    <div class="icon-box"><div class="emoji">👤</div><div class="lbl">Who they were on their best days</div></div>
+    <div class="icon-box"><div class="emoji">🌅</div><div class="lbl">The future you pictured together</div></div>
+    <div class="icon-box"><div class="emoji">🔑</div><div class="lbl">The "you're enough" you never heard</div></div>
+    <div class="icon-box"><div class="emoji">🧩</div><div class="lbl">The version of you who tried so hard</div></div>
+    <div class="icon-box"><div class="emoji">🧒</div><div class="lbl">An old childhood wound reopened</div></div>
+    <div class="icon-box"><div class="emoji">⏳</div><div class="lbl">The time spent trying to fix it</div></div>
+    <div class="icon-box"><div class="emoji">💭</div><div class="lbl">The story you told yourself</div></div>
+    <div class="icon-box"><div class="emoji">💞</div><div class="lbl">The belief they were "the one"</div></div>
+  </div>
+
+  <div class="section-label">What to Expect (And When It Gets Better)</div>
+
+  <div class="timeline">
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--coral);"></div>
+      <div class="timeline-title">Days 1 to 5: Peak Withdrawal</div>
+      <div class="timeline-body">Racing thoughts. Chest pain. Checking your phone even when it does not buzz. Cannot eat or sleep. This is the brain chemicals crashing. It is chemistry, not drama. Do NOT contact them during this window.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--gold);"></div>
+      <div class="timeline-title">Week 1 to 3: The Bargaining Storm</div>
+      <div class="timeline-body">"What if I just explained myself better? What if they changed? One message will not hurt." Almost everyone in this situation has this exact thought. Have a plan for this window. Call a friend instead.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--plum);"></div>
+      <div class="timeline-title">Week 3 to 8: The Fog</div>
+      <div class="timeline-body">Numb. Low energy. "What is the point." This does not mean you made the wrong choice. This is grief settling in. Keep going.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:var(--sage);"></div>
+      <div class="timeline-title">Month 2 to 4: Clarity Comes Through</div>
+      <div class="timeline-body">You start seeing the whole picture, not just the highlights. You start to feel like yourself again. This is the beginning of actually healing.</div>
+    </div>
+    <div class="timeline-item">
+      <div class="timeline-dot" style="background:#3D7A6A;"></div>
+      <div class="timeline-title">Month 4 and Beyond: You Get Your Life Back</div>
+      <div class="timeline-body">You can think about them without falling apart. You understand what happened. You stop wishing the story had gone differently. This is healed.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Your Brain During Grief vs. Your Brain After Healing</div>
+
+  <div class="brain-compare">
+    <div class="brain-card" style="background:var(--lt-coral); border-color:#DDA898;">
+      <div class="brain-card-title ac-coral">🔴 During Grief</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--coral);"></div>Amygdala on high alert. Scanning constantly for threat or hope.</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--coral);"></div>Dopamine crashing. Nothing else feels good or worth doing.</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--coral);"></div>Prefrontal cortex offline. Hard to think clearly or make decisions.</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--coral);"></div>Body in stress response. Tight chest, no appetite, poor sleep.</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--coral);"></div>Memory biased to the good. Your brain edits out the painful parts.</div>
+    </div>
+    <div class="brain-card" style="background:#EAF4F0; border-color:#9DC9B8;">
+      <div class="brain-card-title ac-sage">🟢 After Healing</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--sage);"></div>Nervous system regulated. You feel calm without needing their attention.</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--sage);"></div>Dopamine rebuilding through new routines, sleep, and real connection.</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--sage);"></div>Prefrontal cortex back online. You can see the pattern clearly now.</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--sage);"></div>Body releases the hold. You breathe deeper. You feel lighter.</div>
+      <div class="brain-item"><div class="brain-dot" style="background:var(--sage);"></div>Full memory restored. You remember the hot AND the cold.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">💆</div>
+    <div>
+      <div class="science-label">Your Pain Is Real</div>
+      <div class="science-text">Scientists scanned the brains of people going through heartbreak and found that the same region that processes physical pain also processes the pain of rejection. Your heartbreak is not in your head. It is in your body. Treating yourself like you are going through something real, because you are, is not weakness. It is accurate.</div>
+      <div class="science-cite">Eisenberger and Lieberman (2004) — "Does Rejection Hurt?"</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 5 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">5</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-coral">The Relapse Pattern</div>
+      <div class="page-header-title">Why You Keep Going Back</div>
+      <div class="page-header-sub">Understanding the pull is how you stop falling for it</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🔄</div>
+    <div>
+      <div class="science-label">Research Says</div>
+      <div class="science-text">On average, people in anxious-avoidant relationships go back to their partner 2 to 7 times before a final separation. This is not stupidity. It is a predictable pattern created by the neurological bond formed during the relationship. If you have gone back before, you are not failing. You are human.</div>
+      <div class="science-cite">Rollie and Duck (2006) — Relationship Dissolution; Halpern-Meekin et al. (2013)</div>
+    </div>
+  </div>
+
+  <div class="section-label">Your Highest-Risk Moments</div>
+
+  <div class="danger-grid">
+    <div class="danger-card bg-coral" style="border-color:#DDA898;">
+      <div class="danger-icon">🌙</div>
+      <div class="danger-title ac-coral">Late at Night</div>
+      <div class="danger-body">Loneliness spikes after 9pm. Your brain looks for comfort in the familiar. This is when most people break no contact.</div>
+      <div class="danger-fix ac-teal">Plan: Put a friend on speed dial. Have a show ready. Get off your phone by 10pm.</div>
+    </div>
+    <div class="danger-card bg-gold" style="border-color:#D4C08A;">
+      <div class="danger-icon">☀️</div>
+      <div class="danger-title ac-gold">Slow Sundays</div>
+      <div class="danger-body">Unstructured weekend time with no distractions gives your mind nowhere to go but back to them.</div>
+      <div class="danger-fix ac-teal">Plan: Book something every Sunday for the first month. Brunch, a walk, a class. Anything.</div>
+    </div>
+    <div class="danger-card bg-plum" style="border-color:#C4B3D8;">
+      <div class="danger-icon">🍷</div>
+      <div class="danger-title ac-plum">After a Drink or Two</div>
+      <div class="danger-body">Alcohol lowers inhibition and amplifies nostalgia. Drunk texting an ex is a cliche because it is incredibly common.</div>
+      <div class="danger-fix ac-teal">Plan: Delete their number from your phone. Not blocked. Just gone. You can always get it back if you still want it in 90 days.</div>
+    </div>
+    <div class="danger-card bg-coral" style="border-color:#DDA898;">
+      <div class="danger-icon">📸</div>
+      <div class="danger-title ac-coral">Their Social Media</div>
+      <div class="danger-body">Seeing them living normally, or seeing them post something cryptic, sends your nervous system into a spiral every single time.</div>
+      <div class="danger-fix ac-teal">Plan: Mute, unfollow, or temporarily deactivate. Protect your healing from passive exposure.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Your Relapse Risk by Trigger</div>
+
+  <div style="background:var(--lt-card); border:1.5px solid var(--border); border-radius:14px; padding:18px 20px; margin:14px 0;">
+    <div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:14px; letter-spacing:1px; text-transform:uppercase;">How likely each trigger is to pull people back (based on relationship research)</div>
+
+    <div class="risk-row">
+      <div class="risk-label">They reach out first</div>
+      <div class="risk-bar-bg"><div class="risk-bar" style="width:92%; background:var(--coral);"></div></div>
+      <div class="risk-emoji">🔥</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">A lonely night / slow Sunday</div>
+      <div class="risk-bar-bg"><div class="risk-bar" style="width:80%; background:var(--coral);"></div></div>
+      <div class="risk-emoji">🌙</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Alcohol or substances</div>
+      <div class="risk-bar-bg"><div class="risk-bar" style="width:76%; background:var(--gold);"></div></div>
+      <div class="risk-emoji">🍷</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Seeing them on social media</div>
+      <div class="risk-bar-bg"><div class="risk-bar" style="width:71%; background:var(--gold);"></div></div>
+      <div class="risk-emoji">📸</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">A song, smell, or memory</div>
+      <div class="risk-bar-bg"><div class="risk-bar" style="width:63%; background:var(--plum);"></div></div>
+      <div class="risk-emoji">🎵</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Sunk cost thinking</div>
+      <div class="risk-bar-bg"><div class="risk-bar" style="width:58%; background:var(--plum);"></div></div>
+      <div class="risk-emoji">💸</div>
+    </div>
+    <div class="risk-row">
+      <div class="risk-label">Fear of being alone forever</div>
+      <div class="risk-bar-bg"><div class="risk-bar" style="width:52%; background:#6B8E9E;"></div></div>
+      <div class="risk-emoji">😨</div>
+    </div>
+
+    <div style="font-size:10.5px; font-weight:600; color:var(--muted); margin-top:10px;">The triggers at the top are the ones to plan for FIRST. Know your plan before they hit.</div>
+  </div>
+
+  <div class="section-label">The 6 Things That Pull You Back In</div>
+
+  <div class="three-col">
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">🎵 A Song, a Place, a Smell</div>
+      <div style="font-size:12px; font-weight:600; line-height:1.65;">Your brain stored thousands of sensory memories tied to them. These hit without warning. It feels like a sign. It is memory, not destiny.</div>
+    </div>
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">📲 They Reach Out</div>
+      <div style="font-size:12px; font-weight:600; line-height:1.65;">They always seem to resurface right when you are starting to feel okay. Their fear of losing you activated. That is not the same as them changing.</div>
+    </div>
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">🌙 A Lonely Night</div>
+      <div style="font-size:12px; font-weight:600; line-height:1.65;">Late nights. Slow Sundays. When you are bored or lonely, your brain defaults to what is familiar. Plan for these windows in advance.</div>
+    </div>
+  </div>
+
+  <div class="three-col">
+    <div class="card bg-gold">
+      <div class="card-title ac-gold">💰 "I Put So Much In"</div>
+      <div style="font-size:12px; font-weight:600; line-height:1.65;">The Sunk Cost Trap. Past investment is not a reason to keep losing. The best time to stop was before. The second best time is right now.</div>
+    </div>
+    <div class="card bg-gold">
+      <div class="card-title ac-gold">🎬 The Highlight Reel</div>
+      <div style="font-size:12px; font-weight:600; line-height:1.65;">Your brain replays the best moments in full HD and edits out the cold silence, the dismissals, the cycle. Journaling the full truth breaks this bias.</div>
+    </div>
+    <div class="card bg-gold">
+      <div class="card-title ac-gold">😨 "What If No One Else..."</div>
+      <div style="font-size:12px; font-weight:600; line-height:1.65;">"What if I never feel this way again?" This is your wounded nervous system talking. It is not the truth about your future. You have felt deeply before. You will again.</div>
+    </div>
+  </div>
+
+  <div class="phone-wrap">
+    <div class="phone-header">📱 What to Do Instead of Texting Them at 2am</div>
+    <div class="bubble-note">The urge hits. You open their contact. Your thumb is hovering.</div>
+    <div class="bubble-row"><div class="bubble received">HALT first: Am I Hungry? Angry? Lonely? Tired?</div></div>
+    <div class="bubble-row"><div class="bubble received">Address that real need. Drink water. Eat something. Call a friend.</div></div>
+    <div class="bubble-row sent"><div class="bubble sent-sage">I want to text him but I said I would call you instead. Can you talk?</div></div>
+    <div class="bubble-time">Then wait 48 hours. If you still want to send it, write it in notes. Do not hit send.</div>
+  </div>
+</div>
+
+<!-- SECTION 6 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">6</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-sage">Your Action Plan</div>
+      <div class="page-header-title">The 7-Step Clean Break Plan</div>
+      <div class="page-header-sub">Do these in order. Each step handles one specific reason people go back.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-sage">
+    <div class="callout-icon">📋</div>
+    <div>
+      <div class="callout-title" style="color:var(--sage)">How to Use This Plan</div>
+      <div class="callout-text">Read all seven steps before you start. Each one targets a specific trap that makes leaving hard. Going in order matters. Do not skip any of them.</div>
+    </div>
+  </div>
+
+  <ul class="step-list">
+    <li class="step-item">
+      <div class="step-num" style="background:var(--coral)">1</div>
+      <div class="step-content">
+        <div class="step-title">Write Your "Full Truth" Letter (Do NOT Send It)</div>
+        <div class="step-body">Every reason you are leaving. Every time you felt small. The silence, the hot and cold, the confusion. Be specific. Keep this letter and read it every time you want to go back.</div>
+        <div class="step-why">Why: Your brain will try to rewrite the story and show you only the good parts. This letter is your reality check.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--coral)">2</div>
+      <div class="step-content">
+        <div class="step-title">Tell One Person Who Will Hold You Accountable</div>
+        <div class="step-body">Not someone who will enable going back. A friend who has seen the dynamic, a therapist, or a community of people healing from the same thing.</div>
+        <div class="step-why">Why: Accountability cuts relapse. You are much less likely to go back when someone who cares about your growth knows your plan.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--gold)">3</div>
+      <div class="step-content">
+        <div class="step-title">Have the Actual Conversation by Phone or In Person</div>
+        <div class="step-body">Short and clear. "This relationship is not working for me. I am ending it and I need space to heal. I will not be in contact." No long explanation. No negotiation. No second round.</div>
+        <div class="step-why">Why: A clear, direct ending gives your brain something to close around. Vague endings leave the loop open and make no contact much harder.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--gold)">4</div>
+      <div class="step-content">
+        <div class="step-title">Remove Their Digital Access to You</div>
+        <div class="step-body">Mute or unfollow on all social media. Remove from suggested contacts. Archive the conversation. You do not have to block but you need to stop seeing their name and face.</div>
+        <div class="step-why">Why: Every time you see their name, your brain fires dopamine anticipation. Removing visual cues dramatically reduces cravings.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--plum)">5</div>
+      <div class="step-content">
+        <div class="step-title">Plan Every Hour of the First 72 Hours</div>
+        <div class="step-body">The first three days are the hardest. Literally schedule your time. Call a friend. Go to the gym. Try a new coffee shop. Walk a different route. Keep your brain occupied with new stimulation.</div>
+        <div class="step-why">Why: Dopamine withdrawal peaks in the first few days. New stimulation provides alternative rewards and interrupts the craving cycle.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--plum)">6</div>
+      <div class="step-content">
+        <div class="step-title">Create a Physical Reminder of the Pattern</div>
+        <div class="step-body">A journal page. A voice memo you recorded when you were hurting. A list on your phone titled "The Reason I Left." Something you can pull up fast when the nostalgia hits.</div>
+        <div class="step-why">Why: Your brain shows you highlights when you are lonely. Your reality check tool shows you the full movie.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--sage)">7</div>
+      <div class="step-content">
+        <div class="step-title">Start Your Healing Work Right Now</div>
+        <div class="step-body">Do not wait until you "feel ready." Therapy, journaling, attachment healing books, healing communities. Start something. The healing is what makes you ready. Not the other way around.</div>
+        <div class="step-why">Why: Without intentional healing work, your nervous system will be drawn to the same kind of person again. New input is the only thing that builds new patterns.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="script-box">
+    <div class="script-label">The Breakup Script: Short and Clear</div>
+    <div class="script-line">"This relationship has not been working for me and I have decided to end it."</div>
+    <div class="script-line">"I am not looking to be talked out of this. My mind is made up."</div>
+    <div class="script-line">"I need space to heal and I will not be in contact. I wish you well."</div>
+  </div>
+</div>
+
+<!-- SECTION 7 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">7</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-navy">The Hard Part</div>
+      <div class="page-header-title">No Contact and Why It Works</div>
+      <div class="page-header-sub">This is not cruel. It is the most important part of the whole plan.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🧬</div>
+    <div>
+      <div class="science-label">Why No Contact Works Scientifically</div>
+      <div class="science-text">The cravings from this kind of relationship are kept alive by exposure. Every text exchange, every social media check, every "quick chat" tells your brain the person is still in your life and keeps the craving loop active. Your brain needs a real signal that the old pattern is over before it can start building new pathways. No contact sends that signal.</div>
+      <div class="science-cite">Volkow et al. (2012) — Addiction and Neural Pathways; Doidge (2007) — The Brain That Changes Itself</div>
+    </div>
+  </div>
+
+  <div class="nc-tracker">
+    <div class="nc-tracker-label">No Contact Milestone Map: What Happens in Your Brain</div>
+    <div class="nc-milestones">
+      <div class="nc-milestone" style="background:var(--lt-coral); border:1.5px solid #DDA898;">
+        <div class="nc-days ac-coral">7</div>
+        <div class="nc-days-lbl">DAYS</div>
+        <div class="nc-what ac-coral">The worst withdrawal peaks then starts to soften. You may still feel sick. That is normal.</div>
+      </div>
+      <div class="nc-milestone" style="background:var(--lt-gold); border:1.5px solid #D4C08A;">
+        <div class="nc-days ac-gold">30</div>
+        <div class="nc-days-lbl">DAYS</div>
+        <div class="nc-what ac-gold">Intrusive thoughts decrease. You go hours without thinking about them. The fog starts lifting.</div>
+      </div>
+      <div class="nc-milestone" style="background:var(--lt-plum); border:1.5px solid #C4B3D8;">
+        <div class="nc-days ac-plum">60</div>
+        <div class="nc-days-lbl">DAYS</div>
+        <div class="nc-what ac-plum">Dopamine levels begin resetting. You start enjoying things again. Sleep improves.</div>
+      </div>
+      <div class="nc-milestone" style="background:#EAF4F0; border:1.5px solid #90CCBC;">
+        <div class="nc-days ac-sage">90</div>
+        <div class="nc-days-lbl">DAYS</div>
+        <div class="nc-what ac-sage">New neural pathways are forming. You think of them without your chest tightening. Clarity arrives.</div>
+      </div>
+      <div class="nc-milestone" style="background:var(--lt-navy); border:1.5px solid #A8BCE0;">
+        <div class="nc-days ac-navy">180</div>
+        <div class="nc-days-lbl">DAYS</div>
+        <div class="nc-what ac-navy">You can see the pattern clearly. The relationship no longer defines your self-worth. You are you again.</div>
+      </div>
+      <div class="nc-milestone" style="background:linear-gradient(135deg,#EAF4F0,#EBF0F8); border:1.5px solid #90CCBC;">
+        <div class="nc-days" style="color:var(--navy); font-size:28px;">1 yr</div>
+        <div class="nc-days-lbl">LATER</div>
+        <div class="nc-what" style="color:var(--navy);">You are grateful you left. The version of you who stayed feels like a different person.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card bg-sage">
+      <div class="card-title ac-sage">No Contact Means</div>
+      <ul class="checklist">
+        <li><span class="check-icon check-yes">✓</span><span>No texts, calls, or DMs in either direction</span></li>
+        <li><span class="check-icon check-yes">✓</span><span>No checking their social media profiles</span></li>
+        <li><span class="check-icon check-yes">✓</span><span>No asking friends how they are doing</span></li>
+        <li><span class="check-icon check-yes">✓</span><span>No re-reading old conversations when you miss them</span></li>
+      </ul>
+    </div>
+    <div class="card bg-coral">
+      <div class="card-title ac-coral">These Are NOT No Contact</div>
+      <ul class="checklist">
+        <li><span class="check-icon check-no">✗</span><span>"I just need closure" text (there is no closure text)</span></li>
+        <li><span class="check-icon check-no">✗</span><span>"Checking if they're okay" (they are fine)</span></li>
+        <li><span class="check-icon check-no">✗</span><span>"Returning their stuff" (mail it or donate it)</span></li>
+        <li><span class="check-icon check-no">✗</span><span>Replying when they reach out "to be polite"</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="color:#555">How Long Does No Contact Need to Be?</div>
+    <ul class="bullet-list">
+      <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>Minimum:</strong> 30 to 60 days for the worst withdrawal to pass</span></li>
+      <li><span class="bullet-dot" style="background:var(--gold)"></span><span><strong>Better:</strong> 90 days for your brain's reward system to begin resetting</span></li>
+      <li><span class="bullet-dot" style="background:var(--sage)"></span><span><strong>You know you are ready to end it when</strong> you can think about them without your heart racing, you are not hoping they will notice, you feel neutral, not longing</span></li>
+    </ul>
+  </div>
+
+  <div class="pull-quote pq-plum" style="margin-top:12px;">
+    <p>The urge to contact them will come. Especially in the first month. It does not mean you love them. It means your brain wants dopamine back. Ride it like a wave. It peaks and then it passes. Every time you let it pass without acting on it, you are rewiring your brain.</p>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">📈</div>
+    <div>
+      <div class="science-label">Recovery Research</div>
+      <div class="science-text">Studies of relationship recovery show that sustained no contact, especially paired with active support like therapy, community, or physical activity, produces significantly better outcomes than slow fades or sporadic contact. Your nervous system needs a clear signal that the old pattern is over. No contact is that signal.</div>
+      <div class="science-cite">Sbarra and Hazan (2008) — Coregulation, Dysregulation, Self-Regulation; Field (2011) — Romantic Breakup Distress</div>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 8 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">8</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-plum">Your Healing Tools</div>
+      <div class="page-header-title">Affirmations and Journal Prompts</div>
+      <div class="page-header-sub">Say the affirmations out loud every day. Use the prompts any time you feel the pull.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🌱</div>
+    <div>
+      <div class="science-label">Why Affirmations Work</div>
+      <div class="science-text">Repeating affirmations out loud activates a part of the brain called the medial prefrontal cortex and creates new neural pathways that compete with the old fear-based loops. They work best when said with emotion, daily, and out loud rather than just read silently. You are literally building new brain wiring every time you do this.</div>
+      <div class="science-cite">Cascio et al. (2016) — Self-Affirmation and Neural Activity</div>
+    </div>
+  </div>
+
+  <div class="section-label">Say These Out Loud Every Day</div>
+
+  <div class="affirmation-grid">
+    <div class="affirmation-card"><p>I am allowed to leave what no longer honors me.</p></div>
+    <div class="affirmation-card"><p>The urge to go back is withdrawal. It is not love. It will pass.</p></div>
+    <div class="affirmation-card"><p>Every day of no contact is my nervous system healing.</p></div>
+    <div class="affirmation-card"><p>I give myself the closure I need. I do not need it from them.</p></div>
+    <div class="affirmation-card"><p>I am not too much. I was with someone who could not meet me where I am.</p></div>
+    <div class="affirmation-card"><p>Consistent, secure love exists. I am becoming ready for it.</p></div>
+    <div class="affirmation-card"><p>I am breaking a pattern. That takes real courage.</p></div>
+    <div class="affirmation-card"><p>The version of me who heals from this will be the strongest yet.</p></div>
+    <div class="affirmation-card"><p>I grieve the good moments without forgetting the full picture.</p></div>
+    <div class="affirmation-card"><p>My healing does not depend on whether they choose to heal too.</p></div>
+    <div class="affirmation-card"><p>I chose me. That is the most loving thing I have ever done.</p></div>
+    <div class="affirmation-card"><p>I trust this process. I trust myself. I am going to be okay.</p></div>
+  </div>
+
+  <div class="section-label">Journal Prompts (5 to 10 Minutes Each)</div>
+
+  <div class="card">
+    <div class="card-title ac-plum">Use These When You Feel the Pull to Go Back</div>
+    <ul class="bullet-list">
+      <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>The Full Truth:</strong> "What pattern do I now see clearly that I could not see when I was in it?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--coral)"></span><span><strong>What Am I Grieving:</strong> "Am I grieving the person, the potential, or the idea of finally being enough?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--gold)"></span><span><strong>The Old Wound:</strong> "When was the first time I felt like I had to work this hard for love?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--gold)"></span><span><strong>The Future:</strong> "What will my life feel like in 6 months if I stay in no contact and keep doing this work?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--plum)"></span><span><strong>Who I Was:</strong> "What parts of myself did I give up or shrink to make this relationship work?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--plum)"></span><span><strong>New Standards:</strong> "What does real, secure love look like? What am I no longer willing to accept?"</span></li>
+      <li><span class="bullet-dot" style="background:var(--sage)"></span><span><strong>Self-Compassion:</strong> "What would I say to my best friend if she was going through exactly this right now?"</span></li>
+    </ul>
+  </div>
+
+  <div style="margin-top:22px; text-align:center; padding:18px; border-top: 2px solid var(--border);">
+    <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--navy); margin-bottom:6px;">You did the hardest thing.</div>
+    <div style="font-size:12.5px; font-weight:600; color:var(--muted); max-width:500px; margin:0 auto 12px; line-height:1.7;">Leaving someone when every part of you wants to stay is not weakness. It is one of the bravest things you can do for yourself. Your nervous system will catch up to the decision your heart already made. Give it time.</div>
+    <div style="font-size:11px; font-weight:700; color:var(--muted); margin-bottom:10px;">Ash · Couples Educator</div>
+    <div>
+      <span class="tag tag-coral">Breakup Recovery</span>
+      <span class="tag tag-plum">Avoidant Attachment</span>
+      <span class="tag tag-sage">Nervous System Healing</span>
+      <span class="tag tag-navy">Science-Backed</span>
+      <span class="tag tag-gold">Attachment Theory</span>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

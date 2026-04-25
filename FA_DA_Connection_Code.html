@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relationship PIP: FA & DA Performance Improvement Plan</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+
+:root {
+  --navy:    #1E2D4E;
+  --terra:   #C4644A;
+  --sage:    #3D8B7A;
+  --plum:    #6B4E8C;
+  --amber:   #B8860B;
+  --cream:   #F7F3EE;
+  --card:    #FFFFFF;
+  --border:  #DDD7CE;
+  --text:    #1E1E1E;
+  --muted:   #6B6560;
+  --light-sage: #EAF4F1;
+  --light-terra: #FAF0EC;
+  --light-plum: #F2EEF8;
+  --light-amber: #FBF5E6;
+  --light-navy: #EBF0F8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* ── PAGE ── */
+.page { width: 816px; margin: 0 auto; }
+
+/* ── COVER ── */
+.cover {
+  background: var(--navy);
+  min-height: 1056px;
+  display: flex;
+  flex-direction: column;
+  padding: 52px 52px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cover-accent {
+  position: absolute;
+  right: -80px; top: -80px;
+  width: 420px; height: 420px;
+  border-radius: 50%;
+  border: 80px solid rgba(196,100,74,0.12);
+}
+.cover-accent-2 {
+  position: absolute;
+  left: -60px; bottom: -60px;
+  width: 320px; height: 320px;
+  border-radius: 50%;
+  border: 60px solid rgba(61,139,122,0.1);
+}
+
+.cover-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--terra);
+  margin-bottom: 24px;
+}
+
+.cover h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 64px;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.0;
+  margin-bottom: 10px;
+  max-width: 520px;
+}
+
+.cover h1 span { color: var(--terra); }
+
+.cover-tagline {
+  font-size: 15px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.65);
+  margin-bottom: 32px;
+  max-width: 460px;
+  line-height: 1.55;
+}
+
+.cover-divider {
+  width: 48px;
+  height: 3px;
+  background: var(--terra);
+  margin-bottom: 28px;
+}
+
+.cover-intro {
+  background: rgba(255,255,255,0.06);
+  border-left: 3px solid var(--terra);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px;
+  max-width: 560px;
+  margin-bottom: 32px;
+}
+.cover-intro p {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.82);
+  line-height: 1.6;
+}
+
+.name-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  max-width: 560px;
+}
+
+.name-field {
+  border-bottom: 2px solid rgba(255,255,255,0.2);
+  padding-bottom: 10px;
+}
+.name-field label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  margin-bottom: 8px;
+}
+.name-field .line { min-height: 24px; }
+
+.cover-footer {
+  margin-top: auto;
+  padding-top: 32px;
+  font-size: 11px;
+  color: rgba(255,255,255,0.25);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+/* ── SECTION PAGE ── */
+.section-page {
+  background: var(--cream);
+  padding: 22px 44px;
+  min-height: 1056px;
+}
+
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 14px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid var(--border);
+}
+
+.page-header-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.1;
+  color: var(--text);
+  flex-shrink: 0;
+  margin-top: -4px;
+}
+
+.page-header-content { flex: 1; }
+.page-header-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.page-header-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text);
+}
+.page-header-sub {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  padding: 12px 16px;
+  margin-bottom: 8px;
+}
+
+.card-title {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 7px;
+}
+
+/* ── ACCENT COLORS ── */
+.ac-terra  { color: var(--terra); }
+.ac-sage   { color: var(--sage); }
+.ac-plum   { color: var(--plum); }
+.ac-amber  { color: var(--amber); }
+.ac-navy   { color: var(--navy); }
+
+.bg-terra  { background: var(--light-terra); border-color: #DDA898; }
+.bg-sage   { background: var(--light-sage);  border-color: #A8CEC8; }
+.bg-plum   { background: var(--light-plum);  border-color: #C4B3D8; }
+.bg-amber  { background: var(--light-amber); border-color: #D4C08A; }
+.bg-navy   { background: var(--light-navy);  border-color: #A8BCE0; }
+
+/* ── LEFT-ACCENT CARD ── */
+.accent-card {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  border-left: 4px solid;
+  padding: 18px 22px;
+  margin-bottom: 14px;
+}
+
+/* ── SCIENCE BLOCK ── */
+.science-block {
+  background: var(--navy);
+  border-radius: 10px;
+  padding: 11px 16px;
+  color: rgba(255,255,255,0.9);
+  margin: 7px 0;
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.science-block .sci-icon {
+  font-size: 20px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.science-block .sci-text strong {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.science-block .sci-text p {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.72);
+  line-height: 1.5;
+}
+.science-block .sci-source {
+  font-size: 10px;
+  font-weight: 700;
+  color: rgba(255,255,255,0.4);
+  margin-top: 4px;
+  letter-spacing: 0.5px;
+}
+
+/* ── STAT ROW ── */
+.stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin: 7px 0;
+}
+.stat-block {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  padding: 11px 14px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 58px;
+}
+.stat-text {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.45;
+}
+.stat-text small {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* ── ACTION BOX ── */
+.action-box {
+  border-radius: 10px;
+  border: 1.5px solid;
+  padding: 11px 16px;
+  margin: 7px 0;
+}
+.action-box-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+.action-pill {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 50px;
+  color: #fff;
+  flex-shrink: 0;
+}
+.action-box h3 {
+  font-size: 13.5px;
+  font-weight: 800;
+}
+.action-box ul { list-style: none; }
+.action-box ul li {
+  padding: 4px 0;
+  font-size: 12px;
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+}
+.action-box ul li:last-child { border-bottom: none; }
+.action-box ul li::before {
+  content: '→';
+  font-weight: 900;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+.action-note {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-top: 9px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(0,0,0,0.08);
+}
+
+/* ── TWO COLUMN ── */
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+/* ── ATTACHMENT CARD ── */
+.attach-card {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  border-top: 4px solid;
+  padding: 14px 16px;
+}
+.attach-card .type-label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+.attach-card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.attach-card .nickname {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 10px;
+  font-style: italic;
+}
+.attach-card ul { list-style: none; }
+.attach-card ul li {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3.5px 0;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  gap: 7px;
+}
+.attach-card ul li:last-child { border-bottom: none; }
+.attach-card ul li .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+
+/* ── TRIGGER TABLE ── */
+.trigger-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 8px;
+  border: 1.5px solid var(--border);
+}
+.trigger-table th {
+  padding: 8px 12px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  text-align: left;
+  color: #fff;
+}
+.trigger-table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11.5px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+.trigger-table tr:last-child td { border-bottom: none; }
+.trigger-table td:nth-child(2) {
+  color: var(--muted);
+  font-size: 12px;
+  text-align: center;
+}
+.trigger-table td:nth-child(3) {
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* ── COMMUNICATION STEP (compact cell for 2×2 grid) ── */
+.step-cell {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  padding: 12px 14px;
+}
+.step-cell-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+.step-badge {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+}
+.step-cell h4 {
+  font-size: 13px;
+  font-weight: 800;
+}
+.step-cell .step-desc {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  margin-bottom: 7px;
+  line-height: 1.45;
+}
+.script-box {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 6px;
+  padding: 7px 10px 7px 18px;
+  font-size: 11px;
+  font-weight: 700;
+  font-style: italic;
+  color: var(--navy);
+  margin-bottom: 7px;
+  position: relative;
+}
+.script-box::before {
+  content: '"';
+  position: absolute;
+  top: -2px; left: 4px;
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  color: var(--terra);
+  opacity: 0.4;
+  line-height: 1;
+}
+
+.do-dont {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.do-box {
+  background: var(--light-sage);
+  border: 1.5px solid #A8CEC8;
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #1F5A50;
+}
+.do-box::before { content: '✓ '; font-weight: 900; }
+.dont-box {
+  background: var(--light-terra);
+  border: 1.5px solid #DDA898;
+  border-radius: 6px;
+  padding: 5px 9px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #7A3020;
+}
+.dont-box::before { content: '✗ '; font-weight: 900; }
+
+/* ── GOAL CARD ── */
+.goal-card {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  border-left: 4px solid;
+  padding: 10px 14px;
+  margin-bottom: 5px;
+}
+.goal-badge {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 2px 10px;
+  border-radius: 50px;
+  color: #fff;
+  display: inline-block;
+  margin-bottom: 6px;
+}
+.goal-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 5px; }
+.goal-input label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+.write-line {
+  border-bottom: 1.5px dashed var(--border);
+  min-height: 22px;
+  margin-bottom: 5px;
+  display: block;
+}
+.goal-example {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--muted);
+  font-style: italic;
+  line-height: 1.4;
+}
+.tracker-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-top: 5px;
+  padding-top: 5px;
+  border-top: 1px solid var(--border);
+}
+.tracker-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  flex-shrink: 0;
+}
+.track-circle {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+/* ── CHECK-IN TABLE ── */
+.checkin-table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+.checkin-table thead th {
+  padding: 8px 10px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: #fff;
+  text-align: left;
+}
+.checkin-table tbody td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 600;
+  vertical-align: top;
+}
+.checkin-table tbody tr:last-child td { border-bottom: none; }
+.checkin-table .q-col {
+  font-weight: 700;
+  color: var(--text);
+  width: 34%;
+}
+.checkin-table .a-col .write-line { border-color: var(--border); }
+
+.radio-row {
+  display: flex;
+  gap: 8px;
+}
+.radio-pill {
+  border-radius: 50px;
+  border: 1.5px solid;
+  padding: 4px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+.rp-green  { border-color: var(--sage);  color: var(--sage);  background: var(--light-sage); }
+.rp-amber  { border-color: var(--amber); color: var(--amber); background: var(--light-amber); }
+.rp-red    { border-color: var(--terra); color: var(--terra); background: var(--light-terra); }
+
+/* ── NON-NEG ── */
+.nonneg-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+.nonneg-card {
+  background: var(--card);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  border-top: 4px solid;
+  padding: 10px 14px;
+}
+.nonneg-card h4 { font-size: 13px; font-weight: 800; margin-bottom: 8px; }
+.nonneg-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+.checkbox-sq {
+  width: 20px; height: 20px;
+  border-radius: 5px;
+  border: 2px solid;
+  flex-shrink: 0;
+}
+.nonneg-line {
+  border-bottom: 1.5px dashed;
+  flex: 1;
+  min-height: 22px;
+}
+
+/* ── COMMITMENT ── */
+.commit-box {
+  background: var(--navy);
+  border-radius: 12px;
+  padding: 16px 20px;
+  color: #fff;
+  margin: 8px 0;
+}
+.commit-box h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 5px;
+}
+.commit-box > p {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: rgba(255,255,255,0.72);
+  margin-bottom: 12px;
+  line-height: 1.55;
+  max-width: 580px;
+}
+.sig-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.sig-block {
+  border-top: 1px solid rgba(255,255,255,0.15);
+  padding-top: 10px;
+}
+.sig-block label {
+  font-size: 9.5px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  display: block;
+  margin-bottom: 3px;
+}
+.sig-line {
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+  min-height: 18px;
+  margin-bottom: 8px;
+}
+
+/* ── EMERGENCY KIT ── */
+.emergency-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 6px; }
+.emerg-item {
+  background: var(--card);
+  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  padding: 9px 11px;
+}
+.emerg-item .emerg-label {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.emerg-item p { font-size: 11px; font-weight: 600; color: var(--muted); line-height: 1.45; }
+
+/* ── PAGE FOOTER ── */
+.page-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 10px;
+  margin-top: 12px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  color: var(--muted);
+}
+.page-footer .brand {
+  color: var(--terra);
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+
+/* ── PRINT & PAGE BREAKS ── */
+@page {
+  size: Letter;
+  margin: 0;
+}
+
+/* Force each top-level section onto its own page */
+.cover {
+  page-break-before: always;
+  page-break-after: always;
+  break-before: page;
+  break-after: page;
+}
+.section-page {
+  page-break-before: always;
+  page-break-after: always;
+  break-before: page;
+  break-after: page;
+}
+
+/* Never split these elements across pages */
+.card,
+.accent-card,
+.science-block,
+.stat-block,
+.action-box,
+.comm-step,
+.goal-card,
+.attach-card,
+.nonneg-card,
+.emerg-item,
+.weekly-card,
+.loop-row,
+.trigger-table,
+.checkin-table,
+.commit-box,
+.page-footer,
+.callout,
+.script-box,
+.do-dont,
+.two-col,
+.stat-row,
+.nonneg-grid,
+.sig-grid,
+.emergency-grid {
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
+/* Prevent widows and orphans */
+p, li { orphans: 3; widows: 3; }
+
+@media print {
+  body { background: #fff; }
+}
+
+/* ── HORIZONTAL RULE ── */
+.hr { border: none; border-top: 1.5px solid var(--border); margin: 10px 0; }
+
+/* ── CALLOUT ── */
+.callout {
+  border-radius: 8px;
+  padding: 9px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 7px 0;
+  border: 1.5px solid;
+}
+.callout .c-icon { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+
+/* ── SECTION LABEL PILL ── */
+.section-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 12px;
+  border-radius: 50px;
+  margin-bottom: 10px;
+  color: #fff;
+}
+
+/* ── INFO ROW ── */
+.info-row {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+.info-row > * { flex: 1; }
+
+/* ── LOOP VISUAL ── */
+.loop-row {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-bottom: 10px;
+}
+.loop-box {
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  flex: 1;
+}
+.loop-arrow {
+  font-size: 16px;
+  color: var(--muted);
+  padding: 0 4px;
+  flex-shrink: 0;
+}
+
+/* ── CYCLE LABEL ── */
+.cycle-label {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ═══════════════════ COVER ═══════════════════ -->
+<div class="cover">
+  <div class="cover-accent"></div>
+  <div class="cover-accent-2"></div>
+
+  <div class="cover-label">FA & DA Relationship Performance Improvement Plan</div>
+
+  <h1>Relationship<br><span>PIP.</span></h1>
+
+  <p class="cover-tagline">A science-backed, goal-oriented reset plan for couples where one or both partners have avoidant attachment , built for measurable change, not just insight.</p>
+
+  <div class="cover-divider"></div>
+
+  <div class="cover-intro">
+    <p>This is not a document about who's wrong. It is a structured agreement between two people who want things to work and are willing to be accountable to that goal. Your attachment styles are not character flaws; they are learned protection strategies. This plan names the patterns, sets concrete goals, and tracks real progress. When conversations go sideways, this document is what you return to.</p>
+  </div>
+
+  <div class="name-grid">
+    <div class="name-field">
+      <label>Partner A (FA)</label>
+      <div class="line"></div>
+    </div>
+    <div class="name-field">
+      <label>Partner B (DA)</label>
+      <div class="line"></div>
+    </div>
+    <div class="name-field">
+      <label>Date Started</label>
+      <div class="line"></div>
+    </div>
+    <div class="name-field">
+      <label>First Review Date</label>
+      <div class="line"></div>
+    </div>
+  </div>
+
+  <div class="cover-footer" style="display:flex; justify-content:space-between; align-items:flex-end;">
+    <span>Based on research by Bowlby · Ainsworth · Bartholomew &amp; Horowitz · Gottman · Porges · Jill Bolte Taylor</span>
+    <span style="font-size:14px; font-weight:800; letter-spacing:1px; color:var(--terra); opacity:1;">Ash | Couples Educator</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ PAGE 2: BRAIN SCIENCE ═══════════════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">01</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-terra">The Science</div>
+      <div class="page-header-title">What Is Actually Happening in Your Brain</div>
+      <div class="page-header-sub">Understanding the mechanism before trying to fix it</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="sci-icon">🧠</div>
+    <div class="sci-text">
+      <strong>Your attachment style is a survival strategy, not a personality flaw.</strong>
+      <p>Attachment patterns form in childhood as the brain learns to answer one question: "How do I stay safe around people?" The neural pathways built then still fire today, automatically, before conscious thought kicks in. When your partner triggers that system, you're not overreacting. You're running an old program.</p>
+      <div class="sci-source">Bowlby (1969/1982) · Ainsworth et al. (1978) · Siegel, The Developing Mind (2012)</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="attach-card" style="border-top-color: var(--terra);">
+      <div class="type-label ac-terra">Fearful Avoidant (FA)</div>
+      <h3>The Push-Pull</h3>
+      <div class="nickname">Negative model of self AND others</div>
+      <ul>
+        <li><div class="dot" style="background:var(--terra);"></div><span>Desires closeness, yet closeness also triggers fear</span></li>
+        <li><div class="dot" style="background:var(--terra);"></div><span>Cycles between pursuit and withdrawal</span></li>
+        <li><div class="dot" style="background:var(--terra);"></div><span>Emotionally floods quickly under conflict</span></li>
+        <li><div class="dot" style="background:var(--terra);"></div><span>Fears both abandonment and engulfment</span></li>
+        <li><div class="dot" style="background:var(--terra);"></div><span>Often hypervigilant to relational threat cues</span></li>
+      </ul>
+    </div>
+    <div class="attach-card" style="border-top-color: var(--plum);">
+      <div class="type-label ac-plum">Dismissive Avoidant (DA)</div>
+      <h3>The Fortress</h3>
+      <div class="nickname">Positive model of self, negative model of others</div>
+      <ul>
+        <li><div class="dot" style="background:var(--plum);"></div><span>Shuts down emotionally under pressure</span></li>
+        <li><div class="dot" style="background:var(--plum);"></div><span>Withdraws to regulate, often without communicating</span></li>
+        <li><div class="dot" style="background:var(--plum);"></div><span>Highly self-reliant, uncomfortable with dependency</span></li>
+        <li><div class="dot" style="background:var(--plum);"></div><span>Minimises or dismisses partner's emotional needs</span></li>
+        <li><div class="dot" style="background:var(--plum);"></div><span>Appears calm but is internally deactivated</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-block">
+      <div class="stat-num ac-terra">90<small style="font-size:18px">sec</small></div>
+      <div class="stat-text">
+        The neurochemical wave of an emotional trigger (adrenaline and cortisol) cycles through the body in roughly 90 seconds. If the feeling persists after that, it's because your thoughts are re-triggering the cycle.
+        <small>Jill Bolte Taylor, Ph.D., My Stroke of Insight (2008)</small>
+      </div>
+    </div>
+    <div class="stat-block">
+      <div class="stat-num ac-plum">69<small style="font-size:18px">%</small></div>
+      <div class="stat-text">
+        Of recurring relationship conflict is "perpetual," rooted in fundamental personality and values differences. It doesn't get resolved. Healthy couples learn to manage it, not eliminate it.
+        <small>Gottman &amp; Silver, The Seven Principles for Making Marriage Work (1999)</small>
+      </div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="sci-icon">⚡</div>
+    <div class="sci-text">
+      <strong>Why the FA/DA pairing creates a self-reinforcing cycle</strong>
+      <p>The FA partner's anxiety activates their pursuit behavior. That pursuit activates the DA partner's deactivation strategy, so they withdraw. The withdrawal triggers the FA's fear of abandonment, intensifying pursuit. The intensity triggers deeper DA shutdown. Both people end up feeling completely alone, for opposite reasons. This cycle is documented extensively in the Emotionally Focused Therapy literature.</p>
+      <div class="sci-source">Sue Johnson, Hold Me Tight (2008) · EFT research: Johnson et al. (1999)</div>
+    </div>
+  </div>
+
+  <div class="action-box bg-sage" style="border-color: #A8CEC8;">
+    <div class="action-box-header">
+      <div class="action-pill" style="background: var(--sage);">Action: Do This Now</div>
+      <h3 class="ac-sage">The 90-Second Body Check</h3>
+    </div>
+    <ul>
+      <li>Each partner: place one hand on your chest. Notice your heart rate.</li>
+      <li>Name one physical sensation in your body right now: not a story, just the sensation. Tight chest, shallow breath, knotted stomach.</li>
+      <li>Say it out loud to your partner. No context needed. Just the body sensation.</li>
+    </ul>
+    <div class="action-note">This engages the prefrontal cortex and begins to regulate the amygdala's threat response, which is the neurological prerequisite for productive conversation.</div>
+  </div>
+  <div class="page-footer"><span>RELATIONSHIP PIP · Section 01</span><span class="brand">Ash | Couples Educator</span></div>
+</div>
+
+<!-- ═══════════════════ PAGE 3: TRIGGER MAP ═══════════════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">02</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-amber">Trigger Mapping</div>
+      <div class="page-header-title">What Sets Each Style Off</div>
+      <div class="page-header-sub">Know your triggers, and your partner's, before the next conflict</div>
+    </div>
+  </div>
+
+  <div class="callout bg-amber" style="background: var(--light-amber);">
+    <div class="c-icon">↳</div>
+    <div>Most arguments aren't about the topic on the surface. They're about the attachment threat underneath it. Identifying the actual trigger (not the presenting issue) is what breaks the cycle.</div>
+  </div>
+
+  <div class="two-col" style="margin-top: 10px;">
+    <div>
+      <div class="section-pill" style="background: var(--terra);">FA Triggers</div>
+      <table class="trigger-table">
+        <thead>
+          <tr><th style="background: var(--terra);">Trigger</th><th style="background: var(--terra); width:28px;"></th><th style="background: var(--terra);">Likely Response</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Partner withdraws or goes cold</td><td>→</td><td>Panic, escalation, over-pursuit</td></tr>
+          <tr><td>Partner becomes too demanding</td><td>→</td><td>Sudden shutdown, pulling away</td></tr>
+          <tr><td>Criticism or perceived rejection</td><td>→</td><td>Shame spiral, attack or collapse</td></tr>
+          <tr><td>Feeling invisible or unheard</td><td>→</td><td>Emotional flooding, or dissociation</td></tr>
+          <tr><td>Unpredictability in the relationship</td><td>→</td><td>Anxiety spike, testing behaviors</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <div class="section-pill" style="background: var(--plum);">DA Triggers</div>
+      <table class="trigger-table">
+        <thead>
+          <tr><th style="background: var(--plum);">Trigger</th><th style="background: var(--plum); width:28px;"></th><th style="background: var(--plum);">Likely Response</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>High emotional intensity or demands</td><td>→</td><td>Stonewalling, leaving the room</td></tr>
+          <tr><td>Feeling trapped or cornered</td><td>→</td><td>Complete shutdown, no response</td></tr>
+          <tr><td>Criticism or being managed</td><td>→</td><td>Contempt, dismissal, or exit</td></tr>
+          <tr><td>Partner's emotional dependency</td><td>→</td><td>Deactivation of intimacy entirely</td></tr>
+          <tr><td>Loss of personal space or autonomy</td><td>→</td><td>Withdrawal, avoidance of connection</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <hr class="hr">
+
+  <div class="cycle-label">The Loop: How You Lock Each Other In</div>
+
+  <div class="loop-row">
+    <div class="loop-box" style="background: var(--light-terra); border: 1.5px solid #DDA898; color: #7A3020; font-size:11px;">FA feels anxious or rejected</div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-box" style="background: var(--light-plum); border: 1.5px solid #C4B3D8; color: #4A2070; font-size:11px;">DA feels overwhelmed, withdraws</div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-box" style="background: var(--light-terra); border: 1.5px solid #DDA898; color: #7A3020; font-size:11px;">FA's fear intensifies, pursues harder</div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-box" style="background: var(--light-plum); border: 1.5px solid #C4B3D8; color: #4A2070; font-size:11px;">DA shuts down completely</div>
+  </div>
+
+  <div style="text-align:center; font-size:11px; font-weight:700; color:var(--muted); margin-bottom:10px;">Nobody wins. Both people feel alone. The cycle repeats.</div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title ac-terra">My #1 Trigger (FA Partner)</div>
+      <p style="font-size:12px; font-weight:600; color:var(--muted); margin-bottom:12px;">What most reliably sends you into overdrive or shutdown?</p>
+      <span class="write-line"></span>
+      <span class="write-line"></span>
+    </div>
+    <div class="card">
+      <div class="card-title ac-plum">My #1 Trigger (DA Partner)</div>
+      <p style="font-size:12px; font-weight:600; color:var(--muted); margin-bottom:12px;">What most reliably makes you want to withdraw?</p>
+      <span class="write-line"></span>
+      <span class="write-line"></span>
+    </div>
+  </div>
+
+  <div class="action-box bg-terra" style="border-color: #DDA898;">
+    <div class="action-box-header">
+      <div class="action-pill" style="background: var(--terra);">Action: Do This Now</div>
+      <h3 class="ac-terra">The Trigger Swap</h3>
+    </div>
+    <ul>
+      <li>Each person writes their #1 trigger on a piece of paper. One sentence.</li>
+      <li>Swap them. Read your partner's without speaking for 10 seconds.</li>
+      <li>Then say: "I didn't fully understand how much that affected you. Thank you for telling me."</li>
+    </ul>
+    <div class="action-note">No follow-up, no defence, no problem-solving. This step is acknowledgement only.</div>
+  </div>
+  <div class="page-footer"><span>RELATIONSHIP PIP · Section 02</span><span class="brand">Ash | Couples Educator</span></div>
+</div>
+
+<!-- ═══════════════════ PAGE 4: THE 4-STEP CODE ═══════════════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">03</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-sage">Communication Framework</div>
+      <div class="page-header-title">The 4-Step Connection Code</div>
+      <div class="page-header-sub">The only communication structure you need. Use it every time things get hard.</div>
+    </div>
+  </div>
+
+  <div class="callout bg-navy" style="background: var(--light-navy);">
+    <div class="c-icon">↳</div>
+    <div>Both partners commit to this structure. It removes blame and keeps the conversation goal-oriented rather than threat-oriented. It feels awkward at first. That passes. Screenshot this page.</div>
+  </div>
+
+  <!-- 2×2 STEPS GRID -->
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin: 8px 0 10px;">
+
+    <!-- STEP 1 -->
+    <div class="step-cell">
+      <div class="step-cell-header">
+        <div class="step-badge" style="background: var(--terra);">1</div>
+        <h4>SIGNAL: Ask First</h4>
+      </div>
+      <p class="step-desc">Before raising something difficult, give your partner a heads up. Removes the ambush cue that sends DA partners to shutdown and hands them agency instead of threat.</p>
+      <div class="script-box">"Hey, I want to talk about something. Is now okay, or can we find a moment in the next 24 hours?"</div>
+      <div class="do-dont">
+        <div class="do-box">Gives DA a moment to prepare</div>
+        <div class="dont-box">Leading cold, when they're unready</div>
+      </div>
+    </div>
+
+    <!-- STEP 2 -->
+    <div class="step-cell">
+      <div class="step-cell-header">
+        <div class="step-badge" style="background: var(--plum);">2</div>
+        <h4>SHARE: One Moment, One Feeling</h4>
+      </div>
+      <p class="step-desc">One specific recent event, not a pattern or history. Pair it with one emotion. The more targeted the share, the less threat the DA partner registers, and the more likely they stay present.</p>
+      <div class="script-box">"When you went quiet after dinner last night, I felt disconnected and unsure where we stood."</div>
+      <div class="do-dont">
+        <div class="do-box">"When [event], I felt [emotion]"</div>
+        <div class="dont-box">"You always…" / "You never…"</div>
+      </div>
+    </div>
+
+    <!-- STEP 3 -->
+    <div class="step-cell">
+      <div class="step-cell-header">
+        <div class="step-badge" style="background: var(--sage);">3</div>
+        <h4>REQUEST: Make It Concrete</h4>
+      </div>
+      <p class="step-desc">Ask for something observable and measurable. If you can't tell whether it happened, it's a wish, not a request. Vague asks cannot be acted on and frustrate both partners.</p>
+      <div class="script-box">"Next time you need space, could you text me saying you need an hour and you'll be back?"</div>
+      <div class="do-dont">
+        <div class="do-box">Specific + measurable + actionable</div>
+        <div class="dont-box">"I just need you to care more."</div>
+      </div>
+    </div>
+
+    <!-- STEP 4 -->
+    <div class="step-cell">
+      <div class="step-cell-header">
+        <div class="step-badge" style="background: var(--navy);">4</div>
+        <h4>RECEIVE: DA Partner, This Is Yours</h4>
+      </div>
+      <p class="step-desc">Before responding, reflect back what you heard. The goal is not agreement; it's showing your partner their words landed. This addresses the attachment fear directly: "I am seen and heard."</p>
+      <div class="script-box">"What I heard you say is [reflect]. I feel [honest response]. I can commit to [specific action]."</div>
+      <div class="do-dont">
+        <div class="do-box">Reflect first, then respond</div>
+        <div class="dont-box">Defending before they feel heard</div>
+      </div>
+    </div>
+
+  </div><!-- end 2×2 grid -->
+
+  <!-- THE REDIRECT: compact 2-col card -->
+  <div class="card" style="border-left: 4px solid var(--amber); margin-bottom: 8px;">
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; align-items:start;">
+      <div>
+        <div class="card-title ac-amber" style="margin-bottom:5px;">The Redirect: When It Goes Sideways</div>
+        <p style="font-size:11.5px; font-weight:600; color:var(--muted); line-height:1.5; margin-bottom:0;">Either partner calls a redirect when: old grievances appear, blame enters, the topic has shifted twice, or neither can name the goal. It is not a shutdown; it is a return to purpose.</p>
+      </div>
+      <div>
+        <div class="script-box" style="margin-bottom:6px;">"I want to stay connected to what we were trying to resolve. Can we come back to [original issue]?"</div>
+        <p style="font-size:10.5px; font-weight:700; color:var(--muted); line-height:1.45;">Either partner can say this at any time. The other agrees to pause and return, even if it takes a short break first.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="action-box bg-sage" style="border-color: #A8CEC8;">
+    <div class="action-box-header">
+      <div class="action-pill" style="background: var(--sage);">Action: Practice Round</div>
+      <h3 class="ac-sage">Run It on a Low-Stakes Issue</h3>
+    </div>
+    <ul>
+      <li>FA partner: choose something minor and work through steps 1–3.</li>
+      <li>DA partner: respond using the step 4 script. It will feel awkward. Do it anyway.</li>
+      <li>Both say: "That was a good attempt." Growth is repetition, not perfection.</li>
+    </ul>
+  </div>
+  <div class="page-footer"><span>RELATIONSHIP PIP · Section 03</span><span class="brand">Ash | Couples Educator</span></div>
+</div>
+
+<!-- ═══════════════════ PAGE 5: GOALS ═══════════════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">04</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-plum">Goals</div>
+      <div class="page-header-title">30 / 60 / 90 Day Mission</div>
+      <div class="page-header-sub">Observable behavior, not emotional outcomes you cannot control</div>
+    </div>
+  </div>
+
+  <div class="callout bg-plum" style="background: var(--light-plum);">
+    <div class="c-icon">↳</div>
+    <div><strong>The PIP Rule:</strong> Every goal must describe a visible, measurable action. "Be more open" doesn't qualify. "Stay in the conversation for 10 minutes before requesting a break" does. If you can't tell whether it happened, rewrite it. Goals are the anchor. When conversations drift into blame or history, return to these.</div>
+  </div>
+
+  <!-- 30 Day -->
+  <div class="goal-card" style="border-left-color: var(--sage); margin-top: 4px;">
+    <div class="goal-badge" style="background: var(--sage);">30 Days: Foundation</div>
+    <div class="goal-grid">
+      <div class="goal-input">
+        <label>DA Partner Goal</label>
+        <span class="write-line"></span>
+        <span class="write-line"></span>
+        <div class="goal-example">Example: "When I need space, I will communicate that and give a timeframe before going quiet."</div>
+      </div>
+      <div class="goal-input">
+        <label>FA Partner Goal</label>
+        <span class="write-line"></span>
+        <span class="write-line"></span>
+        <div class="goal-example">Example: "When I feel anxious, I will name the feeling out loud instead of escalating."</div>
+      </div>
+    </div>
+    <div class="tracker-row">
+      <span class="tracker-label">Weekly Tracker</span>
+      <div class="track-circle" style="border-color: var(--sage); color: var(--sage);">W1</div>
+      <div class="track-circle" style="border-color: var(--sage); color: var(--sage);">W2</div>
+      <div class="track-circle" style="border-color: var(--sage); color: var(--sage);">W3</div>
+      <div class="track-circle" style="border-color: var(--sage); color: var(--sage);">W4</div>
+      <span style="font-size:12px; font-weight:700; color:var(--muted); margin-left:8px;">Check each week it was met</span>
+    </div>
+  </div>
+
+  <!-- 60 Day -->
+  <div class="goal-card" style="border-left-color: var(--plum);">
+    <div class="goal-badge" style="background: var(--plum);">60 Days: Building</div>
+    <div class="goal-grid">
+      <div class="goal-input">
+        <label>DA Partner Goal</label>
+        <span class="write-line"></span>
+        <span class="write-line"></span>
+        <div class="goal-example">Example: "I will stay present in difficult conversations for at least 10 minutes before requesting a break."</div>
+      </div>
+      <div class="goal-input">
+        <label>FA Partner Goal</label>
+        <span class="write-line"></span>
+        <span class="write-line"></span>
+        <div class="goal-example">Example: "When I notice I'm pursuing, I will pause, breathe, and ask myself what I actually need."</div>
+      </div>
+    </div>
+    <div class="tracker-row">
+      <span class="tracker-label">Weekly Tracker</span>
+      <div class="track-circle" style="border-color: var(--plum); color: var(--plum);">W5</div>
+      <div class="track-circle" style="border-color: var(--plum); color: var(--plum);">W6</div>
+      <div class="track-circle" style="border-color: var(--plum); color: var(--plum);">W7</div>
+      <div class="track-circle" style="border-color: var(--plum); color: var(--plum);">W8</div>
+      <span style="font-size:12px; font-weight:700; color:var(--muted); margin-left:8px;">Check each week it was met</span>
+    </div>
+  </div>
+
+  <!-- 90 Day -->
+  <div class="goal-card" style="border-left-color: var(--terra);">
+    <div class="goal-badge" style="background: var(--terra);">90 Days: Integration</div>
+    <div class="goal-grid">
+      <div class="goal-input">
+        <label>DA Partner Goal</label>
+        <span class="write-line"></span>
+        <span class="write-line"></span>
+        <div class="goal-example">Example: "I will initiate one emotionally vulnerable conversation per week without being prompted."</div>
+      </div>
+      <div class="goal-input">
+        <label>FA Partner Goal</label>
+        <span class="write-line"></span>
+        <span class="write-line"></span>
+        <div class="goal-example">Example: "I will trust and accept repair attempts instead of testing their sincerity."</div>
+      </div>
+    </div>
+    <div class="tracker-row">
+      <span class="tracker-label">Weekly Tracker</span>
+      <div class="track-circle" style="border-color: var(--terra); color: var(--terra);">W9</div>
+      <div class="track-circle" style="border-color: var(--terra); color: var(--terra);">W10</div>
+      <div class="track-circle" style="border-color: var(--terra); color: var(--terra);">W11</div>
+      <div class="track-circle" style="border-color: var(--terra); color: var(--terra);">W12</div>
+      <span style="font-size:12px; font-weight:700; color:var(--muted); margin-left:8px;">Check each week it was met</span>
+    </div>
+  </div>
+
+  <div class="card" style="border-color: var(--border); margin-top: 4px;">
+    <div class="card-title ac-navy">Monthly Review: What Changed?</div>
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr>
+          <th style="text-align:left; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--muted); border-bottom:1.5px solid var(--border);">Goal</th>
+          <th style="text-align:left; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--muted); border-bottom:1.5px solid var(--border);">Met?</th>
+          <th style="text-align:left; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--muted); border-bottom:1.5px solid var(--border);">Evidence / Notes</th>
+          <th style="text-align:left; padding:6px 10px; font-size:10px; font-weight:800; letter-spacing:1px; text-transform:uppercase; color:var(--muted); border-bottom:1.5px solid var(--border);">Adjust?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="padding:7px 10px; border-bottom:1px solid var(--border); font-weight:700; font-size:11.5px;">30-Day Goal</td>
+          <td style="padding:7px 10px; border-bottom:1px solid var(--border); font-size:11.5px; color:var(--muted);">Yes / Partial / No</td>
+          <td style="padding:7px 10px; border-bottom:1px solid var(--border);"><span class="write-line"></span></td>
+          <td style="padding:7px 10px; border-bottom:1px solid var(--border); font-size:11.5px; color:var(--muted);">Yes / No</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px; border-bottom:1px solid var(--border); font-weight:700; font-size:11.5px;">60-Day Goal</td>
+          <td style="padding:7px 10px; border-bottom:1px solid var(--border); font-size:11.5px; color:var(--muted);">Yes / Partial / No</td>
+          <td style="padding:7px 10px; border-bottom:1px solid var(--border);"><span class="write-line"></span></td>
+          <td style="padding:7px 10px; border-bottom:1px solid var(--border); font-size:11.5px; color:var(--muted);">Yes / No</td>
+        </tr>
+        <tr>
+          <td style="padding:7px 10px; font-weight:700; font-size:11.5px;">90-Day Goal</td>
+          <td style="padding:7px 10px; font-size:11.5px; color:var(--muted);">Yes / Partial / No</td>
+          <td style="padding:7px 10px;"><span class="write-line"></span></td>
+          <td style="padding:7px 10px; font-size:11.5px; color:var(--muted);">Yes / No</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="page-footer"><span>RELATIONSHIP PIP · Section 04</span><span class="brand">Ash | Couples Educator</span></div>
+</div>
+
+<!-- ═══════════════════ PAGE 6: WEEKLY CHECK-IN ═══════════════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">05</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-sage">Accountability</div>
+      <div class="page-header-title">Weekly Check-In</div>
+      <div class="page-header-sub">15 minutes. Same time each week. Non-negotiable.</div>
+    </div>
+  </div>
+
+  <div class="callout bg-sage" style="background: var(--light-sage);">
+    <div class="c-icon">↳</div>
+    <div>Schedule this now, same day and time, recurring every week. Predictability is co-regulation for both attachment styles. Come prepared with honest answers. The goal is accuracy, not optimism. If the check-in starts drifting into an argument, stop and use the Redirect (page 4) to return to the questions on this page.</div>
+  </div>
+
+  <table class="checkin-table" style="margin-top:10px;">
+    <thead>
+      <tr>
+        <th style="background: var(--navy); width:34%;">Question</th>
+        <th style="background: var(--terra);">FA Partner</th>
+        <th style="background: var(--plum);">DA Partner</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td class="q-col">One moment I felt connected this week</td>
+        <td class="a-col"><span class="write-line"></span><span class="write-line"></span></td>
+        <td class="a-col"><span class="write-line"></span><span class="write-line"></span></td>
+      </tr>
+      <tr>
+        <td class="q-col">One moment I felt disconnected this week</td>
+        <td class="a-col"><span class="write-line"></span><span class="write-line"></span></td>
+        <td class="a-col"><span class="write-line"></span><span class="write-line"></span></td>
+      </tr>
+      <tr>
+        <td class="q-col">Did I use the 4-Step Code when it was hard?</td>
+        <td class="a-col">
+          <div class="radio-row">
+            <div class="radio-pill rp-green">Yes</div>
+            <div class="radio-pill rp-amber">Partly</div>
+            <div class="radio-pill rp-red">No</div>
+          </div>
+        </td>
+        <td class="a-col">
+          <div class="radio-row">
+            <div class="radio-pill rp-green">Yes</div>
+            <div class="radio-pill rp-amber">Partly</div>
+            <div class="radio-pill rp-red">No</div>
+          </div>
+        </td>
+      </tr>
+      <tr>
+        <td class="q-col">One thing I want to do differently next week</td>
+        <td class="a-col"><span class="write-line"></span><span class="write-line"></span></td>
+        <td class="a-col"><span class="write-line"></span><span class="write-line"></span></td>
+      </tr>
+      <tr>
+        <td class="q-col">Overall connection this week (circle)</td>
+        <td class="a-col" style="font-weight:800; font-size:14px; letter-spacing:6px; color:var(--muted);">1  2  3  4  5</td>
+        <td class="a-col" style="font-weight:800; font-size:14px; letter-spacing:6px; color:var(--muted);">1  2  3  4  5</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="science-block">
+    <div class="sci-icon">↳</div>
+    <div class="sci-text">
+      <strong>End every check-in with this. It takes 60 seconds.</strong>
+      <p>Each partner names one specific thing they genuinely appreciated about the other this week. Make eye contact when you say it. The other person's only response is: "Thank you." No deflection, no minimising, no "but you also..." Receiving appreciation is a repair act. It builds emotional safety over time.</p>
+      <div class="sci-source">Gottman, The Relationship Cure (2001) · The principle of "bidding and turning toward"</div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title ac-navy">Schedule the Next Check-In</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; margin-top:4px;">
+      <div>
+        <div style="font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Day</div>
+        <span class="write-line"></span>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Time</div>
+        <span class="write-line"></span>
+      </div>
+      <div>
+        <div style="font-size:11px; font-weight:800; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Location</div>
+        <span class="write-line"></span>
+      </div>
+    </div>
+  </div>
+  <div class="page-footer"><span>RELATIONSHIP PIP · Section 05</span><span class="brand">Ash | Couples Educator</span></div>
+</div>
+
+<!-- ═══════════════════ PAGE 7: NON-NEGOTIABLES + COMMITMENT ═══════════════════ -->
+<div class="section-page" style="page-break-after: auto;">
+  <div class="page-header">
+    <div class="page-header-num">06</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-terra">Boundaries &amp; Agreement</div>
+      <div class="page-header-title">Non-Negotiables and The Commitment</div>
+      <div class="page-header-sub">What each partner will not do, and what you both agree to</div>
+    </div>
+  </div>
+
+  <div class="callout bg-terra" style="background: var(--light-terra);">
+    <div class="c-icon">↳</div>
+    <div>These are protective limits, not punishments. Fill them in together, not at each other. Be specific. Vague limits like "don't be mean" cannot be enforced. Specific ones like "do not threaten to end the relationship during an argument" can.</div>
+  </div>
+
+  <div class="nonneg-grid" style="margin-top:10px;">
+    <div class="nonneg-card" style="border-top-color: var(--terra);">
+      <h4 class="ac-terra">Partner A (FA) Will Not:</h4>
+      <div class="nonneg-row"><div class="checkbox-sq" style="border-color:var(--terra);"></div><span class="nonneg-line" style="border-color: #DDA898;"></span></div>
+      <div class="nonneg-row"><div class="checkbox-sq" style="border-color:var(--terra);"></div><span class="nonneg-line" style="border-color: #DDA898;"></span></div>
+      <div class="nonneg-row"><div class="checkbox-sq" style="border-color:var(--terra);"></div><span class="nonneg-line" style="border-color: #DDA898;"></span></div>
+    </div>
+    <div class="nonneg-card" style="border-top-color: var(--plum);">
+      <h4 class="ac-plum">Partner B (DA) Will Not:</h4>
+      <div class="nonneg-row"><div class="checkbox-sq" style="border-color:var(--plum);"></div><span class="nonneg-line" style="border-color: #C4B3D8;"></span></div>
+      <div class="nonneg-row"><div class="checkbox-sq" style="border-color:var(--plum);"></div><span class="nonneg-line" style="border-color: #C4B3D8;"></span></div>
+      <div class="nonneg-row"><div class="checkbox-sq" style="border-color:var(--plum);"></div><span class="nonneg-line" style="border-color: #C4B3D8;"></span></div>
+    </div>
+  </div>
+
+  <div class="card" style="border-color: var(--border); margin-bottom:0;">
+    <div class="card-title ac-navy">If a Non-Negotiable Is Crossed, Our Agreed Next Step Is:</div>
+    <span class="write-line"></span>
+    <div style="font-size:11px; font-weight:600; color:var(--muted); margin-top:4px;">e.g. pause and reconnect in 2 hrs · contact a therapist · revisit this plan · call a trusted third party</div>
+  </div>
+
+  <div class="commit-box">
+    <h2>The Commitment</h2>
+    <p>We agree to use this framework as a tool, not as evidence against each other. When conversations go sideways, we redirect to the goals in this document rather than stay in the spiral. We commit to repairing faster than we rupture. We choose this relationship on purpose.</p>
+    <div class="sig-grid">
+      <div class="sig-block">
+        <label>Partner A: Full Name</label>
+        <div class="sig-line"></div>
+        <label>Signature</label>
+        <div class="sig-line"></div>
+      </div>
+      <div class="sig-block">
+        <label>Partner B: Full Name</label>
+        <div class="sig-line"></div>
+        <label>Signature</label>
+        <div class="sig-line"></div>
+      </div>
+    </div>
+    <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.15);">
+      <div style="font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:5px;">Next Check-In Scheduled</div>
+      <div style="border-bottom:1px solid rgba(255,255,255,0.25); min-height:20px; max-width:300px;"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:0; margin-bottom:0;">
+    <div class="card-title ac-terra">Emergency Protocol: When It All Goes Sideways</div>
+    <div class="emergency-grid">
+      <div class="emerg-item">
+        <div class="emerg-label ac-terra">Call a Timeout</div>
+        <p>"I need 20 minutes. I'll come back and we'll finish this." Say it. Mean it. Actually come back.</p>
+      </div>
+      <div class="emerg-item">
+        <div class="emerg-label ac-sage">Regulate First</div>
+        <p>Box breathing: inhale 4 counts → hold 4 → exhale 4 → hold 4. Repeat twice. Then return to the conversation.</p>
+      </div>
+      <div class="emerg-item">
+        <div class="emerg-label ac-plum">The Repair Phrase</div>
+        <p>"That came out wrong. What I was actually trying to say was..." and that's enough. Clumsy repair still counts.</p>
+      </div>
+      <div class="emerg-item">
+        <div class="emerg-label ac-navy">Reconnect Before Resolving</div>
+        <p>Physical proximity before problem-solving. Touch, sit close. Co-regulation precedes productive conversation.</p>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; justify-content:space-between; align-items:center; padding: 8px 0 4px; border-top:1.5px solid var(--border); margin-top: 8px;">
+    <div>
+      <p style="font-family:'Playfair Display',serif; font-size:13px; font-weight:700; color:var(--navy); margin-bottom:3px;">Progress over perfection, every single time.</p>
+      <p style="font-size:9.5px; font-weight:700; color:var(--muted); letter-spacing:0.5px;">Attachment theory: Bowlby (1969), Ainsworth et al. (1978), Bartholomew &amp; Horowitz (1991) · Gottman (1999) · Johnson (2008) · Porges (1994) · Bolte Taylor (2008)</p>
+    </div>
+    <span style="font-size:12px; font-weight:800; letter-spacing:1.5px; color:var(--terra); flex-shrink:0; margin-left:20px;">Ash | Couples Educator</span>
+  </div>
+</div>
+
+<!-- ═══════════════════ BACK COVER ═══════════════════ -->
+<div style="background: var(--navy); min-height: 1056px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 64px 56px; page-break-before: always; break-before: page; position: relative; overflow: hidden;">
+  <div style="position:absolute; width:500px; height:500px; border-radius:50%; border:80px solid rgba(196,100,74,0.1); top:-150px; right:-150px;"></div>
+  <div style="position:absolute; width:350px; height:350px; border-radius:50%; border:60px solid rgba(61,139,122,0.08); bottom:-100px; left:-100px;"></div>
+  <div style="width: 48px; height: 3px; background: var(--terra); margin: 0 auto 32px;"></div>
+  <p style="font-family:'Playfair Display',serif; font-size:13px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.4); margin-bottom:20px;">You made a commitment.</p>
+  <p style="font-family:'Playfair Display',serif; font-size:40px; font-weight:800; color:#fff; line-height:1.15; max-width:480px; margin-bottom:20px;">Now honor it, one week at a time.</p>
+  <div style="width: 48px; height: 3px; background: var(--terra); margin: 0 auto 36px;"></div>
+  <p style="font-size:13px; font-weight:600; color:rgba(255,255,255,0.5); max-width:420px; line-height:1.7; margin-bottom:48px;">Return to this document whenever you feel stuck, reactive, or lost. It is not a rulebook; it is a reminder of what you both said yes to.</p>
+  <p style="font-size:16px; font-weight:800; letter-spacing:3px; color: var(--terra);">Ash | Couples Educator</p>
+</div>
+
+</div><!-- end .page -->
+</body>
+</html>

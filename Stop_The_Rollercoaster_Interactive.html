@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stop The Rollercoaster</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+
+:root {
+  --navy:    #1E2D4E;
+  --rose:    #C4516A;
+  --violet:  #7C5CBF;
+  --teal:    #2E8B8B;
+  --amber:   #C4860A;
+  --cream:   #F7F3EE;
+  --card:    #FFFFFF;
+  --border:  #DDD7CE;
+  --text:    #1E1E1E;
+  --muted:   #6B6560;
+  --lt-rose:   #FCEEF1;
+  --lt-violet: #F2EEFB;
+  --lt-teal:   #EAF6F6;
+  --lt-amber:  #FBF5E6;
+  --lt-navy:   #EBF0F8;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  font-family: 'Nunito', sans-serif;
+  background: var(--cream);
+  color: var(--text);
+  font-size: 12.5px;
+  line-height: 1.55;
+}
+
+.page { width: 816px; margin: 0 auto; }
+
+/* ── COVER ── */
+.cover {
+  background: linear-gradient(140deg, #1A1030 0%, #2E1A5A 50%, #1E2D4E 100%);
+  min-height: 1056px;
+  display: flex;
+  flex-direction: column;
+  padding: 56px 52px;
+  position: relative;
+  overflow: hidden;
+}
+.cover-orb-1 {
+  position: absolute; right: -100px; top: -100px;
+  width: 480px; height: 480px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(196,81,106,0.18) 0%, transparent 70%);
+}
+.cover-orb-2 {
+  position: absolute; left: -80px; bottom: -80px;
+  width: 380px; height: 380px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(124,92,191,0.18) 0%, transparent 70%);
+}
+.cover-orb-3 {
+  position: absolute; right: 120px; bottom: 200px;
+  width: 220px; height: 220px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(46,139,139,0.12) 0%, transparent 70%);
+}
+
+.cover-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 4px;
+  text-transform: uppercase; color: var(--rose); margin-bottom: 24px;
+}
+
+.cover-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 100px; padding: 6px 16px; margin-bottom: 28px;
+  width: fit-content;
+}
+.cover-badge span { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+
+.cover h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: 62px; font-weight: 800;
+  color: #FFFFFF; line-height: 1.0;
+  margin-bottom: 8px; max-width: 540px;
+}
+.cover h1 .ap { color: #E8A0B0; }
+.cover h1 .fa { color: #B4A0E8; }
+.cover h1 .x { color: rgba(255,255,255,0.3); font-size: 52px; }
+
+.cover-sub {
+  font-size: 15px; font-weight: 600;
+  color: rgba(255,255,255,0.6);
+  margin-bottom: 36px; max-width: 480px; line-height: 1.6;
+}
+
+.cover-divider { width: 48px; height: 3px; background: var(--rose); margin-bottom: 32px; border-radius: 2px; }
+
+.cover-stat-row {
+  display: flex; gap: 20px; margin-bottom: 40px; flex-wrap: wrap;
+}
+.cover-stat {
+  background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 14px 20px; flex: 1; min-width: 130px;
+}
+.cover-stat .num { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: #fff; }
+.cover-stat .lbl { font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 2px; }
+
+.cover-intro {
+  background: rgba(255,255,255,0.06);
+  border-left: 3px solid var(--rose);
+  border-radius: 0 10px 10px 0;
+  padding: 16px 20px; max-width: 580px; margin-bottom: 40px;
+}
+.cover-intro p {
+  font-size: 13px; font-weight: 600;
+  color: rgba(255,255,255,0.82); line-height: 1.65;
+}
+
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; max-width: 580px; margin-bottom: 40px; }
+.toc-item {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,0.05); border-radius: 8px; padding: 9px 14px;
+}
+.toc-num {
+  font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700;
+  color: rgba(255,255,255,0.18); flex-shrink: 0; width: 22px;
+}
+.toc-text { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.65); line-height: 1.3; }
+
+.cover-footer {
+  margin-top: auto;
+  font-size: 10px; color: rgba(255,255,255,0.2);
+  font-weight: 600; letter-spacing: 1px;
+}
+
+/* ── SECTION PAGES ── */
+.section-page {
+  background: var(--cream);
+  padding: 28px 48px;
+  min-height: 1056px;
+  page-break-before: always;
+}
+
+.page-header {
+  display: flex; align-items: flex-start; gap: 16px;
+  margin-bottom: 18px; padding-bottom: 14px;
+  border-bottom: 2px solid var(--border);
+}
+.page-header-num {
+  font-family: 'Playfair Display', serif; font-size: 52px;
+  font-weight: 700; line-height: 1; opacity: 0.08;
+  color: var(--text); flex-shrink: 0; margin-top: -4px;
+}
+.page-header-content { flex: 1; }
+.page-header-label {
+  font-size: 9.5px; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase; margin-bottom: 2px;
+}
+.page-header-title {
+  font-family: 'Playfair Display', serif; font-size: 24px;
+  font-weight: 700; line-height: 1.15; color: var(--text);
+}
+.page-header-sub {
+  font-size: 11.5px; font-weight: 600; color: var(--muted); margin-top: 3px;
+}
+
+/* ── CARDS ── */
+.card {
+  background: var(--card); border-radius: 12px;
+  border: 1.5px solid var(--border);
+  padding: 14px 18px; margin-bottom: 10px;
+}
+.card-title {
+  font-size: 11px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px;
+}
+
+/* ── TWO-COL ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+
+/* ── COLOR VARIANTS ── */
+.bg-rose   { background: var(--lt-rose);   border-color: #DDA0B0; }
+.bg-violet { background: var(--lt-violet); border-color: #B8A8E0; }
+.bg-teal   { background: var(--lt-teal);   border-color: #90CCCC; }
+.bg-amber  { background: var(--lt-amber);  border-color: #D4C08A; }
+.bg-navy   { background: var(--lt-navy);   border-color: #A8BCE0; }
+
+.ac-rose   { color: var(--rose); }
+.ac-violet { color: var(--violet); }
+.ac-teal   { color: var(--teal); }
+.ac-amber  { color: var(--amber); }
+.ac-navy   { color: var(--navy); }
+
+/* ── SCIENCE BLOCK ── */
+.science-block {
+  background: var(--navy); border-radius: 12px;
+  padding: 14px 18px; color: rgba(255,255,255,0.9);
+  margin: 10px 0; display: flex; gap: 14px; align-items: flex-start;
+}
+.science-icon {
+  font-size: 22px; flex-shrink: 0; margin-top: 1px;
+}
+.science-label {
+  font-size: 9px; font-weight: 800; letter-spacing: 2.5px;
+  text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 3px;
+}
+.science-text {
+  font-size: 11.5px; font-weight: 600; line-height: 1.6; color: rgba(255,255,255,0.88);
+}
+.science-cite {
+  font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.4);
+  margin-top: 4px; font-style: italic;
+}
+
+/* ── ALERT / CALLOUT ── */
+.callout {
+  border-radius: 12px; padding: 14px 18px; margin: 10px 0;
+  border-left: 4px solid; display: flex; gap: 12px; align-items: flex-start;
+}
+.callout-icon { font-size: 20px; flex-shrink: 0; }
+.callout-text { font-size: 12px; font-weight: 600; line-height: 1.6; }
+.callout-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 3px; }
+
+.callout-rose   { background: var(--lt-rose);   border-color: var(--rose); }
+.callout-violet { background: var(--lt-violet); border-color: var(--violet); }
+.callout-teal   { background: var(--lt-teal);   border-color: var(--teal); }
+.callout-amber  { background: var(--lt-amber);  border-color: var(--amber); }
+
+/* ── PILL TAGS ── */
+.tag {
+  display: inline-block; padding: 3px 10px; border-radius: 100px;
+  font-size: 10px; font-weight: 800; letter-spacing: 0.5px;
+  margin: 2px;
+}
+.tag-rose   { background: var(--lt-rose);   color: var(--rose); }
+.tag-violet { background: var(--lt-violet); color: var(--violet); }
+.tag-teal   { background: var(--lt-teal);   color: var(--teal); }
+.tag-amber  { background: var(--lt-amber);  color: var(--amber); }
+.tag-navy   { background: var(--lt-navy);   color: var(--navy); }
+
+/* ── BULLET LIST ── */
+.bullet-list { list-style: none; }
+.bullet-list li {
+  display: flex; gap: 10px; align-items: flex-start;
+  font-size: 12px; font-weight: 600; line-height: 1.5;
+  padding: 5px 0; border-bottom: 1px solid var(--border);
+}
+.bullet-list li:last-child { border-bottom: none; }
+.bullet-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 4px;
+}
+
+/* ── SECTION DIVIDER ── */
+.section-label {
+  font-size: 10px; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase; color: var(--muted);
+  margin: 18px 0 10px; display: flex; align-items: center; gap: 10px;
+}
+.section-label::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+
+/* ── ICON GRID ── */
+.icon-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin: 10px 0; }
+.icon-box {
+  background: var(--card); border: 1.5px solid var(--border);
+  border-radius: 10px; padding: 12px 8px; text-align: center;
+}
+.icon-box .emoji { font-size: 24px; margin-bottom: 5px; }
+.icon-box .lbl { font-size: 10px; font-weight: 800; line-height: 1.3; }
+
+/* ── SCRIPT BOX ── */
+.script-box {
+  background: linear-gradient(135deg, #1A1030 0%, #2E1A5A 100%);
+  border-radius: 12px; padding: 18px 22px; margin: 10px 0;
+}
+.script-label {
+  font-size: 9px; font-weight: 800; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px;
+}
+.script-line {
+  background: rgba(255,255,255,0.08); border-radius: 8px;
+  padding: 10px 14px; margin-bottom: 6px;
+  font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.9);
+  line-height: 1.55; border-left: 3px solid rgba(196,81,106,0.6);
+}
+.script-line:last-child { margin-bottom: 0; }
+
+/* ── CYCLE DIAGRAM ── */
+.cycle-container {
+  display: flex; align-items: center; gap: 0; margin: 12px 0;
+  background: var(--card); border-radius: 12px; border: 1.5px solid var(--border);
+  overflow: hidden;
+}
+.cycle-step {
+  flex: 1; padding: 12px 10px; text-align: center; position: relative;
+}
+.cycle-step::after {
+  content: '→'; position: absolute; right: -6px; top: 50%;
+  transform: translateY(-50%); font-size: 16px; color: var(--muted); z-index: 2;
+}
+.cycle-step:last-child::after { display: none; }
+.cycle-emoji { font-size: 22px; margin-bottom: 4px; }
+.cycle-title { font-size: 10px; font-weight: 800; letter-spacing: 0.5px; line-height: 1.3; }
+.cycle-sub { font-size: 9.5px; font-weight: 600; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+
+/* ── SPECTRUM BAR ── */
+.spectrum { margin: 10px 0; }
+.spectrum-bar {
+  height: 10px; border-radius: 100px;
+  background: linear-gradient(90deg, #E8A0B0, #B4A0E8);
+  margin: 6px 0; position: relative;
+}
+.spectrum-labels { display: flex; justify-content: space-between; }
+.spectrum-label { font-size: 10px; font-weight: 800; }
+
+/* ── AFFIRMATION BLOCK ── */
+.affirmation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.affirmation-card {
+  background: linear-gradient(135deg, var(--lt-violet), var(--lt-rose));
+  border-radius: 10px; padding: 12px 14px; border: 1px solid #C8B8E8;
+  text-align: center;
+}
+.affirmation-card p { font-size: 12px; font-weight: 800; line-height: 1.5; color: #3A2060; }
+
+/* ── NUMBERED STEPS ── */
+.step-list { list-style: none; }
+.step-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 12px 0; border-bottom: 1px solid var(--border);
+}
+.step-item:last-child { border-bottom: none; }
+.step-num {
+  width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900; color: #fff;
+}
+.step-content {}
+.step-title { font-size: 12.5px; font-weight: 800; margin-bottom: 2px; }
+.step-body { font-size: 11.5px; font-weight: 600; color: var(--muted); line-height: 1.55; }
+
+/* ── PRINT ── */
+@media print {
+  .section-page { page-break-before: always; }
+}
+
+/* ─── EXERCISE / WORKBOOK STYLES ─────────────────────────── */
+.exercise-page { background: #F8F5FF; padding: 26px 48px; page-break-before: always; }
+.exh-banner { background: linear-gradient(135deg, #3A1060, #5A2A8A, #1E2D4E); border-radius: 14px; padding: 14px 22px; margin-bottom: 16px; display: flex; align-items: center; gap: 16px; }
+.exh-icon .ei { width: 48px; height: 48px; font-size: 20px; }
+.exh-badge { font-size: 9px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 4px; }
+.exh-title { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1.15; }
+.exh-sub { font-size: 11.5px; font-weight: 600; color: rgba(255,255,255,0.65); margin-top: 3px; line-height: 1.5; }
+.tf-set { margin: 0 0 14px; }
+.tf-item { display: flex; align-items: flex-start; gap: 12px; padding: 8px 0; border-bottom: 1px solid #DDD7CE; }
+.tf-item:last-child { border-bottom: none; }
+.tf-num { font-family: 'Playfair Display', serif; font-size: 15px; font-weight: 700; color: rgba(124,92,191,0.4); width: 20px; flex-shrink: 0; margin-top: 1px; }
+.tf-text { flex: 1; font-size: 12.5px; font-weight: 600; line-height: 1.55; color: #1E1E1E; }
+.tf-boxes { display: flex; gap: 6px; flex-shrink: 0; align-items: center; margin-top: 2px; }
+.tf-box { width: 38px; height: 22px; border-radius: 5px; border: 1.5px solid #B8A8E0; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 900; letter-spacing: 0.5px; color: #6B6560; }
+.write-prompt { font-size: 13px; font-weight: 800; color: #3A1060; margin-bottom: 8px; line-height: 1.45; }
+.write-area { background: #fff; border-radius: 10px; border: 1.5px solid #B8A8E0; padding: 10px 14px; }
+.write-lines { display: flex; flex-direction: column; gap: 0; }
+.write-line { height: 26px; border-bottom: 1px solid #E8E2D8; width: 100%; }
+.write-starter { font-size: 11.5px; font-weight: 800; color: #7C5CBF; margin-bottom: 6px; font-style: italic; }
+.answer-key { background: linear-gradient(135deg, #1E2D4E, #2A1A3A); border-radius: 12px; padding: 12px 18px; margin-top: 12px; }
+.ak-title { font-size: 9px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 10px; }
+.ak-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.ak-item { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 6px 8px; text-align: center; }
+.ak-q { font-size: 9px; font-weight: 700; color: rgba(255,255,255,0.4); margin-bottom: 2px; }
+.ak-a { font-size: 12px; font-weight: 900; color: #A8D4A8; }
+.ak-a.false { color: #F0A0B8; }
+.mc-question { font-size: 13px; font-weight: 800; color: #1E1E1E; line-height: 1.5; margin-bottom: 6px; padding: 10px 14px; background: #fff; border-radius: 10px; border: 1.5px solid #DDD7CE; }
+.mc-question .q-num { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: rgba(124,92,191,0.3); margin-right: 8px; }
+.mc-options { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.mc-opt { display: flex; align-items: flex-start; gap: 10px; padding: 7px 12px; background: #fff; border-radius: 8px; border: 1.5px solid #DDD7CE; font-size: 12px; font-weight: 600; line-height: 1.5; color: #1E1E1E; }
+.mc-circle { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #B8A8E0; flex-shrink: 0; margin-top: 1px; }
+.scenario-pick { background: #fff; border-radius: 12px; border: 1.5px solid #DDD7CE; padding: 12px 16px; margin-bottom: 10px; }
+.sp-situation { font-size: 12px; font-weight: 700; color: #1E1E1E; margin-bottom: 8px; line-height: 1.6; padding: 8px 12px; background: #F2EEFB; border-left: 3px solid #7C5CBF; border-radius: 0 8px 8px 0; font-style: italic; }
+.sp-label { font-size: 10px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: #6B6560; margin-bottom: 6px; }
+.sp-options { display: flex; flex-direction: column; gap: 5px; }
+.sp-opt { display: flex; gap: 10px; padding: 6px 10px; border-radius: 7px; border: 1.5px solid #DDD7CE; font-size: 12px; font-weight: 600; line-height: 1.45; color: #1E1E1E; background: #fff; }
+.sp-circle { width: 18px; height: 18px; border-radius: 50%; border: 2px solid #B8A8E0; flex-shrink: 0; margin-top: 1px; }
+.commit-box { background: linear-gradient(135deg, #2E1A5A, #1E2D4E); border-radius: 14px; padding: 16px 22px; margin-top: 14px; }
+.commit-title { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 10px; }
+.commit-line { height: 28px; border-bottom: 1.5px solid rgba(255,255,255,0.2); margin-bottom: 4px; }
+.commit-label { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.35); margin-top: 8px; margin-bottom: 4px; }
+</style>
+
+
+<style>
+/* ── OVERFLOW FIXES — targeted by ID ── */
+
+/* section_6: Scripts (was 1260px, need -210px) */
+#sec-scripts { padding: 16px 44px !important; }
+#sec-scripts .page-header { margin-bottom: 8px; }
+#sec-scripts .callout { padding: 8px 12px; margin: 6px 0; }
+#sec-scripts .callout-text { font-size: 11.5px; line-height: 1.45; }
+#sec-scripts .section-label { margin: 8px 0 4px; }
+#sec-scripts .script-box { padding: 8px 12px; margin: 0 0 6px; }
+#sec-scripts .script-line { padding: 4px 0 4px 10px; font-size: 11.5px; line-height: 1.4; }
+#sec-scripts .script-label { font-size: 9px; margin-bottom: 4px; }
+#sec-scripts .card { padding: 9px 13px; }
+#sec-scripts .step-item { padding: 5px 0 !important; }
+#sec-scripts .step-body { font-size: 11.5px; line-height: 1.4; }
+#sec-scripts .step-title { font-size: 12px; }
+
+/* section_7: When to Stay (was 1138px, need -85px) */
+#sec-stay { padding: 16px 44px !important; }
+#sec-stay .page-header { margin-bottom: 8px; }
+#sec-stay .two-col { gap: 10px; margin-bottom: 6px; }
+#sec-stay .card { padding: 9px 13px; }
+#sec-stay .bullet-list li { padding: 3px 0; }
+#sec-stay .science-block { padding: 9px 12px; margin: 6px 0; }
+#sec-stay .science-text { font-size: 11.5px; line-height: 1.45; }
+#sec-stay .section-label { margin: 8px 0 4px; }
+#sec-stay .affirmation-grid { gap: 6px; margin: 0; }
+#sec-stay .affirmation-card { padding: 9px 12px; }
+#sec-stay .affirmation-card p { font-size: 11.5px; line-height: 1.45; }
+#sec-stay .callout { padding: 8px 12px; margin: 6px 0; }
+#sec-stay .callout-text { font-size: 11.5px; line-height: 1.45; }
+#sec-stay [style*="margin-top:20px"] { margin-top: 8px !important; padding: 10px !important; }
+
+/* exercise_2: Scenarios + Translation (was 1157px, need -105px) */
+#ex-scenarios { padding: 16px 44px !important; }
+#ex-scenarios .exh-banner { padding: 10px 16px; margin-bottom: 10px; }
+#ex-scenarios .section-label { margin: 8px 0 4px; }
+#ex-scenarios .scenario-pick { padding: 9px 12px; margin-bottom: 7px; }
+#ex-scenarios .sp-situation { padding: 6px 10px; margin-bottom: 5px; font-size: 11.5px; line-height: 1.5; }
+#ex-scenarios .sp-opt { padding: 4px 9px; font-size: 11.5px; line-height: 1.4; }
+#ex-scenarios .sp-options { gap: 4px; }
+#ex-scenarios .sp-label { margin-bottom: 4px; }
+#ex-scenarios .card { padding: 9px 12px; }
+#ex-scenarios .write-line { height: 22px; }
+#ex-scenarios .answer-key { padding: 9px 14px; margin-top: 8px; }
+
+/* exercise_3: MC + Commitment (was 1375px, need -320px) */
+#ex-mc { padding: 13px 44px !important; }
+#ex-mc .exh-banner { padding: 8px 16px; margin-bottom: 8px; }
+#ex-mc .exh-title { font-size: 18px; }
+#ex-mc .exh-sub { font-size: 11px; }
+#ex-mc .section-label { margin: 6px 0 4px; }
+#ex-mc .mc-question { padding: 6px 11px; font-size: 11.5px; line-height: 1.4; margin-bottom: 3px; }
+#ex-mc .mc-question .q-num { font-size: 15px; }
+#ex-mc .mc-options { gap: 2px; margin-bottom: 6px; }
+#ex-mc .mc-opt { padding: 4px 9px; font-size: 11px; line-height: 1.35; }
+#ex-mc .mc-circle { width: 14px; height: 14px; flex-shrink: 0; }
+#ex-mc [style*="margin-top:10px"] { margin-top: 6px !important; }
+#ex-mc .answer-key { padding: 8px 13px; }
+#ex-mc .ak-grid { gap: 3px; }
+#ex-mc .ak-item { padding: 4px 5px; }
+#ex-mc .ak-q { font-size: 8px; }
+#ex-mc .ak-a { font-size: 11px; }
+#ex-mc .commit-box { padding: 11px 16px; }
+#ex-mc .commit-title { font-size: 14px; margin-bottom: 6px; }
+#ex-mc .commit-line { height: 22px; margin-bottom: 2px; }
+#ex-mc .commit-label { margin-top: 5px; margin-bottom: 2px; font-size: 9px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- ══════════ COVER ══════════ -->
+<div class="cover">
+  <div class="cover-orb-1"></div>
+  <div class="cover-orb-2"></div>
+  <div class="cover-orb-3"></div>
+
+  <div class="cover-label">By Ash · Couples Educator</div>
+
+  <div class="cover-badge">
+    <span>Science-Backed · Workbook Edition</span>
+  </div>
+
+  <h1><span class="hot">Stop The</span><br><span class="cold">Rollercoaster</span></h1>
+
+  <div class="cover-sub">
+    Why anxious and fearful avoidant partners are magnetically drawn to each other — and how to stop the cycle that's breaking you both.
+  </div>
+
+  <div class="cover-divider"></div>
+
+  <div class="cover-stat-row">
+    <div class="cover-stat">
+      <div class="num">8</div>
+      <div class="lbl">Sections to Read</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">3</div>
+      <div class="lbl">Exercises to Do</div>
+    </div>
+    <div class="cover-stat">
+      <div class="num">1</div>
+      <div class="lbl">Commitment to Make</div>
+    </div>
+  </div>
+
+  <div class="cover-intro">
+    <p>Anxious + Fearful Avoidant is the most <em>intense and confusing</em> pairing in attachment theory. You feel everything. They feel everything. And yet — connection keeps slipping away. This guide decodes exactly why, and what to do about it.</p>
+  </div>
+
+  <div class="toc-grid">
+    <div class="toc-item"><div class="toc-num">1</div><div class="toc-text">Who Is the FA?</div></div>
+    <div class="toc-item"><div class="toc-num">2</div><div class="toc-text">Who Are You?</div></div>
+    <div class="toc-item"><div class="toc-num">3</div><div class="toc-text">The Magnetic Pull</div></div>
+    <div class="toc-item"><div class="toc-num">4</div><div class="toc-text">The Push-Pull Cycle</div></div>
+    <div class="toc-item"><div class="toc-num">5</div><div class="toc-text">What the FA Actually Needs</div></div>
+    <div class="toc-item"><div class="toc-num">6</div><div class="toc-text">What You Must Stop</div></div>
+    <div class="toc-item"><div class="toc-num">7</div><div class="toc-text">Communication Scripts</div></div>
+    <div class="toc-item"><div class="toc-num">8</div><div class="toc-text">When It Works vs. When to Go</div></div>
+  </div>
+
+  <div class="cover-footer">© Ash · Couples Educator · @chingonamendoza · For educational purposes only</div>
+</div>
+
+<!-- ══════════ SECTION 1: Who Is the FA ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">1</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-violet">Understanding Your Partner</div>
+      <div class="page-header-title">Who Is the Fearful Avoidant (FA)?</div>
+      <div class="page-header-sub">Also called Disorganized Attachment — the most complex style of all</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🧠</div>
+    <div>
+      <div class="science-label">The Science</div>
+      <div class="science-text">Fearful Avoidant (FA) attachment develops when early caregivers were simultaneously a <strong>source of comfort AND fear</strong>. The child's nervous system learned: "I need you, but you scare me." This creates a core internal conflict that never resolved.</div>
+      <div class="science-cite">Main & Hesse (1990) — Disorganized Attachment Theory; Liotti (1992) — Internal Working Models</div>
+    </div>
+  </div>
+
+  <div class="section-label">The FA's Core Wound</div>
+
+  <div class="callout callout-violet">
+    <div class="callout-icon">💜</div>
+    <div>
+      <div class="callout-title" style="color:var(--violet)">The FA's Inner Conflict</div>
+      <div class="callout-text">"I desperately want love and closeness... but the moment I get it, I panic and pull away. Intimacy feels <em>dangerous</em> even when I want it."</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card bg-violet">
+      <div class="card-title ac-violet">😰 Fear of Abandonment</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span>Terrified of rejection & being left</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span>Hyper-scans for signs you're pulling away</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span>Can become clingy or desperate in moments</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span>Tends to self-sabotage before you can leave</span></li>
+      </ul>
+    </div>
+    <div class="card bg-rose">
+      <div class="card-title ac-rose">😮 Fear of Intimacy</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Closeness triggers a fight-or-flight response</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Pulls away when things feel "too good"</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>May withdraw after emotionally intense moments</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Vulnerability feels like a threat, not safety</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="section-label">FA Traits at a Glance</div>
+  <div class="icon-grid">
+    <div class="icon-box">
+      <div class="emoji">🎭</div>
+      <div class="lbl ac-violet">Hot & Cold behavior</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🌪️</div>
+      <div class="lbl ac-violet">Unpredictable mood shifts</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🚪</div>
+      <div class="lbl ac-violet">Deactivates when close</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">💔</div>
+      <div class="lbl ac-violet">Chronic self-sabotage</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🔄</div>
+      <div class="lbl ac-rose">Cycles of approach & retreat</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">😤</div>
+      <div class="lbl ac-rose">Dismisses own needs</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🧩</div>
+      <div class="lbl ac-rose">Deeply empathetic inside</div>
+    </div>
+    <div class="icon-box">
+      <div class="emoji">🌱</div>
+      <div class="lbl ac-rose">Capable of healing w/ safety</div>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">⚡</div>
+    <div>
+      <div class="callout-title" style="color:var(--teal)">ADHD Tip — How to Remember This</div>
+      <div class="callout-text">Think of the FA's nervous system like a broken thermostat. They WANT warmth — but the moment it arrives, the system short-circuits and turns cold. It's not about you. It's their wiring.</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🔬</div>
+    <div>
+      <div class="science-label">Neuroscience</div>
+      <div class="science-text">FA individuals show elevated <strong>amygdala reactivity</strong> — the brain's alarm system fires both when alone (fear of abandonment) AND when close (fear of intimacy). Their window of tolerance for connection is extremely narrow.</div>
+      <div class="science-cite">Coan & Sbarra (2015) — Emotion regulation in attachment; Porges (2011) — Polyvagal Theory</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 2: Who Are You ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">2</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-rose">Understanding Yourself</div>
+      <div class="page-header-title">Who Are You in This Dynamic?</div>
+      <div class="page-header-sub">Why you're more activated here than in any other pairing</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🧠</div>
+    <div>
+      <div class="science-label">The Science</div>
+      <div class="science-text">Anxious attachment forms when caregivers were inconsistent — sometimes warm, sometimes absent or unpredictable. The brain learns: <strong>"Love is uncertain. I must work harder to keep it."</strong> This creates hypervigilance around relationship cues.</div>
+      <div class="science-cite">Bowlby (1969, 1973) — Attachment Theory; Mikulincer & Shaver (2016) — Attachment in Adulthood</div>
+    </div>
+  </div>
+
+  <div class="callout callout-rose">
+    <div class="callout-icon">🌹</div>
+    <div>
+      <div class="callout-title" style="color:var(--rose)">You's Inner World</div>
+      <div class="callout-text">"When they pull away, my entire nervous system goes into emergency mode. I need to fix it, reach out, check in — because the silence feels like the relationship is ending."</div>
+    </div>
+  </div>
+
+  <div class="section-label">Anxious Behaviors That Escalate in This Dynamic</div>
+
+  <div class="three-col">
+    <div class="card bg-rose">
+      <div class="card-title ac-rose">🔍 Hypervigilance</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">Reading every text, tone, and behavior for signs of withdrawal. Your nervous system is always scanning for danger.</div>
+    </div>
+    <div class="card bg-rose">
+      <div class="card-title ac-rose">📱 Protest Behaviors</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">Double-texting, calling, tracking their activity — these are unconscious attempts to re-establish connection when you feel abandoned.</div>
+    </div>
+    <div class="card bg-rose">
+      <div class="card-title ac-rose">🔃 Self-Blame</div>
+      <div style="font-size:11.5px; font-weight:600; line-height:1.6;">"What did I do wrong?" becomes the default when the FA pulls away, even though their withdrawal is almost never about you specifically.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Why This Pairing Amplifies Anxious Symptoms</div>
+
+  <div class="card">
+    <div class="card-title ac-rose">The Intermittent Reinforcement Effect</div>
+    <ul class="bullet-list">
+      <li><span class="bullet-dot" style="background:var(--rose)"></span><span><strong>Standard anxious relationships</strong> have some inconsistency — the FA has a <em>built-in inconsistency cycle</em>. This puts your nervous system on maximum alert, always.</span></li>
+      <li><span class="bullet-dot" style="background:var(--rose)"></span><span>The moments they DO show up feel intensely euphoric — your brain floods with dopamine because rewards are unpredictable.</span></li>
+      <li><span class="bullet-dot" style="background:var(--rose)"></span><span>This creates an addiction-like loop: more withdrawal = more craving = harder to leave.</span></li>
+    </ul>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🎰</div>
+    <div>
+      <div class="science-label">Behavioral Psychology</div>
+      <div class="science-text"><strong>Variable Ratio Reinforcement</strong> — the same mechanism that makes gambling addictive. Unpredictable rewards produce the strongest, most persistent behavior patterns. When the FA intermittently shows up, your brain gets hooked harder than if they were consistently present.</div>
+      <div class="science-cite">Skinner (1957) — Schedules of Reinforcement; Fisher et al. (2005) — Love & Dopamine fMRI Studies</div>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">⚠️</div>
+    <div>
+      <div class="callout-title" style="color:var(--amber)">This Is NOT a Character Flaw</div>
+      <div class="callout-text">Your hyperactivation in this dynamic is a <em>neurobiological response</em>. Your nervous system is doing exactly what it was trained to do. Healing is about retraining it — not judging it.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 3: The Magnetic Pull ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">3</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-teal">The Attraction</div>
+      <div class="page-header-title">Why You're Magnetically Drawn to Each Other</div>
+      <div class="page-header-sub">It's not random. Your nervous systems are speaking the same early language.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">🧲</div>
+    <div>
+      <div class="callout-title" style="color:var(--teal)">The Nervous System Connection</div>
+      <div class="callout-text">Anxious and fearful avoidant individuals are both hypervigilant in love — you both have intense emotional experiences. This creates an immediate sense of "<strong>finally, someone who FEELS things like I do</strong>." The depth feels like a soul connection. It is also a wound connection.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Why You Feel Irresistibly Compatible</div>
+
+  <div class="two-col">
+    <div class="card bg-teal">
+      <div class="card-title ac-teal">🌊 What You Bring</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>Unwavering pursuit — the FA's abandonment fear is temporarily soothed</span></li>
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>Emotional intensity that mirrors the FA's inner world</span></li>
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>Unconditional presence — the FA never has to chase</span></li>
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>Warmth that the FA craves but can't generate for themselves</span></li>
+      </ul>
+    </div>
+    <div class="card bg-violet">
+      <div class="card-title ac-violet">🌪️ The FA Brings</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span>Mystery and unpredictability that you interprets as "depth"</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span>Emotional unavailability that triggers you's chase response</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span>Moments of profound closeness that feel worth fighting for</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span>High-intensity connection that feels like passion</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🧬</div>
+    <div>
+      <div class="science-label">Attachment Neuroscience</div>
+      <div class="science-text">Both fearful avoidant and anxious individuals have elevated <strong>cortisol and oxytocin sensitivity</strong> in relationships. This means they both feel bonds intensely and quickly. The "electric" feeling at the start of this relationship is real — and neurobiologically driven.</div>
+      <div class="science-cite">Carter et al. (2017) — Oxytocin & Social Bonding; Levine & Heller (2010) — Attached</div>
+    </div>
+  </div>
+
+  <div class="section-label">The Familiar Wound Recognition</div>
+
+  <div class="card">
+    <div class="card-title" style="color:#555">🪞 "I've Known You Before"</div>
+    <ul class="bullet-list">
+      <li><span class="bullet-dot" style="background:#999"></span><span>Both anxious partner and FA grew up with <strong>emotionally inconsistent caregivers</strong>. On a subconscious level, this pairing feels like home.</span></li>
+      <li><span class="bullet-dot" style="background:#999"></span><span>The FA's hot-and-cold mirrors what you experienced in childhood — <em>love that you had to work for</em>.</span></li>
+      <li><span class="bullet-dot" style="background:#999"></span><span>You's persistence mirrors what the FA needed as a child — <em>someone who wouldn't give up on them</em>.</span></li>
+      <li><span class="bullet-dot" style="background:#999"></span><span>These early templates are called <strong>Internal Working Models</strong> — and they draw us toward what's familiar, not necessarily what's healthy.</span></li>
+    </ul>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">💡</div>
+    <div>
+      <div class="callout-title" style="color:var(--amber)">The Truth</div>
+      <div class="callout-text">The intensity you feel with an FA is <em>real</em>. It's not imaginary. But intensity ≠ compatibility. Understanding this is the first step toward choosing intentionally.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 4: The Push-Pull Cycle ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">4</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-rose">The Dynamic</div>
+      <div class="page-header-title">The Push-Pull Cycle</div>
+      <div class="page-header-sub">Understanding the loop that keeps you both stuck</div>
+    </div>
+  </div>
+
+  <div class="section-label">The Full Cycle — How It Always Goes</div>
+
+  <div class="cycle-container">
+    <div class="cycle-step" style="background:var(--lt-teal)">
+      <div class="cycle-emoji">✨</div>
+      <div class="cycle-title ac-teal">Honeymoon</div>
+      <div class="cycle-sub">FA feels safe, you feel loved</div>
+    </div>
+    <div class="cycle-step" style="background:var(--lt-violet)">
+      <div class="cycle-emoji">😰</div>
+      <div class="cycle-title ac-violet">FA Overwhelm</div>
+      <div class="cycle-sub">Closeness triggers fear</div>
+    </div>
+    <div class="cycle-step" style="background:var(--lt-rose)">
+      <div class="cycle-emoji">🚪</div>
+      <div class="cycle-title ac-rose">FA Withdraws</div>
+      <div class="cycle-sub">Cold, distant, unavailable</div>
+    </div>
+    <div class="cycle-step" style="background:#FFF8E1)">
+      <div class="cycle-emoji">⚡</div>
+      <div class="cycle-title ac-amber">You Activate</div>
+      <div class="cycle-sub">Panic, protest, pursuing</div>
+    </div>
+    <div class="cycle-step" style="background:var(--lt-navy)">
+      <div class="cycle-emoji">🔄</div>
+      <div class="cycle-title ac-navy">FA Returns</div>
+      <div class="cycle-sub">Guilt or misses you; re-engages</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card bg-violet">
+      <div class="card-title ac-violet">🧠 What the FA Thinks (each stage)</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span><strong>Honeymoon:</strong> "This is amazing, I feel safe"</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span><strong>Overwhelm:</strong> "This is too much, I'm suffocating"</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span><strong>Withdrawal:</strong> "I need space to feel like myself"</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span><strong>You pursue:</strong> "See? Everyone smothers me"</span></li>
+        <li><span class="bullet-dot" style="background:var(--violet)"></span><span><strong>Returns:</strong> "I miss them. Maybe I overreacted."</span></li>
+      </ul>
+    </div>
+    <div class="card bg-rose">
+      <div class="card-title ac-rose">💔 What You Think (each stage)</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span><strong>Honeymoon:</strong> "I finally found someone who gets me"</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span><strong>Overwhelm:</strong> "Something changed. What did I do?"</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span><strong>Withdrawal:</strong> "They're leaving. I need to fix this NOW."</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span><strong>You pursue:</strong> "I'll reach out one more time..."</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span><strong>Returns:</strong> "I knew they loved me! See — it worked."</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🔄</div>
+    <div>
+      <div class="science-label">Relationship Science</div>
+      <div class="science-text">This cycle is called the <strong>"Anxious-Avoidant Trap"</strong> or the "Pursue-Withdraw Pattern." Research shows it's the most common and destructive relationship pattern — and that <strong>both partners' attachment systems are being activated simultaneously</strong>, creating a mutual dysregulation loop.</div>
+      <div class="science-cite">Johnson (2008) — Emotionally Focused Therapy; Gottman (1994) — What Predicts Divorce</div>
+    </div>
+  </div>
+
+  <div class="callout callout-amber">
+    <div class="callout-icon">⚠️</div>
+    <div>
+      <div class="callout-title" style="color:var(--amber)">Why Neither Person Can See It In the Moment</div>
+      <div class="callout-text">When the nervous system is dysregulated, the <strong>prefrontal cortex goes offline</strong>. Neither you nor the FA can access logic or perspective mid-cycle. This is why the same fight happens over and over — it's neurological, not a lack of trying.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 5: What the FA Needs ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">5</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-violet">For You</div>
+      <div class="page-header-title">What the FA Actually Needs (vs. What They Say)</div>
+      <div class="page-header-sub">The translation guide to understanding your partner's real signals</div>
+    </div>
+  </div>
+
+  <div class="callout callout-violet">
+    <div class="callout-icon">🔑</div>
+    <div>
+      <div class="callout-title" style="color:var(--violet)">The FA's Paradox</div>
+      <div class="callout-text">Fearful avoidants often <em>want</em> connection and <em>push away</em> the very thing they want. They may say "I need space" when they actually mean "I'm scared and don't know how to say that." Learning this language is the key to breaking the cycle.</div>
+    </div>
+  </div>
+
+  <div class="section-label">The FA Translation Guide</div>
+
+  <div class="card">
+    <div class="card-title ac-violet">🗣️ What They Say vs. What They Mean</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:8px;">
+      <div style="background:var(--lt-rose); border-radius:8px; padding:10px 12px;">
+        <div style="font-size:10px; font-weight:800; color:var(--rose); letter-spacing:1px; margin-bottom:4px;">WHAT THEY SAY</div>
+        <div style="font-size:11.5px; font-weight:700; line-height:1.7;">"I need space."<br>"You're too much."<br>"I don't want a relationship."<br>"I'm fine."<br>"Stop overthinking."<br>"I just need to be alone."</div>
+      </div>
+      <div style="background:var(--lt-violet); border-radius:8px; padding:10px 12px;">
+        <div style="font-size:10px; font-weight:800; color:var(--violet); letter-spacing:1px; margin-bottom:4px;">WHAT THEY MEAN</div>
+        <div style="font-size:11.5px; font-weight:700; line-height:1.7;">"I'm overwhelmed and scared."<br>"I feel like I'm losing myself."<br>"I'm afraid of getting hurt."<br>"I'm dysregulated and shutting down."<br>"I can't handle this conversation yet."<br>"I need to self-regulate before connecting."</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">What Helps an FA Feel Safe Enough to Stay</div>
+
+  <ul class="step-list">
+    <li class="step-item">
+      <div class="step-num" style="background:var(--violet)">1</div>
+      <div class="step-content">
+        <div class="step-title">Predictability Without Pressure</div>
+        <div class="step-body">Show up consistently in low-stakes ways. A "good morning" text. Remembering a small detail. This builds felt safety without triggering their intimacy fear.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--violet)">2</div>
+      <div class="step-content">
+        <div class="step-title">Space That Doesn't Feel Like Rejection</div>
+        <div class="step-body">When you give them space gracefully — without guilt-tripping — it literally re-patterns their nervous system. They learn: "Space doesn't mean abandonment."</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--violet)">3</div>
+      <div class="step-content">
+        <div class="step-title">Naming Emotions Without Expectation</div>
+        <div class="step-body">Saying "I notice I feel disconnected. I'm not asking you to fix it, just sharing" removes pressure and models emotional literacy — something FA individuals are often healing.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--violet)">4</div>
+      <div class="step-content">
+        <div class="step-title">Staying Regulated Yourself</div>
+        <div class="step-body">Your nervous system is contagious. When you can stay grounded during their withdrawal, it signals safety — not danger. This is the most powerful thing you can offer an FA.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="science-block">
+    <div class="science-icon">💆</div>
+    <div>
+      <div class="science-label">Co-Regulation Research</div>
+      <div class="science-text">Human nervous systems <strong>co-regulate</strong> — meaning your physiological calm can help regulate your partner's activation. This is called the <em>Social Engagement System</em>. A regulated partner is literally neurobiologically healing to a dysregulated one.</div>
+      <div class="science-cite">Porges (2011) — Polyvagal Theory; Coan et al. (2006) — Partner Regulation fMRI Study</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 6: What You Must Stop ══════════ -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">6</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-rose">For You</div>
+      <div class="page-header-title">What You Must Stop Doing</div>
+      <div class="page-header-sub">These feel like survival — but they're keeping you stuck</div>
+    </div>
+  </div>
+
+  <div class="callout callout-rose">
+    <div class="callout-icon">❤️‍🩹</div>
+    <div>
+      <div class="callout-title" style="color:var(--rose)">This Is Not About Being "Too Much"</div>
+      <div class="callout-text">These patterns exist because your nervous system was programmed in childhood to <strong>fight for connection</strong>. You're not broken. But some of these behaviors — when used with an FA — accidentally push them further away. Let's look at them honestly.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Protest Behaviors That Backfire With an FA</div>
+
+  <div class="two-col">
+    <div class="card">
+      <div class="card-title ac-rose">📱 The Over-Contact Pattern</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Multiple texts when they don't respond</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Checking their online status repeatedly</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Calling when texts go unanswered</span></li>
+      </ul>
+      <div style="margin-top:8px; padding:8px 10px; background:var(--lt-amber); border-radius:8px;">
+        <div style="font-size:10.5px; font-weight:700; color:var(--amber);">⚡ What it does to the FA: Triggers their intimacy fear and confirms "I'm being smothered." They pull further away.</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title ac-rose">💬 The Ultimatum Pattern</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>"Tell me how you feel or I'm done."</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Forcing conversations during their shutdown</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Demanding closure when they're avoidant</span></li>
+      </ul>
+      <div style="margin-top:8px; padding:8px 10px; background:var(--lt-amber); border-radius:8px;">
+        <div style="font-size:10.5px; font-weight:700; color:var(--amber);">⚡ What it does to the FA: Their nervous system reads this as danger. They freeze, flee, or fight — never the emotional intimacy you need.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-label">Your Regulation Toolkit — Use These Instead</div>
+
+  <ul class="step-list">
+    <li class="step-item">
+      <div class="step-num" style="background:var(--teal)">1</div>
+      <div class="step-content">
+        <div class="step-title">The 20-Minute Rule</div>
+        <div class="step-body">When you feel the urge to reach out in panic: wait 20 minutes. Walk. Breathe. Move your body. Cortisol peaks at about 20 minutes — after that, the panic naturally decreases and you can respond from regulated choice, not fear.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--teal)">2</div>
+      <div class="step-content">
+        <div class="step-title">Narrate Your Need, Don't Act It Out</div>
+        <div class="step-body">Instead of 5 texts, send one: <em>"Hey, I'm feeling anxious about us. I'm not asking you to fix it — I just wanted to be honest."</em> This is vulnerable, not pressuring.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--teal)">3</div>
+      <div class="step-content">
+        <div class="step-title">Build a Life Outside This Relationship</div>
+        <div class="step-body">When they are your primary source of regulation, every withdrawal feels catastrophic. Friendships, hobbies, therapy, and community reduce your nervous system's dependency on their behavior.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--teal)">4</div>
+      <div class="step-content">
+        <div class="step-title">Identify Your Window of Tolerance</div>
+        <div class="step-body">Notice what you can tolerate before you spiral. Is it 2 hours of silence? 1 day? Knowing your threshold lets you plan regulation strategies before you hit the panic point.</div>
+      </div>
+    </li>
+  </ul>
+
+  <div class="science-block">
+    <div class="science-icon">🧘</div>
+    <div>
+      <div class="science-label">Nervous System Science</div>
+      <div class="science-text"><strong>Physiological sighing</strong> (double inhale through nose, long exhale through mouth) is the fastest proven method to downregulate the nervous system — more effective than single-breath techniques. Use this before responding to your partner.</div>
+      <div class="science-cite">Balban et al. (2023) — Stanford; Huberman Lab — Stress & Anxiety Protocols</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 7: Communication Scripts ══════════ -->
+<div class="section-page" id="sec-scripts">
+  <div class="page-header">
+    <div class="page-header-num">7</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-teal">Tools</div>
+      <div class="page-header-title">Communication Scripts That Actually Work</div>
+      <div class="page-header-sub">Words that create safety instead of triggering the cycle</div>
+    </div>
+  </div>
+
+  <div class="callout callout-teal">
+    <div class="callout-icon">💬</div>
+    <div>
+      <div class="callout-title" style="color:var(--teal)">How to Use These</div>
+      <div class="callout-text">These scripts are designed to <strong>lower the FA's threat response</strong> while still honestly expressing your needs. Practice them out loud before you need them. The goal is regulation first, connection second.</div>
+    </div>
+  </div>
+
+  <div class="section-label">When They Pull Away</div>
+
+  <div class="script-box">
+    <div class="script-label">📱 Text Script — Low Pressure</div>
+    <div class="script-line">"Hey, I notice you've been quiet and I want you to know there's no pressure. I'm here when you're ready."</div>
+    <div class="script-line">"I'm not going anywhere. Take the space you need."</div>
+    <div class="script-line">"I care about you and I trust us. Talk when you're ready 💙"</div>
+  </div>
+
+  <div class="section-label">When You Need Reassurance</div>
+
+  <div class="script-box" style="background: linear-gradient(135deg, #1A3030 0%, #1E2D4E 100%);">
+    <div class="script-label" style="color:rgba(255,255,255,0.5);">🗣️ In-Person — Vulnerable, Not Demanding</div>
+    <div class="script-line" style="border-left-color:rgba(46,139,139,0.6);">"I want to share something without making it about you. I'm feeling disconnected and that brings up some old fear in me. I'm working on it — I just wanted you to know."</div>
+    <div class="script-line" style="border-left-color:rgba(46,139,139,0.6);">"I know you sometimes need space. I want to be the kind of partner who can give that gracefully. Can we check in later today?"</div>
+  </div>
+
+  <div class="section-label">When They Come Back After Pulling Away</div>
+
+  <div class="script-box" style="background: linear-gradient(135deg, #301A3A 0%, #2E1A5A 100%);">
+    <div class="script-label">🌸 Welcoming Without Punishing</div>
+    <div class="script-line" style="border-left-color:rgba(124,92,191,0.6);">"I'm really glad you're here. I missed you."</div>
+    <div class="script-line" style="border-left-color:rgba(124,92,191,0.6);">"I'm not going to punish you for needing space. I want us to be able to do that well together."</div>
+    <div class="script-line" style="border-left-color:rgba(124,92,191,0.6);">"Can we talk about what happened? Not to blame anyone — just so we can do better next time."</div>
+  </div>
+
+  <div class="section-label">The Repair Conversation Framework</div>
+
+  <div class="card">
+    <div class="card-title ac-teal">🤝 The 4-Part Repair Script</div>
+    <ul class="step-list">
+      <li class="step-item" style="padding:8px 0;">
+        <div class="step-num" style="background:var(--teal); width:24px; height:24px; font-size:11px;">1</div>
+        <div class="step-content">
+          <div class="step-title">Observe (no blame)</div>
+          <div class="step-body">"I noticed when _____ happened..."</div>
+        </div>
+      </li>
+      <li class="step-item" style="padding:8px 0;">
+        <div class="step-num" style="background:var(--violet); width:24px; height:24px; font-size:11px;">2</div>
+        <div class="step-content">
+          <div class="step-title">Feel (own your emotion)</div>
+          <div class="step-body">"I felt _____ and that's mine to manage..."</div>
+        </div>
+      </li>
+      <li class="step-item" style="padding:8px 0;">
+        <div class="step-num" style="background:var(--rose); width:24px; height:24px; font-size:11px;">3</div>
+        <div class="step-content">
+          <div class="step-title">Need (soft, specific ask)</div>
+          <div class="step-body">"What I need is just a little _____ so I can feel secure..."</div>
+        </div>
+      </li>
+      <li class="step-item" style="padding:8px 0;">
+        <div class="step-num" style="background:var(--amber); width:24px; height:24px; font-size:11px;">4</div>
+        <div class="step-content">
+          <div class="step-title">Invite (not demand)</div>
+          <div class="step-body">"Is there anything you're feeling that you'd want to share?"</div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<!-- ══════════ SECTION 8: When It Works / When to Go ══════════ -->
+<div class="section-page" id="sec-stay">
+  <div class="page-header">
+    <div class="page-header-num">8</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-amber">The Truth</div>
+      <div class="page-header-title">When This Pairing Can Work — And When to Leave</div>
+      <div class="page-header-sub">Honesty is an act of love. Both for them and for yourself.</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div class="card bg-teal">
+      <div class="card-title ac-teal">✅ This Can Work When...</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>Both partners are <strong>actively in therapy</strong> or doing attachment work</span></li>
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>The FA is <strong>self-aware</strong> about their patterns and names them</span></li>
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>Both can <strong>repair after conflict</strong> without weeks of distance</span></li>
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>You is building <strong>self-regulation skills</strong> independently</span></li>
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>Both partners <strong>choose each other</strong> consistently, not just in good moments</span></li>
+        <li><span class="bullet-dot" style="background:var(--teal)"></span><span>The <strong>cycle is shortening</strong> over time, not lengthening</span></li>
+      </ul>
+    </div>
+    <div class="card bg-rose">
+      <div class="card-title ac-rose">🚩 It's Time to Go When...</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>The FA <strong>refuses to acknowledge</strong> the cycle or get help</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>You feel <strong>chronically anxious</strong> and it's become your baseline</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>The <strong>good moments are rare</strong> but keep you hooked</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>You've <strong>abandoned your needs</strong> entirely to manage theirs</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>There is <strong>emotional, verbal, or physical abuse</strong> — full stop</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>You've been in the <strong>same loop for years</strong> with no growth</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">📊</div>
+    <div>
+      <div class="science-label">Research Finding</div>
+      <div class="science-text">Fearful Avoidant individuals who engage in <strong>EFT (Emotionally Focused Therapy)</strong> show measurable improvements in relationship satisfaction. The key predictor is <em>willingness</em> — not the attachment style itself. An FA who wants to heal CAN build secure functioning. One who doesn't? The prognosis is much harder.</div>
+      <div class="science-cite">Johnson & Whiffen (2003) — EFT Outcomes Research; Wiebe & Johnson (2016) — Follow-up Studies</div>
+    </div>
+  </div>
+
+  <div class="section-label">Your Affirmations</div>
+
+  <div class="affirmation-grid">
+    <div class="affirmation-card">
+      <p>I deserve a love that doesn't require me to shrink my needs.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>Understanding someone's patterns doesn't mean I have to stay in them.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>My nervous system deserves peace, not constant activation.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>I can love someone deeply and still choose myself.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>My healing is not dependent on their willingness to heal.</p>
+    </div>
+    <div class="affirmation-card">
+      <p>Secure love exists. And I am becoming ready to receive it.</p>
+    </div>
+  </div>
+
+  <div class="callout callout-violet">
+    <div class="callout-icon">💜</div>
+    <div>
+      <div class="callout-title" style="color:var(--violet)">A Final Note from Ash</div>
+      <div class="callout-text">This dynamic is not a sign that you chose wrong or that you're broken. It's a sign that your early experiences shaped you, and you found someone whose early experiences shaped them similarly. That recognition — painful as it is — is the beginning of healing. You now have the map. Use it.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:20px; text-align:center; padding:16px; border-top: 2px solid var(--border);">
+    <div style="font-size:10px; font-weight:800; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:6px;">Created By</div>
+    <div style="font-family:'Playfair Display',serif; font-size:20px; font-weight:700; color:var(--navy);">Ash · Couples Educator</div>
+    <div style="font-size:11px; font-weight:600; color:var(--muted); margin-top:3px;">@chingonamendoza · BA Psychology · MA MFT (in progress)</div>
+    <div style="margin-top:10px;">
+      <span class="tag tag-rose">Anxious Attachment</span>
+      <span class="tag tag-violet">Fearful Avoidant</span>
+      <span class="tag tag-teal">Attachment Theory</span>
+      <span class="tag tag-navy">Science-Backed</span>
+    </div>
+  </div>
+</div>
+
+<!-- EXERCISE 1: True/False + Reflection -->
+<div class="exercise-page">
+  <div class="exh-banner">
+    <div>
+      <div class="exh-badge">Exercise 1 of 3</div>
+      <div class="exh-title">Check Your Understanding</div>
+      <div class="exh-sub">Mark True or False for each statement, then answer the reflection prompt. Check the answer key when you are done.</div>
+    </div>
+  </div>
+
+  <div class="section-label">True or False</div>
+  <div class="tf-set">
+    <div class="tf-item">
+      <div class="tf-num">1</div>
+      <div class="tf-text">A Fearful Avoidant pulls away because they have stopped caring about the relationship.</div>
+      <div class="tf-boxes"><div class="tf-box">TRUE</div><div class="tf-box">FALSE</div></div>
+    </div>
+    <div class="tf-item">
+      <div class="tf-num">2</div>
+      <div class="tf-text">The FA hot-and-cold pattern is a nervous system response, not a deliberate choice to hurt you.</div>
+      <div class="tf-boxes"><div class="tf-box">TRUE</div><div class="tf-box">FALSE</div></div>
+    </div>
+    <div class="tf-item">
+      <div class="tf-num">3</div>
+      <div class="tf-text">Fearful Avoidants want deep connection. They just fear it at the same time.</div>
+      <div class="tf-boxes"><div class="tf-box">TRUE</div><div class="tf-box">FALSE</div></div>
+    </div>
+    <div class="tf-item">
+      <div class="tf-num">4</div>
+      <div class="tf-text">If you give an FA enough patience and love, their avoidant pattern will eventually go away on its own.</div>
+      <div class="tf-boxes"><div class="tf-box">TRUE</div><div class="tf-box">FALSE</div></div>
+    </div>
+    <div class="tf-item">
+      <div class="tf-num">5</div>
+      <div class="tf-text">The pursue-withdraw cycle intensifies because each person's reaction triggers the other's response.</div>
+      <div class="tf-boxes"><div class="tf-box">TRUE</div><div class="tf-box">FALSE</div></div>
+    </div>
+    <div class="tf-item">
+      <div class="tf-num">6</div>
+      <div class="tf-text">An FA who is willing to work on themselves can build a secure, lasting relationship.</div>
+      <div class="tf-boxes"><div class="tf-box">TRUE</div><div class="tf-box">FALSE</div></div>
+    </div>
+  </div>
+
+  <div class="section-label">Reflection</div>
+  <div class="write-prompt">Before reading this guide, how did you interpret your partner pulling away? Write what you used to think it meant, and what you understand now.</div>
+  <div class="write-area">
+    <div class="write-starter">I used to think it meant...</div>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+    <div class="write-starter" style="margin-top:10px;">Now I understand it means...</div>
+    <div class="write-lines">
+      <div class="write-line"></div><div class="write-line"></div><div class="write-line"></div>
+    </div>
+  </div>
+
+  <div class="answer-key">
+    <div class="ak-title">Answer Key</div>
+    <div class="ak-grid">
+      <div class="ak-item"><div class="ak-q">Q1</div><div class="ak-a false">FALSE</div></div>
+      <div class="ak-item"><div class="ak-q">Q2</div><div class="ak-a">TRUE</div></div>
+      <div class="ak-item"><div class="ak-q">Q3</div><div class="ak-a">TRUE</div></div>
+      <div class="ak-item"><div class="ak-q">Q4</div><div class="ak-a false">FALSE</div></div>
+      <div class="ak-item"><div class="ak-q">Q5</div><div class="ak-a">TRUE</div></div>
+      <div class="ak-item"><div class="ak-q">Q6</div><div class="ak-a">TRUE</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- EXERCISE 2: Scenarios + Translation -->
+<div class="exercise-page" id="ex-scenarios">
+  <div class="exh-banner">
+    <div>
+      <div class="exh-badge">Exercise 2 of 3</div>
+      <div class="exh-title">Recognize the Pattern + Translate What They Mean</div>
+      <div class="exh-sub">Pick the better response in each scenario, then write what you think each FA statement really means before checking the answers.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Scenarios — Circle the Better Response</div>
+
+  <div class="scenario-pick">
+    <div class="sp-situation">"They go quiet for two days after a really connected moment. You have not heard from them at all."</div>
+    <div class="sp-label">Which response is less likely to trigger more distance?</div>
+    <div class="sp-options">
+      <div class="sp-opt"><div class="sp-circle"></div>A. Send 3-4 messages over two days expressing how their silence makes you feel.</div>
+      <div class="sp-opt"><div class="sp-circle"></div>B. Send one warm, low-pressure message — "Hey, hope you are okay. No rush." — then stop.</div>
+      <div class="sp-opt"><div class="sp-circle"></div>C. Go silent yourself to see if they notice and come back.</div>
+    </div>
+  </div>
+
+  <div class="scenario-pick">
+    <div class="sp-situation">"They come back after 4 days of silence, acting warm and relaxed like nothing happened."</div>
+    <div class="sp-label">What is the response that rebuilds safety without burying the issue forever?</div>
+    <div class="sp-options">
+      <div class="sp-opt"><div class="sp-circle"></div>A. Immediately bring up the 4 days of silence and how it affected you, while things are warm.</div>
+      <div class="sp-opt"><div class="sp-circle"></div>B. Let the warmth rebuild first. When things feel settled, name the pattern calmly, not the incident.</div>
+      <div class="sp-opt"><div class="sp-circle"></div>C. Pretend it never happened and move on — you do not want to ruin the mood.</div>
+    </div>
+  </div>
+
+  <div class="section-label">FA Translation — Write What You Think They Really Mean</div>
+
+  <div class="card bg-violet" style="margin-bottom:0;">
+    <div class="card-title ac-violet">When They Say This... You Write What It Really Means</div>
+    <div style="display:flex;flex-direction:column;gap:0;">
+      <div style="padding:9px 0;border-bottom:1px solid #DDD7CE;">
+        <div style="font-size:12px;font-weight:800;color:#3A1060;margin-bottom:6px;font-style:italic;">"I just need some space right now."</div>
+        <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+      </div>
+      <div style="padding:9px 0;border-bottom:1px solid #DDD7CE;">
+        <div style="font-size:12px;font-weight:800;color:#3A1060;margin-bottom:6px;font-style:italic;">"I do not know what I want."</div>
+        <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+      </div>
+      <div style="padding:9px 0;">
+        <div style="font-size:12px;font-weight:800;color:#3A1060;margin-bottom:6px;font-style:italic;">"You are too much for me right now."</div>
+        <div class="write-lines"><div class="write-line"></div><div class="write-line"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="answer-key">
+    <div class="ak-title">Answer Key</div>
+    <div style="color:rgba(255,255,255,0.8);font-size:11px;font-weight:600;line-height:1.8;margin-top:4px;">
+      <strong style="color:#A8D4A8;">Scenario 1: B</strong> — One message, then stop. Pursuing harder activates their avoidance and speeds up withdrawal.<br>
+      <strong style="color:#A8D4A8;">Scenario 2: B</strong> — Let warmth return first. Raising the incident during reconnection almost always triggers another retreat.<br>
+      <span style="color:#C8B8F0;">"I need space"</span> = My nervous system is flooded — not rejection, I need to regulate. &nbsp;
+      <span style="color:#C8B8F0;">"I do not know what I want"</span> = Two systems fighting inside me: closeness and fear at the same time. &nbsp;
+      <span style="color:#C8B8F0;">"You are too much"</span> = My emotional capacity is maxed out right now, not a verdict on you.
+    </div>
+  </div>
+</div>
+
+<!-- EXERCISE 3: Final Knowledge Check + Commitment -->
+<div class="exercise-page" id="ex-mc">
+  <div class="exh-banner">
+    <div>
+      <div class="exh-badge">Exercise 3 of 3</div>
+      <div class="exh-title">Final Knowledge Check + Your Commitment</div>
+      <div class="exh-sub">Five questions covering the full guide. Then write the one thing you are committing to do differently starting today.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Multiple Choice — Circle One Answer Per Question</div>
+
+  <div class="mc-question"><span class="q-num">1.</span> The pursue-withdraw cycle intensifies because:</div>
+  <div class="mc-options">
+    <div class="mc-opt"><div class="mc-circle"></div>A. The anxious partner is too needy and drives the FA away</div>
+    <div class="mc-opt"><div class="mc-circle"></div>B. Each person's nervous system reaction triggers the other's, making both responses stronger</div>
+    <div class="mc-opt"><div class="mc-circle"></div>C. The FA does not love the anxious partner enough to stay committed</div>
+  </div>
+
+  <div class="mc-question"><span class="q-num">2.</span> The most effective move when an FA goes cold is:</div>
+  <div class="mc-options">
+    <div class="mc-opt"><div class="mc-circle"></div>A. Go cold yourself to trigger their fear of abandonment</div>
+    <div class="mc-opt"><div class="mc-circle"></div>B. Send a heartfelt message explaining how their distance is affecting you</div>
+    <div class="mc-opt"><div class="mc-circle"></div>C. Send one warm, low-pressure message and then give space</div>
+  </div>
+
+  <div class="mc-question"><span class="q-num">3.</span> When an FA pulls away after a close moment, this most likely means:</div>
+  <div class="mc-options">
+    <div class="mc-opt"><div class="mc-circle"></div>A. The closeness triggered their nervous system and they need to regulate — not a rejection</div>
+    <div class="mc-opt"><div class="mc-circle"></div>B. They regret getting close and want to end the relationship</div>
+    <div class="mc-opt"><div class="mc-circle"></div>C. They are testing to see if you will chase them</div>
+  </div>
+
+  <div class="mc-question"><span class="q-num">4.</span> The deciding factor in whether a relationship with an FA can work is:</div>
+  <div class="mc-options">
+    <div class="mc-opt"><div class="mc-circle"></div>A. How patient and understanding their partner is willing to be</div>
+    <div class="mc-opt"><div class="mc-circle"></div>B. Whether the FA is willing to look at their patterns and do the work</div>
+    <div class="mc-opt"><div class="mc-circle"></div>C. How long the two people have known each other</div>
+  </div>
+
+  <div class="mc-question"><span class="q-num">5.</span> The most important thing you can do for your own healing in this dynamic is:</div>
+  <div class="mc-options">
+    <div class="mc-opt"><div class="mc-circle"></div>A. Understand the FA deeply enough to anticipate and manage their triggers for them</div>
+    <div class="mc-opt"><div class="mc-circle"></div>B. Build your own self-regulation skills so your peace is not dependent on their responses</div>
+    <div class="mc-opt"><div class="mc-circle"></div>C. Give the relationship more time — eventually the pattern resolves itself</div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:10px;align-items:start;">
+    <div class="answer-key" style="margin-top:0;">
+      <div class="ak-title">Answer Key</div>
+      <div class="ak-grid">
+        <div class="ak-item"><div class="ak-q">Q1</div><div class="ak-a">B</div></div>
+        <div class="ak-item"><div class="ak-q">Q2</div><div class="ak-a">C</div></div>
+        <div class="ak-item"><div class="ak-q">Q3</div><div class="ak-a">A</div></div>
+        <div class="ak-item"><div class="ak-q">Q4</div><div class="ak-a">B</div></div>
+        <div class="ak-item"><div class="ak-q">Q5</div><div class="ak-a">B</div></div>
+      </div>
+    </div>
+    <div class="commit-box">
+      <div class="commit-title">My One Commitment</div>
+      <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.55);margin-bottom:10px;line-height:1.5;">Write the one specific thing you are committing to do differently starting today.</div>
+      <div class="commit-label">Starting today, I will stop:</div>
+      <div class="commit-line"></div><div class="commit-line"></div>
+      <div class="commit-label">Starting today, I will try:</div>
+      <div class="commit-line"></div><div class="commit-line"></div>
+    </div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>

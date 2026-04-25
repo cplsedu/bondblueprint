@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BondBlueprint™: Get Your Personal Relationship Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%;height:100%}
+body{font-family:'Nunito',sans-serif;background:#FAF7F3;color:#1A1714;min-height:100vh;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,textarea{font-family:inherit;font-size:16px;-webkit-appearance:none}
+textarea{resize:none}
+
+:root{
+  --bg:#FAF7F3;
+  --surface:#fff;
+  --primary:#2C4A35;
+  --primary-h:#1E3526;
+  --primary-lt:#E6F0E9;
+  --accent:#E07A3A;
+  --accent-lt:#FDF0E6;
+  --gold:#D4A843;
+  --text:#1A1714;
+  --text2:#5A5450;
+  --text3:#9A908A;
+  --border:#EAE3D9;
+  --sh:0 2px 12px rgba(0,0,0,.07);
+  --sh2:0 8px 32px rgba(0,0,0,.14);
+  --r:18px;
+  --rsm:12px;
+  --rpill:100px;
+}
+
+#app{min-height:100vh;display:flex;flex-direction:column}
+.screen{display:none;flex-direction:column;min-height:100vh}
+.screen.active{display:flex}
+
+/* ── LANDING ─────────────────────────── */
+#screen-landing{background:linear-gradient(160deg,#1E3526 0%,#2C4A35 55%,#3A5E44 100%);color:#fff}
+.land-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px 24px 40px;text-align:center;max-width:540px;margin:0 auto;width:100%}
+.land-logo{font-family:'Playfair Display',serif;font-size:1.1rem;font-weight:800;color:rgba(255,255,255,.7);letter-spacing:.02em;margin-bottom:36px}
+.land-logo span{color:#D4A843}
+.land-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(212,168,67,.18);border:1.5px solid rgba(212,168,67,.4);border-radius:var(--rpill);padding:6px 16px;font-size:.78rem;font-weight:800;color:#D4A843;letter-spacing:.04em;text-transform:uppercase;margin-bottom:20px}
+.land-h{font-family:'Playfair Display',serif;font-size:clamp(2rem,8vw,3rem);font-weight:800;line-height:1.12;color:#fff;margin-bottom:16px}
+.land-h em{color:#D4A843;font-style:italic}
+.land-sub{font-size:1rem;font-weight:600;color:rgba(255,255,255,.75);line-height:1.7;margin-bottom:36px;max-width:420px}
+.land-features{display:flex;flex-direction:column;gap:10px;margin-bottom:40px;width:100%;max-width:380px}
+.land-feature{display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.08);border-radius:var(--rsm);padding:12px 16px;text-align:left}
+.lf-icon{font-size:1.3rem;flex-shrink:0}
+.lf-text{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.85);line-height:1.4}
+.land-cta{padding:18px 40px;border-radius:var(--rpill);background:var(--accent);color:#fff;font-size:1.08rem;font-weight:900;box-shadow:0 6px 24px rgba(224,122,58,.4);transition:all .2s;letter-spacing:-.01em;width:100%;max-width:340px}
+.land-cta:hover{background:#C96B2B;transform:translateY(-2px);box-shadow:0 10px 32px rgba(224,122,58,.45)}
+.land-note{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.45);margin-top:14px;line-height:1.5}
+.land-price-pill{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.12);border:1.5px solid rgba(255,255,255,.2);border-radius:var(--rpill);padding:5px 14px;font-size:.78rem;font-weight:800;color:rgba(255,255,255,.7);margin-bottom:10px}
+
+/* ── QUESTIONS ───────────────────────── */
+#screen-questions{background:var(--bg)}
+.q-wrap{flex:1;display:flex;flex-direction:column;max-width:520px;margin:0 auto;width:100%;padding:28px 20px 40px}
+.q-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px}
+.q-logo{font-family:'Playfair Display',serif;font-size:1rem;font-weight:800;color:var(--primary)}
+.q-logo span{color:var(--accent)}
+.q-progress-wrap{flex:1;margin:0 16px}
+.q-progress-track{height:6px;background:var(--border);border-radius:3px;overflow:hidden}
+.q-progress-fill{height:100%;background:var(--primary);border-radius:3px;transition:width .4s ease}
+.q-progress-label{font-size:.72rem;font-weight:800;color:var(--text3);text-align:right;margin-top:4px}
+.q-back-btn{font-size:.82rem;font-weight:800;color:var(--text3);padding:6px 10px;border-radius:var(--rpill);transition:color .15s}
+.q-back-btn:hover{color:var(--primary)}
+
+.q-card{animation:qFadeIn .3s ease forwards}
+@keyframes qFadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.q-num{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:var(--accent);margin-bottom:8px}
+.q-title{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,5vw,1.9rem);font-weight:800;color:var(--text);line-height:1.2;margin-bottom:8px}
+.q-subtitle{font-size:.92rem;font-weight:600;color:var(--text2);line-height:1.6;margin-bottom:24px}
+
+.q-textarea{width:100%;background:var(--surface);border:2.5px solid var(--border);border-radius:var(--r);padding:18px;font-size:1rem;font-weight:600;color:var(--text);outline:none;min-height:140px;line-height:1.65;transition:border-color .18s}
+.q-textarea:focus{border-color:var(--primary)}
+.q-textarea::placeholder{color:var(--text3)}
+.q-char-hint{font-size:.72rem;font-weight:700;color:var(--text3);text-align:right;margin-top:6px}
+
+.q-chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:8px}
+.q-chip{padding:12px 18px;border-radius:var(--r);font-size:.9rem;font-weight:800;border:2.5px solid var(--border);background:var(--surface);color:var(--text2);transition:all .15s;cursor:pointer;line-height:1.3;text-align:left}
+.q-chip:hover{border-color:var(--primary);color:var(--primary);background:var(--primary-lt)}
+.q-chip.sel{border-color:var(--primary);background:var(--primary);color:#fff}
+.q-chip-emoji{margin-right:4px}
+
+.q-next-btn{margin-top:24px;width:100%;padding:16px;border-radius:var(--rpill);background:var(--primary);color:#fff;font-size:1.02rem;font-weight:900;box-shadow:0 4px 20px rgba(44,74,53,.22);transition:all .18s}
+.q-next-btn:hover{background:var(--primary-h);transform:translateY(-2px)}
+.q-next-btn:disabled{opacity:.4;pointer-events:none}
+.q-skip{display:block;text-align:center;font-size:.8rem;font-weight:700;color:var(--text3);text-decoration:underline;text-underline-offset:3px;margin-top:12px;cursor:pointer}
+
+/* ── GENERATING ──────────────────────── */
+#screen-generating{background:var(--bg);align-items:center;justify-content:center}
+.gen-inner{text-align:center;padding:40px 24px;max-width:420px}
+.gen-icon{font-size:3.2rem;margin-bottom:20px;animation:genPulse 1.8s ease-in-out infinite}
+@keyframes genPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.gen-h{font-family:'Playfair Display',serif;font-size:1.7rem;font-weight:800;color:var(--text);margin-bottom:8px}
+.gen-sub{font-size:.9rem;font-weight:600;color:var(--text2);line-height:1.65;margin-bottom:30px}
+.gen-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:30px;text-align:left}
+.gen-step{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:var(--rsm);background:var(--surface);border:1.5px solid var(--border);font-size:.88rem;font-weight:700;color:var(--text2);transition:all .4s}
+.gen-step.done{border-color:var(--primary);background:var(--primary-lt);color:var(--primary)}
+.gen-step.active{border-color:var(--accent);color:var(--text)}
+.gen-step-icon{font-size:1.1rem;width:22px;text-align:center;flex-shrink:0}
+.gen-bar-track{height:8px;background:var(--border);border-radius:4px;overflow:hidden}
+.gen-bar-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--accent));border-radius:4px;width:0%;transition:width .6s ease}
+.gen-finalizing{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:18px;font-size:.88rem;font-weight:700;color:var(--text2)}
+.gen-fin-spinner{width:18px;height:18px;border:2.5px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── PREVIEW ─────────────────────────── */
+#screen-preview{background:var(--bg)}
+.prev-wrap{flex:1;display:flex;flex-direction:column;max-width:540px;margin:0 auto;width:100%;padding:0 0 100px}
+.prev-header{padding:20px 20px 0;display:flex;align-items:center;justify-content:space-between}
+.prev-logo{font-family:'Playfair Display',serif;font-size:1rem;font-weight:800;color:var(--primary)}
+.prev-logo span{color:var(--accent)}
+
+.prev-hero{background:linear-gradient(135deg,var(--primary),#1E3526);padding:28px 20px;color:#fff;margin-bottom:0}
+.prev-hero-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.08em;color:rgba(212,168,67,.9);margin-bottom:8px}
+.prev-hero-title{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:800;line-height:1.2;color:#fff;margin-bottom:10px}
+.prev-hero-sit{font-size:.85rem;font-weight:600;color:rgba(255,255,255,.7);line-height:1.55;font-style:italic;padding:10px 14px;background:rgba(255,255,255,.08);border-radius:var(--rsm);border-left:3px solid rgba(212,168,67,.6)}
+.prev-pages-row{display:flex;align-items:center;gap:8px;margin-top:14px;font-size:.78rem;font-weight:700;color:rgba(255,255,255,.55)}
+.prev-pages-pill{background:rgba(212,168,67,.2);border:1.5px solid rgba(212,168,67,.4);border-radius:var(--rpill);padding:3px 10px;font-size:.72rem;font-weight:900;color:#D4A843}
+
+.prev-sections{padding:20px}
+.prev-section{background:var(--surface);border:2px solid var(--border);border-radius:var(--r);margin-bottom:14px;overflow:hidden}
+.prev-sec-header{padding:16px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1.5px solid var(--border)}
+.prev-sec-title{font-size:.95rem;font-weight:900;color:var(--text)}
+.prev-sec-icon{font-size:1.2rem}
+.prev-sec-body{padding:16px 18px}
+.prev-sec-preview{font-size:.9rem;font-weight:600;color:var(--text2);line-height:1.65;margin-bottom:12px}
+.prev-locked-row{display:flex;align-items:center;gap:8px;font-size:.82rem;font-weight:700;color:var(--text3)}
+.lock-pill{display:inline-flex;align-items:center;gap:5px;background:#F5F2EE;border-radius:var(--rpill);padding:4px 12px;font-size:.75rem;font-weight:800;color:var(--text3)}
+.blur-lines{height:52px;background:linear-gradient(180deg,rgba(250,247,243,0) 0%,rgba(250,247,243,.95) 100%);margin-top:-8px;position:relative}
+.blur-line-inner{display:flex;flex-direction:column;gap:7px;padding:0 18px;opacity:.35;filter:blur(2px)}
+.blur-line{height:10px;border-radius:5px;background:var(--border)}
+.blur-line.w80{width:80%}
+.blur-line.w60{width:60%}
+.blur-line.w90{width:90%}
+
+.prev-sticky{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:2px solid var(--border);padding:16px 20px 20px;box-shadow:0 -8px 32px rgba(0,0,0,.1);z-index:50}
+.prev-sticky-inner{max-width:540px;margin:0 auto}
+.prev-price-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.prev-price-label{font-size:.82rem;font-weight:700;color:var(--text2)}
+.prev-price-val{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:800;color:var(--primary)}
+.prev-price-note{font-size:.72rem;font-weight:700;color:var(--text3)}
+.prev-unlock-btn{width:100%;padding:17px;border-radius:var(--rpill);background:var(--accent);color:#fff;font-size:1.05rem;font-weight:900;box-shadow:0 4px 20px rgba(224,122,58,.3);transition:all .18s}
+.prev-unlock-btn:hover{background:#C96B2B;transform:translateY(-2px)}
+.prev-secure{text-align:center;font-size:.72rem;font-weight:700;color:var(--text3);margin-top:8px}
+
+/* ── PAYWALL MODAL ───────────────────── */
+.pw-overlay{position:fixed;inset:0;background:rgba(26,23,20,.65);z-index:200;display:none;align-items:flex-end;justify-content:center;padding:0}
+.pw-overlay.show{display:flex}
+.pw-sheet{background:var(--surface);border-radius:var(--r) var(--r) 0 0;padding:28px 24px 44px;width:100%;max-width:520px;animation:slideUp .35s ease}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.pw-handle{width:40px;height:4px;border-radius:2px;background:var(--border);margin:0 auto 20px}
+.pw-doc-preview{background:linear-gradient(135deg,var(--primary),#1E3526);border-radius:var(--r);padding:16px 20px;margin-bottom:20px;display:flex;align-items:center;gap:14px}
+.pw-doc-icon{font-size:2.4rem}
+.pw-doc-info{flex:1}
+.pw-doc-title{font-weight:900;font-size:.95rem;color:#fff;margin-bottom:3px}
+.pw-doc-meta{font-size:.78rem;font-weight:700;color:rgba(255,255,255,.6)}
+.pw-price-block{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding:16px 20px;background:#F8F6F2;border-radius:var(--r);border:2px solid var(--border)}
+.pw-price-left{display:flex;flex-direction:column;gap:2px}
+.pw-price-name{font-weight:900;font-size:1rem;color:var(--text)}
+.pw-price-desc{font-size:.8rem;font-weight:700;color:var(--text2)}
+.pw-price-val{font-family:'Playfair Display',serif;font-size:2rem;font-weight:800;color:var(--primary)}
+.pw-includes{margin-bottom:20px}
+.pw-includes-label{font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:10px}
+.pw-include-item{display:flex;align-items:center;gap:9px;font-size:.88rem;font-weight:700;color:var(--text2);margin-bottom:8px}
+.pw-pay-btn{width:100%;padding:17px;border-radius:var(--rpill);background:var(--accent);color:#fff;font-size:1.08rem;font-weight:900;box-shadow:0 4px 20px rgba(224,122,58,.3);transition:all .18s;margin-bottom:10px}
+.pw-pay-btn:hover{background:#C96B2B;transform:translateY(-2px)}
+.pw-pay-btn:disabled{opacity:.5;pointer-events:none}
+.pw-processing{display:flex;align-items:center;justify-content:center;gap:8px;font-size:.88rem;font-weight:700;color:var(--text2);margin-bottom:10px;display:none}
+.pw-processing-dot{width:7px;height:7px;border-radius:50%;background:var(--primary);animation:typingBounce 1.2s ease infinite}
+.pw-processing-dot:nth-child(2){animation-delay:.2s}
+.pw-processing-dot:nth-child(3){animation-delay:.4s}
+@keyframes typingBounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-6px)}}
+.pw-legal{text-align:center;font-size:.72rem;font-weight:700;color:var(--text3);line-height:1.5}
+.pw-dismiss{display:block;text-align:center;font-size:.8rem;font-weight:700;color:var(--text3);text-decoration:underline;text-underline-offset:3px;margin-top:12px;cursor:pointer}
+
+/* ── SUCCESS SCREEN ──────────────────── */
+#screen-success{background:var(--bg);align-items:center;justify-content:center}
+.success-inner{text-align:center;padding:40px 24px;max-width:420px}
+.success-icon{font-size:4rem;margin-bottom:16px}
+.success-h{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:800;color:var(--text);margin-bottom:10px}
+.success-sub{font-size:.95rem;font-weight:600;color:var(--text2);line-height:1.65;margin-bottom:28px}
+.success-dl-btn{padding:16px 40px;border-radius:var(--rpill);background:var(--primary);color:#fff;font-size:1rem;font-weight:900;box-shadow:var(--sh2);transition:all .18s;display:inline-block}
+.success-dl-btn:hover{background:var(--primary-h)}
+.success-note{font-size:.78rem;font-weight:700;color:var(--text3);margin-top:14px;line-height:1.5}
+
+/* ── EDU BAR ─────────────────────────── */
+.edu-bar{background:#F5F2EE;padding:10px 16px;text-align:center;font-size:.7rem;font-weight:700;color:var(--text3);line-height:1.5;flex-shrink:0}
+.edu-bar a{color:var(--text3);text-decoration:underline}
+
+@media(max-width:360px){.land-h{font-size:1.75rem}}
+</style>
+</head>
+<body>
+<div id="app">
+
+<!-- ═══════════ LANDING ═══════════ -->
+<div id="screen-landing" class="screen active">
+  <div class="land-inner">
+    <div class="land-logo">Bond<span>Blueprint</span>™</div>
+    <div class="land-badge">✦ Science-backed relationship guide</div>
+    <h1 class="land-h">Get <em>exact</em> words to say and steps to take.</h1>
+    <p class="land-sub">Answer 5 quick questions. We build you a personal PDF guide with real scripts, specific actions, and a 7-day plan, all based on actual relationship research.</p>
+    <div class="land-features">
+      <div class="land-feature"><span class="lf-icon">💬</span><div class="lf-text">Word-for-word scripts you can actually use</div></div>
+      <div class="land-feature"><span class="lf-icon">🔬</span><div class="lf-text">Backed by real researchers and real studies</div></div>
+      <div class="land-feature"><span class="lf-icon">📄</span><div class="lf-text">Yours to download and keep forever</div></div>
+    </div>
+    <div class="land-price-pill">📄 Your personal guide: $19</div>
+    <button class="land-cta" onclick="startQuestions()">Build My Blueprint →</button>
+    <p class="land-note">5 questions. Takes about 2 minutes. Not therapy, just the science, made personal.</p>
+  </div>
+  <div class="edu-bar">BondBlueprint™ is psychoeducational content only. Not therapy or clinical advice. <a href="https://www.psychologytoday.com/us/therapists" target="_blank">Find a therapist</a></div>
+</div>
+
+<!-- ═══════════ QUESTIONS ═══════════ -->
+<div id="screen-questions" class="screen">
+  <div class="q-wrap">
+    <div class="q-header">
+      <div class="q-logo">Bond<span>Blueprint</span>™</div>
+      <div class="q-progress-wrap">
+        <div class="q-progress-track"><div class="q-progress-fill" id="q-progress-fill"></div></div>
+        <div class="q-progress-label" id="q-progress-label">1 of 5</div>
+      </div>
+      <button class="q-back-btn" onclick="goBack()">← Back</button>
+    </div>
+    <div id="q-card-wrap"></div>
+  </div>
+  <div class="edu-bar">Your answers are used only to personalize your guide. Not therapy.</div>
+</div>
+
+<!-- ═══════════ GENERATING ═══════════ -->
+<div id="screen-generating" class="screen">
+  <div class="gen-inner">
+    <div class="gen-icon" id="gen-icon">🤖</div>
+    <h2 class="gen-h" id="gen-headline">Claude is reading your situation...</h2>
+    <p class="gen-sub">Analyzing every detail you shared to write a guide made just for you.</p>
+    <div class="gen-steps" id="gen-steps">
+      <div class="gen-step" id="gstep-0"><span class="gen-step-icon">📖</span>Reading your exact words</div>
+      <div class="gen-step" id="gstep-1"><span class="gen-step-icon">🔬</span>Matching to attachment science</div>
+      <div class="gen-step" id="gstep-2"><span class="gen-step-icon">💡</span>Decoding your specific situation</div>
+      <div class="gen-step" id="gstep-3"><span class="gen-step-icon">💬</span>Writing scripts for your situation</div>
+      <div class="gen-step" id="gstep-4"><span class="gen-step-icon">📋</span>Building your 7-day plan</div>
+      <div class="gen-step" id="gstep-5"><span class="gen-step-icon">🎨</span>Designing your personal PDF</div>
+      <div class="gen-step" id="gstep-6"><span class="gen-step-icon">✨</span>Your Blueprint is ready</div>
+    </div>
+    <div class="gen-bar-track"><div class="gen-bar-fill" id="gen-bar-fill"></div></div>
+    <div class="gen-finalizing" id="gen-finalizing" style="display:none">
+      <div class="gen-fin-spinner"></div>
+      <span>Finalizing your guide...</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ PREVIEW ═══════════ -->
+<div id="screen-preview" class="screen">
+  <div class="prev-wrap">
+    <div class="prev-hero" id="prev-hero">
+      <div class="prev-hero-label">Your Personal BondBlueprint™</div>
+      <div class="prev-hero-title" id="prev-title">Your Relationship Guide</div>
+      <div class="prev-hero-sit" id="prev-sit-echo"></div>
+      <div class="prev-pages-row">
+        <span>Personalized for your exact situation</span>
+      </div>
+    </div>
+
+    <div class="prev-sections" id="prev-sections"></div>
+  </div>
+
+  <div class="prev-sticky">
+    <div class="prev-sticky-inner">
+      <div class="prev-price-row">
+        <div>
+          <div class="prev-price-label">Your personalized guide</div>
+          <div class="prev-price-note">Download instantly. Keep forever.</div>
+        </div>
+        <div class="prev-price-val">$19</div>
+      </div>
+      <button class="prev-unlock-btn" onclick="showPaywall()">Unlock My Full Blueprint →</button>
+      <div class="prev-secure">🔒 Instant download · One-time payment · No subscription</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SUCCESS ═══════════ -->
+<div id="screen-success" class="screen">
+  <div class="success-inner">
+    <div class="success-icon">🎉</div>
+    <h2 class="success-h">Your Blueprint is ready!</h2>
+    <p class="success-sub">Your personalized PDF is downloading now. If it doesn't start automatically, tap the button below.</p>
+    <button class="success-dl-btn" onclick="downloadPDF()">Download My Blueprint →</button>
+    <p class="success-note">Keep this PDF somewhere easy to find. You can refer back to the scripts and plan anytime.</p>
+  </div>
+  <div class="edu-bar">BondBlueprint™ is psychoeducational content. Not therapy. <a href="https://www.psychologytoday.com/us/therapists" target="_blank">Find a therapist</a></div>
+</div>
+
+<!-- ═══════════ PAYWALL OVERLAY ═══════════ -->
+<div class="pw-overlay" id="pw-overlay" onclick="closePwOnBg(event)">
+  <div class="pw-sheet" id="pw-sheet">
+    <div class="pw-handle"></div>
+    <div class="pw-doc-preview">
+      <div class="pw-doc-icon">📄</div>
+      <div class="pw-doc-info">
+        <div class="pw-doc-title" id="pw-doc-title">Your Personal BondBlueprint</div>
+        <div class="pw-doc-meta">Written for your exact situation</div>
+      </div>
+    </div>
+    <div class="pw-price-block">
+      <div class="pw-price-left">
+        <div class="pw-price-name">Full personalized PDF guide</div>
+        <div class="pw-price-desc">One-time payment. Instant download. Keep forever.</div>
+      </div>
+      <div class="pw-price-val">$19</div>
+    </div>
+    <div class="pw-includes">
+      <div class="pw-includes-label">What's inside</div>
+      <div class="pw-include-item">💬 5 word-for-word scripts to use right now</div>
+      <div class="pw-include-item">✅ 6 specific actions to take this week</div>
+      <div class="pw-include-item">🚫 Exactly what NOT to do (and why)</div>
+      <div class="pw-include-item">📅 Your day-by-day 7-day plan</div>
+      <div class="pw-include-item">🔬 The science behind your situation, explained simply</div>
+    </div>
+    <div class="pw-processing" id="pw-processing">
+      <div class="pw-processing-dot"></div>
+      <div class="pw-processing-dot"></div>
+      <div class="pw-processing-dot"></div>
+      <span>Processing...</span>
+    </div>
+    <button class="pw-pay-btn" id="pw-pay-btn" onclick="mockPay()">Pay $19 and Download →</button>
+    <p class="pw-legal">🔒 Secure checkout. Your PDF downloads instantly after payment.</p>
+    <span class="pw-dismiss" onclick="closePaywall()">Maybe later</span>
+  </div>
+</div>
+
+</div><!-- #app -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ═══════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════ */
+const S = {
+  currentQ:  0,
+  answers:   {},     // { situation, who, theme, duration, goal }
+  theme:     null,
+  blueprint: null,   // resolved BLUEPRINTS[theme]
+  pdfDoc:    null    // generated jsPDF instance
+};
+
+/* ═══════════════════════════════════════════
+   QUESTIONS
+═══════════════════════════════════════════ */
+const QUESTIONS = [
+  {
+    id: 'situation',
+    type: 'textarea',
+    num: 'Question 1 of 5',
+    title: 'What is going on?',
+    subtitle: 'Describe the situation in your own words. The more specific you are, the more personalized your guide will be.',
+    placeholder: "Something happened, or maybe it has been building for a while. Tell us what's going on...",
+    minLength: 20,
+    nextLabel: 'Next →'
+  },
+  {
+    id: 'who',
+    type: 'chips',
+    num: 'Question 2 of 5',
+    title: 'Who is this about?',
+    subtitle: 'Choose the one that fits best.',
+    options: [
+      { val: 'partner',   label: 'My romantic partner',       emoji: '💑' },
+      { val: 'dating',    label: 'Someone I am dating',       emoji: '🌹' },
+      { val: 'ex',        label: 'My ex',                     emoji: '💔' },
+      { val: 'friend',    label: 'A close friend',            emoji: '🤝' },
+      { val: 'self',      label: 'Myself and my patterns',    emoji: '🪞' }
+    ],
+    nextLabel: 'Next →'
+  },
+  {
+    id: 'theme',
+    type: 'chips',
+    num: 'Question 3 of 5',
+    title: 'What has been happening most?',
+    subtitle: 'Pick the one that feels closest to your situation.',
+    options: [
+      { val: 'pullAway',      label: 'They have been pulling away or going distant',         emoji: '📵' },
+      { val: 'hotCold',       label: 'Hot and cold, mixed signals, inconsistent',            emoji: '🔄' },
+      { val: 'breakup',       label: 'We broke up or are on the edge of breaking up',        emoji: '💔' },
+      { val: 'fighting',      label: 'We keep fighting or can not communicate',              emoji: '🗣️' },
+      { val: 'anxious',       label: 'I can not stop overthinking and feeling anxious',      emoji: '😰' },
+      { val: 'trust',         label: 'Something broke our trust',                           emoji: '🔒' },
+      { val: 'selfSabotage',  label: 'I keep pushing people away or messing things up',     emoji: '🌀' }
+    ],
+    nextLabel: 'Next →'
+  },
+  {
+    id: 'duration',
+    type: 'chips',
+    num: 'Question 4 of 5',
+    title: 'How long has this been going on?',
+    subtitle: 'An honest answer helps us give you a more realistic guide.',
+    options: [
+      { val: 'days',   label: 'Just happened, days',         emoji: '⚡' },
+      { val: 'weeks',  label: 'A few weeks',                 emoji: '📅' },
+      { val: 'months', label: 'A few months',                emoji: '🗓️' },
+      { val: 'year',   label: 'Over a year',                 emoji: '⏳' }
+    ],
+    nextLabel: 'Next →'
+  },
+  {
+    id: 'goal',
+    type: 'chips',
+    num: 'Question 5 of 5',
+    title: 'What do you most want from this guide?',
+    subtitle: 'Be honest. There is no wrong answer.',
+    options: [
+      { val: 'understand', label: 'Understand why this is happening',           emoji: '🔍' },
+      { val: 'say',        label: 'Know exactly what to say to them',           emoji: '💬' },
+      { val: 'do',         label: 'Know what steps to take',                   emoji: '✅' },
+      { val: 'decide',     label: 'Figure out whether to stay or go',          emoji: '🤔' }
+    ],
+    nextLabel: 'Build My Blueprint →',
+    isLast: true
+  }
+];
+
+/* ═══════════════════════════════════════════
+   BLUEPRINT CONTENT — all 7 themes
+   Written at 5th grade level, backed by science
+═══════════════════════════════════════════ */
+const BLUEPRINTS = {
+
+  pullAway: {
+    title: 'Why They Are Pulling Away and What To Do',
+    whatHappening: [
+      'When someone starts pulling away, it feels really scary. Your brain fills the silence with worst-case thoughts. "Did I do something wrong?" "Do they still want this?" That feeling is real. But what is usually happening has very little to do with you.',
+      'Two scientists named Mikulincer and Shaver spent decades studying how people act in relationships. They found that some people learned, usually as kids, that being really close to someone is not completely safe. So when they start feeling a lot of love or connection, their brain hits the brakes automatically. It is like a reflex. They are not choosing distance. Their nervous system is trying to protect them.',
+      'Dr. John Gottman studied thousands of real couples for over 40 years. He found that people who pull away are not pulling away because they do not care. They pull away because they are actually overwhelmed inside. Their body fills up with stress and they need space to calm back down. The distance is how they regulate themselves, not a vote against you.',
+      'Knowing this is actually useful. Because when you understand what is really happening, you can respond in a way that actually helps instead of making things worse.'
+    ],
+    scripts: [
+      { context: 'When things have gone quiet and you want to check in without pressure:', text: 'Hey. I noticed things feel a little quiet between us lately and I just wanted to check in. I am not upset and I do not need a big conversation. I just miss you and wanted to make sure you are okay.' },
+      { context: 'When you want to give space without disappearing completely:', text: 'I know you might need some time to yourself right now and that is totally okay. I just want you to know I am not going anywhere and there is no pressure from me.' },
+      { context: 'When you want to be honest about how you are feeling without blaming them:', text: 'Can I tell you something? When things go quiet between us, my brain goes to scary places. I am not blaming you at all. I just wanted to say it out loud. You do not have to fix anything. I just needed to be honest.' },
+      { context: 'After a few days of distance, when you want to reopen the door:', text: 'Hey, I gave us both some breathing room. I have been thinking and I care about this too much to let it just fade. When you are ready to talk, even just 10 minutes, I am here. No agenda at all.' },
+      { context: 'When you need to know things are okay even if you cannot talk yet:', text: 'I respect that you need time. I just have one thing I need. I need to know that we are okay in general. You do not have to have it all figured out. Just a yes we are okay would really help me right now.' }
+    ],
+    actions: [
+      'Give them 3 to 5 days of breathing room. Send one warm, short message and then wait. Chasing hard usually makes avoidant people go further, not closer.',
+      'Focus on your own life this week. Make plans with a friend. Do something you enjoy. Research shows that people who have their own full life become less anxious AND more appealing to partners who pulled away.',
+      'When you do reach out, keep the first message simple and positive. Something that genuinely made you think of them in a good way works better than anything that starts with "we need to talk."',
+      'Write your feelings down in a notes app or journal every day this week. Getting thoughts out of your head and onto paper reduces the mental spin and helps you see things more clearly.',
+      'Ask yourself honestly: is this person pulling away as a pattern, or is this new? A consistent pattern means something different from a temporary retreat. That distinction changes what your next move should be.',
+      'If they start coming back toward you, do not immediately launch into the heavy conversation. Let things warm up first. Small normal moments of connection rebuild safety faster than intense emotional talks.'
+    ],
+    avoid: [
+      'Do NOT send a string of messages without getting a response. It signals desperation and gives avoidant people a reason to stay away even longer.',
+      'Do NOT give ultimatums right now. "Tell me what is wrong or we are done" almost always backfires when someone is in withdrawal mode.',
+      'Do NOT make your whole mood depend on what they do. The more they feel like your happiness is entirely on them, the more pressure and the more they pull back.',
+      'Do NOT pretend everything is completely fine if it is not. Be honest. Just aim for warm and honest, not heavy and urgent.'
+    ],
+    plan: [
+      'Day 1: Take the day for yourself. Do not reach out. Feel what you are feeling without acting on it yet. Write it down.',
+      'Day 2: Send one simple, warm message. Keep it short and light. Then stop. No follow-up today.',
+      'Day 3: Do something good for yourself today. A workout, a good meal, plans with a friend. Fill your day so you are not just waiting for a response.',
+      'Day 4: If they responded, reply warmly and keep it brief. If they did not, hold steady. One message is enough for now.',
+      'Day 5: Talk to someone you trust today. Not to analyze forever, just to get out of your head and remember you have people who care about you.',
+      'Day 6: Spend 15 minutes writing down what you actually want from this relationship. Not what you are afraid of. What you genuinely want. It matters to know the difference.',
+      'Day 7: Decide your next step from a calm place. Maybe that is another message. Maybe more time. Maybe a real conversation. Choose based on what is true, not what is scary.'
+    ],
+    citations: [
+      'Mikulincer & Shaver (2007), Attachment in Adulthood: Decades of research shows some people pull away when they feel too close because their brain learned early that closeness can lead to hurt. This is called avoidant attachment.',
+      'Gottman & Levenson (1992), Journal of Personality and Social Psychology: People who go quiet or distant during relationship stress are usually feeling overwhelmed inside, not uncaring. Their body floods with stress and they need space to reset.',
+      'Levine & Heller (2010), Attached: Research on the pursue-withdraw cycle shows that when one person chases and one retreats, both reactions make the other person\'s reaction stronger. One calm step and then pausing is more effective than pursuing harder.'
+    ]
+  },
+
+  hotCold: {
+    title: 'Why They Run Hot and Cold and What To Do',
+    whatHappening: [
+      'One day they are warm, texting a lot, making you feel completely secure. Then out of nowhere they go cold. You are left wondering what you did wrong. This push-pull pattern has a name in science and understanding it might be the most useful thing you can know right now.',
+      'Researchers Main and Hesse studied this in the 1990s and found that some people develop what they call disorganized attachment. Here is what that means in plain English: they grew up in situations where the person who was supposed to make them feel safe was also sometimes scary or unpredictable. So their brain ended up running two programs at once: "get close, you need love" and "get away, closeness is dangerous." The result as an adult? They move toward you, feel overwhelmed by how much they feel, and then pull back to calm down. They are not doing it to hurt you.',
+      'Dr. John Gottman\'s research on couples found that the inconsistency itself is one of the hardest things to live inside of. When you cannot predict whether a close moment will lead to more warmth or sudden distance, your nervous system stays on alert all the time. You start feeling more exhausted than the relationship should explain. That is not weakness. That is your body responding to real unpredictability.',
+      'The important thing to know: this is not about you being too much or not enough. This is about them running two crossed wires inside their own nervous system. Knowing that completely changes how you respond.'
+    ],
+    scripts: [
+      { context: 'During a warm period, naming the pattern gently without blame:', text: 'Hey, can I say something? I really love being close like this with you. I have also noticed sometimes things shift and I am not always sure where we stand. I do not need a big talk about it right now. I just wanted to name it because it has been on my mind.' },
+      { context: 'After a cold period when they come back warm:', text: 'I am really glad you are here. I want to be honest with you. The distance earlier was hard for me. I am not upset about it. I just want us to be able to be honest with each other.' },
+      { context: 'When you want to understand what triggers the shift:', text: 'Can I ask you something and you do not have to answer right now? Sometimes things between us feel really close and then I feel you pull back and I never know why. I am genuinely trying to understand so I can be better on my end too.' },
+      { context: 'When you need more consistency to feel okay:', text: 'Something I realized is that I need a bit more consistency to feel safe in this. I am not asking for everything to be perfect. I just need to know that when things are good between us, the good does not disappear without warning.' },
+      { context: 'When you need to understand where things stand:', text: 'I care about this a lot. And I have realized I cannot keep riding the highs and lows without knowing what we are actually building together. Can we talk about what this is to you?' }
+    ],
+    actions: [
+      'During warm periods, do not try to rush toward commitment or lock everything down. Let the warmth breathe. Pushing for definitions during good moments often triggers the retreat.',
+      'Keep track of when the pattern shifts. Write it down. Is it after certain conversations? After a certain level of closeness? After they have been stressed? Finding the trigger gives you real information.',
+      'During cold periods, do not chase hard. Send one low-pressure message and give it space. The more you pursue during a cold phase, the more overwhelmed they get and the colder it goes.',
+      'Build your own anchors outside of this relationship. Friends, hobbies, things that make you feel good and stable. This is not just distraction. It makes you genuinely more grounded inside the relationship.',
+      'Have one honest conversation during a calm warm moment about how the inconsistency feels for you. Not as an accusation. As information. "When things go quiet without warning I feel anxious. I just wanted you to know that."',
+      'Decide what your actual limit is. Hot and cold patterns can shift, but they often do not disappear completely. Know your own line so you can make a clear decision rather than an emotional one.'
+    ],
+    avoid: [
+      'Do NOT make the most of every warm period by bringing up all your concerns. Dumping everything during good moments causes the retreat. Save the important talks for calm, not just warm.',
+      'Do NOT go completely silent during cold periods hoping they will chase you. Calculated games usually backfire. Calm, direct honesty works better.',
+      'Do NOT keep hoping the pattern will fix itself on its own. It needs to be named at some point. The longer it goes unnamed, the harder it gets to break.',
+      'Do NOT convince yourself their warm moments mean the cold periods were not real. Both are real. You need a relationship where you can count on both.'
+    ],
+    plan: [
+      'Day 1: Write down the last three times the switch happened. What was happening right before? Look for any pattern in the timing.',
+      'Day 2: During whatever mode you are currently in, hold steady. Warm: let it breathe. Cold: send one message, then stop.',
+      'Day 3: Do one thing today that is completely about you and has nothing to do with this relationship.',
+      'Day 4: Draft what you would want to say during a calm honest conversation. You do not have to send it. Just write it out.',
+      'Day 5: Talk to a friend or someone you trust about how this has been affecting you.',
+      'Day 6: Get clear on what you actually need to feel safe in a relationship. Write it down. Not what you want them to do. What you need.',
+      'Day 7: When the next warm moment comes, use one of the scripts in this guide to start an honest conversation. You have prepared for this.'
+    ],
+    citations: [
+      'Main & Hesse (1990), Attachment Theory Research: Disorganized attachment forms when a caregiver is both the source of safety and fear. Adults with this pattern often swing between closeness and distance without conscious awareness of why.',
+      'Gottman (1994), What Predicts Divorce: Research found that relationship inconsistency, not just conflict, is one of the strongest predictors of emotional exhaustion and eventual relationship breakdown.',
+      'Levine & Heller (2010), Attached: Research shows the hot-cold pattern often has an internal trigger that is not visible at first. Understanding the trigger shifts the experience from random to manageable.'
+    ]
+  },
+
+  breakup: {
+    title: 'How To Navigate a Breakup Using the Science of Attachment',
+    whatHappening: [
+      'What you are going through right now is one of the most physically painful experiences in human life. That is not an exaggeration. Scientists have confirmed that losing a close relationship activates the exact same parts of the brain that process physical pain. What you are feeling is not dramatic. It is biology.',
+      'Researcher John Bowlby, who spent his career studying what happens to people when they lose someone they are attached to, described what you are likely going through now as protest. That is the nervous system\'s first automatic response to losing an attachment figure. It is the urge to reach out, to fix it, to make contact, to undo what happened. Hazan and Shaver extended this research to adult romantic relationships in 1994 and found that the urge to reconnect after a breakup can feel almost physical because, neurologically, it is. Your brain is trying to restore something it coded as essential to your survival.',
+      'Mikulincer and Shaver\'s research also found something really useful about how people move through loss. The people who do better faster are usually the ones who shift from "protest mode," doing something to reverse the loss, to "grieving mode," actually processing that the loss happened. The nervous system defaults to protest first because that kept people alive in evolution. But staying in protest too long is what keeps the pain going.',
+      'This does not mean you move on quickly or stop caring. It means understanding what is happening inside you so you can make better decisions right now instead of ones you will regret.'
+    ],
+    scripts: [
+      { context: 'If you need to reach out for closure but want to keep your dignity:', text: 'I know this is over and I am going to respect that. I just needed to say one thing. This mattered to me, a lot, and I hope you know that. I wish you well.' },
+      { context: 'If they reach out and you are not sure how to respond:', text: 'I appreciate you reaching out. I am still processing everything and I need a little more time before I know what I want to say. I will come back to you.' },
+      { context: 'If you want to ask for space to heal:', text: 'I think I need some real space to get through this. Not to punish either of us. Just because I cannot heal while staying in close contact. I am going to step back for a while. I hope you can understand that.' },
+      { context: 'If there is unfinished business you need to name before moving on:', text: 'There is something I need to say before I can fully move forward. Not to restart anything. Just because I cannot leave it unsaid. Can we talk once, just to get real with each other?' },
+      { context: 'Talking to yourself or a friend about where you are:', text: 'I am in a hard place right now and that is okay. I am not going to be fine today or even this week. But I am going to take it one day at a time and trust that this gets easier.' }
+    ],
+    actions: [
+      'Give yourself permission to grieve this fully. Research is clear: trying to suppress the pain or rush through it actually makes recovery take longer. Feel it, process it, and let it move through you.',
+      'Create some form of contact boundary with your ex that you can actually stick to. Research on breakup recovery consistently finds that the people who heal faster are those who limit contact in the early weeks.',
+      'Tell at least two people you trust what you are going through. Social support is one of the strongest predictors of faster emotional recovery. You do not have to go through this alone.',
+      'Move your body every day, even just a walk. Exercise has been shown in studies to reduce grief-related cortisol and actually change how the brain processes loss. It is not just a distraction. It is physical medicine.',
+      'Write about what you are feeling for 15 to 20 minutes a day. Research by psychologist James Pennebaker found that expressive writing about emotional pain significantly speeds up emotional recovery.',
+      'Start noticing what parts of your life you want to rebuild. Not to replace what you lost, but because grief actually creates an opportunity to get clearer on what you really want. Let that question be open.'
+    ],
+    avoid: [
+      'Do NOT reach out repeatedly hoping something will change. Every time you break no-contact before you are truly ready, it resets the emotional recovery process and makes it harder.',
+      'Do NOT make the decision to get back together from the middle of the grief. Research shows that the decisions people make while in protest mode, trying to fix the loss, are usually not the same ones they would make from a calmer place.',
+      'Do NOT numb the pain with alcohol, overwork, or constant social plans. Those things delay processing, not speed it up. Give yourself actual quiet time to feel what is real.',
+      'Do NOT isolate completely. Grief needs to be witnessed. Talking about it, even briefly, with someone you trust is part of how humans are built to process loss.'
+    ],
+    plan: [
+      'Day 1: Give yourself the whole day to feel this without judgment. No decisions. Just be with what is real.',
+      'Day 2: Tell one or two people you trust what you are going through. Ask for company or just to talk.',
+      'Day 3: Move your body today. Walk, run, yoga, anything. Do it even if you do not feel like it.',
+      'Day 4: Write for 20 minutes about what this relationship meant to you and what you are grieving most.',
+      'Day 5: Create your contact boundary. Decide what it is and commit to it, even if only for two weeks.',
+      'Day 6: Do one thing today that reminds you of who you are outside of this relationship.',
+      'Day 7: Write down three things you want in your next chapter. Not about them. About what you genuinely want your life to look like.'
+    ],
+    citations: [
+      'Bowlby (1969, 1980), Attachment and Loss: Research on separation and grief shows that protest, the urge to reunite with a lost attachment figure, is a biological response built into human beings. It is not weakness.',
+      'Hazan & Shaver (1994), Attachment as an Organizational Framework: Adult romantic love engages the same attachment system as early parent-child bonds, which is why romantic loss is felt so physically and so intensely.',
+      'Pennebaker & Beall (1986), Journal of Abnormal Psychology: Writing about emotional pain for 15 to 20 minutes a day significantly improves emotional recovery and physical health markers. The effect has been replicated in dozens of studies.'
+    ]
+  },
+
+  fighting: {
+    title: 'Why You Keep Fighting and How To Actually Break the Cycle',
+    whatHappening: [
+      'When the same fights keep happening, or when one of you shuts down completely during a hard conversation, it is easy to think the relationship itself is broken. But relationship researchers have found that what is usually broken is the pattern, not the people. And patterns can change.',
+      'Dr. John Gottman tracked thousands of real couples for over 40 years. One of his most famous findings is that most people in a difficult conversation experience something he called "physiological flooding." Here is what that means in plain language: when the stress level in an argument gets high enough, your heart rate spikes, stress hormones flood your body, and the part of your brain that handles complex talking and empathy actually goes offline. The person who goes silent or leaves the room is not being cruel. Their brain hit an emergency shutdown and they genuinely cannot process the conversation right then.',
+      'Researcher Sue Johnson, who developed a well-known couples therapy method called Emotionally Focused Therapy, found something even more useful. Underneath most recurring fights, both people are actually trying to get the same question answered. Usually some version of: "Are you there for me? Do I matter to you? Can I count on you?" When that question feels urgent and the answer is not clear, the surface fight keeps happening because neither person is really talking about what they actually need.',
+      'Gottman also found that 69 percent of all relationship conflicts are what he called "perpetual problems," meaning they never fully resolve. The couples who stayed happy did not solve those problems. They learned to have them without the conversation feeling like a threat to the whole relationship.'
+    ],
+    scripts: [
+      { context: 'Calling a time-out before things escalate too far:', text: 'I want to keep talking about this and I want to do it well. I can feel myself getting flooded right now and I think if I keep going I am going to say something I do not mean. Can we take 20 minutes and come back to this?' },
+      { context: 'Reopening the conversation from a calmer place:', text: 'I have been thinking about what happened earlier and I want to try again. Not to win. I just want us to actually understand each other.' },
+      { context: 'Getting to the real thing underneath the fight:', text: 'I realize we keep fighting about this specific thing but I think what I am really trying to say underneath it is that I need to feel like you are on my side. I wonder if something similar is true for you.' },
+      { context: 'When one of you has shut down and you want to reconnect:', text: 'I know we both got overwhelmed back there. I am not angry at you. I just want to feel connected to you again. Can we start over?' },
+      { context: 'Naming the cycle without blame:', text: 'I have noticed we get stuck in the same loop sometimes. I get loud and you go quiet and then we both feel worse. I do not think either of us is doing it on purpose. Can we talk about how to break that loop?' }
+    ],
+    actions: [
+      'Agree on a time-out signal together, a word or gesture that either of you can use to pause a conversation that is escalating. It has to mean "we will come back to this" not "I am done talking."',
+      'When you take a time-out, do something that actually calms your nervous system. Walk, breathe, listen to music. Do not just stew about the argument for 20 minutes and then come back more worked up.',
+      'Before the next hard conversation, write down the one thing you most need them to understand. Not a list. Just one thing. This helps you stay focused on what actually matters instead of what triggers you.',
+      'Practice the "softened start-up" that Gottman\'s research recommends. Begin with "I feel" instead of "You always." Example: "I feel really anxious when conversations end with no resolution" instead of "You always shut down on me."',
+      'After a conflict is over, whether it resolved or not, do something together that is small and warm. A hug, a cup of tea, a show you both like. Research shows these "repair attempts" are one of the strongest predictors of relationship health.',
+      'Look at your pattern honestly: who usually escalates and who usually withdraws? Neither role is villainous. But understanding the cycle lets you interrupt it at the beginning instead of the middle.'
+    ],
+    avoid: [
+      'Do NOT bring up past fights or unrelated grievances in the middle of a current conflict. Gottman calls this "kitchen-sinking" and research shows it is one of the fastest ways to make repair impossible.',
+      'Do NOT try to resolve a serious topic when either of you is hungry, tired, or already stressed from something else. The conversation will go worse, not better.',
+      'Do NOT stay in a conversation that has fully flooded. If one person has emotionally shut down, continuing to push does not work. Call the time-out.',
+      'Do NOT confuse winning the argument with solving the problem. If one person "wins" a fight, the relationship usually loses. The goal is mutual understanding, not being right.'
+    ],
+    plan: [
+      'Day 1: Write down your most common recurring fight topic. Then write: what is the thing underneath it that I am actually afraid of or need?',
+      'Day 2: Share that reflection with your partner if it feels safe. Or just sit with it yourself if that is what you need right now.',
+      'Day 3: Agree on a time-out signal together. Pick a word or phrase that belongs just to you two.',
+      'Day 4: Practice one "softened start-up" today. Even in a small low-stakes conversation, start with "I feel" instead of "you."',
+      'Day 5: After any interaction today, do one small warm repair. A hug, a kind text, a simple "hey, I love you."',
+      'Day 6: Read your Day 1 reflection again. Has your understanding of what is really happening changed at all?',
+      'Day 7: Have one intentional conversation this week using your new tools. Not about the biggest problem. Start small. Practice the pattern first.'
+    ],
+    citations: [
+      'Gottman & Levenson (1992), Journal of Personality and Social Psychology: Physiological flooding, where the body gets overwhelmed during conflict, physically shuts down the brain\'s capacity for nuanced conversation. This is why people go silent or leave.',
+      'Johnson (2004), The Practice of Emotionally Focused Couple Therapy: Most recurring fights are attachment-based. Both people are trying to answer the same underlying question: "Are you there for me?" The surface topic is rarely the real issue.',
+      'Gottman (1994), Why Marriages Succeed or Fail: 69 percent of relationship conflicts are perpetual. The couples who do well do not solve these problems. They learn to have them without threatening the relationship itself.'
+    ]
+  },
+
+  anxious: {
+    title: 'Why You Cannot Stop Overthinking and How To Find Calm',
+    whatHappening: [
+      'The overthinking. The mental spiral that starts the second something feels off. The way you check your phone, re-read their messages looking for clues, and replay conversations looking for what went wrong. This has a name in science and it is way more common than you think. Most importantly, it is not a personality flaw. It is a nervous system pattern.',
+      'Researchers Mikulincer and Shaver studied this extensively. They called it "hyperactivation" of the attachment system. Here is what that means in everyday language: if closeness ever felt unreliable or unpredictable in your past, your brain basically becomes a relationship alarm system set to the highest sensitivity. The intrusive thoughts, the urge to check in, the difficulty focusing on anything else when something feels off. These are a threat-response system doing exactly what it was built to do. It is just calibrated to a threat level that may not match what is actually happening right now.',
+      'Researchers Hazan and Shaver did the pioneering work connecting adult romantic love to childhood attachment back in 1987. What they found was important: people who tend toward anxious attachment are not more likely to experience relationship problems just because they feel more. They are more likely to read ambiguous situations as threatening, even when the facts do not actually support that reading. The pain is completely real. But some of what is driving it might be older and bigger than the current situation is actually causing.',
+      'Here is what the research says actually changes this over time: accumulating experiences of closeness that do not end the way the old fear says they will. Even one relationship, whether romantic, a friendship, or a good therapist, that consistently stays available can begin to slowly update what your brain expects to happen. The spiral you are in right now is not permanent, even when it completely feels like it is.'
+    ],
+    scripts: [
+      { context: 'Telling someone you care about what anxiety actually feels like for you:', text: 'When things feel off between us, my brain goes to the worst-case scenario really fast. I know it is not always rational. I am not asking you to manage my feelings. I just want you to understand that when I reach out a lot or seem on edge, it is usually me processing fear, not being angry at you.' },
+      { context: 'Asking for reassurance in a direct, clean way:', text: 'I know this might sound small but it would really help me right now just to hear that we are okay. You do not need to explain anything. Just knowing that would calm a lot of the noise in my head.' },
+      { context: 'When you have already spiraled and need to be honest about it:', text: 'I have been in my head a lot today and I know I have been acting a little off. I am not upset at you. I am just working through some anxious thoughts and I did not want you to think it was about something you did.' },
+      { context: 'When you want to interrupt the anxiety before acting on it:', text: 'I am going to be honest with myself right now. I am feeling anxious and I want to reach out. But I am going to wait an hour and see if I still feel this urgently. If I do, I will reach out then.' },
+      { context: 'To a trusted friend when you need support:', text: 'I am in a spiral again and I know I need to talk to someone who is not the person I am anxious about. Can you just listen for a few minutes? I do not need you to fix it. I just need to say it out loud.' }
+    ],
+    actions: [
+      'When the spiral starts, name it out loud or in writing: "I am feeling anxious and my brain is doing the thing." Research shows that naming a feeling literally reduces its intensity. It sounds too simple but it actually works.',
+      'Give yourself a "response window." When you feel the urge to send a message or check something anxiously, set a 30-minute timer first. Most of the time the urgency drops significantly within that window.',
+      'Start building what researchers call "self-soothing" anchors. A playlist, a walk, a person to call, something that reliably brings your nervous system down. Practice using it before you are in a full spiral.',
+      'Write down your worst-case fear in detail when anxiety hits. Then write the most realistic possible scenario. Then write the best-case scenario. Research shows this exercise literally interrupts catastrophic thinking.',
+      'Look honestly at what situations reliably trigger the anxiety. Is it when they respond slowly? After a certain kind of conversation? Knowing your specific triggers lets you prepare for them instead of being ambushed.',
+      'Notice what happens after the anxious moment passes. Did the thing you feared actually happen? Tracking this over time builds real evidence against the anxiety\'s narrative.'
+    ],
+    avoid: [
+      'Do NOT send the anxious message in the heat of the moment. Write it out in your notes app if you need to. Wait. Then decide.',
+      'Do NOT repeatedly seek reassurance from the same person. It creates a pattern where their reassurance is the only thing that calms the anxiety, which makes the anxiety worse over time, not better.',
+      'Do NOT Google-spiral about your relationship at 1 am. Research has repeatedly found that late-night rumination amplifies anxiety. Nothing will be clearer at 2 am than it was at 10 pm.',
+      'Do NOT beat yourself up for feeling anxious. That adds shame on top of anxiety and makes both worse. The goal is to understand the pattern and slowly interrupt it, not to shame yourself into feeling less.'
+    ],
+    plan: [
+      'Day 1: Write down your specific anxiety triggers in this relationship. When does the spiral usually start?',
+      'Day 2: Practice the 30-minute response window at least once today. Notice what happens to the feeling.',
+      'Day 3: Build your self-soothing toolkit. Pick two or three things that reliably calm you and practice them today, not just when you are spiraling.',
+      'Day 4: Write out a worst-case and a most-realistic scenario for one specific anxiety you have right now. Read both.',
+      'Day 5: Have one honest conversation with the person you are anxious about using the clean reassurance script. Practice asking directly for what you need.',
+      'Day 6: Notice and write down one time this week when the anxious prediction did NOT come true.',
+      'Day 7: Reflect on the week. What worked? What did not? The goal is not to eliminate anxiety. It is to get slightly better at not letting it drive the car.'
+    ],
+    citations: [
+      'Mikulincer & Shaver (2003), Attachment Behavioral System in Adulthood: Hyperactivation of the attachment system, where the brain turns relationship threat-detection to its highest setting, is a learned response, not a fixed personality trait.',
+      'Hazan & Shaver (1987), Romantic Love Conceptualized as an Attachment Process: People with anxious attachment are not more likely to have real relationship problems. They are more likely to read ambiguous situations as threatening.',
+      'Bowlby (1988), A Secure Base: Even one consistent, reliable relationship, whether romantic, therapeutic, or a close friendship, can begin to update a person\'s internal expectations around closeness and safety.'
+    ]
+  },
+
+  trust: {
+    title: 'How To Navigate a Broken Trust and Decide What Comes Next',
+    whatHappening: [
+      'Being in a place where you want to trust someone but something inside you cannot fully get there is exhausting in a very specific way. Your head might be saying one thing and your gut is saying something completely different. That split is real. And it is not something you can just decide your way out of.',
+      'Researcher Mikulincer published a series of studies specifically on trust and attachment. What he found is that after a betrayal, the nervous system essentially goes into low-grade monitoring mode. You start scanning for signs of being deceived or let down again, often without even realizing you are doing it. This is not paranoia. This is the brain doing exactly what it is built to do: remember what hurt you and watch for it coming again. The hard part is that this protective mode also makes it harder to accurately read whether things have genuinely changed.',
+      'Gottman\'s research on couples recovering from betrayals found that whether trust could actually be rebuilt came down to two very specific things: whether the person who broke trust could fully acknowledge the impact without getting defensive, and whether the injured person saw consistent changed behavior over time, not just words. Words without changed behavior never held. Changed behavior without real acknowledgment did not fully resolve the distrust either. Both pieces had to be there.',
+      'Something worth being honest with yourself about: research suggests there is a real difference between "is this specific person trustworthy now?" and "am I able to trust again in general?" Sometimes what looks like a problem with one person is at least partly a more widespread injury from earlier. Knowing which one you are dealing with changes what healing looks like for you.'
+    ],
+    scripts: [
+      { context: 'Expressing how the betrayal affected you without attacking:', text: 'I want to talk about what happened and I want to do it without it turning into a fight. What happened hurt me. Not just what was done but what it made me question. I need you to understand that before we figure out what comes next.' },
+      { context: 'Asking for what you actually need in order to begin rebuilding:', text: 'I want to try to work through this. For me to do that I need a few specific things. I need you to stop being defensive when I bring it up. I need to see different behavior over time. And I need to feel like you actually understand why this hurt. Is that something you can do?' },
+      { context: 'When you are still deciding whether you even want to try:', text: 'I have not decided yet what I want to do. I think I need some time to figure out what I actually feel when I am not in reaction mode. I am asking you to give me some space to work through this without pressure.' },
+      { context: 'When someone says "just trust me" and it feels dismissive:', text: 'I hear you saying to trust you. And I want to. But trust is not something I can just decide to feel. It is something that gets rebuilt through what I see over time. I need time and I need to see things be different.' },
+      { context: 'When you decide the trust cannot be rebuilt and need to say so:', text: 'I have thought about this a lot and I want to be honest with you. I do not think I am able to get back to a place of trust with you. I am not saying that to hurt you. I am saying it because it is true and you deserve to know it.' }
+    ],
+    actions: [
+      'Get clear on exactly what was broken. Was it honesty? Loyalty? Consistency? The more specifically you can name what was damaged, the more clearly you can communicate what needs to change and the better you can evaluate whether it has.',
+      'Give yourself a defined time to decide what you want. Not forever. Something like two weeks or a month. Open-ended uncertainty is its own source of suffering. A deadline to decide creates some structure around the pain.',
+      'If you are trying to rebuild, ask for one or two very specific behavioral changes you need to see. Vague requests like "just be more honest" are hard to measure. Specific ones are not.',
+      'Track whether what you asked for is actually happening. Not obsessively, but honestly. Over weeks, not days. Changed behavior needs time to show up consistently.',
+      'Talk to someone outside the relationship about what you are going through. A friend, a family member, a therapist. You need an outside perspective that is not inside the emotional storm with you.',
+      'Pay attention to how you feel in your body around this person, not just what your thoughts say. If you feel chronically anxious, braced, or shut down in their presence even after time has passed, that is real information.'
+    ],
+    avoid: [
+      'Do NOT promise to "get over it" on a timeline that feels imposed. Genuine trust recovery takes the time it takes. Rushing it usually means it goes underground and comes out sideways later.',
+      'Do NOT demand they prove themselves constantly with constant check-ins or access to their phone. That creates a surveillance dynamic that usually prevents real trust from forming.',
+      'Do NOT confuse "I forgive you" with "I trust you again." Forgiveness is for your peace of mind. Trust is a separate thing that is rebuilt through different means, over time, through consistent evidence.',
+      'Do NOT make major relationship decisions from the acute pain of the first few weeks. The research is clear: decisions made in peak emotional pain are usually not the same ones people would make from a calmer place.'
+    ],
+    plan: [
+      'Day 1: Write down specifically what was broken. Not the story. Just: what exact thing did this damage?',
+      'Day 2: Write down what you would need to see over time to feel like trust could actually come back. Be specific.',
+      'Day 3: Share that list with them if you are trying to work through it. Or sit with it yourself if you are still deciding.',
+      'Day 4: Talk to one person outside the situation about what you are going through. Get perspective.',
+      'Day 5: Check in with your body. When you are around this person or thinking about this situation, what do you physically feel? Write it down.',
+      'Day 6: Set your decision timeline. When do you want to have made up your mind about what you want to do?',
+      'Day 7: Review the week. Are things moving in a direction that is helping you? Is your gut saying something your head keeps overriding?'
+    ],
+    citations: [
+      'Mikulincer (1998), Adult Attachment Style and Affect Regulation: After a betrayal, the nervous system shifts into monitoring mode, scanning for further signs of deception. This is adaptive protection, not paranoia, but it makes accurate assessment of real change harder.',
+      'Gottman (1999), The Seven Principles for Making Marriage Work: Whether trust rebuilds after a betrayal depends on both full acknowledgment of impact AND consistent behavioral change over time. Words alone or changed behavior alone are rarely enough.',
+      'Hazan & Shaver (1994), Attachment Theory Applied to Adult Romantic Relationships: Significant relational betrayals can update a person\'s broader internal model of whether people are trustworthy, not just their view of the specific person involved.'
+    ]
+  },
+
+  selfSabotage: {
+    title: 'Why You Keep Sabotaging Good Things and How To Stop',
+    whatHappening: [
+      'Things are going well. Better than usual, even. And then something inside you shifts. Maybe you pick a fight over nothing. Maybe you pull back. Maybe you do something that blows up what you had been carefully building. And then you wonder what is wrong with you. Here is the thing: nothing is wrong with you. There is something specific happening and it has a clear explanation in the science.',
+      'Researchers Main and Hesse identified a pattern called disorganized attachment. It shows up when someone grew up in a situation where the person who was supposed to provide safety was also unpredictable, overwhelming, or sometimes scary. The brain ends up with two programs running at the exact same time: "get close, you need love" and "get away, closeness is not safe." In adulthood, these two programs crash into each other every time real intimacy gets close. You move toward connection, feel overwhelmed by how good it feels or how much you need it, and your nervous system finds a way to create distance again. It is not weakness. It is two crossed wires.',
+      'Bowlby\'s foundational research showed that this pattern comes from early experiences where closeness and fear got linked together. When closeness was sometimes comfort and sometimes threat, the attachment system could not develop a consistent strategy. Mikulincer and Shaver\'s later research confirmed what this looks like in adult relationships: a person genuinely drawn to intimacy whose internal alarm fires the moment they get close enough to actually need someone. The loop goes: get close, feel unsafe, create distance to calm down, regret the distance, try again.',
+      'Researcher Peter Fonagy found that one of the strongest predictors of breaking this pattern is the ability to notice and understand your own emotional states and what drives them. That is exactly what you are doing right now by trying to understand this instead of just repeating it. You are already doing the hardest part.'
+    ],
+    scripts: [
+      { context: 'Telling someone you trust about the pattern you have noticed in yourself:', text: 'I want to tell you something about me that I have been figuring out. I have a pattern where things go well and then I seem to find a way to mess them up or create distance. I am working on understanding why. I just wanted to name it with you so it does not catch you off guard if you see it happen.' },
+      { context: 'Catching yourself mid-sabotage and trying to name it in the moment:', text: 'I think I am doing the thing right now where I am pulling back because I got scared. I do not actually want to create distance. I just noticed it happening and I wanted to name it before it goes further.' },
+      { context: 'After a moment of sabotage, doing repair:', text: 'I owe you an honest conversation about what happened. I think I picked that fight or pulled away because something in me got scared of how good things were going. It sounds strange when I say it out loud. But it is the most honest thing I can say.' },
+      { context: 'When you feel the urge to create distance and want to pause it:', text: 'I am noticing something in me right now that wants to pull back and I am trying to do something different. Can I just be honest that I am in a weird place and ask you to give me a little patience while I figure it out?' },
+      { context: 'Asking for the kind of patience that actually helps:', text: 'What really helps me is when someone stays consistent even when I get strange. I am not asking you to fix me. I am just saying that knowing you are still there even when I go sideways is what actually helps me come back.' }
+    ],
+    actions: [
+      'Start keeping a short log of moments when you feel the urge to pull back, pick a fight, or do something to create distance. Just a few words. When did it happen? What was the moment right before it? Patterns become visible when you track them.',
+      'Learn to recognize the specific physical feeling that comes right before a sabotage moment. A tightening in your chest? A sudden irritability? A desire to check out? That physical signal is your early warning system. Catching it early gives you more choice.',
+      'When you notice the sabotage urge, try to name the actual feeling underneath it. Usually it is something like: "I am scared of losing this." Or "I am scared of needing this." Or "I feel like I do not deserve this." Writing it down makes it less automatic.',
+      'Practice "staying" in small, low-stakes ways. If your instinct is to bail on plans, stay. If your instinct is to go cold after a good moment, send one warm message instead. Small repairs of the pattern build new neural pathways over time.',
+      'Find a therapist if you can. This particular pattern, disorganized attachment, responds really well to attachment-focused therapy. A good therapist does not just help you understand the pattern. They help you have a relationship that does not confirm it.',
+      'Tell at least one safe person about this pattern. Not to explain yourself but to practice being known and not abandoned. That experience, being truly seen and still accepted, is literally what updates the old belief that closeness is not safe.'
+    ],
+    avoid: [
+      'Do NOT beat yourself up after a sabotage moment. Self-criticism feels like accountability but it actually keeps the shame loop going, and shame is often what triggers the sabotage in the first place.',
+      'Do NOT try to white-knuckle your way through it with willpower alone. This is a nervous system pattern, not a discipline problem. Awareness plus safe relationships are what actually change it.',
+      'Do NOT confide only in the person you are in the relationship with. You need at least one outside perspective, someone who can reflect back what they see without being inside the dynamic.',
+      'Do NOT expect this to change in a week. Patterns that formed over years shift over months. Progress is real even when it is slow. What matters is the direction, not the speed.'
+    ],
+    plan: [
+      'Day 1: Write down the last two or three times you sabotaged something good. What was happening right before each one?',
+      'Day 2: Identify the physical signal that comes right before the pattern kicks in. Write it down. That is your early warning.',
+      'Day 3: Write down the feeling underneath the sabotage. Fear of what? Of losing it? Of needing it? Of not deserving it?',
+      'Day 4: Practice "staying" in one small way today. Stay for the plans. Send the warm message. Do the opposite of the instinct.',
+      'Day 5: Tell one safe person, not the person you are sabotaging things with, about this pattern. Just name it out loud.',
+      'Day 6: Notice one moment today when you had the urge to create distance and did not. Write it down. That is real progress.',
+      'Day 7: Reflect on the week. You are not trying to fix yourself in seven days. You are trying to start seeing the pattern clearly. What is clearer now than it was on Day 1?'
+    ],
+    citations: [
+      'Main & Hesse (1990), Attachment Theory and Close Relationships: Disorganized attachment forms when closeness and fear become linked early in life. Adults with this pattern often sabotage intimacy as an automatic self-protective response, not a conscious choice.',
+      'Mikulincer & Shaver (2007), Attachment in Adulthood: Research confirms that approach-avoidance conflict around intimacy, wanting closeness while simultaneously fearing it, is the mechanism behind self-sabotaging patterns in relationships.',
+      'Fonagy et al. (2002), Affect Regulation, Mentalization and the Development of the Self: The ability to notice and reflect on your own emotional states is one of the strongest predictors of earned security and the breaking of early relational patterns.'
+    ]
+  }
+};
+
+/* ═══════════════════════════════════════════
+   SCREEN NAV
+═══════════════════════════════════════════ */
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+/* ═══════════════════════════════════════════
+   QUESTION FLOW
+═══════════════════════════════════════════ */
+function startQuestions() {
+  S.currentQ = 0;
+  S.answers  = {};
+  goTo('screen-questions');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q    = QUESTIONS[S.currentQ];
+  const pct  = Math.round(((S.currentQ) / QUESTIONS.length) * 100);
+  document.getElementById('q-progress-fill').style.width  = pct + '%';
+  document.getElementById('q-progress-label').textContent = `${S.currentQ + 1} of ${QUESTIONS.length}`;
+
+  const wrap = document.getElementById('q-card-wrap');
+  wrap.innerHTML = '';
+  const card = document.createElement('div');
+  card.className = 'q-card';
+
+  if (q.type === 'textarea') {
+    const saved = S.answers[q.id] || '';
+    card.innerHTML = `
+      <div class="q-num">${q.num}</div>
+      <h2 class="q-title">${q.title}</h2>
+      <p class="q-subtitle">${q.subtitle}</p>
+      <textarea class="q-textarea" id="q-ta" placeholder="${q.placeholder}" maxlength="800">${saved}</textarea>
+      <div class="q-char-hint" id="q-ch">${saved.length} / 800</div>
+      <button class="q-next-btn" id="q-next" onclick="nextQ()" ${saved.length < q.minLength ? 'disabled' : ''}>
+        ${q.nextLabel}
+      </button>`;
+    card.querySelector('#q-ta').addEventListener('input', function() {
+      document.getElementById('q-ch').textContent = this.value.length + ' / 800';
+      document.getElementById('q-next').disabled = this.value.trim().length < q.minLength;
+    });
+  } else {
+    const saved = S.answers[q.id] || null;
+    card.innerHTML = `
+      <div class="q-num">${q.num}</div>
+      <h2 class="q-title">${q.title}</h2>
+      <p class="q-subtitle">${q.subtitle}</p>
+      <div class="q-chips" id="q-chips">
+        ${q.options.map(o => `
+          <button class="q-chip ${saved === o.val ? 'sel' : ''}" data-val="${o.val}" onclick="selectChip(this,'${q.id}')">
+            <span class="q-chip-emoji">${o.emoji}</span>${o.label}
+          </button>`).join('')}
+      </div>
+      <button class="q-next-btn" id="q-next" onclick="nextQ()" ${!saved ? 'disabled' : ''}>
+        ${q.nextLabel}
+      </button>
+      ${q.isLast ? '' : ''}`;
+  }
+
+  wrap.appendChild(card);
+}
+
+function selectChip(el, qId) {
+  document.querySelectorAll('.q-chip').forEach(c => c.classList.remove('sel'));
+  el.classList.add('sel');
+  S.answers[qId] = el.dataset.val;
+  document.getElementById('q-next').disabled = false;
+}
+
+function nextQ() {
+  const q = QUESTIONS[S.currentQ];
+  if (q.type === 'textarea') {
+    S.answers[q.id] = document.getElementById('q-ta').value.trim();
+  }
+  if (q.isLast || S.currentQ === QUESTIONS.length - 1) {
+    beginGenerating();
+    return;
+  }
+  S.currentQ++;
+  renderQuestion();
+}
+
+function goBack() {
+  if (S.currentQ === 0) { goTo('screen-landing'); return; }
+  S.currentQ--;
+  renderQuestion();
+}
+
+/* ═══════════════════════════════════════════
+   GENERATING ANIMATION + AI CALL
+═══════════════════════════════════════════ */
+async function beginGenerating() {
+  S.theme      = S.answers.theme || 'pullAway';
+  S.blueprint  = BLUEPRINTS[S.theme] || BLUEPRINTS.pullAway;
+  S.aiBlueprint = null;
+  goTo('screen-generating');
+
+  // Reset step states
+  for (let j = 0; j < 7; j++) {
+    const el = document.getElementById('gstep-' + j);
+    if (el) { el.classList.remove('active', 'done'); }
+  }
+  document.getElementById('gen-bar-fill').style.width = '0%';
+  document.getElementById('gen-finalizing').style.display = 'none';
+
+  // Fire the AI blueprint call immediately — run in background while animating
+  const apiPromise = (async () => {
+    try {
+      const resp = await fetch('/api/generate-blueprint', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          situation: S.answers.situation || '',
+          who:       S.answers.who      || 'partner',
+          theme:     S.theme,
+          duration:  S.answers.duration || 'a few months',
+          goal:      S.answers.goal     || 'feel safe in love'
+        })
+      });
+      if (!resp.ok) throw new Error('API ' + resp.status);
+      const data = await resp.json();
+      return data.blueprint || null;
+    } catch (err) {
+      console.warn('AI blueprint unavailable, using static fallback:', err.message);
+      return null;
+    }
+  })();
+
+  // 7-step animation — each step 1900ms so total ~13s
+  const NSTEPS   = 7;
+  const STEP_MS  = 1900;
+  const headlines = [
+    'Claude is reading your situation...',
+    'Matching to attachment science...',
+    'Decoding what you described...',
+    'Writing scripts for your situation...',
+    'Building your 7-day plan...',
+    'Designing your personal PDF...',
+    'Almost done...'
+  ];
+  const barFill = document.getElementById('gen-bar-fill');
+  const headEl  = document.getElementById('gen-headline');
+
+  await new Promise(resolve => {
+    let i = 0;
+    function tick() {
+      if (i > 0) {
+        const prev = document.getElementById('gstep-' + (i - 1));
+        if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+      }
+      if (i < NSTEPS) {
+        const el = document.getElementById('gstep-' + i);
+        if (el) el.classList.add('active');
+        barFill.style.width = Math.round(((i + 1) / NSTEPS) * 100) + '%';
+        if (headEl && headlines[i]) headEl.textContent = headlines[i];
+        i++;
+        setTimeout(tick, STEP_MS);
+      } else {
+        resolve();
+      }
+    }
+    tick();
+  });
+
+  // Animation done — wait for the AI response if it hasn't arrived yet
+  document.getElementById('gen-finalizing').style.display = 'flex';
+  const aiResult = await apiPromise;
+  if (aiResult) S.aiBlueprint = aiResult;
+  document.getElementById('gen-finalizing').style.display = 'none';
+
+  buildPreview();
+  goTo('screen-preview');
+}
+
+/* ═══════════════════════════════════════════
+   PREVIEW SCREEN
+═══════════════════════════════════════════ */
+function buildPreview() {
+  const bp  = S.aiBlueprint || S.blueprint;
+  const sit = S.answers.situation || '';
+  const sitSnippet = sit.length > 120 ? sit.substring(0, 120).trim() + '...' : sit;
+
+  document.getElementById('prev-title').textContent   = bp.title;
+  document.getElementById('prev-sit-echo').textContent = '"' + sitSnippet + '"';
+  document.getElementById('pw-doc-title').textContent  = bp.title;
+
+  const sections = document.getElementById('prev-sections');
+  sections.innerHTML = '';
+
+  // Section 0: Situation Decoded — tease first decoded card if AI available
+  const decodePreview = (S.aiBlueprint && S.aiBlueprint.situationBreakdown && S.aiBlueprint.situationBreakdown[0])
+    ? '"' + S.aiBlueprint.situationBreakdown[0].theyWrote + '" — ' + S.aiBlueprint.situationBreakdown[0].whatItMeans
+    : 'Your exact words, decoded one piece at a time so you know exactly what is happening.';
+  sections.innerHTML += makePrevSection(
+    '🔍 Your Situation — Decoded',
+    decodePreview,
+    'Full breakdown + cycle diagram inside',
+    false
+  );
+
+  // Section 1: What's happening — first paragraph visible, rest locked
+  sections.innerHTML += makePrevSection(
+    '🔬 What Is Actually Happening',
+    bp.whatHappening[0],
+    '🔒 More science inside',
+    true
+  );
+
+  // Section 2: Scripts — locked
+  sections.innerHTML += makePrevSection(
+    '💬 Word-for-Word Scripts to Use',
+    'Your guide includes 5 real scripts written specifically for your situation. You can copy these word for word.',
+    '🔒 All 5 personalized scripts inside',
+    false
+  );
+
+  // Section 3: Actions — locked
+  sections.innerHTML += makePrevSection(
+    '✅ Exactly What To Do',
+    'Your guide includes 6 specific actions tailored to your situation, with a sentence explaining why each one helps based on the research.',
+    '🔒 All 6 actions inside',
+    false
+  );
+
+  // Section 4: What NOT to do — locked
+  sections.innerHTML += makePrevSection(
+    '🚫 What NOT To Do',
+    'Just as important as what to do is what to avoid. Your guide explains the 4 most common mistakes people make in your situation and why they backfire.',
+    '🔒 All 4 warnings inside',
+    false
+  );
+
+  // Section 5: 7-day plan — locked
+  sections.innerHTML += makePrevSection(
+    '📅 Your 7-Day Plan',
+    'Day by day. Simple and specific. What to do on Day 1, Day 2, all the way through Day 7. No guessing.',
+    '🔒 Full 7-day plan inside',
+    false
+  );
+
+  // Section 6: Citations — locked
+  sections.innerHTML += makePrevSection(
+    '🔬 The Science Behind This',
+    'Your guide ends with the real research sources, written in plain language so you can actually read them.',
+    '🔒 Research sources inside',
+    false
+  );
+}
+
+function makePrevSection(title, previewText, lockText, showBlur) {
+  return `
+    <div class="prev-section">
+      <div class="prev-sec-header">
+        <div class="prev-sec-title">${title}</div>
+      </div>
+      <div class="prev-sec-body">
+        <p class="prev-sec-preview">${previewText}</p>
+        ${showBlur ? `
+          <div class="blur-lines">
+            <div class="blur-line-inner">
+              <div class="blur-line w90"></div>
+              <div class="blur-line w80"></div>
+              <div class="blur-line w60"></div>
+            </div>
+          </div>` : ''}
+        <div class="prev-locked-row"><span class="lock-pill">🔒 ${lockText}</span></div>
+      </div>
+    </div>`;
+}
+
+/* ═══════════════════════════════════════════
+   PAYWALL
+═══════════════════════════════════════════ */
+function showPaywall() {
+  document.getElementById('pw-overlay').classList.add('show');
+}
+function closePaywall() {
+  document.getElementById('pw-overlay').classList.remove('show');
+}
+function closePwOnBg(e) {
+  if (e.target.id === 'pw-overlay') closePaywall();
+}
+
+async function mockPay() {
+  const btn  = document.getElementById('pw-pay-btn');
+  const proc = document.getElementById('pw-processing');
+  btn.disabled       = true;
+  btn.textContent    = 'Processing...';
+  proc.style.display = 'flex';
+
+  await new Promise(r => setTimeout(r, 1800));
+
+  try {
+    generatePDF();
+  } catch(err) {
+    console.error('PDF generation error:', err);
+    // Still go to success — download button will retry
+    pdfBlob = null;
+  }
+
+  proc.style.display = 'none';
+  closePaywall();
+  goTo('screen-success');
+}
+
+/* ═══════════════════════════════════════════
+   PDF GENERATION
+═══════════════════════════════════════════ */
+let pdfBlob = null;
+
+function generatePDF() {
+  if (!window.jspdf) throw new Error('jsPDF library not loaded');
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+  // Use AI-generated blueprint if available, fall back to static
+  const bp  = S.aiBlueprint || S.blueprint;
+  const sit = S.answers.situation || '';
+
+  const W   = 210;
+  const ML  = 16;
+  const MR  = 16;
+  const TW  = W - ML - MR;  // 178mm
+  const LH  = 6;
+  const BOT = 278;
+
+  // ── Personalization strings ──────────────────
+  const WHO_MAP  = { partner:"your partner", dating:"the person you're dating", ex:"your ex", friend:"your friend", self:"yourself" };
+  const DUR_MAP  = { days:"just a few days", weeks:"a few weeks", months:"a few months", year:"over a year" };
+  const GOAL_MAP = { understand:"understand why this is happening", say:"know exactly what to say", do:"know what steps to take", decide:"figure out whether to stay or go" };
+  const WHO      = WHO_MAP[S.answers.who]      || "them";
+  const DURATION = DUR_MAP[S.answers.duration] || "";
+  const GOAL_STR = GOAL_MAP[S.answers.goal]    || "";
+  const SIT_ECHO = sit.length > 160 ? sit.substring(0, 157) + "..." : sit;
+
+  // ── Color palette ────────────────────────────
+  const GREEN  = [44,  74,  53];
+  const DKGRN  = [30,  53,  38];
+  const LTGRN  = [226, 240, 229];
+  const ORANGE = [224, 122, 58];
+  const LTOR   = [253, 242, 231];
+  const GOLD   = [212, 168, 67];
+  const LTGOLD = [252, 248, 226];
+  const BLUE   = [44,  88,  148];
+  const LTBLUE = [229, 238, 252];
+  const RED    = [172, 50,  50];
+  const LTRED  = [255, 234, 234];
+  const PURPLE = [107, 74,  133];
+  const LTPUR  = [240, 234, 248];
+  const LGREY  = [248, 245, 241];
+  const TEXT   = [26,  23,  20];
+  const TEXT2  = [90,  84,  80];
+  const WHITE  = [255, 255, 255];
+
+  let y = 0;
+
+  // ── PAGE GUARD ───────────────────────────────
+  function checkPage(needed) {
+    if (y + needed > BOT) {
+      doc.addPage();
+      y = 22;
+      pageFooter();
+    }
+  }
+
+  // ── FOOTER ───────────────────────────────────
+  function pageFooter() {
+    const pg = doc.internal.getCurrentPageInfo().pageNumber;
+    doc.setDrawColor(210, 205, 200);
+    doc.setLineWidth(0.3);
+    doc.line(ML, 283, W - MR, 283);
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(160, 155, 150);
+    doc.text('BondBlueprint\u2122  |  Psychoeducational content. Not therapy.', ML, 289);
+    doc.text('Page ' + pg, W - MR, 289, { align: 'right' });
+  }
+
+  // ── SECTION BANNER ───────────────────────────
+  function sectionBanner(title, bg) {
+    checkPage(17);
+    doc.setFillColor(...bg);
+    doc.roundedRect(ML, y, TW, 12, 2, 2, 'F');
+    doc.setFontSize(10.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...WHITE);
+    doc.text(title, ML + 6, y + 8);
+    y += 17;
+  }
+
+  // ── PLAIN TEXT PARAGRAPH ─────────────────────
+  // Sets font, wraps at maxW, advances y. No overflow possible.
+  function txt(text, size, style, color, maxW, indent) {
+    const x = ML + (indent || 0);
+    const w = (maxW || TW) - (indent || 0);
+    doc.setFontSize(size || 10);
+    doc.setFont('helvetica', style || 'normal');
+    doc.setTextColor(...(color || TEXT));
+    const lines = doc.splitTextToSize(text, w);
+    lines.forEach(line => {
+      checkPage(LH + 1);
+      doc.text(line, x, y);
+      y += LH;
+    });
+  }
+  function gap(mm) { y += (mm || 4); }
+
+  // ── QUOTE BOX (dark green, gold left bar) ────
+  function quoteBox(text) {
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'italic');
+    const lines = doc.splitTextToSize('\u201C' + text + '\u201D', TW - 16);
+    const bh    = lines.length * 6 + 16;
+    checkPage(bh + 5);
+    const sy = y;
+    doc.setFillColor(35, 55, 42);
+    doc.roundedRect(ML, sy, TW, bh, 3, 3, 'F');
+    doc.setFillColor(...GOLD);
+    doc.roundedRect(ML, sy, 3.5, bh, 1.5, 1.5, 'F');
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(200, 220, 205);
+    lines.forEach((line, i) => doc.text(line, ML + 9, sy + 10 + i * 6));
+    y = sy + bh + 5;
+  }
+
+  // ── CALLOUT BOX (left accent bar, colored bg) ─
+  function calloutBox(text, bg, bar, textColor, bold) {
+    doc.setFontSize(10);
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    const lines = doc.splitTextToSize(text, TW - 18);
+    const bh    = lines.length * LH + 16;
+    checkPage(bh + 5);
+    const sy = y;
+    doc.setFillColor(...(bg  || LTGOLD));
+    doc.roundedRect(ML, sy, TW, bh, 3, 3, 'F');
+    doc.setFillColor(...(bar || GOLD));
+    doc.roundedRect(ML, sy, 4, bh, 2, 2, 'F');
+    doc.setFontSize(10);
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    doc.setTextColor(...(textColor || TEXT));
+    lines.forEach((line, i) => doc.text(line, ML + 10, sy + 10 + i * LH));
+    y = sy + bh + 5;
+  }
+
+  // ── SCRIPT BOX ───────────────────────────────
+  // Pre-computes full height so the box is never taller or shorter than content
+  function scriptBox(num, context, text) {
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'italic');
+    const ctxLines = doc.splitTextToSize(context, TW - 20);
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const txtLines = doc.splitTextToSize(text, TW - 20);
+
+    // Layout zones:
+    // [0  – 15] header (badge + label)
+    // [15 – 19] separator gap
+    // [19 – 26] "WHEN TO USE:" label
+    // [26 – 26+ctxH] context lines (5.5 mm each)
+    // [+6]       gap before script
+    // [+txtH]    script lines (LH each)
+    // [+12]      bottom padding
+    const ctxH   = ctxLines.length * 5.5;
+    const txtH   = txtLines.length * LH;
+    const totalH = 15 + 4 + 7 + ctxH + 6 + txtH + 12;
+
+    checkPage(totalH + 5);
+    const sy = y;
+
+    // Box
+    doc.setFillColor(...LTOR);
+    doc.roundedRect(ML, sy, TW, totalH, 3, 3, 'F');
+    doc.setDrawColor(...ORANGE);
+    doc.setLineWidth(0.4);
+    doc.roundedRect(ML, sy, TW, totalH, 3, 3, 'S');
+    doc.setLineWidth(0.2);
+
+    // Number badge
+    doc.setFillColor(...ORANGE);
+    doc.circle(ML + 9.5, sy + 8.5, 6, 'F');
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...WHITE);
+    doc.text(String(num), ML + 9.5, sy + 11, { align: 'center' });
+
+    // "SCRIPT n OF 5" label
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...ORANGE);
+    doc.text('SCRIPT ' + num + ' OF ' + bp.scripts.length, ML + 19, sy + 7);
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...TEXT2);
+    doc.text('Word-for-word — use as-is or adjust to sound like you', ML + 19, sy + 12);
+
+    // Separator
+    doc.setDrawColor(230, 185, 155);
+    doc.setLineWidth(0.3);
+    doc.line(ML + 4, sy + 15 + 4, ML + TW - 4, sy + 15 + 4);
+
+    // "WHEN TO USE:" label
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(155, 90, 40);
+    doc.text('WHEN TO USE THIS:', ML + 5, sy + 15 + 4 + 7);
+
+    // Context lines
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(...TEXT2);
+    const ctxStartY = sy + 15 + 4 + 7 + 6;
+    ctxLines.forEach((line, i) => doc.text(line, ML + 5, ctxStartY + i * 5.5));
+
+    // Opening quote mark
+    const scriptStartY = ctxStartY + ctxH + 6;
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(180, 120, 60);
+    doc.text('\u201C', ML + 5, scriptStartY);
+
+    // Script text
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...TEXT);
+    txtLines.forEach((line, i) => doc.text(line, ML + 11, scriptStartY + i * LH));
+
+    y = sy + totalH + 5;
+  }
+
+  // ── NUMBERED ACTION ITEM ─────────────────────
+  function actionItem(num, text) {
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const lines = doc.splitTextToSize(text, TW - 22);
+    const bh    = Math.max(lines.length * LH + 12, 18);
+    checkPage(bh + 4);
+    const sy = y;
+    // Badge
+    doc.setFillColor(...BLUE);
+    doc.roundedRect(ML, sy + 2, 14, 12, 2, 2, 'F');
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...WHITE);
+    doc.text(String(num), ML + 7, sy + 9.5, { align: 'center' });
+    // Text
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...TEXT);
+    lines.forEach((line, i) => doc.text(line, ML + 18, sy + 9 + i * LH));
+    y = sy + bh;
+  }
+
+  // ── WARNING BOX ──────────────────────────────
+  function warningBox(text) {
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const lines = doc.splitTextToSize(text, TW - 22);
+    const bh    = lines.length * LH + 16;
+    checkPage(bh + 4);
+    const sy = y;
+    doc.setFillColor(...LTRED);
+    doc.roundedRect(ML, sy, TW, bh, 3, 3, 'F');
+    doc.setFillColor(...RED);
+    doc.roundedRect(ML, sy, 4, bh, 2, 2, 'F');
+    // X circle
+    doc.setFillColor(...RED);
+    doc.circle(ML + 14, sy + bh / 2, 5, 'F');
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...WHITE);
+    doc.text('X', ML + 14, sy + bh / 2 + 2, { align: 'center' });
+    // Text
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(100, 30, 30);
+    lines.forEach((line, i) => doc.text(line, ML + 23, sy + 10 + i * LH));
+    y = sy + bh + 4;
+  }
+
+  // ── DAY PLAN ITEM ────────────────────────────
+  function dayItem(num, text) {
+    const clean = text.replace(/^Day\s*\d+:\s*/i, '');
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    const lines = doc.splitTextToSize(clean, TW - 26);
+    const bh    = lines.length * LH + 16;
+    checkPage(bh + 4);
+    const sy = y;
+    doc.setFillColor(...(num % 2 === 0 ? LTPUR : LGREY));
+    doc.roundedRect(ML, sy, TW, bh, 3, 3, 'F');
+    // Day badge
+    doc.setFillColor(...PURPLE);
+    doc.roundedRect(ML + 2, sy + (bh - 16) / 2, 18, 16, 2, 2, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...WHITE);
+    doc.text('DAY', ML + 11, sy + (bh - 16) / 2 + 5.5, { align: 'center' });
+    doc.setFontSize(11);
+    doc.text(String(num), ML + 11, sy + (bh - 16) / 2 + 13, { align: 'center' });
+    // Text
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...TEXT);
+    lines.forEach((line, i) => doc.text(line, ML + 24, sy + 10 + i * LH));
+    y = sy + bh + 4;
+  }
+
+  // ── SCIENCE CARD ─────────────────────────────
+  function sciCard(text) {
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    const colonIdx = text.indexOf(':');
+    const source   = colonIdx > -1 ? text.substring(0, colonIdx).trim() : '';
+    const desc     = colonIdx > -1 ? text.substring(colonIdx + 1).trim() : text;
+    const srcLines = source ? doc.splitTextToSize(source, TW - 14) : [];
+    const dscLines = doc.splitTextToSize(desc, TW - 14);
+    const bh       = (srcLines.length * 5.5) + (dscLines.length * 5.5) + 16;
+    checkPage(bh + 4);
+    const sy = y;
+    doc.setFillColor(...LGREY);
+    doc.roundedRect(ML, sy, TW, bh, 3, 3, 'F');
+    doc.setFillColor(...GREEN);
+    doc.roundedRect(ML, sy, 4, bh, 2, 2, 'F');
+    if (srcLines.length) {
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(...GREEN);
+      srcLines.forEach((l, i) => doc.text(l, ML + 9, sy + 7 + i * 5.5));
+    }
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...TEXT2);
+    const descY = sy + 7 + srcLines.length * 5.5 + (srcLines.length ? 3 : 0);
+    dscLines.forEach((l, i) => doc.text(l, ML + 9, descY + i * 5.5));
+    y = sy + bh + 4;
+  }
+
+  // ── DECODE CARD (their words + plain-English meaning) ─────────
+  // Two stacked panels: dark quote box on top, light meaning box below.
+  function decodeCard(quote, meaning) {
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'italic');
+    const qLines = doc.splitTextToSize('\u201C' + quote + '\u201D', TW - 14);
+
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    const mLines = doc.splitTextToSize(meaning, TW - 14);
+
+    const qH     = qLines.length * 5.5 + 14;   // dark top panel
+    const mH     = mLines.length * LH  + 14;   // light bottom panel
+    const totalH = qH + mH + 2;
+    checkPage(totalH + 6);
+    const sy = y;
+
+    // Top panel — dark purple, "WHAT YOU WROTE"
+    doc.setFillColor(30, 18, 46);
+    doc.roundedRect(ML, sy, TW, qH, 3, 3, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(180, 150, 220);
+    doc.text('WHAT YOU WROTE', ML + 6, sy + 6);
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(230, 215, 248);
+    qLines.forEach((line, i) => doc.text(line, ML + 6, sy + 6 + 5.5 + i * 5.5));
+
+    // Bottom panel — light purple, "WHAT THIS MEANS"
+    const mY = sy + qH + 2;
+    doc.setFillColor(...LTPUR);
+    doc.roundedRect(ML, mY, TW, mH, 3, 3, 'F');
+    doc.setFillColor(...PURPLE);
+    doc.roundedRect(ML, mY, 4, mH, 2, 2, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...PURPLE);
+    doc.text('WHAT THIS MEANS', ML + 9, mY + 6);
+    doc.setFontSize(9.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...TEXT);
+    mLines.forEach((line, i) => doc.text(line, ML + 9, mY + 6 + LH + i * LH));
+
+    y = sy + totalH + 6;
+  }
+
+  // ── CYCLE DIAGRAM (pursue ⇄ withdraw two-column visual) ───────
+  function cycleBox(leftLabel, rightLabel) {
+    const COL_W = (TW - 14) / 2;  // two equal columns with 14mm gap/arrows
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    const lLines = doc.splitTextToSize(leftLabel,  COL_W - 8);
+    const rLines = doc.splitTextToSize(rightLabel, COL_W - 8);
+    const nLines = Math.max(lLines.length, rLines.length);
+    const boxH   = nLines * 6 + 26;
+
+    checkPage(boxH + 10);
+    const sy  = y;
+    const lX  = ML;
+    const rX  = ML + COL_W + 14;
+
+    // Left column — purple (pursuer/anxious)
+    doc.setFillColor(107, 74, 133);
+    doc.roundedRect(lX, sy, COL_W, boxH, 3, 3, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(220, 200, 245);
+    doc.text('PURSUING', lX + COL_W / 2, sy + 7, { align: 'center' });
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(245, 235, 255);
+    lLines.forEach((line, i) => doc.text(line, lX + 5, sy + 15 + i * 6));
+
+    // Arrow label
+    const midX = ML + COL_W + 7;
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(160, 145, 135);
+    doc.text('\u21C4', midX - 1, sy + boxH / 2 + 5);
+
+    // Right column — burnt orange (withdrawer/avoidant)
+    doc.setFillColor(175, 85, 30);
+    doc.roundedRect(rX, sy, COL_W, boxH, 3, 3, 'F');
+    doc.setFontSize(7);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(255, 215, 180);
+    doc.text('WITHDRAWING', rX + COL_W / 2, sy + 7, { align: 'center' });
+    doc.setFontSize(8.5);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(255, 240, 220);
+    rLines.forEach((line, i) => doc.text(line, rX + 5, sy + 15 + i * 6));
+
+    // "This cycle repeats" note below
+    y = sy + boxH + 4;
+    doc.setFontSize(7.5);
+    doc.setFont('helvetica', 'italic');
+    doc.setTextColor(...TEXT2);
+    doc.text('This cycle keeps repeating until one person changes their response first.', ML + TW / 2, y, { align: 'center' });
+    y += 8;
+  }
+
+  /* ══════════════════════════════════════════
+     PAGE 1  —  COVER
+  ══════════════════════════════════════════ */
+  doc.setFillColor(...DKGRN);
+  doc.rect(0, 0, W, 297, 'F');
+  doc.setFillColor(...GOLD);
+  doc.rect(0, 84, W, 2, 'F');
+
+  // Logo
+  doc.setFontSize(13);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...GOLD);
+  doc.text('BondBlueprint\u2122', ML, 26);
+  doc.setFontSize(8);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(160, 190, 170);
+  doc.text('YOUR PERSONAL RELATIONSHIP GUIDE', ML, 33);
+
+  // Title
+  doc.setFontSize(22);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...WHITE);
+  const titleLines = doc.splitTextToSize(bp.title, TW);
+  titleLines.forEach((line, i) => doc.text(line, ML, 50 + i * 10));
+
+  // Personalization strip
+  const stY = 50 + titleLines.length * 10 + 8;
+  doc.setFillColor(24, 44, 31);
+  doc.roundedRect(ML, stY, TW, 24, 3, 3, 'F');
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...GOLD);
+  doc.text('MADE FOR YOUR SITUATION', ML + 5, stY + 6.5);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(185, 210, 192);
+  const pItems = [];
+  if (S.answers.who)      pItems.push('About: ' + WHO);
+  if (DURATION)           pItems.push('Going on: ' + DURATION);
+  if (GOAL_STR)           pItems.push('Goal: ' + GOAL_STR);
+  pItems.slice(0, 2).forEach((item, i) => doc.text(item, ML + 5, stY + 13 + i * 7));
+  if (pItems[2])          doc.text(pItems[2], ML + TW / 2, stY + 13);
+
+  // Their situation quote box
+  const qY = stY + 30;
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'italic');
+  const sitQ  = doc.splitTextToSize('\u201C' + SIT_ECHO + '\u201D', TW - 14);
+  const sitBH = sitQ.length * 6 + 16;
+  doc.setFillColor(35, 55, 42);
+  doc.roundedRect(ML, qY, TW, sitBH, 3, 3, 'F');
+  doc.setFillColor(...GOLD);
+  doc.roundedRect(ML, qY, 3.5, sitBH, 1.5, 1.5, 'F');
+  doc.setTextColor(195, 218, 200);
+  sitQ.forEach((line, i) => doc.text(line, ML + 9, qY + 10 + i * 6));
+  doc.setFontSize(7.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(130, 165, 140);
+  doc.text('YOUR WORDS', ML + 9, qY + sitBH + 4);
+
+  // Contents list
+  const cY = qY + sitBH + 14;
+  doc.setFontSize(8.5);
+  doc.setFont('helvetica', 'bold');
+  doc.setTextColor(...GOLD);
+  doc.text('WHAT IS INSIDE THIS GUIDE', ML, cY);
+  const cItems = [
+    'What is actually happening — the science in plain English',
+    '5 word-for-word scripts to say right now',
+    '6 specific actions to take this week',
+    'What NOT to do and exactly why',
+    'Your day-by-day 7-day plan'
+  ];
+  doc.setFontSize(9);
+  doc.setFont('helvetica', 'normal');
+  doc.setTextColor(195, 218, 200);
+  cItems.forEach((item, i) => {
+    doc.setFillColor(...GOLD);
+    doc.circle(ML + 2.5, cY + 8.5 + i * 9 - 1, 1.4, 'F');
+    doc.text(item, ML + 7, cY + 8.5 + i * 9);
+  });
+
+  // Cover footer
+  const today = new Date().toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+  doc.setFontSize(7.5);
+  doc.setTextColor(100, 130, 110);
+  doc.text('Generated: ' + today, ML, 285);
+  doc.text('Psychoeducational content. Not therapy.', W - MR, 285, { align: 'right' });
+
+  /* ══════════════════════════════════════════
+     PAGE 2  —  SITUATION DECODED
+  ══════════════════════════════════════════ */
+  doc.addPage();
+  y = 22;
+  pageFooter();
+
+  sectionBanner('YOUR SITUATION  —  DECODED', PURPLE);
+
+  txt('Here is what you wrote, broken down piece by piece so you can see exactly what is happening.', 9.5, 'normal', TEXT2);
+  gap(6);
+
+  if (bp.situationBreakdown && bp.situationBreakdown.length) {
+    // AI generated: show each quote + meaning as a decode card
+    bp.situationBreakdown.forEach((item, idx) => {
+      decodeCard(item.theyWrote || item.theyWrote || '', item.whatItMeans || '');
+      if (idx < bp.situationBreakdown.length - 1) gap(2);
+    });
+  } else {
+    // Static fallback: just show their full situation as a quote
+    quoteBox(SIT_ECHO);
+    gap(4);
+    calloutBox('This guide was built around exactly what you described above. Every script, every action, and every part of your 7-day plan is written for your specific situation.', LTPUR, PURPLE, TEXT, false);
+  }
+
+  // Key insight box
+  const insightText = bp.keyInsight || '';
+  if (insightText) {
+    gap(5);
+    checkPage(28);
+    doc.setFillColor(30, 18, 46);
+    doc.roundedRect(ML, y, TW, 8, 2, 2, 'F');
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...GOLD);
+    doc.text('THE KEY INSIGHT FOR YOUR SITUATION', ML + TW / 2, y + 5.5, { align: 'center' });
+    y += 10;
+    calloutBox(insightText, LTGOLD, GOLD, TEXT, true);
+  }
+
+  // Cycle diagram if we have the data
+  const cycleL = bp.cycleLeft  || '';
+  const cycleR = bp.cycleRight || '';
+  if (cycleL && cycleR) {
+    gap(6);
+    checkPage(20);
+    txt('Here is the pattern that may be playing out between you:', 9, 'bold', TEXT2);
+    gap(5);
+    cycleBox(cycleL, cycleR);
+  }
+
+  /* ══════════════════════════════════════════
+     PAGE 3  —  WHAT IS HAPPENING
+  ══════════════════════════════════════════ */
+  doc.addPage();
+  y = 22;
+  pageFooter();
+
+  sectionBanner('SECTION 1  |  WHAT IS ACTUALLY HAPPENING', GREEN);
+
+  // Personalized opener referencing their exact situation
+  const whoPhrase = S.answers.who === 'self' ? 'the patterns you are describing' : 'what is happening with ' + WHO;
+  txt('Here is what the science says about ' + whoPhrase + ':', 9, 'italic', TEXT2);
+  gap(5);
+
+  bp.whatHappening.forEach((p, i) => {
+    if (i === 1) {
+      // Key insight / research callout after first para
+      gap(3);
+      calloutBox(p, LTGRN, GREEN, TEXT, false);
+      gap(3);
+    } else {
+      txt(p, 10, 'normal', TEXT);
+      gap(5);
+    }
+  });
+
+  /* ══════════════════════════════════════════
+     PAGE 4  —  SCRIPTS
+  ══════════════════════════════════════════ */
+  doc.addPage();
+  y = 22;
+  pageFooter();
+
+  sectionBanner('SECTION 2  |  WORD-FOR-WORD SCRIPTS', ORANGE);
+
+  txt('Based on what you described about ' + WHO + ', here are 5 exact things you can say. Use them as-is or adjust to sound like you.', 9.5, 'normal', TEXT2);
+  gap(6);
+
+  bp.scripts.forEach((s, i) => {
+    // AI returns s.say; static fallback uses s.text
+    scriptBox(i + 1, s.context, s.say || s.text || '');
+    gap(3);
+  });
+
+  /* ══════════════════════════════════════════
+     PAGE 5  —  ACTIONS
+  ══════════════════════════════════════════ */
+  doc.addPage();
+  y = 22;
+  pageFooter();
+
+  sectionBanner('SECTION 3  |  6 ACTIONS TO TAKE THIS WEEK', BLUE);
+
+  const durLine = DURATION
+    ? 'This has been going on for ' + DURATION + '. Do not try to do all of these at once. Start with 1 and 2.'
+    : 'Start with step 1 today. One thing at a time.';
+  txt(durLine, 9.5, 'normal', TEXT2);
+  gap(6);
+
+  bp.actions.forEach((action, i) => {
+    actionItem(i + 1, action);
+    gap(5);
+  });
+
+  /* ══════════════════════════════════════════
+     PAGE 6  —  WHAT NOT TO DO
+  ══════════════════════════════════════════ */
+  doc.addPage();
+  y = 22;
+  pageFooter();
+
+  sectionBanner('SECTION 4  |  WHAT NOT TO DO', RED);
+
+  txt('These are the most common mistakes people make in your exact situation. Each one will make things worse, not better.', 9.5, 'normal', TEXT2);
+  gap(6);
+
+  bp.avoid.forEach(item => {
+    warningBox(item);
+    gap(2);
+  });
+
+  /* ══════════════════════════════════════════
+     PAGE 7  —  7-DAY PLAN
+  ══════════════════════════════════════════ */
+  doc.addPage();
+  y = 22;
+  pageFooter();
+
+  sectionBanner('SECTION 5  |  YOUR 7-DAY PLAN', PURPLE);
+
+  const goalLine = GOAL_STR
+    ? 'Your goal is to ' + GOAL_STR + '. This plan is built around that. One thing per day.'
+    : 'One concrete thing per day. That is all. Do not skip ahead.';
+  txt(goalLine, 9.5, 'normal', TEXT2);
+  gap(6);
+
+  bp.plan.forEach((day, i) => {
+    dayItem(i + 1, day);
+    gap(2);
+  });
+
+  /* ══════════════════════════════════════════
+     PAGE 8  —  THE SCIENCE
+  ══════════════════════════════════════════ */
+  doc.addPage();
+  y = 22;
+  pageFooter();
+
+  sectionBanner('SECTION 6  |  THE SCIENCE BEHIND THIS', GREEN);
+
+  txt('Everything in this guide is backed by peer-reviewed research. Here is where it comes from, explained simply.', 9.5, 'normal', TEXT2);
+  gap(6);
+
+  bp.citations.forEach(cit => {
+    sciCard(cit);
+    gap(3);
+  });
+
+  gap(8);
+  calloutBox(
+    'Remember: your reactions are not character flaws. They are patterns. And patterns can change with the right information and the right tools.',
+    LTGOLD, GOLD, TEXT, true
+  );
+
+  gap(6);
+  checkPage(14);
+  txt('This guide was built for your specific situation: "' + (SIT_ECHO.length > 80 ? SIT_ECHO.substring(0, 80) + '...' : SIT_ECHO) + '". Come back to it. The scripts work. The plan works. Start with day one.', 8.5, 'italic', TEXT2);
+
+  pdfBlob = doc.output('blob');
+  triggerDownload();
+}
+
+function triggerDownload() {
+  if (!pdfBlob) { downloadPDF(); return; }
+  try {
+    const url  = URL.createObjectURL(pdfBlob);
+    const link = document.createElement('a');
+    link.href     = url;
+    link.download = 'BondBlueprint-Personal-Guide.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    setTimeout(() => URL.revokeObjectURL(url), 5000);
+  } catch(err) {
+    console.error('Download error:', err);
+    // Fallback: open as data URL
+    const reader = new FileReader();
+    reader.onload = () => { window.open(reader.result, '_blank'); };
+    reader.readAsDataURL(pdfBlob);
+  }
+}
+
+function downloadPDF() {
+  if (pdfBlob) { triggerDownload(); return; }
+  try { generatePDF(); } catch(err) { console.error('PDF regen error:', err); }
+}
+
+/* ═══════════════════════════════════════════
+   INIT
+═══════════════════════════════════════════ */
+document.addEventListener('DOMContentLoaded', () => {
+  // Nothing special needed on load
+});
+</script>
+</body>
+</html>
