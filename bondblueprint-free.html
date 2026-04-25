@@ -827,19 +827,36 @@ function getRoute(comboKey) {
 /* ═══════════════════════════════════════════
    NAVIGATION
 ═══════════════════════════════════════════ */
+// ── Analytics helpers ──────────────────────────────────────────────────────
+function track(event, props = {}) {
+  try { posthog.capture(event, props); } catch(e) {}
+}
+
 function startQuiz() {
   Q.currentIdx = 0;
   Q.myAnswers = [];
   Q.ptAnswers = [];
+  track('quiz_started');
   goTo('screen-quiz');
   renderQuizQuestion();
-  posthog.capture('quiz_started');
 }
+
+// Screen name map for analytics
+const SCREEN_NAMES = {
+  'screen-landing':     'landing',
+  'screen-gate':        'email_gate',
+  'screen-quiz':        'quiz',
+  'screen-processing':  'processing',
+  'screen-results':     'results',
+  'screen-precheckout': 'precheckout',
+  'screen-success':     'success',
+};
 
 function goTo(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
+  if (SCREEN_NAMES[id]) track('screen_viewed', { screen: SCREEN_NAMES[id] });
 }
 
 /* ═══════════════════════════════════════════
@@ -867,7 +884,7 @@ async function submitGate() {
 
   // Identify in PostHog
   posthog.identify(email, { name, attachment_style: Q.myStyle, partner_style: Q.ptStyle });
-  posthog.capture('email_captured', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+  track('email_captured', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
 
   // Save lead to backend + subscribe to ConvertKit (fire and forget)
   fetch('/api/account', {
@@ -888,7 +905,7 @@ async function submitGate() {
   }).catch(() => {});
 
   goTo('screen-results');
-  posthog.capture('results_viewed', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+  track('results_viewed', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
 }
 
 /* ═══════════════════════════════════════════
@@ -911,6 +928,13 @@ function renderQuizQuestion() {
 
   document.getElementById('quiz-prog-fill').style.width  = pct + '%';
   document.getElementById('quiz-prog-label').textContent = `${idx + 1} of ${TOTAL_Q}`;
+
+  track('quiz_question_viewed', {
+    question_number: idx + 1,
+    total_questions: TOTAL_Q,
+    section: isMy ? 'you' : 'partner',
+    question_text: q.text.slice(0, 80),
+  });
 
   // Section badge
   const badge = document.getElementById('quiz-section-badge');
@@ -954,11 +978,17 @@ function pickOpt(el, isMy) {
     Q.ptAnswers[idx - MY_QUESTIONS.length] = val;
   }
   document.getElementById('quiz-next').disabled = false;
+  track('quiz_question_answered', {
+    question_number: idx + 1,
+    section: isMy === 'true' ? 'you' : 'partner',
+    answer: val,
+  });
 }
 
 function nextQuizQ() {
   Q.currentIdx++;
   if (Q.currentIdx >= TOTAL_Q) {
+    track('quiz_completed', { my_style: Q.myStyle, partner_style: Q.ptStyle });
     beginProcessing();
   } else if (Q.currentIdx === MY_QUESTIONS.length) {
     // Transition moment — switching from "about you" to "about partner"
@@ -1101,14 +1131,19 @@ function buildResults() {
    PRE-CHECKOUT + STRIPE FLOW
 ═══════════════════════════════════════════ */
 function goToPreCheckout() {
-  posthog.capture('checkout_initiated', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+  track('checkout_initiated', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
   goTo('screen-precheckout');
 }
 
+let _situationTracked = false;
 function onSituationInput() {
   const val = document.getElementById('pco-situation').value.trim();
   const btn = document.getElementById('pco-btn');
   btn.disabled = val.length < 20;
+  if (!_situationTracked && val.length > 10) {
+    track('situation_typed', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+    _situationTracked = true;
+  }
 }
 
 async function startCheckout() {
@@ -1133,7 +1168,7 @@ async function startCheckout() {
 
     const data = await res.json();
     if (data.url) {
-      posthog.capture('stripe_redirect', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+      track('stripe_redirect', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
       window.location.href = data.url;
     } else {
       throw new Error(data.error || 'No checkout URL returned');
@@ -1161,16 +1196,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const paid   = params.get('paid');
 
   if (paid === 'success') {
-    posthog.capture('purchase_completed');
+    track('purchase_completed');
     goTo('screen-success');
     window.history.replaceState({}, '', window.location.pathname);
   } else if (paid === 'cancelled') {
-    posthog.capture('checkout_cancelled');
+    track('checkout_cancelled');
   } else if (params.get('back') === '1') {
-    // Abandoned-cart email deep link — skip to pre-checkout
-    posthog.capture('abandoned_cart_email_click');
+    track('abandoned_cart_email_click');
     goTo('screen-precheckout');
     window.history.replaceState({}, '', window.location.pathname);
+  } else {
+    track('page_landed');
   }
 });
 </script>
