@@ -66,7 +66,7 @@ app.get('/', (req, res) => {
 // ─── ACCOUNT / LEAD CAPTURE ──────────────────────────────────────────────────
 
 app.post('/api/account', async (req, res) => {
-  const { email, name, attachmentStyle, partnerStyle, quizData } = req.body;
+  const { email, name, firstName, lastName, attachmentStyle, partnerStyle, quizData } = req.body;
 
   if (!email || !email.includes('@')) {
     return res.status(400).json({ error: 'Valid email required' });
@@ -75,10 +75,11 @@ app.post('/api/account', async (req, res) => {
   try {
     const lead = await upsertLead({ email, name, attachmentStyle, partnerStyle, quizData });
 
-    // Subscribe to ConvertKit (fire and forget, non-blocking)
     subscribeToConvertKit({
       email,
       name,
+      firstName,
+      lastName,
       tags: [process.env.CONVERTKIT_QUIZ_TAG_ID].filter(Boolean)
     }).catch(() => {});
 

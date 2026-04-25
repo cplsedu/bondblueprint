@@ -381,9 +381,15 @@ input{font-family:inherit;font-size:16px;-webkit-appearance:none}
       <div class="pco-feat"><span class="pco-feat-icon">📄</span><span>Delivered as a PDF to your inbox instantly</span></div>
     </div>
 
-    <div class="pco-field">
-      <label class="pco-label" for="pco-name">Your first name <span style="color:var(--text3);font-weight:600;text-transform:none;letter-spacing:0">(optional)</span></label>
-      <input class="gate-input" id="pco-name" type="text" placeholder="What should we call you?" autocomplete="given-name">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+      <div class="pco-field">
+        <label class="pco-label" for="pco-firstname">First name <span style="color:#DC2626">*</span></label>
+        <input class="gate-input" id="pco-firstname" type="text" placeholder="First" autocomplete="given-name" oninput="onPcoInput()">
+      </div>
+      <div class="pco-field">
+        <label class="pco-label" for="pco-lastname">Last name <span style="color:#DC2626">*</span></label>
+        <input class="gate-input" id="pco-lastname" type="text" placeholder="Last" autocomplete="family-name" oninput="onPcoInput()">
+      </div>
     </div>
     <div class="pco-field">
       <label class="pco-label" for="pco-email">Your email <span style="color:#DC2626">*</span></label>
@@ -1165,32 +1171,34 @@ function goToPreCheckout() {
 let _situationTracked = false;
 let _emailCaptured    = false;
 function onPcoInput() {
+  const firstName = document.getElementById('pco-firstname').value.trim();
+  const lastName  = document.getElementById('pco-lastname').value.trim();
   const email     = document.getElementById('pco-email').value.trim().toLowerCase();
-  const name      = document.getElementById('pco-name').value.trim();
   const situation = document.getElementById('pco-situation').value.trim();
   const btn       = document.getElementById('pco-btn');
   const validEmail = email.includes('@') && email.includes('.');
-  btn.disabled = situation.length < 20 || !validEmail;
+  btn.disabled = situation.length < 20 || !validEmail || !firstName || !lastName;
 
   if (!_situationTracked && situation.length > 10) {
     track('situation_typed', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
     _situationTracked = true;
   }
 
-  // Save to backend + tag in ConvertKit the moment a valid email is entered
-  // so they enter the abandoned cart sequence even if they never click pay
-  if (!_emailCaptured && validEmail) {
+  if (!_emailCaptured && validEmail && firstName && lastName) {
     _emailCaptured = true;
+    const fullName = `${firstName} ${lastName}`;
     Q.email = email;
-    Q.name  = name;
-    posthog.identify(email, { name, attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+    Q.name  = fullName;
+    posthog.identify(email, { name: fullName, attachment_style: Q.myStyle, partner_style: Q.ptStyle });
     track('precheckout_email_entered', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
     fetch('/api/account', {
       method:  'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         email,
-        name,
+        name:       fullName,
+        firstName,
+        lastName,
         attachmentStyle: Q.myStyle,
         partnerStyle:    Q.ptStyle,
         quizData: { myAnswers: Q.myAnswers, ptAnswers: Q.ptAnswers, theme: resolveThemeFromStyles(Q.myStyle, Q.ptStyle), goal: 'feel safe in love' }
@@ -1200,18 +1208,21 @@ function onPcoInput() {
 }
 
 async function startCheckout() {
+  const firstName = document.getElementById('pco-firstname').value.trim();
+  const lastName  = document.getElementById('pco-lastname').value.trim();
   const email     = document.getElementById('pco-email').value.trim().toLowerCase();
-  const name      = document.getElementById('pco-name').value.trim();
   const situation = document.getElementById('pco-situation').value.trim();
+  const fullName  = `${firstName} ${lastName}`;
   const btn       = document.getElementById('pco-btn');
 
   if (!email || !email.includes('@') || !email.includes('.')) return;
+  if (!firstName || !lastName) return;
   if (situation.length < 20) return;
 
   Q.email = email;
-  Q.name  = name;
+  Q.name  = fullName;
 
-  posthog.identify(email, { name, attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+  posthog.identify(email, { name: fullName, attachment_style: Q.myStyle, partner_style: Q.ptStyle });
   track('checkout_initiated', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
 
   fetch('/api/account', {
@@ -1219,7 +1230,9 @@ async function startCheckout() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       email,
-      name,
+      name:       fullName,
+      firstName,
+      lastName,
       attachmentStyle: Q.myStyle,
       partnerStyle:    Q.ptStyle,
       quizData: { myAnswers: Q.myAnswers, ptAnswers: Q.ptAnswers, theme: resolveThemeFromStyles(Q.myStyle, Q.ptStyle), goal: 'feel safe in love' }
