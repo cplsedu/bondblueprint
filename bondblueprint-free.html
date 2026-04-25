@@ -271,10 +271,10 @@ input{font-family:inherit;font-size:16px;-webkit-appearance:none}
 <div id="screen-landing" class="screen active">
   <div class="land-inner">
     <div class="land-logo">Bond<span>Blueprint</span>™</div>
-    <h1 class="land-h">Why does it <em>always</em> feel like this?</h1>
-    <p class="land-sub">9 questions. You'll finally understand the pattern, why it keeps happening, and what to do about it.</p>
-    <button class="land-cta" onclick="startQuiz()">Find Out →</button>
-    <p class="land-note">9 questions. 2 minutes.</p>
+    <h1 class="land-h">You already know something is <em>off.</em></h1>
+    <p class="land-sub">You're exhausted from feeling this way. The push and pull. The silence. The overthinking after every interaction. There's a reason it keeps happening — and once you see it, you can't unsee it.</p>
+    <button class="land-cta" onclick="startQuiz()">Show Me What's Really Going On →</button>
+    <p class="land-note">2 minutes. Most people say "I finally understand why."</p>
   </div>
   <div class="edu-bar">BondBlueprint™ is psychoeducational content based on peer-reviewed research. Not therapy or clinical advice.</div>
 </div>
@@ -832,8 +832,8 @@ function startQuiz() {
   Q.currentIdx = 0;
   Q.myAnswers = [];
   Q.ptAnswers = [];
-  renderQuestion();
   goTo('screen-quiz');
+  try { renderQuestion(); } catch(e) { console.error('renderQuestion error:', e); }
   posthog.capture('quiz_started');
 }
 
