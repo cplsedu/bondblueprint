@@ -863,6 +863,7 @@ function startQuiz() {
   Q.myAnswers = [];
   Q.ptAnswers = [];
   _situationTracked = false;
+  _emailCaptured    = false;
   track('quiz_started');
   goTo('screen-quiz');
   renderQuizQuestion();
@@ -1162,14 +1163,39 @@ function goToPreCheckout() {
 }
 
 let _situationTracked = false;
+let _emailCaptured    = false;
 function onPcoInput() {
-  const email     = document.getElementById('pco-email').value.trim();
+  const email     = document.getElementById('pco-email').value.trim().toLowerCase();
+  const name      = document.getElementById('pco-name').value.trim();
   const situation = document.getElementById('pco-situation').value.trim();
   const btn       = document.getElementById('pco-btn');
-  btn.disabled = situation.length < 20 || !email.includes('@') || !email.includes('.');
+  const validEmail = email.includes('@') && email.includes('.');
+  btn.disabled = situation.length < 20 || !validEmail;
+
   if (!_situationTracked && situation.length > 10) {
     track('situation_typed', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
     _situationTracked = true;
+  }
+
+  // Save to backend + tag in ConvertKit the moment a valid email is entered
+  // so they enter the abandoned cart sequence even if they never click pay
+  if (!_emailCaptured && validEmail) {
+    _emailCaptured = true;
+    Q.email = email;
+    Q.name  = name;
+    posthog.identify(email, { name, attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+    track('precheckout_email_entered', { attachment_style: Q.myStyle, partner_style: Q.ptStyle });
+    fetch('/api/account', {
+      method:  'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email,
+        name,
+        attachmentStyle: Q.myStyle,
+        partnerStyle:    Q.ptStyle,
+        quizData: { myAnswers: Q.myAnswers, ptAnswers: Q.ptAnswers, theme: resolveThemeFromStyles(Q.myStyle, Q.ptStyle), goal: 'feel safe in love' }
+      })
+    }).catch(() => {});
   }
 }
 
