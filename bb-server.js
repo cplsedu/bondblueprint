@@ -257,22 +257,23 @@ async function generateBlueprint({ situation, who, theme, goal }) {
     secure:       'building deeper security together'
   };
 
-  const SYSTEM = `You are writing a personal relationship reading — not a report. Think of it like a tarot reading: specific, validating, and actionable. The person reading this should feel like you wrote it about THEM, not about a generic relationship type.
+  const SYSTEM = `You are writing a personal relationship guide, not a report. Make it specific, validating, and actionable. The person reading this should feel like you wrote it about THEM, not about a generic relationship type.
 
 Your job is three things only:
-1. NAME the dynamic — what is actually happening between these two people, in their specific situation.
-2. EXPLAIN what is happening — why this pattern exists, what each person is experiencing inside. Use their exact words as evidence.
-3. GIVE ONE CLEAR NEXT MOVE — the single most important thing they can do. Not a list. One move.
+1. NAME the dynamic: what is actually happening between these two people, in their specific situation.
+2. EXPLAIN what is happening: why this pattern exists, what each person is experiencing inside. Use their exact words as evidence.
+3. GIVE ONE CLEAR NEXT MOVE: the single most important thing they can do. Not a list. One move.
 
 Write at a 5th grade reading level. Short sentences. Plain English. No jargon without immediate explanation.
 Mirror their exact words back to them. Use phrases they used. Make them feel seen, not analyzed.
 Never be clinical. Never be generic. Every sentence should feel like it could only be written about THIS person.
+Never use em-dashes (— or —). Use commas or periods instead.
 
 Return ONLY valid JSON. No markdown, no explanation, no code fences. Just the raw JSON object.`;
 
-  const USER_PROMPT = `Here is someone's real situation. Read every word carefully. Then write their personal relationship reading.
+  const USER_PROMPT = `Here is someone's real situation. Read every word carefully. Then write their personal relationship guide.
 
-THEIR SITUATION (their exact words — these are the most important thing):
+THEIR SITUATION (their exact words, these are the most important thing):
 "${situation.trim().slice(0, 700) || 'They did not provide specific details.'}"
 
 CONTEXT:
@@ -283,21 +284,21 @@ CONTEXT:
 Return a JSON object with EXACTLY this structure:
 
 {
-  "title": "A reading title specific to their situation — personal and vivid, not product-sounding. Under 10 words.",
+  "title": "A title specific to their situation, personal and vivid, not product-sounding. Under 10 words.",
   "situationBreakdown": [
-    { "theyWrote": "a specific phrase or moment from their words (under 15 words)", "whatItMeans": "what that reveals about the dynamic — name it plainly. 1-2 sentences." },
+    { "theyWrote": "a specific phrase or moment from their words (under 15 words)", "whatItMeans": "what that reveals about the dynamic, name it plainly. 1-2 sentences." },
     { "theyWrote": "a second specific phrase from their words", "whatItMeans": "go deeper, name the feeling underneath" },
     { "theyWrote": "a third phrase that shows the pattern clearly", "whatItMeans": "connect it to the bigger cycle" }
   ],
   "whatHappening": [
-    "Paragraph 1 — Name the dynamic: State clearly what is happening between these two people. Use their words as evidence. 2-3 sentences.",
-    "Paragraph 2 — The why: Why does this pattern exist? Name one researcher and explain their finding in one plain sentence. 2-3 sentences.",
-    "Paragraph 3 — What keeps it going: What does each person do that accidentally makes the cycle worse? 2-3 sentences."
+    "Paragraph 1: State clearly what is happening between these two people. Use their words as evidence. 2-3 sentences.",
+    "Paragraph 2: Why does this pattern exist? Name one researcher and explain their finding in one plain sentence. 2-3 sentences.",
+    "Paragraph 3: What does each person do that accidentally makes the cycle worse? 2-3 sentences."
   ],
   "keyInsight": "The one thing they most need to hear. Specific to their situation. 1-2 sentences.",
   "scienceCite": "One specific researcher + year + finding that directly explains the keyInsight (1 plain sentence, no jargon)",
-  "cycleLeft": "The pursuing side — what that person does when they feel disconnected. Active verbs. Under 12 words.",
-  "cycleRight": "The withdrawing side — what that person does when overwhelmed. Active verbs. Under 12 words.",
+  "cycleLeft": "The pursuing side: what that person does when they feel disconnected. Active verbs. Under 12 words.",
+  "cycleRight": "The withdrawing side: what that person does when overwhelmed. Active verbs. Under 12 words.",
   "scripts": [
     { "context": "When [specific trigger from their situation]", "say": "Exact words — calm, non-blaming, direct. Under 20 words.", "why": "One sentence on why this exact wording works psychologically." },
     { "context": "When [a second specific moment from their situation]", "say": "Exact words", "why": "Why it works" },
@@ -307,15 +308,15 @@ Return a JSON object with EXACTLY this structure:
   ],
   "actions": [
     "The single most important action this week. Specific to their situation. Start with a verb. Under 15 words.",
-    "A second action — different type.",
+    "A second action, different type.",
     "A communication action tied to their exact pattern.",
     "An action for when the cycle triggers.",
-    "An action for their own regulation — not about the other person.",
+    "An action for their own regulation, not about the other person.",
     "A longer-term action for building what they actually want."
   ],
   "avoid": [
-    "The most important thing to stop doing — tied to their situation. Start with Stop or Do not. Under 12 words.",
-    "A second pattern to stop — different type.",
+    "The most important thing to stop doing, tied to their situation. Start with Stop or Do not. Under 12 words.",
+    "A second pattern to stop, different type.",
     "Something they probably do not realize is making it worse.",
     "A subtle one they miss."
   ],
@@ -326,7 +327,7 @@ Return a JSON object with EXACTLY this structure:
     "Day 4: [specific action]",
     "Day 5: [specific action]",
     "Day 6: [specific action]",
-    "Day 7: [reflection — what they now understand that they did not before]"
+    "Day 7: [reflection: what they now understand that they did not before]"
   ],
   "citations": [
     "Researcher name + one finding that explains something specific about their situation (1 plain sentence)",
@@ -560,7 +561,7 @@ function formatStyle(code) {
 
 function buildFallbackBlueprint(myStyle, partnerStyle) {
   return {
-    title:              'Your Relationship Reading',
+    title:              'Your Relationship Guide',
     situationBreakdown: [
       { theyWrote: 'the pattern that keeps repeating',   whatItMeans: 'This recurring dynamic reflects the nervous system responses each person learned in early attachment relationships.' },
       { theyWrote: 'feeling disconnected',               whatItMeans: 'Disconnection activates the attachment system, which drives the pursuit-withdrawal cycle.' },
@@ -572,7 +573,7 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
       "Each person's response to threat inadvertently triggers the other's fear, creating a self-reinforcing cycle."
     ],
     keyInsight:   'The cycle is not about you. It is two nervous systems responding to fear in the only ways they know.',
-    scienceCite:  'Bowlby (1969) — early attachment bonds become internal working models that dictate adult responses to intimacy and threat.',
+    scienceCite:  'Bowlby (1969): early attachment bonds become internal working models that shape how we respond to intimacy and perceived threat as adults.',
     cycleLeft:    'Reaches out, texts more, seeks reassurance',
     cycleRight:   'Goes quiet, needs space, pulls back',
     scripts: [
@@ -587,13 +588,13 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
       'Send one low-pressure message when you notice the urge to over-pursue.',
       'Ask one open question instead of making an assumption.',
       'Take a 20-minute walk alone when you feel triggered before responding.',
-      'Write down what safety feels like to you — not what your partner does, but what YOU feel.',
+      'Write down what safety feels like to you. Not what your partner does, but what YOU feel.',
       'Find one therapist who specializes in attachment to book even one session together.'
     ],
     avoid: [
-      'Stop pursuing harder when they go quiet — it accelerates withdrawal.',
+      'Stop pursuing harder when they go quiet. It accelerates withdrawal.',
       'Do not interpret silence as rejection before asking.',
-      'Stop apologizing for having needs — they are valid.',
+      'Stop apologizing for having needs. They are valid.',
       'Do not have the big conversations when either of you is flooded or overwhelmed.'
     ],
     plan: [
@@ -601,14 +602,14 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
       'Day 2: Use one of the scripts in a low-stakes moment.',
       'Day 3: Write down the last time the cycle happened. What triggered it?',
       'Day 4: Do one thing today that is purely for your own regulation.',
-      'Day 5: Have a 10-minute check-in — no phones, no problem-solving. Just connect.',
+      'Day 5: Have a 10-minute check-in. No phones, no problem-solving. Just connect.',
       'Day 6: Notice when the cycle starts and name it out loud instead of following it.',
       'Day 7: Reflect: What is one thing you understand now that you did not before?'
     ],
     citations: [
-      'John Bowlby — Attachment theory: our earliest relationships create internal working models that shape how we seek closeness as adults.',
-      'Stan Tatkin — Couple neurophysiology: partners co-regulate each other\'s nervous systems, making the relationship itself the healing environment.',
-      'Sue Johnson — Emotionally Focused Therapy: the antidote to the pursue-withdraw cycle is accessible, responsive emotional engagement.'
+      'John Bowlby: our earliest relationships create internal working models that shape how we seek closeness as adults.',
+      'Stan Tatkin: partners co-regulate each other\'s nervous systems, making the relationship itself the healing environment.',
+      'Sue Johnson: the antidote to the pursue-withdraw cycle is accessible, responsive emotional engagement.'
     ]
   };
 }

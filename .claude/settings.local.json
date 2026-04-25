@@ -8,7 +8,15 @@
       "Bash(curl -s -X POST \"https://api.convertkit.com/v3/tags\" -H \"Content-Type: application/json\" -d '{\"api_key\":\"yK9lYivvXxHsCPQ6NLZZTw\",\"tag\":{\"name\":\"viewed_checkout\"}}')",
       "Bash(curl -s -X POST \"https://api.convertkit.com/v3/tags\" -H \"Content-Type: application/json\" -d '{\"api_key\":\"yK9lYivvXxHsCPQ6NLZZTw\",\"tag\":{\"name\":\"paid\"}}')",
       "Bash(curl -s \"https://api.convertkit.com/v3/forms?api_key=yK9lYivvXxHsCPQ6NLZZTw\")",
-      "Bash(curl -s \"https://api.convertkit.com/v3/sequences?api_key=yK9lYivvXxHsCPQ6NLZZTw\")"
+      "Bash(curl -s \"https://api.convertkit.com/v3/sequences?api_key=yK9lYivvXxHsCPQ6NLZZTw\")",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)",
+      "Bash(grep -n \"\\\\`\" /Users/ashleysoto/Desktop/Ash/bondblueprint-free.html)",
+      "Bash(grep -v \"^\\\\s*\\\\`\\\\|template\\\\|card\\\\.innerHTML\\\\|badge\\\\.innerHTML\\\\|body\\\\.innerHTML\\\\|ctaWrap\\\\|posthog\\\\|function\\\\|=>\\\\|const \\\\|let \\\\|return \\\\|\\\\.textContent\\\\|\\\\.src\\\\|\\\\.host\\\\|\\\\.api\")",
+      "Read(//Users/ashleysoto/.nvm/versions/**)",
+      "Read(//opt/homebrew/bin/**)",
+      "Read(//Users/ashleysoto/**)"
     ]
   }
 }
