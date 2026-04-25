@@ -59,6 +59,10 @@ app.post(
 app.use(express.json({ limit: '20kb' }));
 app.use(express.static(path.join(__dirname)));
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'bondblueprint-free.html'));
+});
+
 // ─── ACCOUNT / LEAD CAPTURE ──────────────────────────────────────────────────
 
 app.post('/api/account', async (req, res) => {
