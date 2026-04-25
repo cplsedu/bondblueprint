@@ -833,7 +833,7 @@ function startQuiz() {
   Q.myAnswers = [];
   Q.ptAnswers = [];
   goTo('screen-quiz');
-  try { renderQuestion(); } catch(e) { console.error('renderQuestion error:', e); }
+  renderQuizQuestion();
   posthog.capture('quiz_started');
 }
 
