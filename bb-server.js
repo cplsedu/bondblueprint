@@ -295,14 +295,15 @@ Return a JSON object with EXACTLY this structure:
     "Paragraph 3 — What keeps it going: What does each person do that accidentally makes the cycle worse? 2-3 sentences."
   ],
   "keyInsight": "The one thing they most need to hear. Specific to their situation. 1-2 sentences.",
+  "scienceCite": "One specific researcher + year + finding that directly explains the keyInsight (1 plain sentence, no jargon)",
   "cycleLeft": "The pursuing side — what that person does when they feel disconnected. Active verbs. Under 12 words.",
   "cycleRight": "The withdrawing side — what that person does when overwhelmed. Active verbs. Under 12 words.",
   "scripts": [
-    { "context": "When [specific trigger from their situation]", "say": "Exact words — calm, non-blaming, direct. Under 20 words." },
-    { "context": "When [a second specific moment from their situation]", "say": "Exact words" },
-    { "context": "When the pattern starts again", "say": "Exact words that interrupt the cycle" },
-    { "context": "When they need space but do not want to lose connection", "say": "Exact words" },
-    { "context": "When things feel good and they want it to last", "say": "Exact words" }
+    { "context": "When [specific trigger from their situation]", "say": "Exact words — calm, non-blaming, direct. Under 20 words.", "why": "One sentence on why this exact wording works psychologically." },
+    { "context": "When [a second specific moment from their situation]", "say": "Exact words", "why": "Why it works" },
+    { "context": "When the pattern starts again", "say": "Exact words that interrupt the cycle", "why": "Why it works" },
+    { "context": "When they need space but do not want to lose connection", "say": "Exact words", "why": "Why it works" },
+    { "context": "When things feel good and they want it to last", "say": "Exact words", "why": "Why it works" }
   ],
   "actions": [
     "The single most important action this week. Specific to their situation. Start with a verb. Under 15 words.",
@@ -336,7 +337,7 @@ Return a JSON object with EXACTLY this structure:
 
   const message = await anthropic.messages.create({
     model:      'claude-sonnet-4-6',
-    max_tokens: 2400,
+    max_tokens: 2800,
     system:     SYSTEM,
     messages:   [{ role: 'user', content: USER_PROMPT }]
   });
@@ -571,14 +572,15 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
       "Each person's response to threat inadvertently triggers the other's fear, creating a self-reinforcing cycle."
     ],
     keyInsight:   'The cycle is not about you. It is two nervous systems responding to fear in the only ways they know.',
+    scienceCite:  'Bowlby (1969) — early attachment bonds become internal working models that dictate adult responses to intimacy and threat.',
     cycleLeft:    'Reaches out, texts more, seeks reassurance',
     cycleRight:   'Goes quiet, needs space, pulls back',
     scripts: [
-      { context: 'When you feel the distance growing',          say: 'I notice I am feeling disconnected. Can we check in for a few minutes?' },
-      { context: 'When they pull away',                         say: 'I am not going anywhere. Take the space you need. I will be here.' },
-      { context: 'When the pattern starts',                     say: 'I think our cycle just started. Can we pause?' },
-      { context: 'When you need connection but they need space', say: 'I need to feel close to you. What would work for both of us right now?' },
-      { context: 'When things feel good',                       say: 'This feels really good. I want more of this between us.' }
+      { context: 'When you feel the distance growing',          say: 'I notice I am feeling disconnected. Can we check in for a few minutes?',        why: 'Names the feeling without blame, which keeps the partner from going defensive.' },
+      { context: 'When they pull away',                         say: 'I am not going anywhere. Take the space you need. I will be here.',              why: 'Breaks the pursue-withdraw loop by removing the threat of abandonment.' },
+      { context: 'When the pattern starts',                     say: 'I think our cycle just started. Can we pause?',                                  why: 'Naming the pattern out loud interrupts automatic nervous system responses.' },
+      { context: 'When you need connection but they need space', say: 'I need to feel close to you. What would work for both of us right now?',        why: 'Expresses need without demand, inviting collaboration instead of conflict.' },
+      { context: 'When things feel good',                       say: 'This feels really good. I want more of this between us.',                        why: 'Reinforces positive connection and sets a shared intention without pressure.' }
     ],
     actions: [
       'Name the cycle out loud together once this week.',
