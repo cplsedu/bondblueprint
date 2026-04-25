@@ -515,7 +515,7 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
     whatHappening: [
       'The pattern between you is driven by differing attachment strategies, not a lack of love or effort.',
       'Research by John Bowlby shows that early attachment experiences shape how we respond to intimacy and perceived rejection throughout life.',
-      'Each person's response to threat inadvertently triggers the other's fear, creating a self-reinforcing cycle.'
+      "Each person's response to threat inadvertently triggers the other's fear, creating a self-reinforcing cycle."
     ],
     keyInsight:   'The cycle is not about you. It is two nervous systems responding to fear in the only ways they know.',
     cycleLeft:    'Reaches out, texts more, seeks reassurance',
