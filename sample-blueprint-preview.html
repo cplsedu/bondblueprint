@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Sample BondBlueprint — Sofia (Anxious + Avoidant partner)</title>
+<style>
+.demo-banner { position: fixed; top: 0; left: 0; right: 0; z-index: 9999; background: #E07A3A; color: white; text-align: center; padding: 8px 16px; font-family: sans-serif; font-size: 12px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; }
+body { margin-top: 36px; }
+
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:wght@700;800&display=swap');
+
+:root {
+  --navy:    #2C4A35;
+  --rose:    #E07A3A;
+  --violet:  #D4A843;
+  --teal:    #4A7A5A;
+  --amber:   #C4860A;
+  --cream:   #FAF7F3;
+  --card:    #FFFFFF;
+  --border:  #DDD7CE;
+  --text:    #1E1E1E;
+  --muted:   #6B6560;
+  --lt-rose:   #FDF0E6;
+  --lt-violet: #E6F0E9;
+  --lt-teal:   #FBF5E6;
+  --lt-amber:  #FBF5E6;
+  --lt-navy:   #E8EEE9;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { font-family: 'Nunito', sans-serif; background: #E8E4DC; color: var(--text); font-size: 13px; line-height: 1.6; }
+.page { width: 816px; margin: 0 auto; }
+.section-page { background: var(--cream); padding: 28px 48px; min-height: 1056px; page-break-before: always; border-bottom: 4px solid #CCC6BC; }
+
+.cover { background: linear-gradient(140deg, #0F1A10 0%, #1E3526 55%, #2C4A35 100%); min-height: 1056px; display: flex; flex-direction: column; padding: 52px 52px; position: relative; overflow: hidden; border-bottom: 4px solid #000; }
+.cover-orb-1 { position: absolute; right: -100px; top: -100px; width: 480px; height: 480px; border-radius: 50%; background: radial-gradient(circle, rgba(224,122,58,0.18) 0%, transparent 70%); }
+.cover-orb-2 { position: absolute; left: -80px; bottom: -80px; width: 380px; height: 380px; border-radius: 50%; background: radial-gradient(circle, rgba(212,168,67,0.18) 0%, transparent 70%); }
+.cover-orb-3 { position: absolute; right: 120px; bottom: 200px; width: 220px; height: 220px; border-radius: 50%; background: radial-gradient(circle, rgba(74,122,90,0.18) 0%, transparent 70%); }
+.cover-label { font-size: 10px; font-weight: 800; letter-spacing: 4px; text-transform: uppercase; color: var(--rose); margin-bottom: 20px; }
+.cover-badge { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 100px; padding: 8px 20px; margin-bottom: 24px; width: fit-content; }
+.cover-badge span { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.7); }
+.cover h1 { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 800; color: #FFFFFF; line-height: 1.05; margin-bottom: 8px; max-width: 580px; }
+.cover h1 .accent { color: #F4C44A; }
+.cover-sub { font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.6); margin-bottom: 28px; max-width: 500px; line-height: 1.6; }
+.cover-divider { width: 48px; height: 3px; background: var(--rose); margin-bottom: 26px; border-radius: 2px; }
+.cover-stat-row { display: flex; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+.cover-stat { background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 12px 18px; flex: 1; min-width: 120px; }
+.cover-stat .num { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 700; color: #fff; }
+.cover-stat .lbl { font-size: 9.5px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-top: 2px; }
+.cover-intro { background: rgba(255,255,255,0.06); border-left: 3px solid var(--rose); border-radius: 0 10px 10px 0; padding: 14px 18px; max-width: 600px; margin-bottom: 28px; }
+.cover-intro p { font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.82); line-height: 1.65; }
+.cover-prepared { font-size: 10px; font-weight: 700; color: rgba(255,255,255,0.3); margin-bottom: 20px; }
+.toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; max-width: 600px; margin-bottom: 28px; }
+.toc-item { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,0.05); border-radius: 8px; padding: 8px 12px; }
+.toc-num { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: rgba(255,255,255,0.18); flex-shrink: 0; width: 20px; }
+.toc-text { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.65); line-height: 1.3; }
+.cover-footer { margin-top: auto; font-size: 10px; color: rgba(255,255,255,0.2); font-weight: 600; letter-spacing: 1px; }
+
+.page-header { display: flex; align-items: flex-start; gap: 16px; margin-bottom: 16px; padding-bottom: 12px; border-bottom: 2px solid var(--border); }
+.page-header-num { font-family: 'Playfair Display', serif; font-size: 52px; font-weight: 700; line-height: 1; opacity: 0.08; flex-shrink: 0; margin-top: -4px; }
+.page-header-content { flex: 1; }
+.page-header-label { font-size: 9.5px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 2px; }
+.page-header-title { font-family: 'Playfair Display', serif; font-size: 23px; font-weight: 700; line-height: 1.15; }
+.page-header-sub { font-size: 11.5px; font-weight: 600; color: var(--muted); margin-top: 3px; }
+
+.card { background: var(--card); border-radius: 12px; border: 1.5px solid var(--border); padding: 12px 16px; margin-bottom: 8px; }
+.card-title { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 7px; }
+.bg-rose   { background: var(--lt-rose);   border-color: #F0C0A0; }
+.bg-violet { background: var(--lt-violet); border-color: #B8C8A0; }
+.bg-teal   { background: var(--lt-teal);   border-color: #9CC49C; }
+.bg-navy   { background: var(--lt-navy);   border-color: #9CB89C; }
+.ac-rose   { color: var(--rose); }
+.ac-violet { color: var(--violet); }
+.ac-teal   { color: var(--teal); }
+.ac-navy   { color: var(--navy); }
+.two-col   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+
+.science-block { background: var(--navy); border-radius: 12px; padding: 13px 16px; color: rgba(255,255,255,0.9); margin: 9px 0; display: flex; gap: 12px; align-items: flex-start; }
+.science-icon { font-size: 20px; flex-shrink: 0; }
+.science-label { font-size: 9px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 3px; }
+.science-text { font-size: 11.5px; font-weight: 600; line-height: 1.6; color: rgba(255,255,255,0.88); }
+.science-cite { font-size: 9.5px; font-weight: 700; color: rgba(255,255,255,0.4); margin-top: 4px; font-style: italic; }
+
+.callout { border-radius: 12px; padding: 12px 16px; margin: 9px 0; border-left: 4px solid; display: flex; gap: 11px; align-items: flex-start; }
+.callout-icon { font-size: 18px; flex-shrink: 0; }
+.callout-text { font-size: 12px; font-weight: 600; line-height: 1.6; }
+.callout-title { font-size: 10.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+.callout-rose   { background: var(--lt-rose);   border-color: var(--rose); }
+.callout-violet { background: var(--lt-violet); border-color: var(--violet); }
+.callout-teal   { background: var(--lt-teal);   border-color: var(--teal); }
+.callout-navy   { background: var(--lt-navy);   border-color: var(--navy); }
+
+.pull-quote { position: relative; padding: 14px 18px 14px 52px; border-radius: 12px; margin: 10px 0; }
+.pull-quote::before { content: '\201C'; position: absolute; left: 8px; top: -2px; font-family: 'Playfair Display', serif; font-size: 72px; line-height: 1; }
+.pull-quote p { font-size: 13px; font-weight: 700; line-height: 1.6; font-style: italic; }
+.pq-violet { background: var(--lt-violet); border-left: 4px solid var(--violet); }
+.pq-violet::before { color: rgba(212,168,67,0.22); }
+.pq-violet p { color: #1A3020; }
+.pq-rose { background: var(--lt-rose); border-left: 4px solid var(--rose); }
+.pq-rose::before { color: rgba(224,122,58,0.22); }
+.pq-rose p { color: #5A3A1A; }
+.pq-navy { background: var(--lt-navy); border-left: 4px solid var(--navy); }
+.pq-navy::before { color: rgba(44,74,53,0.18); }
+.pq-navy p { color: #2C4A35; }
+
+.big-stat-strip { display: grid; grid-template-columns: repeat(3,1fr); gap: 0; border-radius: 12px; overflow: hidden; margin: 10px 0; border: 1.5px solid var(--border); }
+.big-stat-cell { padding: 14px 12px; text-align: center; border-right: 1px solid var(--border); }
+.big-stat-cell:last-child { border-right: none; }
+.big-stat-num { font-family: 'Playfair Display', serif; font-size: 38px; font-weight: 800; line-height: 1; }
+.big-stat-lbl { font-size: 10.5px; font-weight: 700; color: var(--muted); margin-top: 4px; line-height: 1.4; }
+
+.phone-wrap { background: #18181B; border-radius: 16px; padding: 14px; margin: 9px 0; }
+.phone-header { font-size: 9.5px; font-weight: 800; letter-spacing: 2.5px; text-transform: uppercase; color: rgba(255,255,255,0.28); margin-bottom: 10px; text-align: center; }
+.bubble-row { display: flex; margin-bottom: 5px; }
+.bubble-row.sent { justify-content: flex-end; }
+.bubble { max-width: 72%; padding: 8px 13px; font-size: 12px; font-weight: 600; line-height: 1.5; border-radius: 16px; }
+.bubble.received { background: #2C2C30; color: rgba(255,255,255,0.88); border-radius: 16px 16px 16px 4px; }
+.bubble.sent     { background: var(--violet); color: #fff; border-radius: 16px 16px 4px 16px; }
+.bubble.sent-rose { background: var(--rose); color: #fff; border-radius: 16px 16px 4px 16px; }
+.bubble.sent-teal { background: var(--teal); color: #fff; border-radius: 16px 16px 4px 16px; }
+.bubble-time { font-size: 9.5px; color: rgba(255,255,255,0.28); text-align: center; margin: 5px 0 8px; font-weight: 600; }
+
+.section-label { font-size: 9.5px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); margin: 14px 0 9px; display: flex; align-items: center; gap: 10px; }
+.section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+.cycle-container { display: flex; align-items: stretch; gap: 0; margin: 10px 0; border-radius: 12px; overflow: hidden; border: 1.5px solid var(--border); }
+.cycle-step { flex: 1; padding: 12px 6px; text-align: center; position: relative; }
+.cycle-step::after { content: '›'; position: absolute; right: -8px; top: 50%; transform: translateY(-50%); font-size: 20px; color: var(--muted); z-index: 2; }
+.cycle-step:last-child::after { display: none; }
+.cycle-emoji { font-size: 22px; margin-bottom: 4px; }
+.cycle-title { font-size: 9.5px; font-weight: 800; line-height: 1.3; }
+.cycle-sub { font-size: 8.5px; font-weight: 600; color: var(--muted); margin-top: 2px; line-height: 1.3; }
+
+.script-box { background: linear-gradient(135deg, #0F1A10 0%, #1E3526 100%); border-radius: 12px; padding: 14px 18px; margin: 8px 0; }
+.script-label { font-size: 8.5px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 9px; }
+.script-line { background: rgba(255,255,255,0.08); border-radius: 8px; padding: 9px 13px; margin-bottom: 5px; font-size: 12.5px; font-weight: 700; color: rgba(255,255,255,0.92); line-height: 1.6; border-left: 3px solid rgba(224,122,58,0.6); }
+.script-why { font-size: 10.5px; font-weight: 700; color: rgba(255,255,255,0.48); margin-top: 8px; font-style: italic; line-height: 1.5; }
+
+.step-list { list-style: none; }
+.step-item { display: flex; gap: 12px; align-items: flex-start; padding: 11px 0; border-bottom: 1px solid var(--border); }
+.step-item:last-child { border-bottom: none; }
+.step-num { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 900; color: #fff; }
+.step-title { font-size: 12.5px; font-weight: 800; margin-bottom: 3px; }
+.step-body { font-size: 11.5px; font-weight: 600; color: var(--muted); line-height: 1.55; }
+.step-why { font-size: 11px; font-weight: 700; color: var(--teal); margin-top: 4px; line-height: 1.5; }
+
+.bullet-list { list-style: none; }
+.bullet-list li { display: flex; gap: 9px; align-items: flex-start; font-size: 12px; font-weight: 600; line-height: 1.5; padding: 4px 0; border-bottom: 1px solid var(--border); }
+.bullet-list li:last-child { border-bottom: none; }
+.bullet-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+
+.checklist { list-style: none; }
+.checklist li { display: flex; gap: 9px; align-items: flex-start; font-size: 12px; font-weight: 600; line-height: 1.5; padding: 5px 0; border-bottom: 1px solid var(--border); }
+.checklist li:last-child { border-bottom: none; }
+.check-icon { width: 19px; height: 19px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 900; flex-shrink: 0; color: #fff; }
+.check-yes { background: var(--teal); }
+.check-no  { background: var(--rose); }
+
+.translate-table { border: 1.5px solid var(--border); border-radius: 12px; overflow: hidden; margin: 10px 0; }
+.translate-header { display: grid; grid-template-columns: 1fr 1fr 1fr; background: var(--navy); padding: 8px 12px; }
+.translate-header span { font-size: 9px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+.translate-row { display: grid; grid-template-columns: 1fr 1fr 1fr; border-bottom: 1px solid var(--border); }
+.translate-row:last-child { border-bottom: none; }
+.translate-cell { padding: 9px 12px; font-size: 11.5px; font-weight: 600; line-height: 1.5; }
+.translate-cell.col1 { border-right: 1px solid var(--border); color: var(--rose); font-style: italic; }
+.translate-cell.col2 { border-right: 1px solid var(--border); color: var(--navy); }
+.translate-cell.col3 { color: var(--teal); font-weight: 700; }
+
+.affirmation-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 10px 0; }
+.affirmation-card { background: linear-gradient(135deg, var(--lt-violet), var(--lt-rose)); border-radius: 10px; padding: 12px 14px; border: 1px solid #C8C090; text-align: center; }
+.affirmation-card p { font-size: 12px; font-weight: 800; line-height: 1.5; color: #1A3020; }
+
+.gradient-highlight { background: linear-gradient(135deg, #0F1A10, #1E3526, #2C4A35); border-radius: 14px; padding: 18px 22px; margin: 10px 0; }
+.gh-label { font-size: 8.5px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.38); margin-bottom: 8px; }
+.gh-big { font-family: 'Playfair Display', serif; font-size: 22px; font-weight: 800; color: #fff; line-height: 1.2; margin-bottom: 8px; }
+.gh-sub { font-size: 11.5px; font-weight: 600; color: rgba(255,255,255,0.7); line-height: 1.6; }
+
+.day-row { display: flex; align-items: flex-start; gap: 14px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.day-row:last-child { border-bottom: none; }
+.day-badge { background: var(--navy); color: white; font-size: 8px; font-weight: 800; text-transform: uppercase; padding: 5px 10px; border-radius: 6px; white-space: nowrap; min-width: 52px; text-align: center; flex-shrink: 0; }
+.day-text { font-size: 12px; font-weight: 600; line-height: 1.55; }
+
+.spectrum-wrap { position: relative; margin: 28px 0 44px; }
+.spectrum-bar { height: 14px; border-radius: 7px; background: linear-gradient(to right, var(--rose) 0%, var(--violet) 33%, var(--teal) 66%, var(--navy) 100%); }
+.spectrum-marker-wrap { position: absolute; top: 50%; transform: translateY(-50%); }
+.spectrum-marker-dot { width: 24px; height: 24px; border-radius: 50%; border: 3px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.35); transform: translateX(-50%); }
+.spectrum-label-above { position: absolute; top: -26px; font-size: 7.5px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; white-space: nowrap; transform: translateX(-50%); }
+.spectrum-tick-wrap { position: absolute; bottom: -28px; font-size: 7px; font-weight: 800; text-transform: uppercase; color: var(--muted); white-space: nowrap; transform: translateX(-50%); text-align: center; }
+.spectrum-tick-line { width: 1px; height: 8px; background: var(--muted); margin: 0 auto 3px; }
+
+.style-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.style-card { border-radius: 12px; padding: 13px 15px; border: 1.5px solid; }
+.style-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.style-card-name { font-size: 12px; font-weight: 800; }
+.style-card-pct { font-size: 9.5px; font-weight: 700; opacity: 0.7; }
+.style-card-tag { font-size: 10.5px; font-weight: 700; font-style: italic; margin-bottom: 6px; }
+.style-card-desc { font-size: 10.5px; font-weight: 600; line-height: 1.55; color: var(--muted); }
+.style-card-you { font-size: 8.5px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 7px; padding: 3px 8px; border-radius: 20px; display: inline-block; color: white; }
+.style-highlight { box-shadow: 0 2px 12px rgba(0,0,0,0.12); }
+
+.action-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.action-item:last-child { border-bottom: none; }
+.action-num { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 900; color: white; background: var(--teal); }
+.action-text { font-size: 12.5px; font-weight: 600; line-height: 1.55; padding-top: 2px; }
+.avoid-item { display: flex; gap: 10px; align-items: flex-start; padding: 8px 12px; background: var(--lt-rose); border-radius: 10px; border-left: 4px solid var(--rose); margin-bottom: 7px; }
+.avoid-x { font-size: 13px; font-weight: 900; color: var(--rose); flex-shrink: 0; }
+.avoid-text { font-size: 12px; font-weight: 600; line-height: 1.5; }
+
+.tag { display: inline-block; padding: 2px 9px; border-radius: 100px; font-size: 9.5px; font-weight: 800; margin: 2px; }
+.tag-rose { background: var(--lt-rose); color: var(--rose); }
+.tag-violet { background: var(--lt-violet); color: var(--violet); }
+.tag-teal { background: var(--lt-teal); color: var(--teal); }
+.tag-navy { background: var(--lt-navy); color: var(--navy); }
+
+.decision-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+.decision-box { border-radius: 12px; padding: 13px 15px; }
+
+.scenario-box { background: linear-gradient(135deg, #1A2A1A, #2C4A35); border-radius: 12px; padding: 14px 18px; margin: 9px 0; }
+.scenario-label { font-size: 8.5px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.4); margin-bottom: 7px; }
+.scenario-text { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.9); line-height: 1.65; font-style: italic; }
+.scenario-explain { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.55); margin-top: 7px; }
+</style>
+</head>
+<body>
+
+<div class="demo-banner">Sample Preview — BondBlueprint™ · Sofia (Anxious) + Marcus (Avoidant)</div>
+
+<div class="page">
+
+<!-- PAGE 1: COVER -->
+<div class="cover">
+  <div class="cover-orb-1"></div><div class="cover-orb-2"></div><div class="cover-orb-3"></div>
+  <div class="cover-label">By Ash · Couples Educator</div>
+  <div class="cover-badge"><span>Science-Backed · Attachment-Informed Guide</span></div>
+  <h1>When He Goes Cold <span class="accent">BondBlueprint</span></h1>
+  <div class="cover-sub">Your personalized guide, built from everything you shared. Real scripts. Real science. No guessing.</div>
+  <div class="cover-divider"></div>
+  <div class="cover-stat-row">
+    <div class="cover-stat"><div class="num">Anxious</div><div class="lbl">Your Style</div></div>
+    <div class="cover-stat"><div class="num">Avoidant</div><div class="lbl">Their Style</div></div>
+    <div class="cover-stat"><div class="num">8</div><div class="lbl">Scripts That Work</div></div>
+    <div class="cover-stat"><div class="num">7-Day</div><div class="lbl">Action Plan</div></div>
+  </div>
+  <div class="cover-intro"><p>You wrote about two years of hot and cold, of reaching and watching him retreat. You are exhausted from trying to figure out if you are the problem. You are not the problem. The cycle is.</p></div>
+  <div class="cover-prepared">Prepared for Sofia · April 2026</div>
+  <div class="toc-grid">
+    <div class="toc-item"><div class="toc-num">1</div><div class="toc-text">You Are Not Alone In This</div></div>
+    <div class="toc-item"><div class="toc-num">2</div><div class="toc-text">The Attachment Spectrum</div></div>
+    <div class="toc-item"><div class="toc-num">3</div><div class="toc-text">Decoding Your Partner</div></div>
+    <div class="toc-item"><div class="toc-num">4</div><div class="toc-text">Why the Loop Keeps Repeating</div></div>
+    <div class="toc-item"><div class="toc-num">5</div><div class="toc-text">Stop These First</div></div>
+    <div class="toc-item"><div class="toc-num">6</div><div class="toc-text">Your Calm Switch</div></div>
+    <div class="toc-item"><div class="toc-num">7</div><div class="toc-text">Scripts That Actually Work</div></div>
+    <div class="toc-item"><div class="toc-num">8</div><div class="toc-text">Your 7-Day Plan</div></div>
+  </div>
+  <div class="cover-footer">For educational purposes only · Rooted in attachment science · Not therapy or clinical advice</div>
+</div>
+
+<!-- PAGE 2: NOT ALONE -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">1</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-violet">The Introduction</div>
+      <div class="page-header-title">You Are Not Alone In This</div>
+      <div class="page-header-sub">Why you feel the way you do, and why it makes complete sense</div>
+    </div>
+  </div>
+
+  <div class="callout callout-violet">
+    <div class="callout-icon">💜</div>
+    <div>
+      <div class="callout-title" style="color:var(--violet)">Before You Read Anything Else</div>
+      <div class="callout-text">Take a breath. Drop your shoulders. Whatever is happening right now, the silence, the hot and cold, the feeling that you keep getting this wrong, none of it means you are broken. It means your nervous systems are doing exactly what they were built to do. This guide is going to show you why, and what to do instead.</div>
+    </div>
+  </div>
+
+  <div class="pull-quote pq-navy">
+    <p>When Marcus pulls away after a close weekend, your system fires an alarm. You reach. He retreats. You reach harder. He disappears for days. Neither of you is doing this on purpose. Both of you are stuck in a loop your nervous systems learned long before you met each other.</p>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🧠</div>
+    <div>
+      <div class="science-label">Here Is the Science</div>
+      <div class="science-text">Your brain is wired to treat losing someone close the same way it treats physical danger. When they pull away or go cold, the alarm center in your brain fires. Brain scans show that rejection activates the same regions as physical pain. You are not being dramatic.</div>
+      <div class="science-cite">Eisenberger et al. (2003) · UCLA · Levine &amp; Heller (2010), Attached</div>
+    </div>
+  </div>
+
+  <div class="big-stat-strip">
+    <div class="big-stat-cell" style="background:var(--lt-rose)">
+      <div class="big-stat-num ac-rose">🔥</div>
+      <div class="big-stat-lbl">Rejection activates the<br>same brain regions as pain</div>
+    </div>
+    <div class="big-stat-cell" style="background:var(--lt-violet)">
+      <div class="big-stat-num ac-violet">~20%</div>
+      <div class="big-stat-lbl">of adults have an<br>anxious attachment style</div>
+    </div>
+    <div class="big-stat-cell" style="background:var(--lt-teal)">
+      <div class="big-stat-num ac-teal">~25%</div>
+      <div class="big-stat-lbl">have an avoidant<br>attachment style</div>
+    </div>
+  </div>
+
+  <div class="section-label">Why the Loop Keeps Repeating</div>
+  <div class="cycle-container">
+    <div class="cycle-step" style="background:var(--lt-teal)">
+      <div class="cycle-emoji">✨</div>
+      <div class="cycle-title ac-teal">Things Feel Good</div>
+      <div class="cycle-sub">Close, connected, hopeful</div>
+    </div>
+    <div class="cycle-step" style="background:var(--lt-violet)">
+      <div class="cycle-emoji">😰</div>
+      <div class="cycle-title ac-violet">He Gets Overwhelmed</div>
+      <div class="cycle-sub">Closeness triggers his alarm</div>
+    </div>
+    <div class="cycle-step" style="background:var(--lt-rose)">
+      <div class="cycle-emoji">🚪</div>
+      <div class="cycle-title ac-rose">He Goes Cold and Distant</div>
+      <div class="cycle-sub">Cold, quiet, disappears for days</div>
+    </div>
+    <div class="cycle-step" style="background:var(--lt-amber, #FBF5E6)">
+      <div class="cycle-emoji">⚡</div>
+      <div class="cycle-title ac-amber">You Panic and Reach</div>
+      <div class="cycle-sub">Texts, worry, spiraling</div>
+    </div>
+    <div class="cycle-step" style="background:var(--lt-navy)">
+      <div class="cycle-emoji">🔄</div>
+      <div class="cycle-title ac-navy">Loop Repeats</div>
+      <div class="cycle-sub">Your reach triggers his retreat</div>
+    </div>
+  </div>
+
+  <div class="science-block">
+    <div class="science-icon">🎰</div>
+    <div>
+      <div class="science-label">Why You Can't Stop Thinking About Him</div>
+      <div class="science-text">The hot-and-cold pattern is not just confusing. It is neurologically addictive. B.F. Skinner found that when rewards are unpredictable, your brain chases them harder. The same mechanism that makes gambling addictive. You are not obsessed because you are weak.</div>
+      <div class="science-cite">Skinner (1957) · Variable Ratio Reinforcement · Fisher et al. (2005) · Romantic Love and Dopamine</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 3: ATTACHMENT SPECTRUM -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">2</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-teal">Know Your Wiring</div>
+      <div class="page-header-title">The Attachment Spectrum</div>
+      <div class="page-header-sub">Every person is on a spectrum, not a fixed box. These are patterns, not permanent labels.</div>
+    </div>
+  </div>
+
+  <div class="spectrum-wrap">
+    <div style="position:relative;height:24px;margin-bottom:16px;">
+      <div class="spectrum-marker-wrap" style="left:9%">
+        <div class="spectrum-label-above" style="color:#E07A3A">YOU</div>
+        <div class="spectrum-marker-dot" style="background:#E07A3A"></div>
+      </div>
+      <div class="spectrum-marker-wrap" style="left:88%">
+        <div class="spectrum-label-above" style="color:#2C4A35">THEM</div>
+        <div class="spectrum-marker-dot" style="background:#2C4A35"></div>
+      </div>
+    </div>
+    <div class="spectrum-bar"></div>
+    <div style="position:relative;height:38px;">
+      <div class="spectrum-tick-wrap" style="left:9%"><div class="spectrum-tick-line"></div>Anxious</div>
+      <div class="spectrum-tick-wrap" style="left:34%"><div class="spectrum-tick-line"></div>Fearful-Avoidant</div>
+      <div class="spectrum-tick-wrap" style="left:63%"><div class="spectrum-tick-line"></div>Secure</div>
+      <div class="spectrum-tick-wrap" style="left:88%"><div class="spectrum-tick-line"></div>Avoidant</div>
+    </div>
+  </div>
+
+  <div class="callout callout-violet">
+    <div class="callout-icon">💡</div>
+    <div>
+      <div class="callout-title" style="color:var(--violet)">It's a Spectrum, Not a Box</div>
+      <div class="callout-text">Your attachment style is a pattern, not a life sentence. Everyone falls somewhere on this line. The good news: all styles can move toward security. That's what this guide helps you do.</div>
+    </div>
+  </div>
+
+  <div class="style-grid">
+    <div class="style-card style-highlight" style="background:#FDF0E6;border-color:#F0C0A0;">
+      <div class="style-card-header">
+        <div class="style-card-name" style="color:#E07A3A">Anxious</div>
+        <div class="style-card-pct" style="color:#E07A3A">~20%</div>
+      </div>
+      <div class="style-card-tag" style="color:#E07A3A">Craves closeness. Worries it won't last.</div>
+      <div class="style-card-desc">When you feel disconnected, your nervous system sounds the alarm, fast. You reach out more, check in, and try to fix it. This isn't neediness.</div>
+      <div style="margin-top:8px"><span class="style-card-you" style="background:#E07A3A">YOU</span></div>
+    </div>
+    <div class="style-card" style="background:#E6F0E9;border-color:#B8C8A0;">
+      <div class="style-card-header">
+        <div class="style-card-name" style="color:#D4A843">Fearful-Avoidant</div>
+        <div class="style-card-pct" style="color:#D4A843">~5-10%</div>
+      </div>
+      <div class="style-card-tag" style="color:#D4A843">Wants closeness. Also afraid of it.</div>
+      <div class="style-card-desc">Two attachment systems running at once. You learned that closeness can be dangerous, so part of you wants it badly and part of you protects against it.</div>
+    </div>
+    <div class="style-card" style="background:#FBF5E6;border-color:#9CC49C;">
+      <div class="style-card-header">
+        <div class="style-card-name" style="color:#4A7A5A">Secure</div>
+        <div class="style-card-pct" style="color:#4A7A5A">~50%</div>
+      </div>
+      <div class="style-card-tag" style="color:#4A7A5A">Comfortable with both closeness and independence.</div>
+      <div class="style-card-desc">Security isn't the absence of fear. It's knowing how to handle it. This is the direction everyone is moving toward, and you can build it.</div>
+    </div>
+    <div class="style-card style-highlight" style="background:#E8EEE9;border-color:#9CB89C;">
+      <div class="style-card-header">
+        <div class="style-card-name" style="color:#2C4A35">Avoidant</div>
+        <div class="style-card-pct" style="color:#2C4A35">~25%</div>
+      </div>
+      <div class="style-card-tag" style="color:#2C4A35">Values independence. Pulls back when things get close.</div>
+      <div class="style-card-desc">When emotional demands feel high, the instinct is to step back. Closeness can feel overwhelming, even with someone they genuinely care about.</div>
+      <div style="margin-top:8px"><span class="style-card-you" style="background:#444">THEM</span></div>
+    </div>
+  </div>
+
+  <div class="callout callout-teal" style="margin-top:12px;">
+    <div class="callout-icon">🔬</div>
+    <div>
+      <div class="callout-title" style="color:var(--teal)">Why These Styles Attract Each Other</div>
+      <div class="callout-text">Anxious and avoidant styles are drawn to each other more than any other pairing, and this is documented in research. The anxious person's intensity temporarily pierces the avoidant's defenses. Without awareness, this pairing fuels the cycle rather than breaking it.</div>
+      <div style="font-size:10.5px;font-weight:700;color:var(--teal);margin-top:5px;">Levine &amp; Heller (2010) · Attached · Bartholomew &amp; Horowitz (1991)</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 4: DECODING YOUR PARTNER -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">3</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-navy">Decode Him</div>
+      <div class="page-header-title">What's Actually Going On Inside Him</div>
+      <div class="page-header-sub">His behavior isn't random. Here is what's driving it, in plain English.</div>
+    </div>
+  </div>
+
+  <p style="font-size:13px;font-weight:600;line-height:1.7;margin-bottom:12px;">When Marcus goes cold after a good weekend, his nervous system is not rejecting you. He learned early on that being fully known by someone meant getting hurt. So when things feel too close, too real, his body says: pull back before something bad happens. It is automatic. It is not about you.</p>
+  <p style="font-size:13px;font-weight:600;line-height:1.7;margin-bottom:12px;">Research by Stan Tatkin shows that people with avoidant patterns learned in childhood to self-soothe alone, because depending on others felt dangerous. Marcus does not pull away because he does not care. He pulls away because caring feels terrifying.</p>
+  <p style="font-size:13px;font-weight:600;line-height:1.7;margin-bottom:12px;">What he actually needs, even if he cannot ask for it, is a partner who stays calm and does not collapse when he needs space. When you can give him that steadiness, his system starts to relax. The cold spells get shorter. He comes back faster.</p>
+
+  <div class="section-label">What His Behavior Actually Means</div>
+  <div class="translate-table">
+    <div class="translate-header">
+      <span>When he...</span>
+      <span>What it actually means</span>
+      <span>Your move</span>
+    </div>
+    <div class="translate-row">
+      <div class="translate-cell col1">Goes cold for days without explanation</div>
+      <div class="translate-cell col2">Overwhelmed by closeness, self-regulating alone</div>
+      <div class="translate-cell col3">One warm message. Then give real space.</div>
+    </div>
+    <div class="translate-row">
+      <div class="translate-cell col1">Says nothing is wrong when it clearly is</div>
+      <div class="translate-cell col2">Has no language for what he feels yet</div>
+      <div class="translate-cell col3">"Okay. I am here when you are ready."</div>
+    </div>
+    <div class="translate-row">
+      <div class="translate-cell col1">Comes back warm after going distant</div>
+      <div class="translate-cell col2">He regulated and missed you. The connection is real.</div>
+      <div class="translate-cell col3">Welcome him back. Do not punish.</div>
+    </div>
+    <div class="translate-row">
+      <div class="translate-cell col1">Pulls away right after a good moment</div>
+      <div class="translate-cell col2">Closeness triggered his alarm, not a verdict on you</div>
+      <div class="translate-cell col3">Let him breathe. Do not chase.</div>
+    </div>
+  </div>
+
+  <div class="two-col" style="margin-top:12px;">
+    <div class="card bg-navy">
+      <div class="card-title ac-navy">What He Actually Needs From You</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--navy)"></span><span>Consistency, no games</span></li>
+        <li><span class="bullet-dot" style="background:var(--navy)"></span><span>Space given freely, not punished</span></li>
+        <li><span class="bullet-dot" style="background:var(--navy)"></span><span>Warmth without demand</span></li>
+        <li><span class="bullet-dot" style="background:var(--navy)"></span><span>You staying calm when he pulls back</span></li>
+      </ul>
+    </div>
+    <div class="card bg-rose">
+      <div class="card-title ac-rose">What Makes It Worse</div>
+      <ul class="bullet-list">
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Emotional intensity when he is distant</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Chasing him when he needs space</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Making him feel guilty for his needs</span></li>
+        <li><span class="bullet-dot" style="background:var(--rose)"></span><span>Threats, even unmeant ones</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 5: STOP THESE FIRST -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">4</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-rose">Stop These First</div>
+      <div class="page-header-title">The Do Not React List</div>
+      <div class="page-header-sub">These feel like closeness to you. They feel like pressure to him. Every single time.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-rose">
+    <div class="callout-icon">❤️</div>
+    <div>
+      <div class="callout-title" style="color:var(--rose)">What Protest Behaviors Actually Are</div>
+      <div class="callout-text">Bowlby called them protest behaviors: automatic actions your attachment system takes when it senses your person slipping away. They are not character flaws. They are ancient survival wiring. The problem is that protest behaviors backfire with avoidant partners. They read emotional intensity as a threat and move further away, not closer.</div>
+    </div>
+  </div>
+
+  <div class="section-label">The 5 Forms Protest Takes</div>
+  <ul class="step-list">
+    <li class="step-item">
+      <div class="step-num" style="background:var(--rose)">1</div>
+      <div>
+        <div class="step-title ac-rose">Pursuit Escalation</div>
+        <div class="step-body">The double text. The "are we okay?" follow-up. Each one feels necessary. To someone who pulls back, they register as pressure, and pressure triggers more distance, not less.</div>
+        <div class="step-why">The rule: One message. Then you wait. The urgency you feel is a chemical state, not a deadline.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--rose)">2</div>
+      <div>
+        <div class="step-title ac-rose">The Anger Protest</div>
+        <div class="step-body">Picking a fight about something small when the real issue is disconnection. The anger is real, but the target is usually a stand-in for "I need you to acknowledge I exist."</div>
+        <div class="step-why">The rule: Name what's actually happening. "I felt disconnected and it scared me" lands differently than a fight about plans.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--rose)">3</div>
+      <div>
+        <div class="step-title ac-rose">Going Cold Yourself</div>
+        <div class="step-body">Disappearing to see if he reaches out. It feels like taking back control, but it's still protest. The problem is he often feels relief when the pressure lifts.</div>
+        <div class="step-why">The rule: Going cold to get a reaction is still the attachment system in protest mode. It rarely produces what you actually want.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--rose)">4</div>
+      <div>
+        <div class="step-title ac-rose">The Ultimatum That Isn't Real</div>
+        <div class="step-body">"Maybe we should just end this." Said not because you mean it, but because you need him to say he doesn't want that. To someone who shuts down, a threat to leave is a reason to start preparing for exactly that.</div>
+        <div class="step-why">The rule: Only say things you mean. Fake ultimatums erode trust on both sides.</div>
+      </div>
+    </li>
+    <li class="step-item">
+      <div class="step-num" style="background:var(--rose)">5</div>
+      <div>
+        <div class="step-title ac-rose">Erasing Yourself to Not Trigger Him</div>
+        <div class="step-body">You stop having needs. You agree to things that don't work. You make yourself smaller, hoping if you stop triggering the pull-away, he'll finally stay. This doesn't create security. It creates resentment.</div>
+        <div class="step-why">The rule: Shrinking yourself isn't the same as being secure. You cannot earn consistent love by making yourself easier to leave.</div>
+      </div>
+    </li>
+  </ul>
+</div>
+
+<!-- PAGE 6: SCRIPTS PART 1 -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">6</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-violet">Copy These</div>
+      <div class="page-header-title">What to Say, Exactly</div>
+      <div class="page-header-sub">Warm and boundaried at the same time. Secure, not desperate, not cold.</div>
+    </div>
+  </div>
+
+  <div class="callout callout-violet">
+    <div class="callout-icon">💬</div>
+    <div>
+      <div class="callout-title" style="color:var(--violet)">The Energy Behind Every Script</div>
+      <div class="callout-text">These are real messages you can send today. The goal isn't perfect words. It's the energy: secure, not desperate. Warm, not cold. Every script was built from your specific situation.</div>
+    </div>
+  </div>
+
+  <div class="section-label">When He Suddenly Goes Cold After a Good Weekend</div>
+  <div class="script-box">
+    <div class="script-label">The Secure Script</div>
+    <div class="script-line">&ldquo;Hey. I notice you have gone a bit quiet. I am not going anywhere.&rdquo;</div>
+    <div class="script-why">Why this works: Removes the threat of abandonment without adding pressure. Say it once. Then stop.</div>
+  </div>
+  <div class="phone-wrap">
+    <div class="phone-header">📱 How This Plays Out</div>
+    <div class="bubble-row"><div class="bubble received">Goes quiet after a close weekend together</div></div>
+    <div class="bubble-row sent"><div class="bubble sent">Hey. I notice you have gone a bit quiet. I am not going anywhere.</div></div>
+    <div class="bubble-time">You said it once. Then you put the phone down.</div>
+  </div>
+
+  <div class="section-label">When He Comes Back Warm After Days of Silence</div>
+  <div class="script-box">
+    <div class="script-label">The Secure Script</div>
+    <div class="script-line">&ldquo;I am glad you are here.&rdquo;</div>
+    <div class="script-why">Why this works: Short and warm. Welcomes reconnection without punishing the absence.</div>
+  </div>
+  <div class="phone-wrap">
+    <div class="phone-header">📱 How This Plays Out</div>
+    <div class="bubble-row"><div class="bubble received">Hey, how are you?</div></div>
+    <div class="bubble-row sent"><div class="bubble sent-rose">I am glad you are here.</div></div>
+    <div class="bubble-time">Warm. Not a punishment. Not a debrief.</div>
+  </div>
+
+  <div class="section-label">When You Want to Check In Without Pressure</div>
+  <div class="script-box">
+    <div class="script-label">The Secure Script</div>
+    <div class="script-line">&ldquo;Just wanted to say I was thinking about you. No need to reply right now.&rdquo;</div>
+    <div class="script-why">Why this works: Keeps the thread open without demanding a response. Low stakes. Means it.</div>
+  </div>
+</div>
+
+<!-- PAGE 7: SCRIPTS PART 2 + IN-PERSON -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">7</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-violet">More Scripts</div>
+      <div class="page-header-title">More Situations, More Scripts</div>
+      <div class="page-header-sub">Including face-to-face conversations that actually work</div>
+    </div>
+  </div>
+
+  <div class="section-label">When the Cycle Starts and You Catch It</div>
+  <div class="script-box">
+    <div class="script-label">The Secure Script</div>
+    <div class="script-line">&ldquo;I think our cycle just started. Can we both just pause for a second?&rdquo;</div>
+    <div class="script-why">Why this works: Naming the pattern out loud is the single most effective interrupt. Calm, not blaming.</div>
+  </div>
+  <div class="phone-wrap">
+    <div class="phone-header">📱 How This Plays Out</div>
+    <div class="bubble-row"><div class="bubble received">Familiar pull-away beginning</div></div>
+    <div class="bubble-row sent"><div class="bubble sent-teal">I think our cycle just started. Can we both just pause for a second?</div></div>
+    <div class="bubble-time">Calm. Not blaming. Said once.</div>
+  </div>
+
+  <div class="section-label">When You Feel Desperate and Want to Spiral</div>
+  <div class="script-box">
+    <div class="script-label">What to Say to Yourself (Not Him)</div>
+    <div class="script-line">&ldquo;I feel anxious right now and I am going to take a walk before I send anything.&rdquo;</div>
+    <div class="script-why">Why this works: Regulation first. Response second. Breaks the loop before it starts.</div>
+  </div>
+
+  <div class="section-label" style="margin-top:16px;">When You're Face to Face</div>
+  <div class="two-col">
+    <div class="card bg-violet">
+      <div class="card-title ac-violet">He Goes Quiet Over Dinner</div>
+      <div style="font-size:12px;font-weight:600;font-style:italic;color:#1A3020;margin-bottom:6px;">&ldquo;Hey. You seem far away. I am right here.&rdquo;</div>
+      <div style="font-size:11px;font-weight:700;color:var(--violet);">Touch his hand. Keep your voice soft.</div>
+    </div>
+    <div class="card bg-violet">
+      <div class="card-title ac-violet">A Fight Is About to Escalate</div>
+      <div style="font-size:12px;font-weight:600;font-style:italic;color:#1A3020;margin-bottom:6px;">&ldquo;I want to hear you. Can we slow down for a second?&rdquo;</div>
+      <div style="font-size:11px;font-weight:700;color:var(--violet);">Lower your voice. Do not move away.</div>
+    </div>
+    <div class="card bg-violet">
+      <div class="card-title ac-violet">You Want to Reconnect After Distance</div>
+      <div style="font-size:12px;font-weight:600;font-style:italic;color:#1A3020;margin-bottom:6px;">&ldquo;I do not want to go to bed feeling far from you.&rdquo;</div>
+      <div style="font-size:11px;font-weight:700;color:var(--violet);">Sit next to him. Mean it.</div>
+    </div>
+    <div class="card bg-violet">
+      <div class="card-title ac-violet">When Closeness Feels Easy and Good</div>
+      <div style="font-size:12px;font-weight:600;font-style:italic;color:#1A3020;margin-bottom:6px;">&ldquo;This is exactly what I want with you.&rdquo;</div>
+      <div style="font-size:11px;font-weight:700;color:var(--violet);">No phones. Just this.</div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE 8: ACTION PLAN + 7-DAY PLAN -->
+<div class="section-page">
+  <div class="page-header">
+    <div class="page-header-num">8</div>
+    <div class="page-header-content">
+      <div class="page-header-label ac-teal">Your Action Plan</div>
+      <div class="page-header-title">What to Do Starting Now</div>
+      <div class="page-header-sub">Concrete steps built from your specific situation, ordered by impact.</div>
+    </div>
+  </div>
+
+  <div class="section-label">Actions to Take This Week</div>
+  <div>
+    <div class="action-item"><div class="action-num">1</div><div class="action-text">Send one low-pressure message when you feel the urge to pursue. Then stop.</div></div>
+    <div class="action-item"><div class="action-num">2</div><div class="action-text">Write down the last three times the cycle started. What triggered it each time?</div></div>
+    <div class="action-item"><div class="action-num">3</div><div class="action-text">Use the pause script once this week when you feel the spiral coming.</div></div>
+    <div class="action-item"><div class="action-num">4</div><div class="action-text">Take a 20-minute walk alone when you feel flooded, before you respond.</div></div>
+    <div class="action-item"><div class="action-num">5</div><div class="action-text">Write down what security feels like to you. Not what Marcus does. What YOU feel.</div></div>
+    <div class="action-item"><div class="action-num">6</div><div class="action-text">Find one attachment-informed therapist to book even one session.</div></div>
+  </div>
+
+  <div class="section-label" style="margin-top:14px;">Patterns to Stop</div>
+  <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text">Stop doubling down when he goes quiet. It accelerates his withdrawal.</div></div>
+  <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text">Do not interpret silence as rejection before asking directly.</div></div>
+  <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text">Stop apologizing for needing connection. The need is valid.</div></div>
+  <div class="avoid-item"><div class="avoid-x">✕</div><div class="avoid-text">Do not have the big conversations when either of you is flooded.</div></div>
+
+  <div class="section-label" style="margin-top:14px;">Your 7-Day Plan</div>
+  <div class="day-row"><div class="day-badge">Day 1</div><div class="day-text">Read this guide start to finish. Underline one thing that resonates.</div></div>
+  <div class="day-row"><div class="day-badge">Day 2</div><div class="day-text">Use one script in a low-stakes moment today.</div></div>
+  <div class="day-row"><div class="day-badge">Day 3</div><div class="day-text">Write down the last time the cycle started. What triggered it?</div></div>
+  <div class="day-row"><div class="day-badge">Day 4</div><div class="day-text">Do one thing that regulates you. A walk, a workout, a call with a friend.</div></div>
+  <div class="day-row"><div class="day-badge">Day 5</div><div class="day-text">Have a 10-minute check-in with no problem-solving. Just connect.</div></div>
+  <div class="day-row"><div class="day-badge">Day 6</div><div class="day-text">Notice when the cycle starts today and name it out loud instead of following it.</div></div>
+  <div class="day-row"><div class="day-badge">Day 7</div><div class="day-text">Reflect on what you understand now that you did not understand a week ago.</div></div>
+
+  <div class="gradient-highlight" style="margin-top:16px;">
+    <div class="gh-label">Remember</div>
+    <div class="gh-sub">Progress isn't linear. There will be days the old pattern wins. That doesn't mean you failed. Every time you catch it earlier, every time you choose a different response, you are literally rewiring how your nervous system works. That is not nothing. That is everything.</div>
+  </div>
+</div>
+
+<!-- PAGE 9: CLOSING -->
+<div class="section-page">
+  <div style="padding: 48px 0 32px; text-align:center;">
+    <div style="font-size:9px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--muted);margin-bottom:16px;">BONDBLUEPRINT™</div>
+    <h2 style="font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:var(--text);line-height:1.2;margin-bottom:16px;max-width:500px;margin-left:auto;margin-right:auto;">You Are Not Too Much.</h2>
+    <div style="width:48px;height:3px;background:var(--rose);margin:0 auto 24px;border-radius:2px;"></div>
+  </div>
+
+  <div class="gradient-highlight" style="margin-bottom:20px;">
+    <div class="gh-label">A Note From Ash</div>
+    <div class="gh-sub" style="font-size:13px;line-height:1.75;">You came into this guide with a knot in your stomach. You now know why your body reacts the way it does. You know how to stop the behaviors that make things worse. You know how to calm yourself down. And you know what to say in every scenario. More than any of that: you are not too much. You are not broken. You are someone whose nervous system responds to connection the way it was built to, and who now has the tools to respond from security instead of panic.</div>
+  </div>
+
+  <div class="pull-quote pq-violet">
+    <p>A person with secure attachment does not stay in something that keeps their nervous system in permanent emergency mode. You were not built for a constant loop of chase and pull-away. You deserve something consistent.</p>
+  </div>
+
+  <div style="text-align:center;margin:24px 0 20px;">
+    <div style="font-size:14px;font-weight:700;color:var(--muted);margin-bottom:18px;">If you want to go deeper on your specific situation with me directly:</div>
+    <a href="https://stan.store/Ashcoupleseducator/p/book-a-11-call-with-me-y42st9i5" style="display:inline-block;background:linear-gradient(135deg,#E07A3A,#C4860A);color:#FFFFFF;font-size:14px;font-weight:900;text-decoration:none;border-radius:100px;padding:14px 36px;letter-spacing:0.3px;box-shadow:0 4px 16px rgba(224,122,58,0.35);">Book a 1:1 with Ash</a>
+    <div style="font-size:13px;font-weight:800;color:var(--teal);margin-top:20px;">With love and attachment science, Ash · Couples Educator</div>
+  </div>
+
+  <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-bottom:24px;">
+    <span class="tag tag-violet">Attachment Science</span>
+    <span class="tag tag-rose">Real Scripts</span>
+    <span class="tag tag-teal">Nervous System Tools</span>
+    <span class="tag tag-navy">Secure Patterns</span>
+    <span class="tag tag-violet">7-Day Plan</span>
+  </div>
+
+  <div style="border-top:1px solid var(--border);padding-top:16px;text-align:center;">
+    <p style="font-size:10px;font-weight:600;color:var(--muted);line-height:1.7;">BondBlueprint™ by CouplesEducator.com · For educational purposes only · Not therapy or clinical advice<br>For mental health support, consult a licensed therapist or counselor.</p>
+  </div>
+</div>
+
+</div><!-- end .page -->
+</body>
+</html>
