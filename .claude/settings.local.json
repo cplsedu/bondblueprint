@@ -16,7 +16,24 @@
       "Bash(grep -v \"^\\\\s*\\\\`\\\\|template\\\\|card\\\\.innerHTML\\\\|badge\\\\.innerHTML\\\\|body\\\\.innerHTML\\\\|ctaWrap\\\\|posthog\\\\|function\\\\|=>\\\\|const \\\\|let \\\\|return \\\\|\\\\.textContent\\\\|\\\\.src\\\\|\\\\.host\\\\|\\\\.api\")",
       "Read(//Users/ashleysoto/.nvm/versions/**)",
       "Read(//opt/homebrew/bin/**)",
-      "Read(//Users/ashleysoto/**)"
+      "Read(//Users/ashleysoto/**)",
+      "Bash(git -C /Users/ashleysoto/Desktop/Ash status)",
+      "Bash(git -C /Users/ashleysoto/Desktop/Ash add bondblueprint-free.html lib/email.js)",
+      "Bash(git -C /Users/ashleysoto/Desktop/Ash commit -m ' *)",
+      "Bash(git -C /Users/ashleysoto/Desktop/Ash add bondblueprint-free.html)",
+      "Bash(git -C /Users/ashleysoto/Desktop/Ash push origin main)",
+      "Bash(/usr/local/bin/node --version)",
+      "Bash(git -C /Users/ashleysoto/Desktop/Ash add bondblueprint-free.html lib/marketing.js bb-server.js)",
+      "Bash(npm install *)",
+      "Bash(/usr/local/bin/npm install *)",
+      "Bash(sed -i '' -e 's/#1E2D4E/#2C4A35/g' -e 's/#C4516A/#E07A3A/g' -e 's/#7C5CBF/#D4A843/g' -e 's/#2E8B8B/#4A7A5A/g' -e 's/#FCEEF1/#FDF0E6/g' -e 's/#F2EEFB/#E6F0E9/g' -e 's/#EAF6F6/#FBF5E6/g' -e 's/#EBF0F8/#E8EEE9/g' -e 's/#DDA0B0/#F0C0A0/g' -e 's/#B8A8E0/#B8C8A0/g' -e 's/#90CCCC/#9CC49C/g' -e 's/#A8BCE0/#9CB89C/g' -e 's/rgba\\(196,81,106/rgba\\(224,122,58/g' -e 's/rgba\\(124,92,191/rgba\\(212,168,67/g' -e 's/rgba\\(46,139,139/rgba\\(74,122,90/g' -e 's/rgba\\(30,45,78/rgba\\(44,74,53/g' -e 's/#1A1030/#111E13/g' -e 's/#2E1A5A/#1E3526/g' -e 's/#2A1A3A/#1A2A1A/g' -e 's/#3A2060/#1A3020/g' -e 's/#3A1E6A/#1A3020/g' -e 's/#6A1E2A/#5A3A1A/g' -e 's/#1A3A3A/#1A3020/g' -e 's/#1A4040/#1A3020/g' -e 's/#3A2800/#1A2800/g' -e 's/#F0A0B8/#F4C44A/g' -e 's/#F7F3EE/#FAF7F3/g' /Users/ashleysoto/Desktop/Ash/lib/pdf.js)",
+      "Bash(sed -i '' -e 's/linear-gradient\\(135deg, #1A2A1A, #2C4A35\\)/linear-gradient\\(135deg, #1A2A1A, #2C4A35\\)/g' /Users/ashleysoto/Desktop/Ash/lib/pdf.js)",
+      "Bash(sed -i '' -e 's/ — /, /g' -e 's/—/, /g' /Users/ashleysoto/Desktop/Ash/lib/pdf.js)",
+      "Bash(sed -i '' -e 's/linear-gradient\\(140deg, #111E13 0%, #1E3526 50%, #2C4A35 100%\\)/linear-gradient\\(140deg, #0F1A10 0%, #1E3526 55%, #2C4A35 100%\\)/g' -e 's/rgba\\(74,122,90,0.12\\)/rgba\\(74,122,90,0.18\\)/g' /Users/ashleysoto/Desktop/Ash/lib/pdf.js)",
+      "Bash(sed -i '' -e 's/linear-gradient\\(135deg, #111E13 0%, #1E3526 100%\\)/linear-gradient\\(135deg, #0F1A10 0%, #1E3526 100%\\)/g' -e 's/linear-gradient\\(135deg, #111E13, #1E3526, #2C4A35\\)/linear-gradient\\(135deg, #0F1A10, #1E3526, #2C4A35\\)/g' /Users/ashleysoto/Desktop/Ash/lib/pdf.js)",
+      "Bash(/opt/homebrew/bin/node --version)",
+      "Bash(command -v node)",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }
