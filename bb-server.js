@@ -96,6 +96,15 @@ app.get('/admin', (req, res) => {
   res.sendFile(path.join(__dirname, 'admin.html'));
 });
 
+app.get('/api/admin/config', (req, res) => {
+  const { key } = req.query;
+  if (!key || key !== process.env.ADMIN_KEY) return res.status(401).json({ error: 'Unauthorized' });
+  res.json({
+    phKey: process.env.POSTHOG_PERSONAL_KEY || '',
+    phPid: process.env.POSTHOG_PROJECT_ID   || '',
+  });
+});
+
 app.get('/api/admin/stats', async (req, res) => {
   const { key, from, to } = req.query;
   if (!key || key !== process.env.ADMIN_KEY) {
