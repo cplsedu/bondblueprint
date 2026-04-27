@@ -236,7 +236,7 @@ async function processCompletedCheckout(session) {
   // Save blueprint and mark complete
   await completePurchase({ stripeSessionId: sessionId, paymentIntent, blueprintData: blueprint });
 
-  // Generate PDF
+  // Generate PDF (non-fatal — email still sends if PDF fails)
   let pdfBuffer;
   try {
     pdfBuffer = await generateBlueprintPdf(blueprint, {
@@ -245,11 +245,10 @@ async function processCompletedCheckout(session) {
       partnerStyle:    formatStyle(partnerStyle)
     });
   } catch (err) {
-    console.error('PDF generation failed:', err.message);
-    return;
+    console.error('PDF generation failed (will send email without attachment):', err.message);
   }
 
-  // Send email with PDF
+  // Send email — always send even if PDF failed
   try {
     await sendBlueprintEmail({
       to:             email,
@@ -262,7 +261,6 @@ async function processCompletedCheckout(session) {
     await markEmailSent(sessionId);
   } catch (err) {
     console.error('Email send failed:', err.message);
-    return;
   }
 
   // Notify owner
