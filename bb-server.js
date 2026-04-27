@@ -322,6 +322,10 @@ Mirror their exact words back. Use phrases they used. Make them feel seen, not a
 Never be clinical. Never be generic.
 Never use em-dashes (— or &mdash;). Use commas or periods instead.
 
+STRICT RULE — NO HALLUCINATION: Only reference events, behaviors, feelings, and details that the person explicitly wrote about in their situation text. If they did not mention pulling away, do not write about pulling away. If they did not mention a specific behavior, do not invent it. If their situation is brief or vague, write about what they DID say — do not fill in details they never provided. Every specific claim must trace back to their actual words.
+
+STRICT RULE — USE THEIR EXACT LANGUAGE FOR PEOPLE: The person may be writing about a boyfriend, girlfriend, husband, wife, situationship, someone they are seeing, someone outside their relationship, or multiple people at once. Do not assume it is one person or a traditional partner. Refer to the people in their situation exactly the way they referred to them. If they said "he," use "he." If they named someone, use that name. If they mentioned two different people, keep them distinct. Never replace their words with generic labels like "your partner" if that is not what they wrote.
+
 Return ONLY valid JSON. No markdown, no explanation, no code fences. Just the raw JSON object.`;
 
   const USER_PROMPT = `Here is someone's real situation. Read every word carefully. Then write their personal relationship guide.
@@ -333,6 +337,8 @@ CONTEXT:
 - Who this is about: ${who}
 - Main relationship pattern: ${themeLabels[theme] || theme}
 - What they want most: ${goal}
+
+IMPORTANT: Only reference what is in the situation text above. Do not invent behaviors they did not describe. If they did not mention something, leave it out. Write only about what they actually shared.
 
 Return a JSON object with EXACTLY this structure (no extra fields, no missing fields):
 
@@ -629,19 +635,19 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
   return {
     title:             'Your Relationship Guide',
     coverIntro:        'You showed up. That matters. This guide was built from what you shared and what the research says about this exact pattern. You are not the problem. The cycle is.',
-    situationSummary:  'The pattern between you is driven by differing attachment strategies, not a lack of love. One person reaches for connection when they feel unsafe. The other pulls back when closeness feels like too much. Both are nervous systems doing exactly what they were built to do.',
-    cycleLeft:         'Reaches out, texts more, seeks reassurance',
-    cycleRight:        'Goes quiet, needs space, pulls back',
+    situationSummary:  'The pattern between you is driven by differing attachment strategies, not a lack of love. Both of you are responding from nervous systems shaped long before this relationship. Neither of you is the problem. The cycle is.',
+    cycleLeft:         'Seeks connection, reaches for closeness',
+    cycleRight:        'Seeks distance, needs space to regulate',
     understandingPartner: [
-      'When your partner pulls away or goes cold, their nervous system is not rejecting you. It learned early on that closeness equals pressure or loss of self. Pulling back is how they protect themselves, even from people they genuinely care about.',
-      'Research by John Bowlby shows that early attachment experiences become the template for how we respond to intimacy as adults. Your partner\'s withdrawal is an automatic response, not a decision about how much they value you.',
-      'What they actually need, even if they cannot say it, is a partner who stays calm and does not collapse when they need space. When you can give them that, their system starts to relax. The pull-away gets shorter. They come back faster.'
+      'Your partner\'s responses in conflict are driven by their nervous system, not by how much they care about you. Early attachment experiences create automatic responses to closeness and disconnection that run below conscious awareness.',
+      'Research by John Bowlby shows that these patterns form in childhood and become the default template for adult relationships. Your partner is not choosing to respond this way. Their system is doing what it was trained to do.',
+      'What they actually need, even if they cannot say it, is a partner who stays steady and does not escalate when things get hard. Calm, consistent responses over time are what shift the dynamic.'
     ],
     partnerBehaviors: [
-      { behavior: 'Goes quiet for days',            translation: 'Overwhelmed and self-regulating, not abandoning you', move: 'One warm message. Then give space.' },
+      { behavior: 'Goes quiet during conflict',         translation: 'Overwhelmed and self-regulating, not abandoning you', move: 'One warm message. Then give space.' },
       { behavior: 'Says "I\'m fine" when they\'re not', translation: 'No language for feelings yet, or fears your reaction', move: 'Okay. I\'m here when you\'re ready.' },
-      { behavior: 'Pulls away after closeness',     translation: 'Closeness triggered their alarm, not rejection',         move: 'Do not chase. Stay steady. They will return.' },
-      { behavior: 'Comes back warm after going cold', translation: 'Regulated and missed you. The connection is real.',    move: 'Welcome them back. Do not punish.' },
+      { behavior: 'Needs space after intensity',        translation: 'Their nervous system needs to reset, not rejection',   move: 'Give space without withdrawing warmth.' },
+      { behavior: 'Returns warm after a hard moment',  translation: 'Regulated and missing connection. The bond is real.',  move: 'Welcome them back without punishment.' },
     ],
     scripts: [
       { context: 'When you feel the distance growing',           theirMessage: 'Silent, cold, or suddenly distant',             say: 'I notice I am feeling disconnected. Can we check in?',                        note: 'Calm voice. Not urgent.',      why: 'Names the feeling without blame, keeping them from going defensive.' },

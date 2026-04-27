@@ -458,7 +458,7 @@ input{font-family:inherit;font-size:16px;-webkit-appearance:none}
 ═══════════════════════════════════════════ */
 const Q = {
   currentIdx: 0,
-  myAnswers:  [],  // A/B/C/D for each of 5 questions
+  myAnswers:  [],  // A/B/C/D for each of 4 questions
   ptAnswers:  [],  // A/B/C/D for each of 4 questions
   myStyle:    null,
   ptStyle:    null,
@@ -519,15 +519,6 @@ const MY_QUESTIONS = [
     ]
   },
   {
-    text: 'When things are going really well in your relationship, how do you tend to feel?',
-    options: [
-      { val:'A', text:'Happy, but there is a part of me waiting for it to fall apart.' },
-      { val:'B', text:'Good, but I sometimes pull back when things feel too intense or close.' },
-      { val:'C', text:'Happy and also kind of terrified. Like I need this too much.' },
-      { val:'D', text:'Really good. I can enjoy it without worrying about losing it.' }
-    ]
-  },
-  {
     text: 'When you and your partner have a conflict, your instinct is usually to:',
     options: [
       { val:'A', text:'Want to resolve it right now. I cannot rest until things feel okay between us.' },
@@ -546,12 +537,12 @@ const MY_QUESTIONS = [
     ]
   },
   {
-    text: 'Deep emotional intimacy, being truly known by someone, makes you feel:',
+    text: 'When things between you feel really close and loving, do you ever find yourself pulling back, picking a fight, or creating distance — even when you actually want to stay connected?',
     options: [
-      { val:'A', text:'Like this is everything you want, but you worry it might be too much for them.' },
-      { val:'B', text:'Slightly uncomfortable. You value closeness but need independence too.' },
-      { val:'C', text:'Both deeply wanted and terrifying at the same time.' },
-      { val:'D', text:'Safe and good. You can go deep without losing yourself.' }
+      { val:'A', text:'No. When things feel good I lean in harder. I never push it away.' },
+      { val:'B', text:'Yes, I need to protect my independence. Too much closeness feels suffocating.' },
+      { val:'C', text:'Yes. Something in me gets scared when things feel too good and I sometimes push it away without meaning to.' },
+      { val:'D', text:'Not really. I can enjoy closeness without needing to escape it.' }
     ]
   }
 ];
@@ -836,7 +827,12 @@ const PRODUCTS = {
 function resolveStyle(answers) {
   const counts = { A: 0, B: 0, C: 0, D: 0 };
   answers.forEach(a => { if (counts[a] !== undefined) counts[a]++; });
-  const sorted = Object.entries(counts).sort((x, y) => y[1] - x[1]);
+  // Tiebreaker priority: C (FA) > A (AA) > B (DA) > D (SA)
+  // FA shares anxious traits so mixed A+C answers reliably indicate FA
+  const priority = { C: 0, A: 1, B: 2, D: 3 };
+  const sorted = Object.entries(counts).sort((x, y) =>
+    y[1] !== x[1] ? y[1] - x[1] : priority[x[0]] - priority[y[0]]
+  );
   const top = sorted[0][0];
   const map = { A:'AA', B:'DA', C:'FA', D:'SA' };
   return map[top];
@@ -946,7 +942,7 @@ async function submitGate() {
 /* ═══════════════════════════════════════════
    QUIZ ENGINE
 ═══════════════════════════════════════════ */
-const TOTAL_Q = MY_QUESTIONS.length + PT_QUESTIONS.length; // 9
+const TOTAL_Q = MY_QUESTIONS.length + PT_QUESTIONS.length; // 8
 
 function renderQuizQuestion() {
   const idx   = Q.currentIdx;

@@ -147,8 +147,9 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 
   <!-- Shared date range bar — controls everything -->
   <div class="date-bar">
+    <button class="preset-btn active" onclick="setPresetToday(this)">Today</button>
     <button class="preset-btn" onclick="setPreset(7,this)">Last 7 days</button>
-    <button class="preset-btn active" onclick="setPreset(30,this)">Last 30 days</button>
+    <button class="preset-btn" onclick="setPreset(30,this)">Last 30 days</button>
     <button class="preset-btn" onclick="setPreset(90,this)">Last 90 days</button>
     <button class="preset-btn" onclick="setPresetMonth(this)">This month</button>
     <button class="preset-btn" onclick="setPresetAll(this)">All time</button>
@@ -277,6 +278,7 @@ function daysAgoStr(n) { const d=new Date(); d.setDate(d.getDate()-n); return d.
 function getRange()    { return { from: document.getElementById('from-date').value, to: document.getElementById('to-date').value }; }
 
 function clearPresets() { document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active')); }
+function setPresetToday(btn)     { clearPresets(); btn.classList.add('active'); document.getElementById('from-date').value=todayStr(); document.getElementById('to-date').value=todayStr(); refreshAll(); }
 function setPreset(days, btn)    { clearPresets(); btn.classList.add('active'); document.getElementById('from-date').value=daysAgoStr(days-1); document.getElementById('to-date').value=todayStr(); refreshAll(); }
 function setPresetMonth(btn)     { clearPresets(); btn.classList.add('active'); const n=new Date(); document.getElementById('from-date').value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-01`; document.getElementById('to-date').value=todayStr(); refreshAll(); }
 function setPresetAll(btn)       { clearPresets(); btn.classList.add('active'); document.getElementById('from-date').value='2024-01-01'; document.getElementById('to-date').value=todayStr(); refreshAll(); }
@@ -285,7 +287,7 @@ function setPresetAll(btn)       { clearPresets(); btn.classList.add('active'); 
 function showDashboard() {
   document.getElementById('login-section').style.display = 'none';
   document.getElementById('main-content').style.display  = 'block';
-  document.getElementById('from-date').value = daysAgoStr(29);
+  document.getElementById('from-date').value = todayStr();
   document.getElementById('to-date').value   = todayStr();
   refreshAll();
 }
