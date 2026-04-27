@@ -263,8 +263,8 @@ async function processCompletedCheckout(session) {
     console.error('Email send failed:', err.message);
   }
 
-  // Notify owner
-  sendOwnerNotification({ email, name: name || lead?.name || '', attachmentStyle, partnerStyle, amountCents, lead }).catch(() => {});
+  // Notify owner (with PDF copy for records)
+  sendOwnerNotification({ email, name: name || lead?.name || '', attachmentStyle, partnerStyle, amountCents, lead, pdfBuffer }).catch(() => {});
 
   // ConvertKit: remove from abandoned cart sequence, add "paid" tag
   removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
@@ -573,12 +573,12 @@ app.get('/api/health', (req, res) => {
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
-async function sendOwnerNotification({ email, name, attachmentStyle, partnerStyle, amountCents, lead }) {
+async function sendOwnerNotification({ email, name, attachmentStyle, partnerStyle, amountCents, lead, pdfBuffer }) {
   const { sendOwnerNotificationEmail } = require('./lib/email');
   const amount  = amountCents ? `$${(amountCents / 100).toFixed(2)}` : 'unknown';
   const source  = lead?.quiz_data?.source || lead?.quiz_data?.ref || 'direct / unknown';
   const situation = (lead?.situation || '').slice(0, 300);
-  await sendOwnerNotificationEmail({ email, name, attachmentStyle, partnerStyle, amount, source, situation });
+  await sendOwnerNotificationEmail({ email, name, attachmentStyle, partnerStyle, amount, source, situation, pdfBuffer });
 }
 
 function resolveTheme(myStyle, partnerStyle) {

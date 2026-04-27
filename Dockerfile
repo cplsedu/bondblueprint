@@ -6,6 +6,7 @@ RUN apt-get update && apt-get install -y \
     fonts-freefont-ttf \
     fonts-ipafont-gothic \
     fonts-wqy-zenhei \
+    fonts-noto-color-emoji \
     ca-certificates \
     --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
