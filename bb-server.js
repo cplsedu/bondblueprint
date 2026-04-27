@@ -7,7 +7,7 @@ const helmet      = require('helmet');
 const stripe      = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path        = require('path');
 
-const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession } = require('./lib/db');
+const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics } = require('./lib/db');
 const { sendBlueprintEmail }    = require('./lib/email');
 const { generateBlueprintPdf }  = require('./lib/pdf');
 const { subscribeToConvertKit, tagSubscriber, removeTag } = require('./lib/marketing');
@@ -87,6 +87,29 @@ app.post('/api/account', async (req, res) => {
   } catch (err) {
     console.error('Account upsert error:', err.message);
     res.status(500).json({ error: 'Failed to save account' });
+  }
+});
+
+// ─── ADMIN DASHBOARD ─────────────────────────────────────────────────────────
+
+app.get('/admin', (req, res) => {
+  res.sendFile(path.join(__dirname, 'admin.html'));
+});
+
+app.get('/api/admin/stats', async (req, res) => {
+  const { key, from, to } = req.query;
+  if (!key || key !== process.env.ADMIN_KEY) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  if (!from || !to) {
+    return res.status(400).json({ error: 'from and to dates required' });
+  }
+  try {
+    const stats = await getAnalytics({ from, to });
+    res.json(stats);
+  } catch (err) {
+    console.error('Admin stats error:', err.message);
+    res.status(500).json({ error: 'Failed to load stats' });
   }
 });
 
