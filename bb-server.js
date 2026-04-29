@@ -627,7 +627,7 @@ function resolveTheme(myStyle, partnerStyle) {
 }
 
 function formatStyle(code) {
-  const map = { AA:'Anxious', DA:'Avoidant', FA:'Fearful-Avoidant', SA:'Secure' };
+  const map = { AA:'Anxious', DA:'Dismissive-Avoidant', FA:'Fearful-Avoidant', SA:'Secure' };
   return map[code] || code;
 }
 
