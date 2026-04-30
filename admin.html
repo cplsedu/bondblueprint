@@ -42,6 +42,20 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 .apply-btn{padding:6px 18px;border-radius:100px;border:none;background:#2C4A35;color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin-left:auto}
 .apply-btn:hover{background:#1E3526}
 
+/* Benchmark */
+.benchmark-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:2px}
+.benchmark-table th{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#9A908A;padding:6px 10px 8px;text-align:left;border-bottom:1.5px solid #EEE8E0}
+.benchmark-table th.r,.benchmark-table td.r{text-align:right}
+.benchmark-table td{padding:8px 10px;border-bottom:1px solid #F5F0EA;font-weight:600;color:#1E1E1E}
+.benchmark-table tr:last-child td{border-bottom:none}
+.benchmark-row-hero td{background:#F7F3EE}
+.vs-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px}
+.vs-above{background:#E8F0E9;color:#2C4A35}
+.vs-below{background:#FEF0E8;color:#E07A3A}
+.vs-at{background:#F5F0EA;color:#9A908A}
+.benchmark-footer{margin-top:12px;padding:10px 14px;background:#F7F3EE;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.benchmark-footer-label{font-size:11px;font-weight:700;color:#6B6560}
+
 /* Metric cards */
 .metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
 .metric-card{background:#fff;border-radius:14px;padding:18px 20px;border:1.5px solid #DDD7CE}
@@ -169,6 +183,50 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
     <div class="metric-card"><div class="metric-label">Revenue</div><div class="metric-value green" id="m-revenue">—</div><div class="metric-sub">Total earned</div></div>
     <div class="metric-card"><div class="metric-label">Conversion</div><div class="metric-value teal" id="m-conversion">—</div><div class="metric-sub">Lead → purchase</div></div>
     <div class="metric-card"><div class="metric-label">Avg Order</div><div class="metric-value" id="m-aov">—</div><div class="metric-sub">Per purchase</div></div>
+  </div>
+
+  <!-- ── Baseline Benchmark ── -->
+  <div class="card">
+    <div class="card-title">Baseline Benchmark · Pre-BondBlueprint (Stan Store)</div>
+    <table class="benchmark-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th class="r">Views</th>
+          <th class="r">Orders</th>
+          <th class="r">Conv %</th>
+          <th class="r">Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="benchmark-row-hero">
+          <td><strong>The Pull-Away Antidote</strong> <span style="font-size:10px;color:#E07A3A;font-weight:700;margin-left:4px">← predecessor to this funnel</span></td>
+          <td class="r">495</td><td class="r">28</td>
+          <td class="r" style="font-weight:800;color:#2C4A35">5.3%</td>
+          <td class="r" style="font-weight:800;color:#2C4A35">$532</td>
+        </tr>
+        <tr>
+          <td>Stop The Rollercoaster</td>
+          <td class="r">100</td><td class="r">3</td><td class="r">3.0%</td><td class="r">$57</td>
+        </tr>
+        <tr>
+          <td>Book a 1:1 Call with Me</td>
+          <td class="r">17</td><td class="r">1</td><td class="r">5.9%</td><td class="r">$50</td>
+        </tr>
+        <tr>
+          <td>Stop Fighting &amp; Start Connecting!</td>
+          <td class="r">15</td><td class="r">2</td><td class="r">13.3%</td><td class="r">$38</td>
+        </tr>
+        <tr>
+          <td>The Relationship PIP</td>
+          <td class="r">17</td><td class="r">1</td><td class="r">5.9%</td><td class="r">$19</td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="benchmark-footer">
+      <div class="benchmark-footer-label">BondBlueprint target: match or beat <strong style="color:#2C4A35">5.3%</strong> lead → purchase conversion</div>
+      <div id="vs-baseline"><span class="vs-badge vs-at">—</span></div>
+    </div>
   </div>
 
   <div class="card">
@@ -312,12 +370,28 @@ function loadSupabase(from, to) {
 function fmt$(c) { return '$'+(c/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
 function n(v)    { return v==null ? '0' : Number(v).toLocaleString(); }
 
+const BASELINE_CONV = 5.3; // Pull-Away Antidote on Stan — predecessor to this funnel
+
 function renderSupabase(d) {
   document.getElementById('m-leads').textContent     = n(d.leads);
   document.getElementById('m-purchases').textContent = n(d.purchases);
   document.getElementById('m-revenue').textContent   = fmt$(d.revenue);
   document.getElementById('m-conversion').textContent= d.conversionRate+'%';
   document.getElementById('m-aov').textContent       = d.avgOrderValue ? fmt$(d.avgOrderValue) : '—';
+
+  // Live vs-baseline badge
+  const vsEl = document.getElementById('vs-baseline');
+  if (vsEl && d.leads >= 5) { // need enough data for the % to be meaningful
+    const current = parseFloat(d.conversionRate);
+    const delta   = (current - BASELINE_CONV).toFixed(1);
+    const sign    = delta >= 0 ? '+' : '';
+    const cls     = delta >= 0.5 ? 'vs-above' : delta <= -0.5 ? 'vs-below' : 'vs-at';
+    const arrow   = delta >= 0.5 ? '▲' : delta <= -0.5 ? '▼' : '≈';
+    vsEl.innerHTML = `<span class="vs-badge ${cls}">${arrow} ${sign}${delta}% vs ${BASELINE_CONV}% baseline</span>`;
+  } else if (vsEl) {
+    vsEl.innerHTML = `<span class="vs-badge vs-at">Need more data</span>`;
+  }
+
   renderRevenueChart(d.dailyStats);
   renderStyles(d.styleBreakdown);
   renderPurchases(d.recentPurchases);
