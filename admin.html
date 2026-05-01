@@ -375,6 +375,12 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
           <div class="live-bar-cnt" id="lc-cart" id="m-clickback">0</div>
         </div>
       </div>
+      <!-- Where they're coming from -->
+      <div>
+        <div class="live-bars-title">Where they're coming from today</div>
+        <div id="live-sources" style="display:flex;flex-direction:column;gap:5px"><div style="font-size:10px;color:rgba(255,255,255,.2)">Loading…</div></div>
+      </div>
+
       <div class="live-feed-wrap">
         <div class="live-feed-title">Recent events · Last 6 hours</div>
         <div id="live-feed"></div>
@@ -1081,78 +1087,146 @@ const FEED_EVENTS = {
   abandoned_cart_email_click:{ icon:'↩️',bg:'rgba(107,74,138,.6)', label:'Returned via cart email' },
 };
 
+async function livePQ(sql) {
+  // Thin wrapper — returns [] on any error so callers never throw
+  try {
+    return await phQuery(sql);
+  } catch(e) {
+    console.warn('live sub-query failed:', e.message, '\nSQL:', sql);
+    return null; // null = failed, [] = succeeded but empty
+  }
+}
+
 async function loadLivePanel() {
   if (!PH_KEY) {
     setPhStatus(false, 'NO API KEY');
-    document.getElementById('live-error').style.display = 'block';
-    document.getElementById('live-error').textContent = '⚠ POSTHOG_PERSONAL_KEY or POSTHOG_PROJECT_ID not set in Railway environment variables. Add them to see live data.';
+    const errEl = document.getElementById('live-error');
+    if (errEl) { errEl.style.display='block'; errEl.textContent='⚠ POSTHOG_PERSONAL_KEY or POSTHOG_PROJECT_ID not set in Railway → Variables.'; }
     return;
   }
-  try {
-    const [liveRows, geoRows, actRows, barRows] = await Promise.all([
-      phQuery(`SELECT uniqIf(distinct_id, timestamp > now() - interval 10 minute), uniqIf(distinct_id, timestamp > now() - interval 60 minute) FROM events WHERE timestamp > now() - interval 60 minute`),
-      phQuery(`SELECT toFloat64OrZero(ifNull(toString(properties.\`$geoip_latitude\`),'0')), toFloat64OrZero(ifNull(toString(properties.\`$geoip_longitude\`),'0')), ifNull(toString(properties.\`$geoip_city_name\`),''), ifNull(toString(properties.\`$geoip_country_name\`),''), count() FROM events WHERE event IN ('page_landed','quiz_started','purchase_completed') AND timestamp >= now() - INTERVAL 7 DAY AND toFloat64OrZero(ifNull(toString(properties.\`$geoip_latitude\`),'0')) != 0 GROUP BY 1, 2, 3, 4 ORDER BY 5 DESC LIMIT 80`),
-      phQuery(`SELECT event, ifNull(properties.\`$geoip_city_name\`,'') as city, ifNull(properties.\`$geoip_country_name\`,'') as cntry, timestamp FROM events WHERE event IN ('page_landed','quiz_started','quiz_completed','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND timestamp >= now() - INTERVAL 6 HOUR ORDER BY timestamp DESC LIMIT 15`),
-      phQuery(`SELECT event, count() as cnt FROM events WHERE event IN ('quiz_started','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND toDate(timestamp) = today() GROUP BY event`)
-    ]);
 
-    // Mark PostHog as connected
-    setPhStatus(true, 'LIVE');
-    document.getElementById('live-error').style.display = 'none';
-
-    // Active counts
-    document.getElementById('m-live').textContent      = n(liveRows[0]?.[0] || 0);
-    document.getElementById('m-live-hour').textContent = n(liveRows[0]?.[1] || 0);
-
-    // Globe points
-    if (liveGlobe && geoRows.length) {
-      const pts = geoRows.filter(r => r[0] && r[1]).map(r => ({ lat:r[0], lng:r[1], city:r[2], country:r[3], size:r[4] }));
-      liveGlobe.pointsData(pts).pointRadius(d => 0.25 + Math.min(d.size,10)*0.03);
-    }
-
-    // Activity feed
-    const feedEl = document.getElementById('live-feed');
-    if (feedEl && actRows.length) {
-      feedEl.innerHTML = actRows.map(([ev, city, cntry, ts]) => {
-        const cfg = FEED_EVENTS[ev] || { icon:'•', bg:'rgba(255,255,255,.1)', label: ev };
-        const loc = city ? (city + (cntry ? ', ' + cntry : '')) : (cntry || 'Unknown');
-        return `<div class="lf-item">
-          <div class="lf-icon" style="background:${cfg.bg}">${cfg.icon}</div>
-          <div class="lf-text">${cfg.label}${loc !== 'Unknown' ? ' · ' + loc : ''}</div>
-          <div class="lf-time">${ago(ts)}</div>
-        </div>`;
-      }).join('');
-    } else if (feedEl) {
-      feedEl.innerHTML = `<div style="font-size:11px;color:rgba(255,255,255,.25);padding:8px 0">No activity in last 3 hours</div>`;
-    }
-
-    // Animated bars
-    const bm = {};
-    barRows.forEach(([ev, cnt]) => { bm[ev] = cnt; });
-    const barMax = Math.max(...Object.values(bm), 1);
-    const barDefs = [
-      ['quiz_started',              'lb-quiz',     'lc-quiz'],
-      ['precheckout_email_entered', 'lb-email',    'lc-email'],
-      ['checkout_initiated',        'lb-checkout', 'lc-checkout'],
-      ['purchase_completed',        'lb-purchase', 'lc-purchase'],
-      ['abandoned_cart_email_click','lb-cart',     'lc-cart'],
-    ];
-    barDefs.forEach(([ev, barId, cntId]) => {
-      const v = bm[ev] || 0;
-      const pct = Math.round(v / barMax * 100);
-      const bar = document.getElementById(barId);
-      const cnt = document.getElementById(cntId);
-      if (bar) bar.style.width = pct + '%';
-      if (cnt) cnt.textContent = v;
-    });
-
-  } catch(e) {
-    console.error('Live panel error:', e);
+  // ── 1. Active counts (simplest possible — runs first, sets LIVE status) ──────
+  const liveRows = await livePQ(
+    `SELECT uniqIf(distinct_id, timestamp > now() - interval 10 minute), uniq(distinct_id)
+     FROM events WHERE timestamp > now() - interval 60 minute`
+  );
+  if (liveRows === null) {
     setPhStatus(false, 'API ERROR');
     const errEl = document.getElementById('live-error');
     if (errEl) {
       errEl.style.display = 'block';
-      errEl.textContent = '⚠ PostHog query failed: ' + e.message + '. Check that POSTHOG_PERSONAL_KEY and POSTHOG_PROJECT_ID are set in Railway → Variables.';
+      errEl.textContent = '⚠ PostHog query returned an error. Make sure POSTHOG_PERSONAL_KEY and POSTHOG_PROJECT_ID are correct in Railway → Variables.';
+    }
+    return;
+  }
+  setPhStatus(true, 'LIVE');
+  document.getElementById('live-error').style.display = 'none';
+  document.getElementById('m-live').textContent      = n(liveRows[0]?.[0] || 0);
+  document.getElementById('m-live-hour').textContent = n(liveRows[0]?.[1] || 0);
+
+  // ── 2–5. Non-critical queries — run in parallel, fail silently ───────────────
+  const [geoRows, actRows, barRows, srcRows] = await Promise.all([
+
+    livePQ(`SELECT
+      toFloat64OrZero(toString(properties.\`$geoip_latitude\`)) as lat,
+      toFloat64OrZero(toString(properties.\`$geoip_longitude\`)) as lng,
+      toString(properties.\`$geoip_city_name\`) as city,
+      toString(properties.\`$geoip_country_name\`) as cntry,
+      count() as cnt
+    FROM events
+    WHERE event IN ('page_landed','quiz_started','purchase_completed')
+      AND timestamp >= now() - INTERVAL 7 DAY
+      AND lat != 0
+    GROUP BY lat, lng, city, cntry
+    ORDER BY cnt DESC LIMIT 80`),
+
+    livePQ(`SELECT event,
+      toString(properties.\`$geoip_city_name\`) as city,
+      toString(properties.\`$geoip_country_name\`) as cntry,
+      timestamp
+    FROM events
+    WHERE event IN ('page_landed','quiz_started','quiz_completed','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click')
+      AND timestamp >= now() - INTERVAL 6 HOUR
+    ORDER BY timestamp DESC LIMIT 15`),
+
+    livePQ(`SELECT event, count()
+    FROM events
+    WHERE event IN ('quiz_started','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click')
+      AND timestamp >= now() - INTERVAL 24 HOUR
+    GROUP BY event`),
+
+    livePQ(`SELECT
+      coalesce(nullIf(nullIf(toString(properties.\`$referring_domain\`),''),'$direct'), 'Direct / Unknown') as src,
+      count() as visits
+    FROM events
+    WHERE event = 'page_landed'
+      AND timestamp >= now() - INTERVAL 24 HOUR
+    GROUP BY src ORDER BY visits DESC LIMIT 6`)
+  ]);
+
+  // Globe
+  if (liveGlobe && geoRows?.length) {
+    const pts = geoRows.filter(r => r[0] && r[1]).map(r => ({ lat:+r[0], lng:+r[1], city:r[2]||'', country:r[3]||'', size:+r[4]||1 }));
+    liveGlobe.pointsData(pts).pointRadius(d => 0.25 + Math.min(d.size,10)*0.03);
+  }
+
+  // Activity feed
+  const feedEl = document.getElementById('live-feed');
+  if (feedEl) {
+    if (actRows?.length) {
+      feedEl.innerHTML = actRows.map(([ev, city, cntry, ts]) => {
+        const cfg = FEED_EVENTS[ev] || { icon:'📍', bg:'rgba(255,255,255,.1)', label: ev };
+        const loc = (city && city !== 'null') ? (city + (cntry && cntry !== 'null' ? ', '+cntry : '')) : '';
+        return `<div class="lf-item">
+          <div class="lf-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+          <div class="lf-text">${cfg.label}${loc ? ' · '+loc : ''}</div>
+          <div class="lf-time">${ago(ts)}</div>
+        </div>`;
+      }).join('');
+    } else {
+      feedEl.innerHTML = `<div style="font-size:11px;color:rgba(255,255,255,.25);padding:8px 0">No activity in the last 6 hours</div>`;
+    }
+  }
+
+  // Animated bars (today's counts)
+  if (barRows?.length) {
+    const bm = {};
+    barRows.forEach(([ev, cnt]) => { bm[ev] = +cnt; });
+    const barMax = Math.max(...Object.values(bm), 1);
+    [['quiz_started','lb-quiz','lc-quiz'],['precheckout_email_entered','lb-email','lc-email'],
+     ['checkout_initiated','lb-checkout','lc-checkout'],['purchase_completed','lb-purchase','lc-purchase'],
+     ['abandoned_cart_email_click','lb-cart','lc-cart']
+    ].forEach(([ev, barId, cntId]) => {
+      const v = bm[ev] || 0;
+      const el = document.getElementById(barId);
+      const ce = document.getElementById(cntId);
+      if (el) el.style.width = Math.round(v/barMax*100)+'%';
+      if (ce) ce.textContent = v;
+    });
+  }
+
+  // Traffic sources (where visitors are coming from today)
+  const srcEl = document.getElementById('live-sources');
+  if (srcEl) {
+    if (srcRows?.length) {
+      const srcMax = Math.max(...srcRows.map(r => +r[1]), 1);
+      const SOURCE_ICONS = {
+        'instagram': '📸', 'tiktok': '🎵', 'facebook': '👥', 'google': '🔍',
+        'pinterest': '📌', 'twitter': '🐦', 'youtube': '▶️', 'linkedin': '💼',
+        'direct': '🔗', 'unknown': '🔗'
+      };
+      srcEl.innerHTML = srcRows.map(([src, visits]) => {
+        const label = String(src).length > 28 ? String(src).slice(0,28)+'…' : String(src);
+        const icon = SOURCE_ICONS[Object.keys(SOURCE_ICONS).find(k => String(src).toLowerCase().includes(k)) || 'direct'] || '🌐';
+        const pct = Math.round(+visits / srcMax * 100);
+        return `<div class="live-bar-row">
+          <div class="live-bar-lbl" style="width:110px;font-size:10px">${icon} ${label}</div>
+          <div class="live-bar-track"><div class="live-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#4A8ACA,#2C5A8A)"></div></div>
+          <div class="live-bar-cnt">${n(+visits)}</div>
+        </div>`;
+      }).join('');
+    } else {
+      srcEl.innerHTML = `<div style="font-size:10px;color:rgba(255,255,255,.2)">No visitor data yet today</div>`;
     }
   }
 }
