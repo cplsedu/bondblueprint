@@ -762,31 +762,48 @@ async function loadClickMap(range) {
 }
 
 async function loadTimeToQuiz(range) {
+  // Pull raw second values — bucket in JS to avoid CASE WHEN alias issues in HogQL
   const rows = await phQuery(`
-    SELECT
-      CASE
-        WHEN toFloat64OrZero(toString(properties.seconds_on_landing)) < 10  THEN 'Under 10s'
-        WHEN toFloat64OrZero(toString(properties.seconds_on_landing)) < 30  THEN '10-30s'
-        WHEN toFloat64OrZero(toString(properties.seconds_on_landing)) < 60  THEN '30-60s'
-        WHEN toFloat64OrZero(toString(properties.seconds_on_landing)) < 120 THEN '1-2 min'
-        ELSE '2+ min'
-      END as bucket,
-      count() as cnt
-    FROM events WHERE event='quiz_started' AND properties.seconds_on_landing IS NOT NULL AND ${range}
-    GROUP BY bucket
-    ORDER BY min(toFloat64OrZero(toString(properties.seconds_on_landing))) ASC
+    SELECT toFloat64OrZero(toString(properties.seconds_on_landing)), count()
+    FROM events
+    WHERE event = 'quiz_started'
+      AND toFloat64OrZero(toString(properties.seconds_on_landing)) > 0
+      AND ${range}
+    GROUP BY 1
+    ORDER BY 1 ASC
   `);
   const el = document.getElementById('time-to-quiz');
-  if (!rows.length) { el.innerHTML='<div class="empty">No time-to-quiz data yet — tracks from next visit onwards</div>'; return; }
-  const maxV = Math.max(...rows.map(r => r[1]), 1);
-  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px">` + rows.map(([bucket, cnt]) => {
-    const pct = Math.round(cnt / maxV * 100);
-    return `<div class="tq-row">
-      <div class="tq-label">${bucket}</div>
-      <div class="tq-bar-bg"><div class="tq-bar-fill" style="width:${pct}%"></div></div>
-      <div class="tq-count">${n(cnt)} people</div>
-    </div>`;
-  }).join('') + `</div><div style="margin-top:10px;font-size:10px;font-weight:600;color:#9A908A">Most people clicking the quiz quickly = strong hook. Long delays = they're reading more first or hesitating.</div>`;
+  if (!rows.length) { el.innerHTML='<div class="empty">No time-to-quiz data yet — will track from next quiz start</div>'; return; }
+
+  // Bucket in JS
+  const BUCKETS = [
+    { label:'Under 10s', max: 10  },
+    { label:'10–30s',    max: 30  },
+    { label:'30–60s',    max: 60  },
+    { label:'1–2 min',   max: 120 },
+    { label:'2+ min',    max: Infinity },
+  ];
+  const counts = BUCKETS.map(() => 0);
+  rows.forEach(([secs, cnt]) => {
+    const s = +secs, c = +cnt;
+    for (let i = 0; i < BUCKETS.length; i++) {
+      if (s < BUCKETS[i].max) { counts[i] += c; break; }
+    }
+  });
+
+  const total = counts.reduce((a,b) => a+b, 0);
+  if (!total) { el.innerHTML='<div class="empty">No time-to-quiz data yet</div>'; return; }
+  const maxV = Math.max(...counts, 1);
+  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px">` +
+    BUCKETS.map((b, i) => {
+      const pct = Math.round(counts[i] / maxV * 100);
+      return `<div class="tq-row">
+        <div class="tq-label">${b.label}</div>
+        <div class="tq-bar-bg"><div class="tq-bar-fill" style="width:${pct}%"></div></div>
+        <div class="tq-count">${n(counts[i])} people</div>
+      </div>`;
+    }).join('') +
+    `</div><div style="margin-top:10px;font-size:10px;font-weight:600;color:#9A908A">Clicking quickly = strong hook. Long delays = reading more or hesitating.</div>`;
 }
 
 // ── Click Heatmap ─────────────────────────────────────────────────────────────
