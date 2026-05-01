@@ -122,6 +122,40 @@ app.get('/api/admin/stats', async (req, res) => {
   }
 });
 
+// ─── ADMIN: BULK LEAD LOOKUP BY EMAIL (for funnel drilldown) ─────────────────
+
+app.get('/api/admin/leads-by-email', async (req, res) => {
+  const { key, emails } = req.query;
+  if (!key || key !== process.env.ADMIN_KEY) return res.status(401).json({ error: 'Unauthorized' });
+  if (!emails) return res.status(400).json({ error: 'emails required' });
+
+  const emailList = String(emails)
+    .split(',')
+    .map(e => e.trim().toLowerCase())
+    .filter(e => e.includes('@') && e.includes('.'))
+    .slice(0, 50);
+
+  if (!emailList.length) return res.json([]);
+
+  try {
+    const results = await Promise.all(emailList.map(email => getLeadByEmail(email).catch(() => null)));
+    res.json(
+      results
+        .filter(Boolean)
+        .map(l => ({
+          email:           l.email,
+          name:            l.name            || '',
+          attachmentStyle: l.attachment_style || '',
+          partnerStyle:    l.partner_style    || '',
+          createdAt:       l.created_at,
+        }))
+    );
+  } catch (err) {
+    console.error('leads-by-email error:', err.message);
+    res.status(500).json({ error: 'Failed to fetch leads' });
+  }
+});
+
 // ─── LEAD LOOKUP (returning users from cart emails) ──────────────────────────
 
 app.get('/api/lead', async (req, res) => {

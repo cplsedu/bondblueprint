@@ -80,7 +80,9 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 
 /* Funnel */
 .funnel-steps{display:flex;align-items:flex-end;gap:2px;height:180px;margin-top:4px}
-.funnel-step{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end}
+.funnel-step{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:pointer;border-radius:8px;transition:background .15s}
+.funnel-step:hover{background:rgba(0,0,0,.03)}
+.funnel-step:hover .funnel-name{color:#E07A3A}
 .funnel-bar{width:100%;border-radius:6px 6px 0 0;min-height:4px}
 .funnel-meta{text-align:center;padding-top:8px}
 .funnel-num{font-size:15px;font-weight:800;color:#1E1E1E}
@@ -171,6 +173,31 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 .lf-time{font-size:10px;color:rgba(255,255,255,.28);flex-shrink:0}
 .globe-corner{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.15);pointer-events:none}
 @media(max-width:700px){.live-panel{grid-template-columns:1fr}.live-right{display:none}}
+
+/* Funnel Drilldown Drawer */
+.dd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:900;display:none}
+.dd-drawer{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:95vw;background:#fff;z-index:901;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 60px rgba(0,0,0,.18)}
+.dd-drawer.open{transform:translateX(0)}
+.dd-head{padding:20px 22px 16px;border-bottom:1.5px solid #EEE8E0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.dd-title{font-size:13px;font-weight:800;color:#1E1E1E}
+.dd-subtitle{font-size:11px;font-weight:600;color:#9A908A;margin-top:2px}
+.dd-close{width:30px;height:30px;border-radius:50%;border:1.5px solid #DDD7CE;background:#F7F3EE;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#9A908A;flex-shrink:0}
+.dd-close:hover{background:#DDD7CE}
+.dd-body{flex:1;overflow-y:auto;padding:16px 22px}
+.dd-loading{color:#9A908A;font-size:13px;text-align:center;padding:40px 0}
+.dd-person{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #F5F0EA}
+.dd-person:last-child{border-bottom:none}
+.dd-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2C4A35,#4A7A5A);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+.dd-info{flex:1;min-width:0}
+.dd-name{font-size:13px;font-weight:800;color:#1E1E1E;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dd-email{font-size:11px;font-weight:600;color:#9A908A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.dd-styles{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.dd-tag{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:100px}
+.dd-my{background:#E8F0E9;color:#2C4A35}
+.dd-pt{background:#FEF0E8;color:#C4660A}
+.dd-time{font-size:10px;font-weight:600;color:#9A908A;flex-shrink:0;text-align:right;margin-top:2px}
+.dd-anon{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #F5F0EA;color:#9A908A;font-size:12px}
+.dd-empty{color:#9A908A;font-size:13px;text-align:center;padding:32px 0}
 
 /* Heatmap Viewer */
 .heatmap-shell{background:linear-gradient(135deg,#0F1A10 0%,#1E3526 55%,#2C4A35 100%);border-radius:16px;padding:22px 24px;margin-top:14px}
@@ -434,35 +461,14 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
   <!-- ── Page Behavior ── -->
   <div class="section-title" style="margin-top:32px">Page Behavior</div>
 
-  <div class="two-col">
-
-    <!-- Scroll Depth -->
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title">Scroll Depth · Where people stop reading</div>
-      <div id="scroll-depth-bars"><div class="empty">Loading…</div></div>
-      <div id="scroll-error" class="error-note"></div>
-      <div style="margin-top:12px;font-size:10px;font-weight:600;color:#9A908A;line-height:1.7">
-        Shows what % of visitors scroll past each milestone on the landing page. A big drop-off between 25% → 50% means the hook isn't holding attention far enough down.
-      </div>
+  <!-- Click Map only -->
+  <div class="card" style="margin-bottom:14px">
+    <div class="card-title">Top Clicks · What people are tapping</div>
+    <div id="click-map"><div class="empty">Loading…</div></div>
+    <div id="click-error" class="error-note"></div>
+    <div style="margin-top:12px;font-size:10px;font-weight:600;color:#9A908A;line-height:1.7">
+      Most-clicked buttons and links in the selected date range, ranked by volume.
     </div>
-
-    <!-- Click Map -->
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title">Top Clicks · What people are tapping</div>
-      <div id="click-map"><div class="empty">Loading…</div></div>
-      <div id="click-error" class="error-note"></div>
-      <div style="margin-top:12px;font-size:10px;font-weight:600;color:#9A908A;line-height:1.7">
-        Most-clicked buttons and links in the selected date range, ranked by volume.
-      </div>
-    </div>
-
-  </div>
-
-  <!-- Time on Landing Before Quiz -->
-  <div class="card" style="margin-top:14px">
-    <div class="card-title">Time on Landing Page Before Starting Quiz</div>
-    <div id="time-to-quiz"><div class="empty">Loading…</div></div>
-    <div id="time-error" class="error-note"></div>
   </div>
 
   <!-- Embedded Click Heatmap Viewer -->
@@ -521,6 +527,21 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
   </div>
 
 </div>
+</div>
+
+<!-- Funnel Drilldown Drawer -->
+<div class="dd-overlay" id="dd-overlay" onclick="closeDrilldown()"></div>
+<div class="dd-drawer" id="dd-drawer">
+  <div class="dd-head">
+    <div>
+      <div class="dd-title" id="dd-title">Funnel Step</div>
+      <div class="dd-subtitle" id="dd-subtitle">People who reached this step</div>
+    </div>
+    <button class="dd-close" onclick="closeDrilldown()">✕</button>
+  </div>
+  <div class="dd-body" id="dd-body">
+    <div class="dd-loading">Loading…</div>
+  </div>
 </div>
 
 <script>
@@ -708,32 +729,8 @@ async function loadPostHog(from, to) {
     safeLoad('quiz-error',     () => loadQuizDropoff(range)),
     safeLoad('sources-error',  () => loadSources(range)),
     safeLoad('activity-error', () => loadActivity(from, to)),
-    safeLoad('scroll-error',   () => loadScrollDepth(range)),
     safeLoad('click-error',    () => loadClickMap(range)),
-    safeLoad('time-error',     () => loadTimeToQuiz(range)),
   ]);
-}
-
-async function loadScrollDepth(range) {
-  const rows = await phQuery(`
-    SELECT properties.depth_pct as depth, uniq(distinct_id) as users
-    FROM events WHERE event='scroll_depth' AND properties.screen='screen-landing' AND ${range}
-    GROUP BY depth ORDER BY depth ASC
-  `);
-  const el = document.getElementById('scroll-depth-bars');
-  if (!rows.length) { el.innerHTML='<div class="empty">No scroll data yet — tracking starts now that autocapture is enabled</div>'; return; }
-  // Get the baseline (total visitors who landed)
-  const baseRows = await phQuery(`SELECT uniq(distinct_id) as u FROM events WHERE event='page_landed' AND ${range}`);
-  const baseline = baseRows[0]?.[0] || 1;
-  el.innerHTML = rows.map(([depth, users]) => {
-    const pct = Math.round(users / baseline * 100);
-    return `<div class="scroll-row">
-      <div class="scroll-label">${depth}%</div>
-      <div class="scroll-bar-bg"><div class="scroll-bar-fill" style="width:${pct}%"></div></div>
-      <div class="scroll-pct">${pct}%</div>
-      <div class="scroll-count">${n(users)} visitors</div>
-    </div>`;
-  }).join('');
 }
 
 async function loadClickMap(range) {
@@ -758,51 +755,6 @@ async function loadClickMap(range) {
       <div class="click-count">${n(clicks)}</div>
     </div>`;
   }).join('');
-}
-
-async function loadTimeToQuiz(range) {
-  // Pull raw second values — bucket in JS to avoid CASE WHEN alias issues in HogQL
-  const rows = await phQuery(`
-    SELECT toFloat64OrZero(toString(properties.seconds_on_landing)), count()
-    FROM events
-    WHERE event = 'quiz_started'
-      AND toFloat64OrZero(toString(properties.seconds_on_landing)) > 0
-      AND ${range}
-    GROUP BY 1
-    ORDER BY 1 ASC
-  `);
-  const el = document.getElementById('time-to-quiz');
-  if (!rows.length) { el.innerHTML='<div class="empty">No time-to-quiz data yet — will track from next quiz start</div>'; return; }
-
-  // Bucket in JS
-  const BUCKETS = [
-    { label:'Under 10s', max: 10  },
-    { label:'10–30s',    max: 30  },
-    { label:'30–60s',    max: 60  },
-    { label:'1–2 min',   max: 120 },
-    { label:'2+ min',    max: Infinity },
-  ];
-  const counts = BUCKETS.map(() => 0);
-  rows.forEach(([secs, cnt]) => {
-    const s = +secs, c = +cnt;
-    for (let i = 0; i < BUCKETS.length; i++) {
-      if (s < BUCKETS[i].max) { counts[i] += c; break; }
-    }
-  });
-
-  const total = counts.reduce((a,b) => a+b, 0);
-  if (!total) { el.innerHTML='<div class="empty">No time-to-quiz data yet</div>'; return; }
-  const maxV = Math.max(...counts, 1);
-  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px">` +
-    BUCKETS.map((b, i) => {
-      const pct = Math.round(counts[i] / maxV * 100);
-      return `<div class="tq-row">
-        <div class="tq-label">${b.label}</div>
-        <div class="tq-bar-bg"><div class="tq-bar-fill" style="width:${pct}%"></div></div>
-        <div class="tq-count">${n(counts[i])} people</div>
-      </div>`;
-    }).join('') +
-    `</div><div style="margin-top:10px;font-size:10px;font-weight:600;color:#9A908A">Clicking quickly = strong hook. Long delays = reading more or hesitating.</div>`;
 }
 
 // ── Click Heatmap ─────────────────────────────────────────────────────────────
@@ -997,7 +949,7 @@ async function loadFunnelAndMetrics(from, to, range) {
     const pct = i===0 ? 100 : Math.round(val/first*100);
     const h   = Math.max(Math.round(val/maxV*150), 4);
     if (i>0) html += `<div class="funnel-arrow">›</div>`;
-    html += `<div class="funnel-step">
+    html += `<div class="funnel-step" onclick="openFunnelStep('${s.key}', '${s.label}')">
       <div class="funnel-bar" style="height:${h}px;background:${s.color}30;border-top:3px solid ${s.color}"></div>
       <div class="funnel-meta">
         <div class="funnel-num">${n(val)}</div>
@@ -1103,7 +1055,7 @@ async function initGlobe() {
   }
 
   if (typeof Globe === 'undefined') {
-    initFlatMap();
+    initSpinGlobe();
     return;
   }
 
@@ -1136,7 +1088,7 @@ async function initGlobe() {
     liveGlobe.pointOfView({ lat: 20, lng: 0, altitude: 2.2 });
   } catch(e) {
     console.error('Globe init failed:', e);
-    initFlatMap();
+    initSpinGlobe();
   }
 }
 
@@ -1175,97 +1127,142 @@ const LAND_POLYS = [
   [[174,-37],[178,-37],[178,-41],[174,-40],[174,-37]],
 ];
 
-let flatMapPts    = [];
-let flatMapPhase  = 0;
-let flatMapAnimId = null;
-let useFlatMap    = false;
+// ── Spinning globe (orthographic projection — no WebGL) ───────────────────────
+let globePts     = [];
+let globePhase   = 0;
+let globeRotDeg  = 0;
+let globeAnimId  = null;
+let useSpinGlobe = false;
 
-function initFlatMap() {
-  useFlatMap = true;
+function initSpinGlobe() {
+  useSpinGlobe = true;
   const el = document.getElementById('globe-el');
   if (!el) return;
-  el.innerHTML = `<canvas id="flat-map-canvas" style="display:block;width:100%;height:100%"></canvas>
-    <div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.15);pointer-events:none">Visitor Locations · Last 7 days</div>`;
-
-  const canvas = document.getElementById('flat-map-canvas');
-  function resize() {
-    canvas.width  = el.clientWidth  || 500;
-    canvas.height = el.clientHeight || 420;
-  }
-  resize();
-
-  if (flatMapAnimId) cancelAnimationFrame(flatMapAnimId);
+  el.innerHTML = `<canvas id="spin-globe-canvas" style="display:block;width:100%;height:100%"></canvas>`;
+  const canvas = document.getElementById('spin-globe-canvas');
+  canvas.width  = el.clientWidth  || 500;
+  canvas.height = el.clientHeight || 420;
+  if (globeAnimId) cancelAnimationFrame(globeAnimId);
   function loop() {
-    flatMapPhase = (flatMapPhase + 0.018) % (Math.PI * 2);
-    drawFlatMap(canvas);
-    flatMapAnimId = requestAnimationFrame(loop);
+    globePhase  = (globePhase  + 0.016) % (Math.PI * 2);
+    globeRotDeg = (globeRotDeg + 0.22)  % 360;
+    drawSpinGlobe(canvas);
+    globeAnimId = requestAnimationFrame(loop);
   }
   loop();
 }
 
-function drawFlatMap(canvas) {
+function drawSpinGlobe(canvas) {
   const W = canvas.width, H = canvas.height;
   const ctx = canvas.getContext('2d');
   if (!ctx) return;
+  const cx = W / 2, cy = H / 2;
+  const R  = Math.min(W, H) * 0.43;
+  const rot = globeRotDeg;
 
-  const toX = lng => (lng + 180) / 360 * W;
-  const toY = lat => (90  - lat) / 180 * H;
+  ctx.clearRect(0, 0, W, H);
 
-  // Background
-  ctx.fillStyle = '#0A1208';
-  ctx.fillRect(0, 0, W, H);
+  // Atmosphere glow (behind sphere)
+  const atm = ctx.createRadialGradient(cx, cy, R * 0.85, cx, cy, R * 1.14);
+  atm.addColorStop(0, 'rgba(74,122,90,0.22)');
+  atm.addColorStop(1, 'rgba(74,122,90,0)');
+  ctx.beginPath(); ctx.arc(cx, cy, R * 1.14, 0, Math.PI * 2);
+  ctx.fillStyle = atm; ctx.fill();
 
-  // Subtle lat/lng grid
-  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
-  ctx.lineWidth = 0.5;
-  [-60,-30,0,30,60].forEach(lat => {
-    const y = toY(lat);
-    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
-  });
-  [-120,-60,0,60,120].forEach(lng => {
-    const x = toX(lng);
-    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
-  });
-  // Equator brighter
-  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-  ctx.lineWidth = 1;
-  const ey = toY(0);
-  ctx.beginPath(); ctx.moveTo(0,ey); ctx.lineTo(W,ey); ctx.stroke();
+  // Sphere background
+  const bg = ctx.createRadialGradient(cx - R * 0.28, cy - R * 0.3, 0, cx, cy, R);
+  bg.addColorStop(0,    '#1E3526');
+  bg.addColorStop(0.55, '#0F1A10');
+  bg.addColorStop(1,    '#060D05');
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.fillStyle = bg; ctx.fill();
+
+  // Clip everything inside the sphere
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.clip();
+
+  // Orthographic projection helper
+  const project = (lat, lng) => {
+    const φ  = lat * Math.PI / 180;
+    const λ  = (lng - rot) * Math.PI / 180;
+    const cφ = Math.cos(φ);
+    return {
+      x:   cx + R * cφ * Math.sin(λ),
+      y:   cy - R * Math.sin(φ),
+      vis: cφ * Math.cos(λ) > 0   // front hemisphere only
+    };
+  };
+
+  // Latitude / longitude grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.05)';
+  ctx.lineWidth = 0.6;
+  for (let lat = -60; lat <= 60; lat += 30) {
+    ctx.beginPath(); let fst = true;
+    for (let ln = -180; ln <= 180; ln += 3) {
+      const p = project(lat, ln);
+      if (!p.vis) { fst = true; continue; }
+      if (fst) { ctx.moveTo(p.x, p.y); fst = false; } else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
+  for (let ln = -180; ln < 180; ln += 30) {
+    ctx.beginPath(); let fst = true;
+    for (let lat = -85; lat <= 85; lat += 3) {
+      const p = project(lat, ln);
+      if (!p.vis) { fst = true; continue; }
+      if (fst) { ctx.moveTo(p.x, p.y); fst = false; } else ctx.lineTo(p.x, p.y);
+    }
+    ctx.stroke();
+  }
 
   // Continents
+  ctx.fillStyle   = 'rgba(44,74,53,0.75)';
+  ctx.strokeStyle = 'rgba(74,122,90,0.45)';
+  ctx.lineWidth   = 0.9;
   LAND_POLYS.forEach(poly => {
     ctx.beginPath();
-    poly.forEach(([lng,lat],i) => { i===0 ? ctx.moveTo(toX(lng),toY(lat)) : ctx.lineTo(toX(lng),toY(lat)); });
-    ctx.closePath();
-    ctx.fillStyle   = 'rgba(44,74,53,0.55)';
-    ctx.strokeStyle = 'rgba(74,122,90,0.3)';
-    ctx.lineWidth   = 0.8;
-    ctx.fill();
-    ctx.stroke();
+    let drawing = false;
+    poly.forEach(([lng, lat]) => {
+      const p = project(lat, lng);
+      if (p.vis) {
+        if (!drawing) { ctx.moveTo(p.x, p.y); drawing = true; }
+        else ctx.lineTo(p.x, p.y);
+      } else { drawing = false; }
+    });
+    ctx.fill(); ctx.stroke();
   });
 
-  // Visitor dots — animated pulse
-  flatMapPts.forEach((p, idx) => {
-    if (!p.lat || !p.lng) return;
-    const x = toX(p.lng), y = toY(p.lat);
-    const color = p.ev==='purchase_completed' ? '#FFD700' : p.ev==='quiz_started' ? '#4ACA5A' : '#E07A3A';
-    const baseR  = 3 + Math.min(p.size,15)*0.35;
-    const phase  = flatMapPhase + idx * 0.8;
-    const pulseR = baseR + (Math.sin(phase)*0.5+0.5) * 10;
-
-    // Glow ring
-    const g = ctx.createRadialGradient(x,y,baseR,x,y,pulseR);
-    const a  = Math.round((1-(pulseR-baseR)/10)*0.55*255).toString(16).padStart(2,'0');
-    g.addColorStop(0, color+a); g.addColorStop(1, color+'00');
-    ctx.beginPath(); ctx.arc(x,y,pulseR,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
-
-    // Solid core
-    ctx.beginPath(); ctx.arc(x,y,baseR,0,Math.PI*2);
-    ctx.fillStyle=color; ctx.fill();
-    // White highlight
-    ctx.beginPath(); ctx.arc(x,y,baseR*0.38,0,Math.PI*2);
-    ctx.fillStyle='rgba(255,255,255,0.85)'; ctx.fill();
+  // Visitor dots — pulsing glow
+  globePts.forEach((pt, idx) => {
+    if (!pt.lat || !pt.lng) return;
+    const p = project(pt.lat, pt.lng);
+    if (!p.vis) return;
+    const color  = pt.ev==='purchase_completed' ? '#FFD700' : pt.ev==='quiz_started' ? '#4ACA5A' : '#E07A3A';
+    const baseR  = 3.5 + Math.min(pt.size, 15) * 0.35;
+    const phase  = globePhase + idx * 0.9;
+    const pulseR = baseR + (Math.sin(phase) * 0.5 + 0.5) * 9;
+    const g = ctx.createRadialGradient(p.x, p.y, baseR * 0.5, p.x, p.y, pulseR);
+    const a = Math.round((1 - (pulseR - baseR) / 9) * 0.6 * 255).toString(16).padStart(2, '0');
+    g.addColorStop(0, color + a); g.addColorStop(1, color + '00');
+    ctx.beginPath(); ctx.arc(p.x, p.y, pulseR, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, baseR, 0, Math.PI * 2); ctx.fillStyle = color; ctx.fill();
+    ctx.beginPath(); ctx.arc(p.x, p.y, baseR * 0.35, 0, Math.PI * 2); ctx.fillStyle = 'rgba(255,255,255,0.9)'; ctx.fill();
   });
+
+  ctx.restore(); // end sphere clip
+
+  // Specular shading overlay
+  const edge = ctx.createRadialGradient(cx - R * 0.25, cy - R * 0.3, 0, cx, cy, R);
+  edge.addColorStop(0,   'rgba(255,255,255,0.07)');
+  edge.addColorStop(0.4, 'rgba(255,255,255,0.01)');
+  edge.addColorStop(0.7, 'rgba(0,0,0,0.06)');
+  edge.addColorStop(1,   'rgba(0,0,0,0.48)');
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.fillStyle = edge; ctx.fill();
+
+  // Limb circle
+  ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2);
+  ctx.strokeStyle = 'rgba(74,122,90,0.35)'; ctx.lineWidth = 1.5; ctx.stroke();
 }
 
 function updateGlobe(geoRows) {
@@ -1273,8 +1270,8 @@ function updateGlobe(geoRows) {
     .map(r => ({ lat:+r[0], lng:+r[1], city:String(r[2]||''), country:String(r[3]||''), ev:String(r[4]||''), size:+r[5]||1 }))
     .filter(p => p.lat!==0 && p.lng!==0);
 
-  if (useFlatMap) {
-    flatMapPts = pts; // canvas loop picks this up automatically
+  if (useSpinGlobe) {
+    globePts = pts; // canvas loop picks this up automatically
     return;
   }
   if (!liveGlobe) return;
@@ -1454,6 +1451,89 @@ setInterval(() => {
   const {from,to} = getRange();
   if (from && to) safeLoad('funnel-error', () => loadFunnelAndMetrics(from, to, phRange(from, to)));
 }, 60000);
+
+// ── Funnel Drilldown ──────────────────────────────────────────────────────────
+async function openFunnelStep(eventKey, label) {
+  document.getElementById('dd-title').textContent    = label;
+  document.getElementById('dd-subtitle').textContent = 'Loading…';
+  document.getElementById('dd-body').innerHTML       = '<div class="dd-loading">Fetching visitors…</div>';
+  document.getElementById('dd-overlay').style.display = 'block';
+  document.getElementById('dd-drawer').classList.add('open');
+
+  try {
+    const { from, to } = getRange();
+    const range = phRange(from, to);
+
+    const rows = await phQuery(`
+      SELECT distinct_id, max(timestamp) as last_seen
+      FROM events
+      WHERE event = '${eventKey}' AND ${range}
+      GROUP BY 1 ORDER BY 2 DESC LIMIT 50
+    `);
+
+    if (!rows.length) {
+      document.getElementById('dd-subtitle').textContent = '0 people';
+      document.getElementById('dd-body').innerHTML = '<div class="dd-empty">No one reached this step in the selected date range.</div>';
+      return;
+    }
+
+    document.getElementById('dd-subtitle').textContent = `${rows.length} ${rows.length===1?'person':'people'}`;
+
+    // Split identified (email) vs anonymous
+    const emailRows = rows.filter(r => String(r[0]).includes('@') && String(r[0]).includes('.'));
+    const anonCount = rows.length - emailRows.length;
+    const emails    = emailRows.map(r => String(r[0]));
+
+    // Fetch Supabase lead details
+    let leadMap = {};
+    if (emails.length) {
+      try {
+        const resp = await fetch(`/api/admin/leads-by-email?key=${encodeURIComponent(adminKey)}&emails=${encodeURIComponent(emails.join(','))}`);
+        if (resp.ok) {
+          const leads = await resp.json();
+          leads.forEach(l => { leadMap[l.email.toLowerCase()] = l; });
+        }
+      } catch(_) {}
+    }
+
+    let html = '';
+    emailRows.forEach(([id, ts]) => {
+      const lead = leadMap[id.toLowerCase()] || {};
+      const init = (lead.name || id).trim()[0]?.toUpperCase() || '?';
+      html += `<div class="dd-person">
+        <div class="dd-avatar">${init}</div>
+        <div class="dd-info">
+          <div class="dd-name">${lead.name || '—'}</div>
+          <div class="dd-email">${id}</div>
+          <div class="dd-styles">
+            ${lead.attachmentStyle ? `<span class="dd-tag dd-my">${lead.attachmentStyle}</span>` : ''}
+            ${lead.partnerStyle    ? `<span class="dd-tag dd-pt">Partner: ${lead.partnerStyle}</span>` : ''}
+          </div>
+        </div>
+        <div class="dd-time">${ts ? ago(ts) : ''}</div>
+      </div>`;
+    });
+
+    if (anonCount > 0) {
+      html += `<div class="dd-anon">
+        <span style="font-size:18px">👤</span>
+        <div style="font-size:12px;font-weight:600;color:#9A908A">${anonCount} anonymous visitor${anonCount>1?'s':''} (no email yet)</div>
+      </div>`;
+    }
+
+    document.getElementById('dd-body').innerHTML = html || '<div class="dd-empty">No lead data found.</div>';
+  } catch(err) {
+    console.error('Drilldown error:', err);
+    document.getElementById('dd-body').innerHTML = `<div class="dd-empty">Could not load: ${err.message}</div>`;
+  }
+}
+
+function closeDrilldown() {
+  document.getElementById('dd-overlay').style.display = 'none';
+  document.getElementById('dd-drawer').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrilldown(); });
 </script>
 </body>
 </html>
