@@ -811,15 +811,15 @@ async function renderHeatmap() {
     // Bucket x/y into 5% cells so nearby clicks cluster together
     const rows = await phQuery(`
       SELECT
-        round(toFloat64OrZero(toString(properties.x)) / 5) * 5 as xb,
-        round(toFloat64OrZero(toString(properties.y)) / 5) * 5 as yb,
-        count() as hits
+        round(toFloat64OrZero(toString(properties.x)) / 5) * 5,
+        round(toFloat64OrZero(toString(properties.y)) / 5) * 5,
+        count()
       FROM events
-      WHERE event='click_xy'
+      WHERE event = 'click_xy'
         AND toString(properties.screen) = '${screen}'
         AND ${range}
-      GROUP BY xb, yb
-      ORDER BY hits DESC
+      GROUP BY 1, 2
+      ORDER BY 3 DESC
       LIMIT 200
     `);
 
@@ -1090,8 +1090,8 @@ async function loadLivePanel() {
   }
   try {
     const [liveRows, geoRows, actRows, barRows] = await Promise.all([
-      phQuery(`SELECT uniqIf(distinct_id, timestamp > now() - interval 10 minute) as active10, uniqIf(distinct_id, timestamp > now() - interval 60 minute) as active1h FROM events WHERE timestamp > now() - interval 60 minute`),
-      phQuery(`SELECT toFloat64OrZero(ifNull(toString(properties.\`$geoip_latitude\`),'0')) as lat, toFloat64OrZero(ifNull(toString(properties.\`$geoip_longitude\`),'0')) as lng, ifNull(properties.\`$geoip_city_name\`,'') as city, ifNull(properties.\`$geoip_country_name\`,'') as cntry, count() as cnt FROM events WHERE event IN ('page_landed','quiz_started','purchase_completed') AND timestamp >= now() - INTERVAL 7 DAY AND lat != 0 GROUP BY lat, lng, city, cntry ORDER BY cnt DESC LIMIT 80`),
+      phQuery(`SELECT uniqIf(distinct_id, timestamp > now() - interval 10 minute), uniqIf(distinct_id, timestamp > now() - interval 60 minute) FROM events WHERE timestamp > now() - interval 60 minute`),
+      phQuery(`SELECT toFloat64OrZero(ifNull(toString(properties.\`$geoip_latitude\`),'0')), toFloat64OrZero(ifNull(toString(properties.\`$geoip_longitude\`),'0')), ifNull(toString(properties.\`$geoip_city_name\`),''), ifNull(toString(properties.\`$geoip_country_name\`),''), count() FROM events WHERE event IN ('page_landed','quiz_started','purchase_completed') AND timestamp >= now() - INTERVAL 7 DAY AND toFloat64OrZero(ifNull(toString(properties.\`$geoip_latitude\`),'0')) != 0 GROUP BY 1, 2, 3, 4 ORDER BY 5 DESC LIMIT 80`),
       phQuery(`SELECT event, ifNull(properties.\`$geoip_city_name\`,'') as city, ifNull(properties.\`$geoip_country_name\`,'') as cntry, timestamp FROM events WHERE event IN ('page_landed','quiz_started','quiz_completed','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND timestamp >= now() - INTERVAL 6 HOUR ORDER BY timestamp DESC LIMIT 15`),
       phQuery(`SELECT event, count() as cnt FROM events WHERE event IN ('quiz_started','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND toDate(timestamp) = today() GROUP BY event`)
     ]);
