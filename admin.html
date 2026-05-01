@@ -389,7 +389,13 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
     </div>
     <div class="live-right">
       <div id="globe-el"></div>
-      <div class="globe-corner">Visitor locations · Last 7 days</div>
+      <!-- Legend overlay -->
+      <div style="position:absolute;top:14px;right:14px;display:flex;flex-direction:column;gap:5px;pointer-events:none">
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:#E07A3A;box-shadow:0 0 5px #E07A3A"></div><span style="font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.5px">VISITED</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:#4ACA5A;box-shadow:0 0 5px #4ACA5A"></div><span style="font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.5px">QUIZ</span></div>
+        <div style="display:flex;align-items:center;gap:5px"><div style="width:7px;height:7px;border-radius:50%;background:#FFD700;box-shadow:0 0 5px #FFD700"></div><span style="font-size:9px;font-weight:700;color:rgba(255,255,255,.4);letter-spacing:.5px">PURCHASED</span></div>
+      </div>
+      <div class="globe-corner">Visitor locations · Last 7 days · Hover a dot for details</div>
     </div>
   </div>
   <!-- hidden but still populated for funnel query -->
@@ -1061,20 +1067,60 @@ let liveGlobe = null;
 async function initGlobe() {
   const el = document.getElementById('globe-el');
   if (!el || typeof Globe === 'undefined') return;
+
   liveGlobe = Globe()
-    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
+    .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
     .backgroundColor('rgba(0,0,0,0)')
-    .atmosphereColor('#4A7A5A')
-    .atmosphereAltitude(0.14)
-    .pointColor(() => '#E07A3A')
-    .pointAltitude(0.015)
-    .pointRadius(0.4)
-    .pointLabel(d => `${d.city ? d.city + (d.country ? ', ' + d.country : '') : d.country || ''}`)
+    .atmosphereColor('#6AB87A')
+    .atmosphereAltitude(0.18)
+    // Visitor dots
+    .pointColor(d => d.ev === 'purchase_completed' ? '#FFD700' : d.ev === 'quiz_started' ? '#4ACA5A' : '#E07A3A')
+    .pointAltitude(d => 0.01 + Math.min(d.size, 20) * 0.003)
+    .pointRadius(d => 0.3 + Math.min(d.size, 15) * 0.04)
+    .pointsMerge(false)
+    .pointLabel(d => `<div style="font-family:sans-serif;font-size:11px;background:rgba(0,0,0,.75);color:#fff;padding:4px 8px;border-radius:6px;white-space:nowrap">${d.city ? d.city + (d.country ? ', ' + d.country : '') : d.country || 'Unknown'}<br><span style="color:#9A9;font-size:10px">${d.ev === 'purchase_completed' ? '🎉 Purchased' : d.ev === 'quiz_started' ? '📝 Taking quiz' : '🌐 Visited'}</span></div>`)
+    // Animated arcs from location → center (like Shopify)
+    .arcsData([])
+    .arcColor(d => d.color)
+    .arcAltitude(0.3)
+    .arcStroke(0.5)
+    .arcDashLength(0.4)
+    .arcDashGap(0.2)
+    .arcDashAnimateTime(2000)
     (el);
-  liveGlobe.controls().autoRotate = true;
-  liveGlobe.controls().autoRotateSpeed = 0.45;
-  liveGlobe.controls().enableZoom = false;
-  liveGlobe.controls().enablePan = false;
+
+  const ctrl = liveGlobe.controls();
+  ctrl.autoRotate      = true;
+  ctrl.autoRotateSpeed = 0.5;
+  ctrl.enableZoom      = false;
+  ctrl.enablePan       = false;
+
+  // Tilt the globe slightly for a nicer angle
+  liveGlobe.pointOfView({ lat: 20, lng: 0, altitude: 2.2 });
+}
+
+function updateGlobe(geoRows) {
+  if (!liveGlobe || !geoRows?.length) return;
+
+  // Build point list — each row: [lat, lng, city, cntry, event, count]
+  const pts = geoRows
+    .map(r => ({ lat: +r[0], lng: +r[1], city: String(r[2]||''), country: String(r[3]||''), ev: String(r[4]||''), size: +r[5]||1 }))
+    .filter(p => p.lat !== 0 && p.lng !== 0);
+
+  liveGlobe.pointsData(pts);
+
+  // Arcs: top 12 locations → flash an incoming arc
+  const topPts = [...pts].sort((a,b) => b.size - a.size).slice(0, 12);
+  const arcs = topPts.map(p => ({
+    startLat: p.lat, startLng: p.lng,
+    endLat:   p.lat + (Math.random() - 0.5) * 0.5,  // tiny jitter so self-arcs show
+    endLng:   p.lng + (Math.random() - 0.5) * 0.5,
+    color: p.ev === 'purchase_completed' ? ['rgba(255,215,0,0.9)','rgba(255,215,0,0)']
+         : p.ev === 'quiz_started'       ? ['rgba(74,202,90,0.8)','rgba(74,202,90,0)']
+         :                                 ['rgba(224,122,58,0.8)','rgba(224,122,58,0)']
+  }));
+  liveGlobe.arcsData(arcs);
 }
 
 const FEED_EVENTS = {
@@ -1128,17 +1174,18 @@ async function loadLivePanel() {
   const [geoRows, actRows, barRows, srcRows] = await Promise.all([
 
     livePQ(`SELECT
-      toFloat64OrZero(toString(properties.\`$geoip_latitude\`)) as lat,
-      toFloat64OrZero(toString(properties.\`$geoip_longitude\`)) as lng,
-      toString(properties.\`$geoip_city_name\`) as city,
-      toString(properties.\`$geoip_country_name\`) as cntry,
-      count() as cnt
+      toFloat64OrZero(toString(properties.\`$geoip_latitude\`)),
+      toFloat64OrZero(toString(properties.\`$geoip_longitude\`)),
+      toString(properties.\`$geoip_city_name\`),
+      toString(properties.\`$geoip_country_name\`),
+      event,
+      count()
     FROM events
     WHERE event IN ('page_landed','quiz_started','purchase_completed')
       AND timestamp >= now() - INTERVAL 7 DAY
-      AND lat != 0
-    GROUP BY lat, lng, city, cntry
-    ORDER BY cnt DESC LIMIT 80`),
+      AND toFloat64OrZero(toString(properties.\`$geoip_latitude\`)) != 0
+    GROUP BY 1, 2, 3, 4, 5
+    ORDER BY 6 DESC LIMIT 100`),
 
     livePQ(`SELECT event,
       toString(properties.\`$geoip_city_name\`) as city,
@@ -1164,11 +1211,8 @@ async function loadLivePanel() {
     GROUP BY src ORDER BY visits DESC LIMIT 6`)
   ]);
 
-  // Globe
-  if (liveGlobe && geoRows?.length) {
-    const pts = geoRows.filter(r => r[0] && r[1]).map(r => ({ lat:+r[0], lng:+r[1], city:r[2]||'', country:r[3]||'', size:+r[4]||1 }));
-    liveGlobe.pointsData(pts).pointRadius(d => 0.25 + Math.min(d.size,10)*0.03);
-  }
+  // Globe — colour-coded dots + animated arcs
+  updateGlobe(geoRows);
 
   // Activity feed
   const feedEl = document.getElementById('live-feed');
