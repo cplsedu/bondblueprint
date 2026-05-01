@@ -132,13 +132,20 @@ app.get('/api/lead', async (req, res) => {
   try {
     const lead = await getLeadByEmail(email);
     if (!lead) return res.status(404).json({ error: 'Not found' });
+    // Only return what's needed for abandoned-cart quiz restoration.
+    // Never expose situation text or raw quiz answers to the client.
+    const qd = lead.quiz_data || {};
     res.json({
       email:           lead.email,
       name:            lead.name || '',
       attachmentStyle: lead.attachment_style || '',
       partnerStyle:    lead.partner_style || '',
-      situation:       lead.situation || '',
-      quizData:        lead.quiz_data || {}
+      quizData: {
+        myAnswers: qd.myAnswers || [],
+        ptAnswers: qd.ptAnswers || [],
+        theme:     qd.theme    || '',
+        goal:      qd.goal     || ''
+      }
     });
   } catch (err) {
     console.error('Lead lookup error:', err.message);

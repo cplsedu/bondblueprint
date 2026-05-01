@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BondBlueprint™ Analytics</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://unpkg.com/globe.gl@2.31.1/dist/globe.gl.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;color:#1E1E1E;min-height:100vh}
@@ -130,6 +131,35 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 .empty{color:#9A908A;font-size:13px;padding:16px 0;text-align:center}
 .error-note{font-size:11px;color:#E07A3A;margin-top:6px}
 #main-content{display:none}
+
+/* LIVE PANEL */
+.live-panel{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#0F1A10;border-radius:16px;overflow:hidden;margin-bottom:14px;border:1.5px solid #1E3526;min-height:420px}
+.live-left{padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.live-right{position:relative;background:#0A1208;display:flex;align-items:center;justify-content:center}
+#globe-el{width:100%;height:420px}
+.live-hdr{display:flex;align-items:center;gap:8px}
+.live-pulse{width:8px;height:8px;border-radius:50%;background:#4ACA5A;box-shadow:0 0 0 0 rgba(74,202,90,.4);animation:lpulse 2s infinite;flex-shrink:0}
+@keyframes lpulse{0%{box-shadow:0 0 0 0 rgba(74,202,90,.5)}70%{box-shadow:0 0 0 10px rgba(74,202,90,0)}100%{box-shadow:0 0 0 0 rgba(74,202,90,0)}}
+.live-hdr-txt{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.live-active{margin:0}
+.live-active-val{font-size:40px;font-weight:800;color:#fff;line-height:1}
+.live-active-lbl{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);margin-top:3px}
+.live-bars-wrap{display:flex;flex-direction:column;gap:7px}
+.live-bars-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:2px}
+.live-bar-row{display:flex;align-items:center;gap:8px}
+.live-bar-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.45);width:78px;flex-shrink:0}
+.live-bar-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.live-bar-fill{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.live-bar-cnt{font-size:11px;font-weight:800;color:rgba(255,255,255,.6);min-width:20px;text-align:right}
+.live-feed-wrap{flex:1;min-height:0;overflow:hidden}
+.live-feed-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:7px}
+.lf-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:lfIn .35s ease}
+@keyframes lfIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.lf-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.lf-text{font-size:11px;font-weight:600;color:rgba(255,255,255,.65);line-height:1.3;flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.lf-time{font-size:10px;color:rgba(255,255,255,.28);flex-shrink:0}
+.globe-corner{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.15);pointer-events:none}
+@media(max-width:700px){.live-panel{grid-template-columns:1fr}.live-right{display:none}}
 </style>
 </head>
 <body>
@@ -248,22 +278,59 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
   <!-- ── Behavioral Analytics (PostHog) ── -->
   <div class="section-title" style="margin-top:32px">Behavioral Analytics</div>
 
-  <div class="three-col">
-    <div class="metric-card">
-      <div class="metric-label"><span class="live-dot"></span>Live now</div>
-      <div class="metric-value green" id="m-live">—</div>
-      <div class="metric-sub">Active last 3 min</div>
+  <!-- ── Live Panel ── -->
+  <div class="live-panel">
+    <div class="live-left">
+      <div class="live-hdr">
+        <div class="live-pulse"></div>
+        <div class="live-hdr-txt">Live · Updates every 30s</div>
+      </div>
+      <div class="live-active">
+        <div class="live-active-val" id="m-live">—</div>
+        <div class="live-active-lbl">Active right now</div>
+      </div>
+      <div class="live-bars-wrap">
+        <div class="live-bars-title">Today's activity</div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Quiz starts</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-quiz" style="width:0%;background:#4A7A5A"></div></div>
+          <div class="live-bar-cnt" id="lc-quiz">0</div>
+        </div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Email entries</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-email" style="width:0%;background:#D4A843"></div></div>
+          <div class="live-bar-cnt" id="lc-email">0</div>
+        </div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Checkouts</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-checkout" style="width:0%;background:#E07A3A"></div></div>
+          <div class="live-bar-cnt" id="lc-checkout">0</div>
+        </div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Purchases</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-purchase" style="width:0%;background:#2C4A35"></div></div>
+          <div class="live-bar-cnt" id="lc-purchase">0</div>
+        </div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Cart returns</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-cart" style="width:0%;background:#6B4A8A"></div></div>
+          <div class="live-bar-cnt" id="lc-cart" id="m-clickback">0</div>
+        </div>
+      </div>
+      <div class="live-feed-wrap">
+        <div class="live-feed-title">Recent events</div>
+        <div id="live-feed"></div>
+      </div>
     </div>
-    <div class="metric-card">
-      <div class="metric-label">Visitors in range</div>
-      <div class="metric-value" id="m-visitors">—</div>
-      <div class="metric-sub">Unique page views</div>
+    <div class="live-right">
+      <div id="globe-el"></div>
+      <div class="globe-corner">Visitor locations · Last 7 days</div>
     </div>
-    <div class="metric-card">
-      <div class="metric-label">Cart email click-backs</div>
-      <div class="metric-value orange" id="m-clickback">—</div>
-      <div class="metric-sub">Returned via cart link</div>
-    </div>
+  </div>
+  <!-- hidden but still populated for funnel query -->
+  <div style="display:none">
+    <span id="m-visitors"></span>
+    <span id="m-clickback"></span>
   </div>
 
   <div class="card">
@@ -347,6 +414,7 @@ function showDashboard() {
   document.getElementById('main-content').style.display  = 'block';
   document.getElementById('from-date').value = todayStr();
   document.getElementById('to-date').value   = todayStr();
+  initGlobe().then(() => loadLivePanel());
   refreshAll();
 }
 if (stored) loadConfig().then(ok => { if (ok) showDashboard(); });
@@ -494,7 +562,6 @@ async function loadFunnelAndMetrics(from, to, range) {
   funnelRows.forEach(([e,u]) => { map[e]=u; });
 
   if (liveRow.length) {
-    document.getElementById('m-live').textContent      = n(liveRow[0][0]);
     document.getElementById('m-visitors').textContent  = n(liveRow[0][1]);
     document.getElementById('m-clickback').textContent = n(liveRow[0][2]);
   }
@@ -595,13 +662,102 @@ async function loadActivity(from, to) {
     </div>`).join('');
 }
 
-// Auto-refresh live metrics every 60s without changing the date range
+// ── Globe & Live Panel ────────────────────────────────────────────────────────
+let liveGlobe = null;
+
+async function initGlobe() {
+  const el = document.getElementById('globe-el');
+  if (!el || typeof Globe === 'undefined') return;
+  liveGlobe = Globe()
+    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-dark.jpg')
+    .backgroundColor('rgba(0,0,0,0)')
+    .atmosphereColor('#4A7A5A')
+    .atmosphereAltitude(0.14)
+    .pointColor(() => '#E07A3A')
+    .pointAltitude(0.015)
+    .pointRadius(0.4)
+    .pointLabel(d => `${d.city ? d.city + (d.country ? ', ' + d.country : '') : d.country || ''}`)
+    (el);
+  liveGlobe.controls().autoRotate = true;
+  liveGlobe.controls().autoRotateSpeed = 0.45;
+  liveGlobe.controls().enableZoom = false;
+  liveGlobe.controls().enablePan = false;
+}
+
+const FEED_EVENTS = {
+  page_landed:              { icon:'🌐', bg:'rgba(44,74,53,.6)',   label:'Visited the site' },
+  quiz_started:             { icon:'📝', bg:'rgba(74,122,90,.6)',  label:'Started the quiz' },
+  quiz_completed:           { icon:'✅', bg:'rgba(74,122,90,.6)',  label:'Completed the quiz' },
+  precheckout_email_entered:{ icon:'📧', bg:'rgba(212,168,67,.6)', label:'Entered their email' },
+  checkout_initiated:       { icon:'🛒', bg:'rgba(224,122,58,.6)', label:'Went to checkout' },
+  purchase_completed:       { icon:'🎉', bg:'rgba(30,53,38,.9)',   label:'Purchased' },
+  abandoned_cart_email_click:{ icon:'↩️',bg:'rgba(107,74,138,.6)', label:'Returned via cart email' },
+};
+
+async function loadLivePanel() {
+  if (!PH_KEY) return;
+  try {
+    const [liveRows, geoRows, actRows, barRows] = await Promise.all([
+      phQuery(`SELECT uniqIf(distinct_id, timestamp > now() - interval 3 minute) FROM events WHERE timestamp > now() - interval 3 minute`),
+      phQuery(`SELECT toFloat64OrZero(ifNull(toString(properties.\`$geoip_latitude\`),'0')) as lat, toFloat64OrZero(ifNull(toString(properties.\`$geoip_longitude\`),'0')) as lng, ifNull(properties.\`$geoip_city_name\`,'') as city, ifNull(properties.\`$geoip_country_name\`,'') as cntry, count() as cnt FROM events WHERE event IN ('page_landed','quiz_started','purchase_completed') AND timestamp >= now() - INTERVAL 7 DAY AND lat != 0 GROUP BY lat, lng, city, cntry ORDER BY cnt DESC LIMIT 80`),
+      phQuery(`SELECT event, ifNull(properties.\`$geoip_city_name\`,'') as city, ifNull(properties.\`$geoip_country_name\`,'') as cntry, timestamp FROM events WHERE event IN ('page_landed','quiz_started','quiz_completed','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND timestamp >= now() - INTERVAL 3 HOUR ORDER BY timestamp DESC LIMIT 10`),
+      phQuery(`SELECT event, count() as cnt FROM events WHERE event IN ('quiz_started','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND toDate(timestamp) = today() GROUP BY event`)
+    ]);
+
+    // Active count
+    document.getElementById('m-live').textContent = n(liveRows[0]?.[0] || 0);
+
+    // Globe points
+    if (liveGlobe && geoRows.length) {
+      const pts = geoRows.filter(r => r[0] && r[1]).map(r => ({ lat:r[0], lng:r[1], city:r[2], country:r[3], size:r[4] }));
+      liveGlobe.pointsData(pts).pointRadius(d => 0.25 + Math.min(d.size,10)*0.03);
+    }
+
+    // Activity feed
+    const feedEl = document.getElementById('live-feed');
+    if (feedEl && actRows.length) {
+      feedEl.innerHTML = actRows.map(([ev, city, cntry, ts]) => {
+        const cfg = FEED_EVENTS[ev] || { icon:'•', bg:'rgba(255,255,255,.1)', label: ev };
+        const loc = city ? (city + (cntry ? ', ' + cntry : '')) : (cntry || 'Unknown');
+        return `<div class="lf-item">
+          <div class="lf-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+          <div class="lf-text">${cfg.label}${loc !== 'Unknown' ? ' · ' + loc : ''}</div>
+          <div class="lf-time">${ago(ts)}</div>
+        </div>`;
+      }).join('');
+    } else if (feedEl) {
+      feedEl.innerHTML = `<div style="font-size:11px;color:rgba(255,255,255,.25);padding:8px 0">No activity in last 3 hours</div>`;
+    }
+
+    // Animated bars
+    const bm = {};
+    barRows.forEach(([ev, cnt]) => { bm[ev] = cnt; });
+    const barMax = Math.max(...Object.values(bm), 1);
+    const barDefs = [
+      ['quiz_started',              'lb-quiz',     'lc-quiz'],
+      ['precheckout_email_entered', 'lb-email',    'lc-email'],
+      ['checkout_initiated',        'lb-checkout', 'lc-checkout'],
+      ['purchase_completed',        'lb-purchase', 'lc-purchase'],
+      ['abandoned_cart_email_click','lb-cart',     'lc-cart'],
+    ];
+    barDefs.forEach(([ev, barId, cntId]) => {
+      const v = bm[ev] || 0;
+      const pct = Math.round(v / barMax * 100);
+      const bar = document.getElementById(barId);
+      const cnt = document.getElementById(cntId);
+      if (bar) bar.style.width = pct + '%';
+      if (cnt) cnt.textContent = v;
+    });
+
+  } catch(e) { console.error('Live panel error:', e); }
+}
+
+// Auto-refresh live panel every 30s (always "right now"), funnel every 60s
+setInterval(() => { if (adminKey) loadLivePanel(); }, 30000);
 setInterval(() => {
   if (!adminKey) return;
   const {from,to} = getRange();
-  if (from && to) {
-    safeLoad('funnel-error', () => loadFunnelAndMetrics(from, to, phRange(from, to)));
-  }
+  if (from && to) safeLoad('funnel-error', () => loadFunnelAndMetrics(from, to, phRange(from, to)));
 }, 60000);
 </script>
 </body>
