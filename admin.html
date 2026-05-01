@@ -334,11 +334,18 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
     <div class="live-left">
       <div class="live-hdr">
         <div class="live-pulse"></div>
-        <div class="live-hdr-txt">Live · Updates every 30s</div>
+        <div class="live-hdr-txt">Live · Updates every 30s · ~60s delay</div>
+        <div id="ph-status" style="margin-left:auto;font-size:9px;font-weight:800;letter-spacing:1px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.3)">CONNECTING…</div>
       </div>
-      <div class="live-active">
-        <div class="live-active-val" id="m-live">—</div>
-        <div class="live-active-lbl">Active right now</div>
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div class="live-active">
+          <div class="live-active-val" id="m-live">—</div>
+          <div class="live-active-lbl">Active last 10 min</div>
+        </div>
+        <div class="live-active">
+          <div class="live-active-val" id="m-live-hour" style="font-size:28px">—</div>
+          <div class="live-active-lbl">Visited last hour</div>
+        </div>
       </div>
       <div class="live-bars-wrap">
         <div class="live-bars-title">Today's activity</div>
@@ -369,8 +376,9 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
         </div>
       </div>
       <div class="live-feed-wrap">
-        <div class="live-feed-title">Recent events</div>
+        <div class="live-feed-title">Recent events · Last 6 hours</div>
         <div id="live-feed"></div>
+        <div id="live-error" style="display:none;font-size:11px;color:#E07A3A;margin-top:8px;line-height:1.5"></div>
       </div>
     </div>
     <div class="live-right">
@@ -385,7 +393,10 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
   </div>
 
   <div class="card">
-    <div class="card-title">Conversion Funnel</div>
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+      Conversion Funnel
+      <span style="font-size:9px;font-weight:600;color:#9A908A;letter-spacing:0;text-transform:none">PostHog events take ~60s to appear after a visit — hit ↻ Refresh if you just tested</span>
+    </div>
     <div class="funnel-steps" id="funnel"><div class="empty">Loading…</div></div>
     <div id="funnel-error" class="error-note"></div>
   </div>
@@ -452,14 +463,14 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
         <div class="heatmap-sub">Real click coordinates tracked across every screen — hottest zones in red</div>
       </div>
       <div class="heatmap-controls">
-        <select id="hm-screen" class="hm-select">
+        <select id="hm-screen" class="hm-select" onchange="renderHeatmap()">
           <option value="screen-landing">Landing Page</option>
           <option value="screen-gate">Email Gate</option>
           <option value="screen-quiz">Quiz</option>
           <option value="screen-results">Results</option>
           <option value="screen-precheckout">Pre-Checkout</option>
         </select>
-        <button class="hm-btn" onclick="renderHeatmap()" id="hm-load-btn">Load Heatmap</button>
+        <button class="hm-btn" onclick="renderHeatmap()" id="hm-load-btn">↻ Refresh</button>
       </div>
     </div>
 
@@ -488,7 +499,7 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 
         <div class="hm-hot-list" id="hm-hot-list">
           <div class="hm-hot-title">Top Click Zones</div>
-          <div class="hm-empty" id="hm-canvas-status">Choose a screen and click "Load Heatmap"</div>
+          <div class="hm-empty" id="hm-canvas-status">Select a screen above — data loads automatically. Heatmap builds from real visitor clicks and may take a few minutes to appear after first visits.</div>
         </div>
 
         <div class="hm-clarity-note">
@@ -555,6 +566,8 @@ function showDashboard() {
   document.getElementById('from-date').value = todayStr();
   document.getElementById('to-date').value   = todayStr();
   initGlobe().then(() => loadLivePanel());
+  // Auto-load heatmap for landing page on open
+  setTimeout(() => renderHeatmap(), 2000);
   refreshAll();
 }
 if (stored) loadConfig().then(ok => { if (ok) showDashboard(); });
@@ -1069,17 +1082,27 @@ const FEED_EVENTS = {
 };
 
 async function loadLivePanel() {
-  if (!PH_KEY) return;
+  if (!PH_KEY) {
+    setPhStatus(false, 'NO API KEY');
+    document.getElementById('live-error').style.display = 'block';
+    document.getElementById('live-error').textContent = '⚠ POSTHOG_PERSONAL_KEY or POSTHOG_PROJECT_ID not set in Railway environment variables. Add them to see live data.';
+    return;
+  }
   try {
     const [liveRows, geoRows, actRows, barRows] = await Promise.all([
-      phQuery(`SELECT uniqIf(distinct_id, timestamp > now() - interval 3 minute) FROM events WHERE timestamp > now() - interval 3 minute`),
+      phQuery(`SELECT uniqIf(distinct_id, timestamp > now() - interval 10 minute) as active10, uniqIf(distinct_id, timestamp > now() - interval 60 minute) as active1h FROM events WHERE timestamp > now() - interval 60 minute`),
       phQuery(`SELECT toFloat64OrZero(ifNull(toString(properties.\`$geoip_latitude\`),'0')) as lat, toFloat64OrZero(ifNull(toString(properties.\`$geoip_longitude\`),'0')) as lng, ifNull(properties.\`$geoip_city_name\`,'') as city, ifNull(properties.\`$geoip_country_name\`,'') as cntry, count() as cnt FROM events WHERE event IN ('page_landed','quiz_started','purchase_completed') AND timestamp >= now() - INTERVAL 7 DAY AND lat != 0 GROUP BY lat, lng, city, cntry ORDER BY cnt DESC LIMIT 80`),
-      phQuery(`SELECT event, ifNull(properties.\`$geoip_city_name\`,'') as city, ifNull(properties.\`$geoip_country_name\`,'') as cntry, timestamp FROM events WHERE event IN ('page_landed','quiz_started','quiz_completed','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND timestamp >= now() - INTERVAL 3 HOUR ORDER BY timestamp DESC LIMIT 10`),
+      phQuery(`SELECT event, ifNull(properties.\`$geoip_city_name\`,'') as city, ifNull(properties.\`$geoip_country_name\`,'') as cntry, timestamp FROM events WHERE event IN ('page_landed','quiz_started','quiz_completed','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND timestamp >= now() - INTERVAL 6 HOUR ORDER BY timestamp DESC LIMIT 15`),
       phQuery(`SELECT event, count() as cnt FROM events WHERE event IN ('quiz_started','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click') AND toDate(timestamp) = today() GROUP BY event`)
     ]);
 
-    // Active count
-    document.getElementById('m-live').textContent = n(liveRows[0]?.[0] || 0);
+    // Mark PostHog as connected
+    setPhStatus(true, 'LIVE');
+    document.getElementById('live-error').style.display = 'none';
+
+    // Active counts
+    document.getElementById('m-live').textContent      = n(liveRows[0]?.[0] || 0);
+    document.getElementById('m-live-hour').textContent = n(liveRows[0]?.[1] || 0);
 
     // Globe points
     if (liveGlobe && geoRows.length) {
@@ -1123,7 +1146,23 @@ async function loadLivePanel() {
       if (cnt) cnt.textContent = v;
     });
 
-  } catch(e) { console.error('Live panel error:', e); }
+  } catch(e) {
+    console.error('Live panel error:', e);
+    setPhStatus(false, 'API ERROR');
+    const errEl = document.getElementById('live-error');
+    if (errEl) {
+      errEl.style.display = 'block';
+      errEl.textContent = '⚠ PostHog query failed: ' + e.message + '. Check that POSTHOG_PERSONAL_KEY and POSTHOG_PROJECT_ID are set in Railway → Variables.';
+    }
+  }
+}
+
+function setPhStatus(ok, label) {
+  const el = document.getElementById('ph-status');
+  if (!el) return;
+  el.textContent = label;
+  el.style.background = ok ? 'rgba(74,202,90,.15)' : 'rgba(224,122,58,.15)';
+  el.style.color = ok ? '#4ACA5A' : '#E07A3A';
 }
 
 // Auto-refresh live panel every 30s (always "right now"), funnel every 60s
