@@ -1103,7 +1103,7 @@ async function initGlobe() {
   }
 
   if (typeof Globe === 'undefined') {
-    el.innerHTML = `<div style="color:rgba(255,255,255,.15);font-size:11px;text-align:center;padding-top:60px;letter-spacing:1px">WebGL globe unavailable<br><span style="font-size:9px">Visitor locations still tracked — see activity feed</span></div>`;
+    initFlatMap();
     return;
   }
 
@@ -1136,31 +1136,155 @@ async function initGlobe() {
     liveGlobe.pointOfView({ lat: 20, lng: 0, altitude: 2.2 });
   } catch(e) {
     console.error('Globe init failed:', e);
-    el.innerHTML = `<div style="color:rgba(255,255,255,.15);font-size:11px;text-align:center;padding-top:60px">Globe render failed — see activity feed for locations</div>`;
+    initFlatMap();
   }
 }
 
+// ── Flat 2D world map fallback (canvas, no WebGL needed) ─────────────────────
+// Simplified continent outlines [lng, lat] – good enough for a data dashboard
+const LAND_POLYS = [
+  // North America
+  [[-168,72],[-95,72],[-80,68],[-70,60],[-55,50],[-65,44],[-67,47],[-80,43],[-82,42],[-88,30],[-97,26],[-97,20],[-85,15],[-77,8],[-60,14],[-62,9],[-75,12],[-80,12],[-95,19],[-110,24],[-115,30],[-120,34],[-125,48],[-124,49],[-113,49],[-95,49],[-82,47],[-75,45],[-65,44],[-57,50],[-60,55],[-65,58],[-75,63],[-80,67],[-90,72],[-110,74],[-120,70],[-135,60],[-145,60],[-150,58],[-162,55],[-165,60],[-168,65],[-168,72]],
+  // Greenland
+  [[-74,76],[-20,76],[-15,80],[-22,83],[-42,83],[-56,82],[-68,80],[-74,76]],
+  // South America
+  [[-80,12],[-60,12],[-50,2],[-36,-6],[-35,-10],[-38,-18],[-40,-22],[-48,-28],[-53,-33],[-53,-55],[-68,-55],[-72,-50],[-75,-40],[-70,-18],[-75,-10],[-78,0],[-80,6],[-80,12]],
+  // Europe mainland
+  [[-10,36],[3,36],[3,43],[8,44],[10,55],[15,57],[20,60],[25,65],[28,71],[22,70],[20,68],[15,65],[10,63],[5,62],[5,57],[10,57],[14,54],[14,52],[20,50],[15,45],[14,43],[12,37],[15,37],[18,40],[20,40],[26,38],[28,40],[30,40],[36,36],[28,35],[22,36],[18,40],[16,42],[13,46],[10,48],[8,48],[5,47],[2,43],[0,43],[-5,43],[-8,42],[-10,38],[-10,36]],
+  // UK
+  [[-8,50],[2,51],[2,54],[-5,58],[-8,58],[-8,52],[-8,50]],
+  // Africa
+  [[-18,15],[-17,37],[10,37],[15,37],[30,37],[37,36],[43,12],[50,12],[42,-2],[36,-18],[28,-22],[18,-18],[12,-2],[8,4],[2,4],[-2,5],[-8,5],[-18,15]],
+  // Arabia / Middle East
+  [[36,37],[42,37],[50,28],[60,22],[55,15],[43,14],[38,22],[36,30],[36,37]],
+  // South Asia + Southeast Asia mainland
+  [[60,22],[75,36],[82,36],[88,28],[92,22],[100,22],[105,15],[100,5],[96,6],[92,22],[88,24],[84,24],[80,10],[72,20],[68,37],[60,37],[50,28],[60,22]],
+  // East Asia
+  [[82,36],[95,28],[100,22],[110,20],[120,22],[122,30],[125,38],[130,42],[135,50],[145,50],[145,43],[142,40],[140,38],[137,35],[130,32],[125,25],[120,22],[115,22],[108,15],[105,10],[100,5],[96,6],[92,22],[95,28],[82,36]],
+  // Siberia / Russia
+  [[30,50],[60,55],[100,55],[140,55],[160,58],[175,65],[180,68],[170,72],[140,72],[110,73],[80,73],[60,72],[40,70],[30,65],[30,50]],
+  // Japan
+  [[130,32],[132,34],[135,34],[138,36],[140,38],[142,40],[142,42],[138,40],[132,36],[130,32]],
+  // SE Asia islands (simplified)
+  [[95,6],[105,6],[115,0],[125,-4],[132,-6],[138,-6],[132,-2],[120,-8],[110,-8],[104,-4],[96,4],[95,6]],
+  // Australia
+  [[114,-22],[120,-22],[128,-16],[136,-12],[142,-10],[148,-20],[154,-28],[150,-35],[144,-38],[132,-32],[126,-32],[120,-30],[114,-28],[114,-22]],
+  // New Zealand (South Island)
+  [[168,-45],[172,-44],[174,-41],[172,-46],[168,-46],[168,-45]],
+  // New Zealand (North Island)
+  [[174,-37],[178,-37],[178,-41],[174,-40],[174,-37]],
+];
+
+let flatMapPts    = [];
+let flatMapPhase  = 0;
+let flatMapAnimId = null;
+let useFlatMap    = false;
+
+function initFlatMap() {
+  useFlatMap = true;
+  const el = document.getElementById('globe-el');
+  if (!el) return;
+  el.innerHTML = `<canvas id="flat-map-canvas" style="display:block;width:100%;height:100%"></canvas>
+    <div style="position:absolute;bottom:12px;left:0;right:0;text-align:center;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.15);pointer-events:none">Visitor Locations · Last 7 days</div>`;
+
+  const canvas = document.getElementById('flat-map-canvas');
+  function resize() {
+    canvas.width  = el.clientWidth  || 500;
+    canvas.height = el.clientHeight || 420;
+  }
+  resize();
+
+  if (flatMapAnimId) cancelAnimationFrame(flatMapAnimId);
+  function loop() {
+    flatMapPhase = (flatMapPhase + 0.018) % (Math.PI * 2);
+    drawFlatMap(canvas);
+    flatMapAnimId = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+function drawFlatMap(canvas) {
+  const W = canvas.width, H = canvas.height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const toX = lng => (lng + 180) / 360 * W;
+  const toY = lat => (90  - lat) / 180 * H;
+
+  // Background
+  ctx.fillStyle = '#0A1208';
+  ctx.fillRect(0, 0, W, H);
+
+  // Subtle lat/lng grid
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 0.5;
+  [-60,-30,0,30,60].forEach(lat => {
+    const y = toY(lat);
+    ctx.beginPath(); ctx.moveTo(0,y); ctx.lineTo(W,y); ctx.stroke();
+  });
+  [-120,-60,0,60,120].forEach(lng => {
+    const x = toX(lng);
+    ctx.beginPath(); ctx.moveTo(x,0); ctx.lineTo(x,H); ctx.stroke();
+  });
+  // Equator brighter
+  ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+  ctx.lineWidth = 1;
+  const ey = toY(0);
+  ctx.beginPath(); ctx.moveTo(0,ey); ctx.lineTo(W,ey); ctx.stroke();
+
+  // Continents
+  LAND_POLYS.forEach(poly => {
+    ctx.beginPath();
+    poly.forEach(([lng,lat],i) => { i===0 ? ctx.moveTo(toX(lng),toY(lat)) : ctx.lineTo(toX(lng),toY(lat)); });
+    ctx.closePath();
+    ctx.fillStyle   = 'rgba(44,74,53,0.55)';
+    ctx.strokeStyle = 'rgba(74,122,90,0.3)';
+    ctx.lineWidth   = 0.8;
+    ctx.fill();
+    ctx.stroke();
+  });
+
+  // Visitor dots — animated pulse
+  flatMapPts.forEach((p, idx) => {
+    if (!p.lat || !p.lng) return;
+    const x = toX(p.lng), y = toY(p.lat);
+    const color = p.ev==='purchase_completed' ? '#FFD700' : p.ev==='quiz_started' ? '#4ACA5A' : '#E07A3A';
+    const baseR  = 3 + Math.min(p.size,15)*0.35;
+    const phase  = flatMapPhase + idx * 0.8;
+    const pulseR = baseR + (Math.sin(phase)*0.5+0.5) * 10;
+
+    // Glow ring
+    const g = ctx.createRadialGradient(x,y,baseR,x,y,pulseR);
+    const a  = Math.round((1-(pulseR-baseR)/10)*0.55*255).toString(16).padStart(2,'0');
+    g.addColorStop(0, color+a); g.addColorStop(1, color+'00');
+    ctx.beginPath(); ctx.arc(x,y,pulseR,0,Math.PI*2); ctx.fillStyle=g; ctx.fill();
+
+    // Solid core
+    ctx.beginPath(); ctx.arc(x,y,baseR,0,Math.PI*2);
+    ctx.fillStyle=color; ctx.fill();
+    // White highlight
+    ctx.beginPath(); ctx.arc(x,y,baseR*0.38,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,0.85)'; ctx.fill();
+  });
+}
+
 function updateGlobe(geoRows) {
-  if (!liveGlobe || !geoRows?.length) return;
+  const pts = (geoRows||[])
+    .map(r => ({ lat:+r[0], lng:+r[1], city:String(r[2]||''), country:String(r[3]||''), ev:String(r[4]||''), size:+r[5]||1 }))
+    .filter(p => p.lat!==0 && p.lng!==0);
 
-  // Build point list — each row: [lat, lng, city, cntry, event, count]
-  const pts = geoRows
-    .map(r => ({ lat: +r[0], lng: +r[1], city: String(r[2]||''), country: String(r[3]||''), ev: String(r[4]||''), size: +r[5]||1 }))
-    .filter(p => p.lat !== 0 && p.lng !== 0);
-
+  if (useFlatMap) {
+    flatMapPts = pts; // canvas loop picks this up automatically
+    return;
+  }
+  if (!liveGlobe) return;
   liveGlobe.pointsData(pts);
-
-  // Arcs: top 12 locations → flash an incoming arc
-  const topPts = [...pts].sort((a,b) => b.size - a.size).slice(0, 12);
-  const arcs = topPts.map(p => ({
-    startLat: p.lat, startLng: p.lng,
-    endLat:   p.lat + (Math.random() - 0.5) * 0.5,  // tiny jitter so self-arcs show
-    endLng:   p.lng + (Math.random() - 0.5) * 0.5,
-    color: p.ev === 'purchase_completed' ? ['rgba(255,215,0,0.9)','rgba(255,215,0,0)']
-         : p.ev === 'quiz_started'       ? ['rgba(74,202,90,0.8)','rgba(74,202,90,0)']
-         :                                 ['rgba(224,122,58,0.8)','rgba(224,122,58,0)']
-  }));
-  liveGlobe.arcsData(arcs);
+  const top12 = [...pts].sort((a,b)=>b.size-a.size).slice(0,12);
+  liveGlobe.arcsData(top12.map(p => ({
+    startLat:p.lat, startLng:p.lng,
+    endLat:p.lat+(Math.random()-.5)*.5, endLng:p.lng+(Math.random()-.5)*.5,
+    color: p.ev==='purchase_completed'?['rgba(255,215,0,.9)','rgba(255,215,0,0)']:p.ev==='quiz_started'?['rgba(74,202,90,.8)','rgba(74,202,90,0)']:['rgba(224,122,58,.8)','rgba(224,122,58,0)']
+  })));
 }
 
 const FEED_EVENTS = {
