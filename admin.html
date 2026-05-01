@@ -678,6 +678,7 @@ async function loadTimeToQuiz(range) {
       <div class="tq-count">${n(cnt)} people</div>
     </div>`;
   }).join('') + `</div><div style="margin-top:10px;font-size:10px;font-weight:600;color:#9A908A">Most people clicking the quiz quickly = strong hook. Long delays = they're reading more first or hesitating.</div>`;
+}
 
 async function safeLoad(errId, fn) {
   try { await fn(); }
