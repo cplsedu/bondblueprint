@@ -903,6 +903,15 @@ function track(event, props = {}) {
   }, { passive: true });
 })();
 
+// ── Click-coordinate heatmap tracking ──────────────────────────────────────────
+document.addEventListener('click', function(e) {
+  const active = document.querySelector('.screen.active');
+  if (!active) return;
+  const xPct = Math.round(e.clientX / window.innerWidth * 1000) / 10;
+  const yPct = Math.round(e.clientY / window.innerHeight * 1000) / 10;
+  track('click_xy', { x: xPct, y: yPct, screen: active.id || 'unknown' });
+}, { passive: true });
+
 // ── Time-to-quiz tracking (fires when quiz starts, records seconds on landing) ──
 const _pageLoadTime = Date.now();
 
