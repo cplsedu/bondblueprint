@@ -75,13 +75,25 @@ app.post('/api/account', async (req, res) => {
   try {
     const lead = await upsertLead({ email, name, attachmentStyle, partnerStyle, quizData });
 
+    // Add to ConvertKit and start abandoned cart sequence immediately.
+    // We apply the checkout tag here (not just at checkout) so anyone who
+    // enters their email — and doesn't buy — gets the full follow-up sequence.
+    // The "paid" tag (applied on purchase) stops the sequence automatically.
     subscribeToConvertKit({
       email,
       name,
       firstName,
       lastName,
-      tags: [process.env.CONVERTKIT_QUIZ_TAG_ID].filter(Boolean)
-    }).catch(() => {});
+      tags: [
+        process.env.CONVERTKIT_QUIZ_TAG_ID,     // marks as quiz lead
+        process.env.CONVERTKIT_CHECKOUT_TAG_ID, // triggers abandoned cart sequence
+      ].filter(Boolean)
+    }).then(result => {
+      if (!result) console.error(`[ConvertKit] Failed to subscribe ${email} — check CONVERTKIT_API_KEY and tag IDs in Railway`);
+      else console.log(`[ConvertKit] Subscribed ${email} and queued abandoned cart sequence`);
+    }).catch(err => {
+      console.error(`[ConvertKit] Unexpected error for ${email}:`, err.message);
+    });
 
     res.json({ success: true, leadId: lead.id });
   } catch (err) {
