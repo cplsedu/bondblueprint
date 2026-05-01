@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>BondBlueprint™ Analytics</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://unpkg.com/globe.gl@2.31.1/dist/globe.gl.min.js"></script>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;color:#1E1E1E;min-height:100vh}
@@ -1081,40 +1080,64 @@ async function loadActivity(from, to) {
 // ── Globe & Live Panel ────────────────────────────────────────────────────────
 let liveGlobe = null;
 
+function loadScript(src) {
+  return new Promise((res, rej) => {
+    const s = document.createElement('script');
+    s.src = src; s.onload = res; s.onerror = rej;
+    document.head.appendChild(s);
+  });
+}
+
 async function initGlobe() {
   const el = document.getElementById('globe-el');
-  if (!el || typeof Globe === 'undefined') return;
+  if (!el) return;
 
-  liveGlobe = Globe()
-    .globeImageUrl('//unpkg.com/three-globe/example/img/earth-night.jpg')
-    .bumpImageUrl('//unpkg.com/three-globe/example/img/earth-topology.png')
-    .backgroundColor('rgba(0,0,0,0)')
-    .atmosphereColor('#6AB87A')
-    .atmosphereAltitude(0.18)
-    // Visitor dots
-    .pointColor(d => d.ev === 'purchase_completed' ? '#FFD700' : d.ev === 'quiz_started' ? '#4ACA5A' : '#E07A3A')
-    .pointAltitude(d => 0.01 + Math.min(d.size, 20) * 0.003)
-    .pointRadius(d => 0.3 + Math.min(d.size, 15) * 0.04)
-    .pointsMerge(false)
-    .pointLabel(d => `<div style="font-family:sans-serif;font-size:11px;background:rgba(0,0,0,.75);color:#fff;padding:4px 8px;border-radius:6px;white-space:nowrap">${d.city ? d.city + (d.country ? ', ' + d.country : '') : d.country || 'Unknown'}<br><span style="color:#9A9;font-size:10px">${d.ev === 'purchase_completed' ? '🎉 Purchased' : d.ev === 'quiz_started' ? '📝 Taking quiz' : '🌐 Visited'}</span></div>`)
-    // Animated arcs from location → center (like Shopify)
-    .arcsData([])
-    .arcColor(d => d.color)
-    .arcAltitude(0.3)
-    .arcStroke(0.5)
-    .arcDashLength(0.4)
-    .arcDashGap(0.2)
-    .arcDashAnimateTime(2000)
-    (el);
+  // Load globe.gl dynamically — try jsdelivr first (more reliable), fall back to unpkg
+  if (typeof Globe === 'undefined') {
+    el.innerHTML = `<div style="color:rgba(255,255,255,.2);font-size:11px;text-align:center;padding-top:60px;letter-spacing:1px">Loading globe…</div>`;
+    try {
+      await loadScript('https://cdn.jsdelivr.net/npm/globe.gl@2.31.1/dist/globe.gl.min.js');
+    } catch(_) {
+      try { await loadScript('https://unpkg.com/globe.gl@2.31.1/dist/globe.gl.min.js'); } catch(_2) {}
+    }
+  }
 
-  const ctrl = liveGlobe.controls();
-  ctrl.autoRotate      = true;
-  ctrl.autoRotateSpeed = 0.5;
-  ctrl.enableZoom      = false;
-  ctrl.enablePan       = false;
+  if (typeof Globe === 'undefined') {
+    el.innerHTML = `<div style="color:rgba(255,255,255,.15);font-size:11px;text-align:center;padding-top:60px;letter-spacing:1px">WebGL globe unavailable<br><span style="font-size:9px">Visitor locations still tracked — see activity feed</span></div>`;
+    return;
+  }
 
-  // Tilt the globe slightly for a nicer angle
-  liveGlobe.pointOfView({ lat: 20, lng: 0, altitude: 2.2 });
+  el.innerHTML = ''; // clear loading text
+  try {
+    liveGlobe = Globe()
+      .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-night.jpg')
+      .backgroundColor('rgba(0,0,0,0)')
+      .atmosphereColor('#6AB87A')
+      .atmosphereAltitude(0.18)
+      .pointColor(d => d.ev === 'purchase_completed' ? '#FFD700' : d.ev === 'quiz_started' ? '#4ACA5A' : '#E07A3A')
+      .pointAltitude(d => 0.01 + Math.min(d.size, 20) * 0.003)
+      .pointRadius(d => 0.3 + Math.min(d.size, 15) * 0.04)
+      .pointsMerge(false)
+      .pointLabel(d => `<div style="font-family:sans-serif;font-size:11px;background:rgba(0,0,0,.8);color:#fff;padding:4px 8px;border-radius:6px;white-space:nowrap">${d.city ? d.city + (d.country ? ', '+d.country : '') : d.country || 'Unknown'}<br><span style="color:#9A9;font-size:10px">${d.ev==='purchase_completed'?'🎉 Purchased':d.ev==='quiz_started'?'📝 Taking quiz':'🌐 Visited'}</span></div>`)
+      .arcsData([])
+      .arcColor(d => d.color)
+      .arcAltitude(0.3)
+      .arcStroke(0.5)
+      .arcDashLength(0.4)
+      .arcDashGap(0.2)
+      .arcDashAnimateTime(2000)
+      (el);
+
+    const ctrl = liveGlobe.controls();
+    ctrl.autoRotate      = true;
+    ctrl.autoRotateSpeed = 0.5;
+    ctrl.enableZoom      = false;
+    ctrl.enablePan       = false;
+    liveGlobe.pointOfView({ lat: 20, lng: 0, altitude: 2.2 });
+  } catch(e) {
+    console.error('Globe init failed:', e);
+    el.innerHTML = `<div style="color:rgba(255,255,255,.15);font-size:11px;text-align:center;padding-top:60px">Globe render failed — see activity feed for locations</div>`;
+  }
 }
 
 function updateGlobe(geoRows) {
