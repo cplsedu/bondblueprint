@@ -132,6 +132,18 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 .error-note{font-size:11px;color:#E07A3A;margin-top:6px}
 #main-content{display:none}
 
+/* Page Behavior */
+.scroll-row,.click-row,.tq-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+.scroll-label,.click-label,.tq-label{font-size:11px;font-weight:700;color:#1E1E1E;width:56px;flex-shrink:0}
+.click-label{width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tq-label{width:88px}
+.scroll-bar-bg,.click-bar-bg,.tq-bar-bg{flex:1;height:8px;background:#F0EBE4;border-radius:4px;overflow:hidden}
+.scroll-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#4A7A5A,#2C4A35)}
+.click-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#E07A3A,#C4660A)}
+.tq-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#D4A843,#B08820)}
+.scroll-count,.click-count,.tq-count{font-size:11px;font-weight:800;color:#9A908A;min-width:32px;text-align:right}
+.scroll-pct{font-size:10px;font-weight:700;color:#4A7A5A;min-width:32px;text-align:right}
+
 /* LIVE PANEL */
 .live-panel{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#0F1A10;border-radius:16px;overflow:hidden;margin-bottom:14px;border:1.5px solid #1E3526;min-height:420px}
 .live-left{padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
@@ -358,6 +370,50 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
     <div id="activity-error" class="error-note"></div>
   </div>
 
+  <!-- ── Page Behavior ── -->
+  <div class="section-title" style="margin-top:32px">Page Behavior</div>
+
+  <div class="two-col">
+
+    <!-- Scroll Depth -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Scroll Depth · Where people stop reading</div>
+      <div id="scroll-depth-bars"><div class="empty">Loading…</div></div>
+      <div id="scroll-error" class="error-note"></div>
+      <div style="margin-top:12px;font-size:10px;font-weight:600;color:#9A908A;line-height:1.7">
+        Shows what % of visitors scroll past each milestone on the landing page. A big drop-off between 25% → 50% means the hook isn't holding attention far enough down.
+      </div>
+    </div>
+
+    <!-- Click Map -->
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Top Clicks · What people are tapping</div>
+      <div id="click-map"><div class="empty">Loading…</div></div>
+      <div id="click-error" class="error-note"></div>
+      <div style="margin-top:12px;font-size:10px;font-weight:600;color:#9A908A;line-height:1.7">
+        Most-clicked buttons and links in the selected date range, ranked by volume.
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Time on Landing Before Quiz -->
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Time on Landing Page Before Starting Quiz</div>
+    <div id="time-to-quiz"><div class="empty">Loading…</div></div>
+    <div id="time-error" class="error-note"></div>
+  </div>
+
+  <!-- Clarity CTA -->
+  <div style="background:linear-gradient(135deg,#0F1A10 0%,#1E3526 55%,#2C4A35 100%);border-radius:16px;padding:24px 28px;margin-top:14px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap">
+    <div>
+      <div style="font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#E07A3A;margin-bottom:8px">VISUAL HEATMAPS · FREE</div>
+      <div style="font-size:17px;font-weight:800;color:#fff;margin-bottom:6px">Add Microsoft Clarity for full visual heatmaps</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.55);line-height:1.6;max-width:480px">Clarity is 100% free and gives you pixel-perfect click heatmaps, scroll maps, and full session recordings. Takes 2 minutes to set up — create a project at clarity.microsoft.com, grab your Project ID, and add it to your Railway env vars as <code style="background:rgba(255,255,255,.1);padding:1px 6px;border-radius:4px;font-size:12px">CLARITY_PROJECT_ID</code>.</div>
+    </div>
+    <a href="https://clarity.microsoft.com" target="_blank" style="display:inline-block;background:#E07A3A;color:#fff;font-size:14px;font-weight:800;text-decoration:none;border-radius:100px;padding:13px 28px;white-space:nowrap;flex-shrink:0">Set up Clarity →</a>
+  </div>
+
 </div>
 </div>
 
@@ -544,8 +600,84 @@ async function loadPostHog(from, to) {
     safeLoad('quiz-error',     () => loadQuizDropoff(range)),
     safeLoad('sources-error',  () => loadSources(range)),
     safeLoad('activity-error', () => loadActivity(from, to)),
+    safeLoad('scroll-error',   () => loadScrollDepth(range)),
+    safeLoad('click-error',    () => loadClickMap(range)),
+    safeLoad('time-error',     () => loadTimeToQuiz(range)),
   ]);
 }
+
+async function loadScrollDepth(range) {
+  const rows = await phQuery(`
+    SELECT properties.depth_pct as depth, uniq(distinct_id) as users
+    FROM events WHERE event='scroll_depth' AND properties.screen='screen-landing' AND ${range}
+    GROUP BY depth ORDER BY depth ASC
+  `);
+  const el = document.getElementById('scroll-depth-bars');
+  if (!rows.length) { el.innerHTML='<div class="empty">No scroll data yet — tracking starts now that autocapture is enabled</div>'; return; }
+  // Get the baseline (total visitors who landed)
+  const baseRows = await phQuery(`SELECT uniq(distinct_id) as u FROM events WHERE event='page_landed' AND ${range}`);
+  const baseline = baseRows[0]?.[0] || 1;
+  el.innerHTML = rows.map(([depth, users]) => {
+    const pct = Math.round(users / baseline * 100);
+    return `<div class="scroll-row">
+      <div class="scroll-label">${depth}%</div>
+      <div class="scroll-bar-bg"><div class="scroll-bar-fill" style="width:${pct}%"></div></div>
+      <div class="scroll-pct">${pct}%</div>
+      <div class="scroll-count">${n(users)} visitors</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadClickMap(range) {
+  const rows = await phQuery(`
+    SELECT
+      coalesce(nullIf(toString(properties.\`$el_text\`),''), nullIf(toString(properties.\`$el_class\`),''), toString(properties.\`$el_tag\`)) as elem,
+      count() as clicks
+    FROM events
+    WHERE event='$autocapture' AND toString(properties.\`$event_type\`)='click' AND ${range}
+    AND elem != '' AND elem != 'null'
+    GROUP BY elem ORDER BY clicks DESC LIMIT 20
+  `);
+  const el = document.getElementById('click-map');
+  if (!rows.length) { el.innerHTML='<div class="empty">No click data yet — starts accumulating now that autocapture is enabled</div>'; return; }
+  const maxV = rows[0]?.[1] || 1;
+  el.innerHTML = rows.map(([elem, clicks]) => {
+    const label = String(elem).slice(0, 40);
+    const pct = Math.round(clicks / maxV * 100);
+    return `<div class="click-row">
+      <div class="click-label" title="${String(elem)}">${label}</div>
+      <div class="click-bar-bg"><div class="click-bar-fill" style="width:${pct}%"></div></div>
+      <div class="click-count">${n(clicks)}</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadTimeToQuiz(range) {
+  const rows = await phQuery(`
+    SELECT
+      multiIf(
+        toFloat64OrZero(toString(properties.seconds_on_landing)) < 10, 'Under 10s',
+        toFloat64OrZero(toString(properties.seconds_on_landing)) < 30, '10–30s',
+        toFloat64OrZero(toString(properties.seconds_on_landing)) < 60, '30–60s',
+        toFloat64OrZero(toString(properties.seconds_on_landing)) < 120, '1–2 min',
+        '2+ min'
+      ) as bucket,
+      count() as cnt
+    FROM events WHERE event='quiz_started' AND properties.seconds_on_landing IS NOT NULL AND ${range}
+    GROUP BY bucket
+    ORDER BY min(toFloat64OrZero(toString(properties.seconds_on_landing))) ASC
+  `);
+  const el = document.getElementById('time-to-quiz');
+  if (!rows.length) { el.innerHTML='<div class="empty">No time-to-quiz data yet — tracks from next visit onwards</div>'; return; }
+  const maxV = Math.max(...rows.map(r => r[1]), 1);
+  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:6px">` + rows.map(([bucket, cnt]) => {
+    const pct = Math.round(cnt / maxV * 100);
+    return `<div class="tq-row">
+      <div class="tq-label">${bucket}</div>
+      <div class="tq-bar-bg"><div class="tq-bar-fill" style="width:${pct}%"></div></div>
+      <div class="tq-count">${n(cnt)} people</div>
+    </div>`;
+  }).join('') + `</div><div style="margin-top:10px;font-size:10px;font-weight:600;color:#9A908A">Most people clicking the quiz quickly = strong hook. Long delays = they're reading more first or hesitating.</div>`;
 
 async function safeLoad(errId, fn) {
   try { await fn(); }

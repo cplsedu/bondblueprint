@@ -18,7 +18,15 @@
   _s.crossOrigin = 'anonymous';
   _s.defer = true;
   _s.onload = function() {
-    posthog.init('phc_CXx2ezKhKjwXJWEWtShZgkYCf8q97VXgJEJ8GgaMiTUv', { api_host: 'https://us.i.posthog.com', autocapture: false });
+    posthog.init('phc_CXx2ezKhKjwXJWEWtShZgkYCf8q97VXgJEJ8GgaMiTUv', {
+      api_host: 'https://us.i.posthog.com',
+      autocapture: {
+        // Capture clicks on interactive elements only — skip inputs to avoid capturing typed text
+        dom_event_allowlist: ['click'],
+        element_allowlist: ['a', 'button', 'label', 'input[type=submit]', 'input[type=button]'],
+      },
+      session_recording: { maskAllInputs: true }
+    });
     window._phq.forEach(function(e){ posthog[e[0]](e[1],e[2]); });
     window._phq = [];
   };
@@ -861,13 +869,42 @@ function track(event, props = {}) {
   try { posthog.capture(event, props); } catch(e) {}
 }
 
+// ── Scroll depth tracking ──────────────────────────────────────────────────
+(function() {
+  const MILESTONES = [25, 50, 75, 90];
+  const hit = {};
+  let ticking = false;
+  function check() {
+    const el = document.documentElement;
+    const scrolled = el.scrollTop || document.body.scrollTop;
+    const total = el.scrollHeight - el.clientHeight;
+    if (total <= 0) return;
+    const pct = Math.round(scrolled / total * 100);
+    const active = document.querySelector('.screen.active');
+    const screen = active ? (active.id || 'unknown') : 'unknown';
+    MILESTONES.forEach(m => {
+      if (pct >= m && !hit[screen + m]) {
+        hit[screen + m] = true;
+        track('scroll_depth', { depth_pct: m, screen });
+      }
+    });
+  }
+  window.addEventListener('scroll', () => {
+    if (!ticking) { requestAnimationFrame(() => { check(); ticking = false; }); ticking = true; }
+  }, { passive: true });
+})();
+
+// ── Time-to-quiz tracking (fires when quiz starts, records seconds on landing) ──
+const _pageLoadTime = Date.now();
+
 function startQuiz() {
   Q.currentIdx = 0;
   Q.myAnswers = [];
   Q.ptAnswers = [];
   _situationTracked = false;
   _emailCaptured    = false;
-  track('quiz_started');
+  const secsOnLanding = Math.round((Date.now() - _pageLoadTime) / 1000);
+  track('quiz_started', { seconds_on_landing: secsOnLanding });
   goTo('screen-quiz');
   renderQuizQuestion();
 }
