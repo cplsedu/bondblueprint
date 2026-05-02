@@ -564,8 +564,12 @@ async function loadConfig() {
 }
 
 // ── Date helpers ──────────────────────────────────────────────────────────────
-function todayStr()    { return new Date().toISOString().slice(0,10); }
-function daysAgoStr(n) { const d=new Date(); d.setDate(d.getDate()-n); return d.toISOString().slice(0,10); }
+// Use local calendar date (not UTC) so "Today" matches your clock, not London's
+function localDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function todayStr()    { return localDateStr(new Date()); }
+function daysAgoStr(n) { const d=new Date(); d.setDate(d.getDate()-n); return localDateStr(d); }
 function getRange()    { return { from: document.getElementById('from-date').value, to: document.getElementById('to-date').value }; }
 
 function clearPresets() { document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active')); }
@@ -693,7 +697,12 @@ async function phQuery(sql) {
 }
 
 function phRange(from, to) {
-  return `timestamp >= '${from} 00:00:00' AND timestamp <= '${to} 23:59:59'`;
+  // Parse as LOCAL midnight/end-of-day, then convert to UTC for PostHog.
+  // new Date('YYYY-MM-DDT00:00:00') (no Z) = local midnight → .toISOString() = UTC.
+  // This means EST users get the correct local day, not a UTC-shifted one.
+  const start = new Date(`${from}T00:00:00`).toISOString().replace('T',' ').slice(0,19);
+  const end   = new Date(`${to}T23:59:59`).toISOString().replace('T',' ').slice(0,19);
+  return `timestamp >= '${start}' AND timestamp <= '${end}'`;
 }
 
 function ago(ts) {
