@@ -161,7 +161,22 @@ app.get('/api/v2/purchase-status', async (req, res) => {
   if (!id) return res.status(400).json({ error: 'session_id or payment_intent_id required' });
 
   try {
-    const purchase = await getPurchaseBySession(id);
+    let purchase = await getPurchaseBySession(id);
+
+    // Fallback: if no DB record yet and this is a PaymentIntent ID,
+    // verify directly with Stripe and process it now (handles slow/failed webhooks)
+    if (!purchase && id.startsWith('pi_')) {
+      try {
+        const pi = await stripe.paymentIntents.retrieve(id);
+        if (pi.status === 'succeeded' && pi.metadata?.flow === 'v2') {
+          await processV2PaymentIntent(pi);
+          purchase = await getPurchaseBySession(id);
+        }
+      } catch (stripeErr) {
+        console.error('V2 Stripe fallback lookup failed:', stripeErr.message);
+      }
+    }
+
     if (!purchase) return res.json({ status: 'not_found' });
 
     if (purchase.blueprint_data?._pending === true) {

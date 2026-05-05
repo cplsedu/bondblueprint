@@ -729,8 +729,8 @@ let purchaseEmail = null;
 
 // ── POLL UNTIL WEBHOOK FIRES ─────────────────────
 async function pollPurchaseStatus(attempt) {
-  if (attempt > 20) {
-    // After ~40 seconds, give up waiting
+  if (attempt > 90) {
+    // After ~3 minutes, give up waiting
     showScreen('screen-error');
     return;
   }
