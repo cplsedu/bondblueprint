@@ -1,0 +1,891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BondBlueprint™ — Personalize Your Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'Nunito',sans-serif;background:#FAF7F3;color:#1A1714;overflow-x:hidden;min-height:100vh}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none}
+
+:root{
+  --green-dark:#1A2E1F;
+  --green:#2C4A35;
+  --green-mid:#3A5E44;
+  --gold:#D4A843;
+  --orange:#E07A3A;
+  --orange-dk:#C96B2B;
+  --cream:#FAF7F3;
+  --surface:#fff;
+  --border:#EAE3D9;
+  --text:#1A1714;
+  --text2:#5A5450;
+  --text3:#9A908A;
+  --r:16px;
+  --rpill:100px;
+}
+
+/* ── SCREENS ────────────────────────────────────── */
+.screen{display:none}
+.screen.active{display:block}
+
+/* ── LOADING SCREEN ─────────────────────────────── */
+#screen-loading{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+}
+.loading-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.1rem;
+  font-weight:800;
+  color:var(--green);
+  margin-bottom:32px;
+}
+.loading-logo span{color:var(--orange)}
+.loading-spinner{
+  width:48px;height:48px;
+  border:4px solid var(--border);
+  border-top-color:var(--green);
+  border-radius:50%;
+  animation:spin .8s linear infinite;
+  margin:0 auto 20px;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:.95rem;font-weight:700;color:var(--text2)}
+
+/* ── ALREADY DONE SCREEN ───────────────────────── */
+#screen-done{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+  max-width:440px;
+  margin:0 auto;
+}
+.done-icon{font-size:3.5rem;margin-bottom:20px}
+.done-h{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;
+  font-weight:800;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:12px;
+}
+.done-sub{
+  font-size:.95rem;
+  font-weight:600;
+  color:var(--text2);
+  line-height:1.7;
+  max-width:340px;
+}
+
+/* ── QUIZ SCREEN ────────────────────────────────── */
+#screen-quiz{
+  padding:0 0 60px;
+}
+
+.quiz-header{
+  background:linear-gradient(165deg,var(--green-dark),var(--green));
+  padding:28px 20px 24px;
+  text-align:center;
+}
+.quiz-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1rem;
+  font-weight:800;
+  color:rgba(255,255,255,.5);
+  margin-bottom:16px;
+}
+.quiz-logo span{color:var(--gold)}
+
+.paid-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:rgba(212,168,67,.18);
+  border:1.5px solid rgba(212,168,67,.4);
+  border-radius:var(--rpill);
+  padding:6px 16px;
+  font-size:.78rem;
+  font-weight:900;
+  color:var(--gold);
+  margin-bottom:14px;
+}
+
+.quiz-header-h{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.5rem,5.5vw,2rem);
+  font-weight:800;
+  color:#fff;
+  line-height:1.2;
+  margin-bottom:10px;
+}
+
+.quiz-header-sub{
+  font-size:.9rem;
+  font-weight:600;
+  color:rgba(255,255,255,.68);
+  line-height:1.65;
+  max-width:340px;
+  margin:0 auto;
+}
+
+/* ONE-TIME WARNING */
+.one-time-banner{
+  background:#FEF3C7;
+  border:2px solid #F59E0B;
+  border-radius:var(--r);
+  padding:16px 18px;
+  margin:20px 20px 0;
+  display:flex;
+  gap:12px;
+  align-items:flex-start;
+}
+.otb-icon{font-size:1.3rem;flex-shrink:0;margin-top:1px}
+.otb-body{}
+.otb-title{font-size:.88rem;font-weight:900;color:#92400E;margin-bottom:4px}
+.otb-text{font-size:.83rem;font-weight:700;color:#78350F;line-height:1.55}
+
+/* FORM */
+.quiz-form{
+  max-width:480px;
+  margin:24px auto 0;
+  padding:0 20px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+.field-group{}
+.field-label{
+  display:block;
+  font-size:.78rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--text2);
+  margin-bottom:8px;
+}
+.field-label .optional{
+  font-weight:600;
+  text-transform:none;
+  letter-spacing:0;
+  color:var(--text3);
+}
+
+.field-input{
+  width:100%;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--text);
+  outline:none;
+  transition:border-color .15s;
+}
+.field-input:focus{border-color:var(--green)}
+.field-input::placeholder{color:var(--text3)}
+
+.field-textarea{
+  width:100%;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--text);
+  outline:none;
+  resize:vertical;
+  min-height:120px;
+  line-height:1.6;
+  transition:border-color .15s;
+}
+.field-textarea:focus{border-color:var(--green)}
+.field-textarea::placeholder{color:var(--text3);font-weight:600}
+
+.field-hint{
+  font-size:.78rem;
+  font-weight:700;
+  color:var(--text3);
+  margin-top:6px;
+  line-height:1.45;
+}
+
+/* STYLE OPTIONS (radio cards) */
+.style-options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.style-opt{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  background:var(--surface);
+  border:2.5px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+  cursor:pointer;
+  transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.style-opt:hover{border-color:var(--green);background:#F0F5F1}
+.style-opt.sel{border-color:var(--green);background:var(--green)}
+.style-opt input[type=radio]{display:none}
+.style-opt-dot{
+  width:22px;height:22px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  flex-shrink:0;
+  margin-top:2px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.style-opt.sel .style-opt-dot{
+  border-color:#fff;
+  background:#fff;
+}
+.style-opt.sel .style-opt-dot::after{
+  content:'';
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--green);
+  display:block;
+}
+.style-opt-text{}
+.style-opt-name{font-size:.93rem;font-weight:900;color:var(--text);margin-bottom:3px}
+.style-opt.sel .style-opt-name{color:#fff}
+.style-opt-desc{font-size:.82rem;font-weight:600;color:var(--text2);line-height:1.4}
+.style-opt.sel .style-opt-desc{color:rgba(255,255,255,.78)}
+
+/* GOAL OPTIONS */
+.goal-options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.goal-opt{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--surface);
+  border:2.5px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+  cursor:pointer;
+  transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.goal-opt:hover{border-color:var(--green);background:#F0F5F1}
+.goal-opt.sel{border-color:var(--green);background:var(--green)}
+.goal-opt input[type=radio]{display:none}
+.goal-opt-dot{
+  width:22px;height:22px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+  flex-shrink:0;
+}
+.goal-opt.sel .goal-opt-dot{
+  border-color:#fff;
+  background:#fff;
+}
+.goal-opt.sel .goal-opt-dot::after{
+  content:'';
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--green);
+  display:block;
+}
+.goal-opt-text{font-size:.93rem;font-weight:700;color:var(--text);line-height:1.35}
+.goal-opt.sel .goal-opt-text{color:#fff}
+
+/* SUBMIT */
+.submit-area{
+  padding:0 20px;
+  max-width:480px;
+  margin:28px auto 0;
+}
+.submit-btn{
+  width:100%;
+  padding:18px;
+  border-radius:var(--rpill);
+  background:var(--orange);
+  color:#fff;
+  font-size:1.08rem;
+  font-weight:900;
+  box-shadow:0 6px 20px rgba(224,122,58,.35);
+  transition:all .2s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.submit-btn:hover{background:var(--orange-dk);transform:translateY(-1px)}
+.submit-btn:disabled{opacity:.5;pointer-events:none}
+.submit-btn .spinner{
+  width:18px;height:18px;
+  border:2.5px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:none;
+}
+.submit-btn.loading .btn-text{display:none}
+.submit-btn.loading .spinner{display:block}
+
+.submit-note{
+  font-size:.78rem;
+  font-weight:700;
+  color:var(--text3);
+  text-align:center;
+  margin-top:10px;
+  line-height:1.5;
+}
+.submit-error{
+  font-size:.85rem;
+  font-weight:700;
+  color:#DC2626;
+  text-align:center;
+  margin-top:10px;
+  display:none;
+  line-height:1.5;
+}
+.submit-error.show{display:block}
+
+/* ── SENDING SCREEN ─────────────────────────────── */
+#screen-sending{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+  max-width:440px;
+  margin:0 auto;
+}
+.sending-icon{font-size:3.5rem;margin-bottom:20px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.sending-h{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;
+  font-weight:800;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:12px;
+}
+.sending-sub{
+  font-size:.95rem;
+  font-weight:600;
+  color:var(--text2);
+  line-height:1.7;
+  max-width:340px;
+}
+.sending-steps{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:28px;
+  width:100%;
+  max-width:340px;
+}
+.sending-step{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:var(--r);
+  padding:12px 16px;
+  text-align:left;
+}
+.ss-dot{
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--border);
+  flex-shrink:0;
+  transition:background .5s;
+}
+.ss-dot.active{background:var(--orange);animation:dotpulse 1s ease-in-out infinite}
+.ss-dot.done{background:var(--green)}
+@keyframes dotpulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ss-text{font-size:.88rem;font-weight:700;color:var(--text)}
+
+/* ── ERROR SCREEN ────────────────────────────────── */
+#screen-error{
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+  max-width:440px;
+  margin:0 auto;
+}
+.error-icon{font-size:3rem;margin-bottom:20px}
+.error-h{
+  font-family:'Playfair Display',serif;
+  font-size:1.6rem;
+  font-weight:800;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:12px;
+}
+.error-sub{
+  font-size:.95rem;
+  font-weight:600;
+  color:var(--text2);
+  line-height:1.7;
+  max-width:340px;
+}
+.error-email-display{
+  font-size:.88rem;
+  font-weight:900;
+  color:var(--green);
+  margin-top:16px;
+}
+</style>
+</head>
+<body>
+
+<!-- ── LOADING ───────────────────────────────────── -->
+<div id="screen-loading" class="screen active">
+  <div class="loading-logo">Bond<span>Blueprint</span>™</div>
+  <div class="loading-spinner"></div>
+  <div class="loading-text">Verifying your payment…</div>
+</div>
+
+<!-- ── QUIZ ──────────────────────────────────────── -->
+<div id="screen-quiz" class="screen">
+
+  <div class="quiz-header">
+    <div class="quiz-logo">Bond<span>Blueprint</span>™</div>
+    <div class="paid-badge">✓ Payment confirmed</div>
+    <h1 class="quiz-header-h">Now let's make it personal.</h1>
+    <p class="quiz-header-sub">Answer these questions honestly. The more real you are, the better your blueprint will be.</p>
+  </div>
+
+  <!-- ONE-TIME WARNING -->
+  <div class="one-time-banner">
+    <div class="otb-icon">⚠️</div>
+    <div class="otb-body">
+      <div class="otb-title">You only get to do this once</div>
+      <div class="otb-text">Once you hit submit, your blueprint starts generating and these answers are locked in. Take a minute to think before you submit.</div>
+    </div>
+  </div>
+
+  <form class="quiz-form" id="quiz-form" onsubmit="submitQuiz(event)">
+
+    <!-- Q1: Name -->
+    <div class="field-group">
+      <label class="field-label" for="q-name">Your first name</label>
+      <input
+        class="field-input"
+        id="q-name"
+        type="text"
+        inputmode="text"
+        autocomplete="given-name"
+        placeholder="e.g. Ashley"
+      >
+    </div>
+
+    <!-- Q2: Who -->
+    <div class="field-group">
+      <label class="field-label" for="q-who">Who is this about? <span class="optional">(how do you refer to them?)</span></label>
+      <input
+        class="field-input"
+        id="q-who"
+        type="text"
+        placeholder="e.g. my boyfriend, Tyler, my ex, the guy I'm seeing"
+      >
+      <div class="field-hint">Use whatever feels natural — we'll use your exact words in your blueprint.</div>
+    </div>
+
+    <!-- Q3: My style -->
+    <div class="field-group">
+      <label class="field-label">How do YOU usually feel in relationships?</label>
+      <div class="style-options" id="my-style-opts">
+
+        <label class="style-opt" data-val="AA">
+          <input type="radio" name="my-style" value="AA">
+          <div class="style-opt-dot"></div>
+          <div class="style-opt-text">
+            <div class="style-opt-name">I worry they'll leave or lose interest</div>
+            <div class="style-opt-desc">I need reassurance. I overthink texts. I spiral when things feel off.</div>
+          </div>
+        </label>
+
+        <label class="style-opt" data-val="DA">
+          <input type="radio" name="my-style" value="DA">
+          <div class="style-opt-dot"></div>
+          <div class="style-opt-text">
+            <div class="style-opt-name">I need a lot of space and independence</div>
+            <div class="style-opt-desc">Closeness can feel overwhelming. I pull back when things get too intense.</div>
+          </div>
+        </label>
+
+        <label class="style-opt" data-val="FA">
+          <input type="radio" name="my-style" value="FA">
+          <div class="style-opt-dot"></div>
+          <div class="style-opt-text">
+            <div class="style-opt-name">I want closeness but it also scares me</div>
+            <div class="style-opt-desc">I push people away then regret it. Hot and cold. Never feeling settled.</div>
+          </div>
+        </label>
+
+        <label class="style-opt" data-val="SA">
+          <input type="radio" name="my-style" value="SA">
+          <div class="style-opt-dot"></div>
+          <div class="style-opt-text">
+            <div class="style-opt-name">I feel pretty stable — this is about them</div>
+            <div class="style-opt-desc">I'm mostly secure but their patterns are what's causing the problem.</div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+
+    <!-- Q4: Their style -->
+    <div class="field-group">
+      <label class="field-label">How do THEY usually act?</label>
+      <div class="style-options" id="their-style-opts">
+
+        <label class="style-opt" data-val="AA">
+          <input type="radio" name="their-style" value="AA">
+          <div class="style-opt-dot"></div>
+          <div class="style-opt-text">
+            <div class="style-opt-name">They need constant reassurance</div>
+            <div class="style-opt-desc">Clingy, jealous, or anxious. Reads into everything.</div>
+          </div>
+        </label>
+
+        <label class="style-opt" data-val="DA">
+          <input type="radio" name="their-style" value="DA">
+          <div class="style-opt-dot"></div>
+          <div class="style-opt-text">
+            <div class="style-opt-name">They pull away or go cold</div>
+            <div class="style-opt-desc">Hard to read. Shuts down. Needs space when things get real.</div>
+          </div>
+        </label>
+
+        <label class="style-opt" data-val="FA">
+          <input type="radio" name="their-style" value="FA">
+          <div class="style-opt-dot"></div>
+          <div class="style-opt-text">
+            <div class="style-opt-name">Hot and cold — you never know what you'll get</div>
+            <div class="style-opt-desc">One day they're all in. The next they're distant. Confusing and exhausting.</div>
+          </div>
+        </label>
+
+        <label class="style-opt" data-val="SA">
+          <input type="radio" name="their-style" value="SA">
+          <div class="style-opt-dot"></div>
+          <div class="style-opt-text">
+            <div class="style-opt-name">They seem pretty stable and consistent</div>
+            <div class="style-opt-desc">They're not the problem — my patterns are what I want to work on.</div>
+          </div>
+        </label>
+
+      </div>
+    </div>
+
+    <!-- Q5: Situation -->
+    <div class="field-group">
+      <label class="field-label" for="q-situation">What's actually been happening? <span class="optional">(the more honest, the better)</span></label>
+      <textarea
+        class="field-textarea"
+        id="q-situation"
+        placeholder="Describe what's been going on between you two. What triggers the pattern? What do they do? What do you do? The more specific you are, the more personal your blueprint will be."
+        maxlength="800"
+      ></textarea>
+      <div class="field-hint">No one else sees this. Be as honest as you can.</div>
+    </div>
+
+    <!-- Q6: Goal -->
+    <div class="field-group">
+      <label class="field-label">What do you most want right now?</label>
+      <div class="goal-options" id="goal-opts">
+
+        <label class="goal-opt" data-val="stop_cycle">
+          <input type="radio" name="goal" value="stop_cycle">
+          <div class="goal-opt-dot"></div>
+          <div class="goal-opt-text">Stop this pattern from repeating again</div>
+        </label>
+
+        <label class="goal-opt" data-val="feel_safe">
+          <input type="radio" name="goal" value="feel_safe">
+          <div class="goal-opt-dot"></div>
+          <div class="goal-opt-text">Feel safe and secure in this relationship</div>
+        </label>
+
+        <label class="goal-opt" data-val="communicate">
+          <input type="radio" name="goal" value="communicate">
+          <div class="goal-opt-dot"></div>
+          <div class="goal-opt-text">Know what to say and how to say it</div>
+        </label>
+
+        <label class="goal-opt" data-val="understand">
+          <input type="radio" name="goal" value="understand">
+          <div class="goal-opt-dot"></div>
+          <div class="goal-opt-text">Just understand what's actually going on</div>
+        </label>
+
+      </div>
+    </div>
+
+  </form>
+
+  <div class="submit-area">
+    <button class="submit-btn" id="submit-btn" onclick="submitQuiz(event)">
+      <span class="btn-text">Build My Blueprint</span>
+      <div class="spinner"></div>
+    </button>
+    <div class="submit-note">Once you submit, your blueprint starts generating. Check your inbox — it'll arrive in a few minutes.</div>
+    <div class="submit-error" id="submit-error"></div>
+  </div>
+
+</div>
+
+<!-- ── SENDING ────────────────────────────────────── -->
+<div id="screen-sending" class="screen">
+  <div class="sending-icon">✨</div>
+  <h2 class="sending-h">Your blueprint is being built.</h2>
+  <p class="sending-sub" id="sending-email-note">Check your inbox in a few minutes. It'll arrive as a PDF you can keep forever.</p>
+  <div class="sending-steps">
+    <div class="sending-step">
+      <div class="ss-dot done" id="dot-1"></div>
+      <div class="ss-text">Reading your situation</div>
+    </div>
+    <div class="sending-step">
+      <div class="ss-dot active" id="dot-2"></div>
+      <div class="ss-text">Writing your personal scripts</div>
+    </div>
+    <div class="sending-step">
+      <div class="ss-dot" id="dot-3"></div>
+      <div class="ss-text">Building your 7-day plan</div>
+    </div>
+    <div class="sending-step">
+      <div class="ss-dot" id="dot-4"></div>
+      <div class="ss-text">Sending to your inbox</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── ALREADY DONE ───────────────────────────────── -->
+<div id="screen-done" class="screen">
+  <div class="done-icon">📬</div>
+  <h2 class="done-h">Your blueprint is already on its way.</h2>
+  <p class="done-sub">You already completed your personalization. Check your inbox — the PDF should be there. Check spam if you don't see it within a few minutes.</p>
+</div>
+
+<!-- ── ERROR ─────────────────────────────────────── -->
+<div id="screen-error" class="screen">
+  <div class="error-icon">💛</div>
+  <h2 class="error-h">Something's taking a little longer.</h2>
+  <p class="error-sub">Your payment went through. If your blueprint hasn't arrived, email us and we'll get it to you manually.</p>
+  <div class="error-email-display">support@bondblueprint.com</div>
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────
+let sessionId = null;
+let purchaseEmail = null;
+
+// ── INIT ─────────────────────────────────────────
+(function init() {
+  const params = new URLSearchParams(window.location.search);
+  // Support both Stripe Checkout (session_id) and Payment Intent (payment_intent)
+  sessionId = params.get('payment_intent') || params.get('session_id');
+
+  if (!sessionId) {
+    showScreen('screen-error');
+    return;
+  }
+
+  pollPurchaseStatus(0);
+})();
+
+// ── POLL UNTIL WEBHOOK FIRES ─────────────────────
+async function pollPurchaseStatus(attempt) {
+  if (attempt > 20) {
+    // After ~40 seconds, give up waiting
+    showScreen('screen-error');
+    return;
+  }
+
+  try {
+    const paramName = sessionId.startsWith('pi_') ? 'payment_intent_id' : 'session_id';
+    const res  = await fetch(`/api/v2/purchase-status?${paramName}=${encodeURIComponent(sessionId)}`);
+    const data = await res.json();
+
+    if (data.status === 'quiz_ready') {
+      purchaseEmail = data.email;
+      showScreen('screen-quiz');
+    } else if (data.status === 'quiz_done') {
+      showScreen('screen-done');
+    } else {
+      // not_found — webhook hasn't fired yet, wait and retry
+      setTimeout(() => pollPurchaseStatus(attempt + 1), 2000);
+    }
+  } catch (err) {
+    setTimeout(() => pollPurchaseStatus(attempt + 1), 2000);
+  }
+}
+
+// ── STYLE CARD SELECTION ─────────────────────────
+document.querySelectorAll('.style-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const group = opt.closest('.style-options');
+    group.querySelectorAll('.style-opt').forEach(o => o.classList.remove('sel'));
+    opt.classList.add('sel');
+    opt.querySelector('input[type=radio]').checked = true;
+  });
+});
+
+document.querySelectorAll('.goal-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const group = opt.closest('.goal-options');
+    group.querySelectorAll('.goal-opt').forEach(o => o.classList.remove('sel'));
+    opt.classList.add('sel');
+    opt.querySelector('input[type=radio]').checked = true;
+  });
+});
+
+// ── SUBMIT ───────────────────────────────────────
+async function submitQuiz(e) {
+  if (e) e.preventDefault();
+
+  const errorEl = document.getElementById('submit-error');
+  const btnEl   = document.getElementById('submit-btn');
+
+  errorEl.textContent = '';
+  errorEl.classList.remove('show');
+
+  // Gather values
+  const name      = document.getElementById('q-name').value.trim();
+  const who       = document.getElementById('q-who').value.trim() || 'my partner';
+  const myStyle   = document.querySelector('input[name="my-style"]:checked')?.value || '';
+  const theirStyle= document.querySelector('input[name="their-style"]:checked')?.value || '';
+  const situation = document.getElementById('q-situation').value.trim();
+  const goal      = document.querySelector('input[name="goal"]:checked')?.value || '';
+
+  // Validate required fields
+  const missing = [];
+  if (!myStyle)    missing.push('how you feel in relationships');
+  if (!theirStyle) missing.push('how they usually act');
+  if (!situation)  missing.push('what\'s been happening');
+  if (!goal)       missing.push('what you most want');
+
+  if (missing.length) {
+    errorEl.textContent = 'Please fill in: ' + missing.join(', ') + '.';
+    errorEl.classList.add('show');
+    // Scroll to first missing field
+    document.getElementById('quiz-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  btnEl.disabled = true;
+  btnEl.classList.add('loading');
+
+  try {
+    const res = await fetch('/api/v2/submit-quiz', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        sessionId,
+        name,
+        who,
+        attachmentStyle: myStyle,
+        partnerStyle:    theirStyle,
+        situation,
+        goal
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 409) {
+        // Already submitted
+        showScreen('screen-done');
+        return;
+      }
+      throw new Error(data.error || 'Something went wrong. Please try again.');
+    }
+
+    // Success — show sending animation
+    if (purchaseEmail) {
+      document.getElementById('sending-email-note').textContent =
+        `Check ${purchaseEmail} in a few minutes. It'll arrive as a PDF you can keep forever.`;
+    }
+    showScreen('screen-sending');
+    animateSendingSteps();
+
+  } catch (err) {
+    errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errorEl.classList.add('show');
+    btnEl.disabled = false;
+    btnEl.classList.remove('loading');
+  }
+}
+
+// ── SENDING ANIMATION ────────────────────────────
+function animateSendingSteps() {
+  const steps = [
+    { dot: 'dot-2', delay: 1500 },
+    { dot: 'dot-3', delay: 3500 },
+    { dot: 'dot-4', delay: 5500 },
+  ];
+
+  steps.forEach(({ dot, delay }, i) => {
+    setTimeout(() => {
+      // Mark previous as done
+      if (i > 0) {
+        const prev = document.getElementById(steps[i - 1].dot);
+        if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+      }
+      const el = document.getElementById(dot);
+      if (el) el.classList.add('active');
+    }, delay);
+  });
+
+  // Final: mark last done
+  setTimeout(() => {
+    document.getElementById('dot-4')?.classList.remove('active');
+    document.getElementById('dot-4')?.classList.add('done');
+  }, 8000);
+}
+
+// ── SCREEN UTILITY ───────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+}
+</script>
+
+</body>
+</html>

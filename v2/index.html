@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BondBlueprint — Finally Understand What's Happening</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'Nunito',sans-serif;background:#070E08;color:#fff;overflow-x:hidden}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input{font-family:inherit;font-size:16px;-webkit-appearance:none;outline:none}
+img{display:block}
+:root{
+  --gold:#C9A84C;--gold-lt:#E0C070;
+  --orange:#E07A3A;
+  --cream:#F7F2EB;--border:#E8DDD0;
+  --text:#1A1410;--text2:#5C5248;--text3:#A09080;
+}
+.page{max-width:430px;margin:0 auto}
+
+/* ─── HERO ──────────────────────────────────────── */
+.hero{
+  background:linear-gradient(170deg,#040A05 0%,#0E1A10 30%,#172A1C 65%,#1E3424 100%);
+  padding:28px 22px 30px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-80px;right:-60px;
+  width:280px;height:280px;
+  background:radial-gradient(circle,rgba(201,168,76,.1) 0%,transparent 65%);
+  pointer-events:none;
+}
+.logo{
+  font-family:'Playfair Display',serif;
+  font-size:.82rem;font-weight:800;
+  color:rgba(255,255,255,.28);letter-spacing:.08em;
+  text-align:center;margin-bottom:20px;
+  position:relative;z-index:1;
+}
+.logo em{color:var(--gold);font-style:normal}
+
+.hero-hl{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.85rem,7.5vw,2.3rem);
+  font-weight:900;line-height:1.1;
+  color:#fff;text-align:center;
+  margin-bottom:9px;position:relative;z-index:1;
+}
+.hero-hl .it{font-style:italic;color:var(--gold-lt)}
+
+.hero-sub{
+  font-size:.92rem;font-weight:600;
+  color:rgba(255,255,255,.5);
+  line-height:1.65;text-align:center;
+  margin-bottom:20px;
+  max-width:310px;margin-left:auto;margin-right:auto;
+  position:relative;z-index:1;
+}
+
+.ify-label{
+  font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.1em;
+  color:rgba(255,255,255,.25);text-align:center;
+  margin-bottom:10px;position:relative;z-index:1;
+}
+.ify{display:flex;flex-direction:column;gap:7px;margin-bottom:16px;position:relative;z-index:1;}
+.ify-row{
+  display:flex;align-items:flex-start;gap:9px;
+  background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.08);
+  border-radius:12px;padding:11px 13px;
+}
+.ify-icon{font-size:1rem;flex-shrink:0;line-height:1.4}
+.ify-text{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.8);line-height:1.4}
+
+.hero-close{
+  text-align:center;
+  font-family:'Playfair Display',serif;
+  font-size:.95rem;font-weight:700;font-style:italic;
+  color:rgba(255,255,255,.36);position:relative;z-index:1;
+}
+
+/* ─── PROOF ─────────────────────────────────────── */
+.proof{background:var(--cream);padding:24px 0 20px;}
+.proof-head{padding:0 22px;margin-bottom:14px}
+.proof-title{
+  font-family:'Playfair Display',serif;
+  font-size:1.1rem;font-weight:800;color:var(--text);
+  line-height:1.25;margin-bottom:8px;
+}
+.proof-title em{font-style:italic;color:#2C4A35}
+.proof-stats{display:flex;flex-wrap:wrap;gap:6px}
+.ps{
+  display:flex;align-items:center;gap:5px;
+  font-size:.72rem;font-weight:800;color:var(--text2);
+  background:#fff;border:1.5px solid var(--border);
+  border-radius:100px;padding:4px 11px;white-space:nowrap;
+}
+.ps-stars{color:var(--gold);font-size:.82rem;letter-spacing:-1px}
+
+.rc{
+  display:flex;gap:11px;
+  overflow-x:auto;scroll-snap-type:x mandatory;
+  -webkit-overflow-scrolling:touch;
+  padding:4px 22px 14px;scrollbar-width:none;
+}
+.rc::-webkit-scrollbar{display:none}
+
+/* ── DM CARD ── */
+.dm{
+  min-width:262px;max-width:262px;
+  scroll-snap-align:start;flex-shrink:0;
+  border-radius:14px;overflow:hidden;
+  box-shadow:0 4px 20px rgba(0,0,0,.13);
+  background:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+}
+.dm-sb{
+  background:#fff;
+  display:flex;justify-content:space-between;align-items:center;
+  padding:5px 14px 2px;
+}
+.dm-sb-time{font-size:.67rem;font-weight:700;color:#000;letter-spacing:-.3px}
+.dm-sb-right{display:flex;align-items:center;gap:4px;color:#000}
+.dm-header{
+  background:#fff;border-bottom:1px solid #f0f0f0;
+  padding:5px 12px 7px;
+  display:flex;align-items:center;gap:8px;
+}
+.dm-back{font-size:1.3rem;color:#0095f6;font-weight:300;line-height:1;padding-right:1px;margin-top:-1px}
+.dm-hav-wrap{position:relative;width:34px;height:34px;flex-shrink:0}
+.dm-hav{
+  width:34px;height:34px;border-radius:50%;
+  overflow:hidden;background:#ddd;
+}
+.dm-hav img{width:100%;height:100%;object-fit:cover}
+.dm-hav.blurred img{filter:blur(6px);transform:scale(1.15)}
+.dm-hav-lock{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.7rem;pointer-events:none;
+}
+.dm-hinfo{flex:1;min-width:0}
+.dm-hname{font-size:.82rem;font-weight:700;color:#000;line-height:1.2}
+.dm-hstatus{font-size:.64rem;color:#8e8e8e;margin-top:1px}
+.dm-hicons{display:flex;gap:14px;color:#000;flex-shrink:0}
+.dm-hicons svg{width:19px;height:19px}
+.dm-body{background:#fff;padding:10px 10px 12px;min-height:90px}
+.dm-ts{text-align:center;font-size:.63rem;color:#8e8e8e;margin-bottom:10px}
+.dm-msg{display:flex;align-items:flex-end;gap:7px}
+.dm-mav-wrap{position:relative;width:26px;height:26px;flex-shrink:0}
+.dm-mav{
+  width:26px;height:26px;border-radius:50%;
+  overflow:hidden;background:#ddd;margin-bottom:2px;
+}
+.dm-mav img{width:100%;height:100%;object-fit:cover}
+.dm-mav.blurred img{filter:blur(5px);transform:scale(1.15)}
+.dm-bubble{
+  background:#efefef;border-radius:18px 18px 18px 4px;
+  padding:9px 12px;
+  font-size:.81rem;font-weight:400;color:#000;line-height:1.55;
+  max-width:196px;
+}
+.dm-seen{text-align:right;font-size:.62rem;color:#8e8e8e;margin-top:5px;padding-right:2px}
+
+/* dots */
+.cdots{display:flex;justify-content:center;gap:4px;padding:2px 0 0}
+.cdot{width:5px;height:5px;border-radius:50%;background:var(--border);transition:all .25s;cursor:pointer}
+.cdot.on{background:#2C4A35;width:14px;border-radius:3px}
+
+/* ─── CHECKOUT ──────────────────────────────────── */
+.checkout{
+  background:linear-gradient(175deg,#0A1410 0%,#152018 50%,#1A2A1E 100%);
+  padding:24px 22px 44px;
+}
+.co-eyebrow{font-size:.68rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;color:rgba(255,255,255,.22);text-align:center;margin-bottom:5px}
+.co-hl{font-family:'Playfair Display',serif;font-size:1.3rem;font-weight:800;color:#fff;line-height:1.2;text-align:center;margin-bottom:16px}
+.price-row{display:flex;align-items:baseline;justify-content:center;gap:10px;margin-bottom:16px}
+.p-was{font-size:1.1rem;font-weight:800;color:rgba(255,255,255,.25);text-decoration:line-through}
+.p-now{font-family:'Playfair Display',serif;font-size:2.7rem;font-weight:900;color:#fff;line-height:1}
+.p-badge{background:rgba(224,122,58,.18);border:1.5px solid rgba(224,122,58,.38);border-radius:100px;padding:3px 10px;font-size:.7rem;font-weight:900;color:var(--orange);letter-spacing:.04em}
+.co-form{display:flex;flex-direction:column;gap:9px}
+.co-input{width:100%;background:rgba(255,255,255,.07);border:1.5px solid rgba(255,255,255,.12);border-radius:13px;padding:15px 17px;font-size:1rem;font-weight:600;color:#fff;transition:border-color .15s,background .15s}
+.co-input::placeholder{color:rgba(255,255,255,.25)}
+.co-input:focus{border-color:rgba(201,168,76,.55);background:rgba(255,255,255,.1)}
+.co-error{font-size:.8rem;font-weight:700;color:#FCA5A5;padding-left:4px;display:none}
+.co-error.show{display:block}
+.co-btn{width:100%;padding:17px;border-radius:100px;background:linear-gradient(135deg,#E8863F 0%,#C86829 100%);color:#fff;font-size:1.08rem;font-weight:900;letter-spacing:.01em;box-shadow:0 8px 28px rgba(200,104,41,.45);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.co-btn:hover{box-shadow:0 10px 32px rgba(200,104,41,.6);transform:translateY(-1px)}
+.co-btn:disabled{opacity:.45;pointer-events:none}
+.co-btn .sp{width:17px;height:17px;border:2.5px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none}
+.co-btn.loading .bt{display:none}
+.co-btn.loading .sp{display:block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.co-deliver{font-size:.75rem;font-weight:700;color:rgba(255,255,255,.35);text-align:center;margin-bottom:14px;letter-spacing:.01em}
+.co-email-row{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.06);border:1.5px solid rgba(255,255,255,.1);border-radius:10px;padding:10px 14px;margin-bottom:4px}
+.co-email-row span{font-size:.88rem;font-weight:700;color:rgba(255,255,255,.55);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.co-email-edit{font-size:.75rem;font-weight:900;color:var(--gold);text-decoration:underline;text-underline-offset:2px;flex-shrink:0;margin-left:10px}
+#payment-element{margin:4px 0 2px}
+.co-lock{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.2);text-align:center}
+footer{background:#040A05;padding:16px 22px 30px;text-align:center;font-size:.65rem;font-weight:700;color:rgba(255,255,255,.15);line-height:1.9}
+footer a{color:rgba(255,255,255,.2);text-decoration:none}
+#test-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:999;background:#F59E0B;color:#000;font-size:.72rem;font-weight:900;text-align:center;padding:6px 10px;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<div id="test-banner">🧪 TEST MODE — Use card 4242 4242 4242 4242 · No real charges</div>
+<div class="page">
+
+<!-- ── HERO ─────────────────────────────────────── -->
+<section class="hero">
+  <div class="logo">Bond<em>Blueprint</em></div>
+
+  <h1 class="hero-hl">
+    They pull away.<br>
+    <span class="it">You blame yourself.</span>
+  </h1>
+  <p class="hero-sub">You're not the problem. You just don't have the full picture yet. The BondBlueprint explains exactly why they do what they do and gives you the words to actually reach them.</p>
+
+  <div class="ify-label">If you're tired of...</div>
+  <div class="ify">
+    <div class="ify-row">
+      <span class="ify-icon">🥀</span>
+      <span class="ify-text">Trying to figure out WHY they go cold or pull away and coming up completely empty</span>
+    </div>
+    <div class="ify-row">
+      <span class="ify-icon">🥀</span>
+      <span class="ify-text">Not knowing what to say in those moments without making things worse</span>
+    </div>
+    <div class="ify-row">
+      <span class="ify-icon">🥀</span>
+      <span class="ify-text">Feeling like the harder you try, the further away they seem to get</span>
+    </div>
+  </div>
+
+  <div class="hero-close">...this was made for you.</div>
+</section>
+
+<!-- ── SOCIAL PROOF ──────────────────────────────── -->
+<section class="proof">
+  <div class="proof-head">
+    <div class="proof-title">Here's what people are saying after <em>getting theirs</em></div>
+    <div class="proof-stats">
+      <div class="ps"><span class="ps-stars">★★★★★</span>&nbsp;5.0 rating</div>
+      <div class="ps">2.5M+ reached this month</div>
+    </div>
+  </div>
+
+  <div class="rc" id="rc" onscroll="syncDots()">
+
+    <!-- DM 1: anxious, long, ellipses, lowercase — about understanding him -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">11:23</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav">
+            <img src="https://randomuser.me/api/portraits/women/57.jpg" alt="">
+          </div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Brianna</div>
+          <div class="dm-hstatus">Active 1h ago</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Today 11:23 AM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav">
+              <img src="https://randomuser.me/api/portraits/women/57.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">omg okay so... he went quiet again for like 3 days and i was absolutely SPIRALING. got this kind of desperate lol but the part that explained why he does that?? i finally stopped taking it so personally. sent the script and he actually came back. not kidding</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+    <!-- DM 2: dismissive avoidant (blurred), short, caps, about her partner needing him to show up differently -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">3:47</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav blurred">
+            <img src="https://randomuser.me/api/portraits/men/72.jpg" alt="">
+          </div>
+          <div class="dm-hav-lock">🔒</div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Tyler</div>
+          <div class="dm-hstatus">Active 5h ago</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Yesterday 3:47 PM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav blurred">
+              <img src="https://randomuser.me/api/portraits/men/72.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">The section on why she NEEDS me to show up differently when shes anxious. I've been doing literally everything wrong this whole time. short review but i needed to say something lol</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+    <!-- DM 3: fearful avoidant, medium, about finally understanding why he comes back warm -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">8:52</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav">
+            <img src="https://randomuser.me/api/portraits/women/29.jpg" alt="">
+          </div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Jasmine</div>
+          <div class="dm-hstatus">Active now</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Today 8:52 PM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav">
+              <img src="https://randomuser.me/api/portraits/women/29.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">I thought I was just a bad partner bc I kept pushing him away when things got good. The blueprint explained WHY he responds the way he does when I do that. I finally understood what was actually happening between us. Two years of therapy did not do what this did in one afternoon honestly</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+    <!-- DM 4: blurred, very short, lowercase — just the result -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">9:17</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav blurred">
+            <img src="https://randomuser.me/api/portraits/women/91.jpg" alt="">
+          </div>
+          <div class="dm-hav-lock">🔒</div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Morgan</div>
+          <div class="dm-hstatus">Active yesterday</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Today 9:17 AM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav blurred">
+              <img src="https://randomuser.me/api/portraits/women/91.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">sent the script it gave me. he actually opened up for the first time in months. just... yeah. thats it</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+
+    <!-- DM 5: Kayla, visible, on/off, ellipses, lowercase, "WITHOUT" caps -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">2:14</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+          </div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Kayla</div>
+          <div class="dm-hstatus">Active 3h ago</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Today 2:14 AM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav">
+              <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">we were on and off for literally a year... i always thought it was me doing something wrong. the section on what triggers him to shut down?? i read it 3 times. i stopped doing the thing that was pushing him away WITHOUT even knowing i was doing it. we've been solid 4 months now</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+    <!-- DM 6: Marcus, blurred, guy, short, CAPS, she came back -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">6:33</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav blurred">
+            <img src="https://randomuser.me/api/portraits/men/34.jpg" alt="">
+          </div>
+          <div class="dm-hav-lock">🔒</div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Marcus</div>
+          <div class="dm-hstatus">Active now</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Yesterday 6:33 PM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav blurred">
+              <img src="https://randomuser.me/api/portraits/men/34.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">she texted ME first for the first time in like 6 weeks after I used the script. not gonna lie I cried a little lol. SHORT review but it worked</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+    <!-- DM 7: Destiny, visible, long, lowercase, "NOT" caps, thought he didn't care -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">10:48</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav">
+            <img src="https://randomuser.me/api/portraits/women/16.jpg" alt="">
+          </div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Destiny</div>
+          <div class="dm-hstatus">Active 2h ago</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Today 10:48 PM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav">
+              <img src="https://randomuser.me/api/portraits/women/16.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">ok so i genuinely thought he just didnt care. like did NOT care about me. this made me realize he literally doesnt know how to show it the way i need and thats completely different. i stopped being angry and started actually getting through to him. wish i had this a year ago</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+    <!-- DM 8: Ava, blurred, ultra short, very direct result -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">4:22</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav blurred">
+            <img src="https://randomuser.me/api/portraits/women/38.jpg" alt="">
+          </div>
+          <div class="dm-hav-lock">🔒</div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Ava</div>
+          <div class="dm-hstatus">Active 6h ago</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Yesterday 4:22 AM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav blurred">
+              <img src="https://randomuser.me/api/portraits/women/38.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">I sent the message it told me to send. He responded in 20 minutes. That's all I needed to say.</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+    <!-- DM 9: Priya, visible, medium, "NEED" caps, stopped panicking -->
+    <div class="dm">
+      <div class="dm-sb">
+        <span class="dm-sb-time">7:05</span>
+        <div class="dm-sb-right">
+          <svg width="15" height="11" viewBox="0 0 16 11" fill="currentColor"><rect x="0" y="5" width="3" height="6" rx=".5"/><rect x="4.5" y="3" width="3" height="8" rx=".5"/><rect x="9" y="1" width="3" height="10" rx=".5"/><rect x="13.5" y="0" width="2.5" height="11" rx=".5"/></svg>
+          <svg width="15" height="11" viewBox="0 0 16 12" fill="currentColor"><path d="M8 2.4C10.8 2.4 13.3 3.5 15.1 5.3L16 4.4C13.9 2.3 11.1 1 8 1s-5.9 1.3-8 3.4l.9.9C2.7 3.5 5.2 2.4 8 2.4zm0 2.8c1.9 0 3.6.8 4.9 2l.9-.9C12.3 4.8 10.3 3.9 8 3.9S3.7 4.8 2.2 6.3l.9.9C4.4 6 6.1 5.2 8 5.2zm0 2.8c1 0 1.9.4 2.5 1l.9-.9C10.5 7.3 9.3 6.7 8 6.7s-2.5.6-3.4 1.4l.9.9C6.1 8.4 7 8 8 8zm0 2.4c-.5 0-1-.2-1.4-.5L8 12l1.4-1.1c-.4.3-.9.5-1.4.5z"/></svg>
+          <svg width="24" height="11" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.5" stroke="currentColor" stroke-width="1" fill="none" opacity=".4"/><rect x="1.5" y="2.5" width="16" height="7" rx="1.5"/><path d="M22.5 4.5v3a2 2 0 000-3z" opacity=".4"/></svg>
+        </div>
+      </div>
+      <div class="dm-header">
+        <div class="dm-back">‹</div>
+        <div class="dm-hav-wrap">
+          <div class="dm-hav">
+            <img src="https://randomuser.me/api/portraits/women/71.jpg" alt="">
+          </div>
+        </div>
+        <div class="dm-hinfo">
+          <div class="dm-hname">Priya</div>
+          <div class="dm-hstatus">Active now</div>
+        </div>
+        <div class="dm-hicons">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.95 9a19.79 19.79 0 01-3.07-8.67A2 2 0 012.86 2h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L7.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </div>
+      </div>
+      <div class="dm-body">
+        <div class="dm-ts">Today 7:05 PM</div>
+        <div class="dm-msg">
+          <div class="dm-mav-wrap">
+            <div class="dm-mav">
+              <img src="https://randomuser.me/api/portraits/women/71.jpg" alt="">
+            </div>
+          </div>
+          <div class="dm-bubble">months of googling why he goes silent and nothing ever clicked until this. the part about what they actually NEED when they go quiet (not what we think they need) was everything. i stopped panicking every time he goes distant and honestly that alone changed the whole dynamic</div>
+        </div>
+        <div class="dm-seen">Seen</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cdots" id="dots">
+    <div class="cdot on" onclick="goTo(0)"></div>
+    <div class="cdot" onclick="goTo(1)"></div>
+    <div class="cdot" onclick="goTo(2)"></div>
+    <div class="cdot" onclick="goTo(3)"></div>
+    <div class="cdot" onclick="goTo(4)"></div>
+    <div class="cdot" onclick="goTo(5)"></div>
+    <div class="cdot" onclick="goTo(6)"></div>
+    <div class="cdot" onclick="goTo(7)"></div>
+    <div class="cdot" onclick="goTo(8)"></div>
+  </div>
+</section>
+
+<!-- ── CHECKOUT ─────────────────────────────────── -->
+<section class="checkout">
+  <div class="co-eyebrow">Yours instantly</div>
+  <h2 class="co-hl">Finally understand them. Know exactly what to say.</h2>
+  <div class="price-row">
+    <div class="p-was">$100</div>
+    <div class="p-now">$19</div>
+    <div class="p-badge">81% off</div>
+  </div>
+  <div class="co-deliver">Your custom blueprint lands in your inbox today</div>
+
+  <!-- STEP 1: EMAIL -->
+  <div id="step-email" class="co-form">
+    <input class="co-input" id="email" type="email" inputmode="email" autocomplete="email" placeholder="Your email address">
+    <div class="co-error" id="co-error"></div>
+    <button class="co-btn" id="co-btn" onclick="startCheckout()">
+      <span class="bt">Get My Blueprint Now</span>
+      <div class="sp"></div>
+    </button>
+    <div class="co-lock">🔒 Secure checkout via Stripe &nbsp;·&nbsp; One-time payment</div>
+  </div>
+
+  <!-- STEP 2: PAYMENT ELEMENT -->
+  <div id="step-payment" class="co-form" style="display:none">
+    <div class="co-email-row">
+      <span id="co-email-display"></span>
+      <button class="co-email-edit" onclick="editEmail()">edit</button>
+    </div>
+    <div id="payment-element"></div>
+    <div class="co-error" id="co-pay-error"></div>
+    <button class="co-btn" id="pay-btn" onclick="submitPayment()">
+      <span class="bt">Pay $19 Now</span>
+      <div class="sp"></div>
+    </button>
+    <div class="co-lock">🔒 Secure checkout via Stripe &nbsp;·&nbsp; One-time payment</div>
+  </div>
+</section>
+
+<footer>
+  &copy; 2025 BondBlueprint. All rights reserved.<br>
+  <a href="mailto:support@bondblueprint.com">support@bondblueprint.com</a><br>
+  For educational purposes only. Not a substitute for professional therapy.
+</footer>
+</div>
+
+<script>
+// ── CAROUSEL ─────────────────────────────────────
+const CARD_STEP = 273;
+function syncDots() {
+  const c = document.getElementById('rc');
+  const dots = document.querySelectorAll('.cdot');
+  const idx = Math.min(Math.round(c.scrollLeft / CARD_STEP), dots.length - 1);
+  dots.forEach((d,i) => d.classList.toggle('on', i === idx));
+}
+function goTo(i) {
+  document.getElementById('rc').scrollTo({left: i * CARD_STEP, behavior:'smooth'});
+}
+
+// ── CHECKOUT ─────────────────────────────────────
+let stripeInstance, stripeElements, purchaseEmail;
+
+async function startCheckout() {
+  const emailEl = document.getElementById('email');
+  const errEl   = document.getElementById('co-error');
+  const btn     = document.getElementById('co-btn');
+  const email   = (emailEl.value || '').trim();
+
+  errEl.textContent = ''; errEl.classList.remove('show');
+
+  if (!email || !email.includes('@') || !email.includes('.')) {
+    errEl.textContent = 'Please enter a valid email address.';
+    errEl.classList.add('show'); emailEl.focus(); return;
+  }
+
+  btn.disabled = true; btn.classList.add('loading');
+
+  try {
+    const [configData, piData] = await Promise.all([
+      fetch('/api/v2/config').then(r => r.json()),
+      fetch('/api/v2/create-payment-intent', {
+        method:  'POST',
+        headers: {'Content-Type': 'application/json'},
+        body:    JSON.stringify({ email })
+      }).then(r => r.json())
+    ]);
+
+    if (!configData.publishableKey) throw new Error('Configuration error. Please try again.');
+    if (!piData.clientSecret)       throw new Error(piData.error || 'Something went wrong. Please try again.');
+    if (configData.publishableKey.startsWith('pk_test_')) {
+      document.getElementById('test-banner').style.display = 'block';
+    }
+
+    purchaseEmail  = email;
+    stripeInstance = Stripe(configData.publishableKey);
+    stripeElements = stripeInstance.elements({
+      clientSecret: piData.clientSecret,
+      appearance: {
+        theme: 'night',
+        variables: {
+          colorPrimary:       '#E8863F',
+          colorBackground:    '#162318',
+          colorText:          '#ffffff',
+          colorTextSecondary: 'rgba(255,255,255,0.5)',
+          colorDanger:        '#FCA5A5',
+          fontFamily:         'Nunito, sans-serif',
+          borderRadius:       '13px',
+          spacingUnit:        '5px',
+        }
+      }
+    });
+
+    stripeElements.create('payment', { layout: 'tabs' }).mount('#payment-element');
+
+    document.getElementById('co-email-display').textContent = email;
+    document.getElementById('step-email').style.display   = 'none';
+    document.getElementById('step-payment').style.display = 'flex';
+
+  } catch (err) {
+    errEl.textContent = err.message;
+    errEl.classList.add('show');
+    btn.disabled = false; btn.classList.remove('loading');
+  }
+}
+
+function editEmail() {
+  document.getElementById('step-payment').style.display = 'none';
+  document.getElementById('step-email').style.display   = 'flex';
+  const btn = document.getElementById('co-btn');
+  btn.disabled = false; btn.classList.remove('loading');
+}
+
+async function submitPayment() {
+  const errEl = document.getElementById('co-pay-error');
+  const btn   = document.getElementById('pay-btn');
+  errEl.textContent = ''; errEl.classList.remove('show');
+  btn.disabled = true; btn.classList.add('loading');
+
+  const { error } = await stripeInstance.confirmPayment({
+    elements: stripeElements,
+    confirmParams: {
+      return_url:    window.location.origin + '/v2/confirm',
+      receipt_email: purchaseEmail,
+    }
+  });
+
+  // Only reaches here if there was an error (success = redirect)
+  if (error) {
+    errEl.textContent = error.message || 'Payment failed. Please try again.';
+    errEl.classList.add('show');
+    btn.disabled = false; btn.classList.remove('loading');
+  }
+}
+
+document.getElementById('email').addEventListener('keydown', e => {
+  if (e.key === 'Enter') startCheckout();
+});
+</script>
+</body>
+</html>

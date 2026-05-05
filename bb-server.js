@@ -48,6 +48,7 @@ app.use('/api/reflect', aiLimiter);
 app.use('/api/chat', aiLimiter);
 app.use('/api/generate-blueprint', aiLimiter);
 app.use('/api/create-checkout', checkoutLimiter);
+app.use('/api/v2/create-payment-intent', checkoutLimiter);
 
 // Stripe webhook MUST receive raw body before JSON parser
 app.post(
@@ -61,6 +62,216 @@ app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'bondblueprint-free.html'));
+});
+
+// ─── V2 TEST FLOW ─────────────────────────────────────────────────────────────
+
+app.get('/v2', (req, res) => {
+  res.sendFile(path.join(__dirname, 'v2/index.html'));
+});
+
+app.get('/v2/confirm', (req, res) => {
+  res.sendFile(path.join(__dirname, 'v2/confirm.html'));
+});
+
+// ─── V2: CHECKOUT (email-only, quiz happens post-purchase) ───────────────────
+
+app.post('/api/v2/checkout', checkoutLimiter, async (req, res) => {
+  const { email } = req.body;
+
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ error: 'Valid email required' });
+  }
+
+  try {
+    await upsertLead({ email });
+
+    subscribeToConvertKit({
+      email,
+      tags: [process.env.CONVERTKIT_CHECKOUT_TAG_ID].filter(Boolean)
+    }).catch(() => {});
+
+    const origin = req.headers.origin || `https://${req.headers.host}`;
+
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      mode:                 'payment',
+      customer_email:       email.toLowerCase().trim(),
+      line_items: [{
+        price:    process.env.STRIPE_PRICE_ID,
+        quantity: 1
+      }],
+      metadata: {
+        email: email.toLowerCase().trim(),
+        flow:  'v2'
+      },
+      success_url:            `${origin}/v2/confirm?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url:             `${origin}/v2`,
+      allow_promotion_codes:  true,
+    });
+
+    res.json({ url: session.url });
+  } catch (err) {
+    console.error('V2 checkout error:', err.message);
+    res.status(500).json({ error: 'Failed to create checkout' });
+  }
+});
+
+// ─── V2: CONFIG (publishable key for Stripe.js) ──────────────────────────────
+
+app.get('/api/v2/config', (req, res) => {
+  res.json({ publishableKey: process.env.STRIPE_PUBLISHABLE_KEY || '' });
+});
+
+// ─── V2: CREATE PAYMENT INTENT (inline checkout) ─────────────────────────────
+
+app.post('/api/v2/create-payment-intent', async (req, res) => {
+  const { email } = req.body;
+  if (!email || !email.includes('@')) {
+    return res.status(400).json({ error: 'Valid email required' });
+  }
+  try {
+    await upsertLead({ email });
+
+    subscribeToConvertKit({
+      email,
+      tags: [process.env.CONVERTKIT_CHECKOUT_TAG_ID].filter(Boolean)
+    }).catch(() => {});
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount:        1900,
+      currency:      'usd',
+      receipt_email: email.toLowerCase().trim(),
+      metadata:      { email: email.toLowerCase().trim(), flow: 'v2' },
+      automatic_payment_methods: { enabled: true }
+    });
+
+    res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (err) {
+    console.error('V2 payment intent error:', err.message);
+    res.status(500).json({ error: 'Failed to create payment' });
+  }
+});
+
+// ─── V2: PURCHASE STATUS (polled by confirm page while waiting for webhook) ──
+
+app.get('/api/v2/purchase-status', async (req, res) => {
+  const { session_id, payment_intent_id } = req.query;
+  const id = session_id || payment_intent_id;
+  if (!id) return res.status(400).json({ error: 'session_id or payment_intent_id required' });
+
+  try {
+    const purchase = await getPurchaseBySession(id);
+    if (!purchase) return res.json({ status: 'not_found' });
+
+    if (purchase.blueprint_data?._pending === true) {
+      return res.json({ status: 'quiz_ready', email: purchase.email });
+    }
+    return res.json({ status: 'quiz_done', email: purchase.email });
+  } catch (err) {
+    console.error('V2 status error:', err.message);
+    res.status(500).json({ error: 'Status check failed' });
+  }
+});
+
+// ─── V2: SUBMIT QUIZ (one-time — generates blueprint and emails it) ───────────
+
+app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
+  const { sessionId, name, who, attachmentStyle, partnerStyle, situation, goal } = req.body;
+
+  if (!sessionId) return res.status(400).json({ error: 'sessionId required' });
+
+  try {
+    const purchase = await getPurchaseBySession(sessionId);
+    if (!purchase)                            return res.status(404).json({ error: 'Purchase not found' });
+    if (purchase.blueprint_data?._pending !== true) return res.status(409).json({ error: 'Quiz already submitted' });
+
+    const email = purchase.email;
+
+    // Save quiz data to the lead
+    await upsertLead({
+      email,
+      name:            name || '',
+      attachmentStyle: attachmentStyle || '',
+      partnerStyle:    partnerStyle || '',
+      quizData:        { who: who || 'my partner', goal: goal || '' },
+      situation:       (situation || '').slice(0, 800)
+    });
+
+    // Lock the record immediately so double-submits are rejected
+    await completePurchase({
+      stripeSessionId: sessionId,
+      paymentIntent:   purchase.stripe_payment_intent,
+      blueprintData:   { _processing: true, flow: 'v2' }
+    });
+
+    // Respond to client now — blueprint generation happens async below
+    res.json({ success: true });
+
+    const theme = resolveTheme(attachmentStyle, partnerStyle);
+
+    let blueprint;
+    try {
+      blueprint = await generateBlueprint({
+        situation: (situation || '').slice(0, 700),
+        who:       who || 'my partner',
+        theme,
+        goal:      goal || 'feel safe in love'
+      });
+    } catch (err) {
+      console.error('V2 blueprint generation failed:', err.message);
+      blueprint = buildFallbackBlueprint(attachmentStyle, partnerStyle);
+    }
+
+    await completePurchase({
+      stripeSessionId: sessionId,
+      paymentIntent:   purchase.stripe_payment_intent,
+      blueprintData:   blueprint
+    });
+
+    let pdfBuffer;
+    try {
+      pdfBuffer = await generateBlueprintPdf(blueprint, {
+        name:            name || '',
+        attachmentStyle: formatStyle(attachmentStyle),
+        partnerStyle:    formatStyle(partnerStyle)
+      });
+    } catch (err) {
+      console.error('V2 PDF generation failed (will send without attachment):', err.message);
+    }
+
+    try {
+      await sendBlueprintEmail({
+        to:              email,
+        name:            name || '',
+        pdfBuffer,
+        blueprintTitle:  blueprint.title,
+        attachmentStyle: formatStyle(attachmentStyle),
+        partnerStyle:    formatStyle(partnerStyle)
+      });
+      await markEmailSent(sessionId);
+    } catch (err) {
+      console.error('V2 email send failed:', err.message);
+    }
+
+    sendOwnerNotification({
+      email,
+      name:            name || '',
+      attachmentStyle,
+      partnerStyle,
+      amountCents:     purchase.amount_cents,
+      lead:            { situation, quiz_data: { who, goal } },
+      pdfBuffer
+    }).catch(() => {});
+
+    removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+    tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
+
+    console.log(`✅ V2 blueprint delivered to ${email} (session ${sessionId})`);
+  } catch (err) {
+    console.error('V2 quiz submit error:', err.message);
+    if (!res.headersSent) res.status(500).json({ error: 'Submission failed' });
+  }
 });
 
 // ─── ACCOUNT / LEAD CAPTURE ──────────────────────────────────────────────────
@@ -265,14 +476,20 @@ async function handleStripeWebhook(req, res) {
 
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
-
-    // Acknowledge Stripe immediately
     res.status(200).json({ received: true });
-
-    // Process async (non-blocking response already sent)
     processCompletedCheckout(session).catch(err => {
       console.error('Post-payment processing error:', err.message);
     });
+
+  } else if (event.type === 'payment_intent.succeeded') {
+    const pi = event.data.object;
+    res.status(200).json({ received: true });
+    if (pi.metadata?.flow === 'v2') {
+      processV2PaymentIntent(pi).catch(err => {
+        console.error('V2 payment intent processing error:', err.message);
+      });
+    }
+
   } else {
     res.status(200).json({ received: true });
   }
@@ -286,6 +503,7 @@ async function processCompletedCheckout(session) {
   const amountCents     = session.amount_total;
   const sessionId       = session.id;
   const paymentIntent   = session.payment_intent;
+  const flow            = session.metadata?.flow || 'v1';
 
   if (!email) {
     console.error('Webhook: no email in session', session.id);
@@ -296,6 +514,15 @@ async function processCompletedCheckout(session) {
   const existing = await getPurchaseBySession(sessionId);
   if (existing?.status === 'completed') {
     console.log('Webhook: session already processed', sessionId);
+    return;
+  }
+
+  // V2: record payment and wait for quiz submission before generating blueprint
+  if (flow === 'v2') {
+    await upsertLead({ email });
+    await createPurchase({ email, stripeSessionId: sessionId, amountCents });
+    await completePurchase({ stripeSessionId: sessionId, paymentIntent, blueprintData: { _pending: true, flow: 'v2' } });
+    console.log(`✅ V2 payment recorded for ${email} (session ${sessionId}) — awaiting quiz`);
     return;
   }
 
@@ -356,6 +583,31 @@ async function processCompletedCheckout(session) {
   tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
 
   console.log(`✅ Blueprint delivered to ${email} (session ${sessionId})`);
+}
+
+async function processV2PaymentIntent(pi) {
+  const email = pi.metadata?.email;
+  const piId  = pi.id;
+
+  if (!email) {
+    console.error('V2 PI webhook: no email in metadata', piId);
+    return;
+  }
+
+  const existing = await getPurchaseBySession(piId);
+  if (existing?.status === 'completed') {
+    console.log('V2 PI: already processed', piId);
+    return;
+  }
+
+  await upsertLead({ email });
+  await createPurchase({ email, stripeSessionId: piId, amountCents: pi.amount });
+  await completePurchase({
+    stripeSessionId: piId,
+    paymentIntent:   piId,
+    blueprintData:   { _pending: true, flow: 'v2' }
+  });
+  console.log(`✅ V2 payment intent recorded for ${email} (${piId}) — awaiting quiz`);
 }
 
 // ─── AI: BLUEPRINT GENERATION ─────────────────────────────────────────────────
