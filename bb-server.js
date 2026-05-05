@@ -117,6 +117,34 @@ app.post('/api/v2/checkout', checkoutLimiter, async (req, res) => {
   }
 });
 
+// ─── V2: DEBUG (temporary — remove after testing) ────────────────────────────
+
+app.get('/api/v2/debug', async (req, res) => {
+  const { pi } = req.query;
+  if (!pi) return res.json({ error: 'Add ?pi=pi_xxx to the URL' });
+  try {
+    const paymentIntent = await stripe.paymentIntents.retrieve(pi);
+    const purchase      = await getPurchaseBySession(pi);
+    res.json({
+      stripe: {
+        id:       paymentIntent.id,
+        status:   paymentIntent.status,
+        amount:   paymentIntent.amount,
+        metadata: paymentIntent.metadata,
+        livemode: paymentIntent.livemode,
+      },
+      db: purchase ? {
+        id:             purchase.id,
+        status:         purchase.status,
+        blueprint_data: purchase.blueprint_data,
+        email:          purchase.email,
+      } : null
+    });
+  } catch (err) {
+    res.json({ error: err.message });
+  }
+});
+
 // ─── V2: CONFIG (publishable key for Stripe.js) ──────────────────────────────
 
 app.get('/api/v2/config', (req, res) => {
