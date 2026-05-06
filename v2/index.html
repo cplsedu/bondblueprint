@@ -207,22 +207,34 @@ footer a{color:rgba(255,255,255,.2);text-decoration:none}
 
 /* ── DESKTOP ─────────────────────────────────────── */
 @media(min-width:768px){
-  body{display:flex;flex-direction:column;align-items:center;padding:40px 24px 0}
-  .page{
-    max-width:600px;width:100%;
-    border-radius:24px;
-    overflow:hidden;
-    box-shadow:0 0 0 1px rgba(255,255,255,.06), 0 32px 80px rgba(0,0,0,.7);
-    margin-bottom:48px;
+  body{padding:0}
+  .page{max-width:100%}
+
+  /* Hero — full width, content centered */
+  .hero{padding:72px 14% 68px}
+  .hero::before{width:600px;height:600px}
+  .hero-hl{font-size:clamp(2.4rem,4vw,3.2rem)}
+  .hero-sub{max-width:520px;font-size:1rem;margin-bottom:28px}
+  .ify{max-width:520px;margin-left:auto;margin-right:auto}
+  .hero-close{font-size:1.05rem}
+
+  /* Proof — full width */
+  .proof{padding:52px 0 40px}
+  .proof-head{padding:0 14%;margin-bottom:22px}
+  .proof-title{font-size:1.35rem}
+  .rc{padding:4px 14% 22px}
+  .dm{min-width:296px;max-width:296px}
+
+  /* Checkout — full width, form centered */
+  .checkout{
+    padding:64px 14% 80px;
+    display:flex;flex-direction:column;align-items:center;
   }
-  .hero{padding:40px 40px 36px}
-  .hero-sub{max-width:400px}
-  .proof{padding:28px 0 24px}
-  .proof-head{padding:0 32px;margin-bottom:18px}
-  .rc{padding:4px 32px 18px}
-  .checkout{padding:32px 40px 52px}
-  .co-hl{font-size:1.5rem}
-  footer{padding:16px 40px 28px}
+  .co-eyebrow,.co-hl,.price-row,.co-deliver{width:100%;max-width:480px}
+  .co-form{max-width:480px;width:100%}
+  .co-hl{font-size:1.6rem;text-align:center}
+
+  footer{padding:20px 14% 36px}
 }
 </style>
 </head>
