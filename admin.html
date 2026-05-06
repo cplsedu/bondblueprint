@@ -42,6 +42,15 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 .apply-btn{padding:6px 18px;border-radius:100px;border:none;background:#2C4A35;color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin-left:auto}
 .apply-btn:hover{background:#1E3526}
 
+/* Panel Headers */
+.panel-header{border-radius:14px;padding:20px 24px;margin:32px 0 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.panel-header:first-child{margin-top:0}
+.panel-header-sales{background:linear-gradient(135deg,#0F1A10 0%,#1E3526 100%);border:1.5px solid #2C4A35}
+.panel-header-cs{background:linear-gradient(135deg,#1A1008 0%,#2E1C08 100%);border:1.5px solid #4A3010}
+.panel-header-tag{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.panel-header-title{font-size:18px;font-weight:800;color:#fff;line-height:1.2}
+.panel-header-sub{font-size:12px;color:rgba(255,255,255,.4);margin-top:4px}
+
 /* Benchmark */
 .benchmark-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:2px}
 .benchmark-table th{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#9A908A;padding:6px 10px 8px;text-align:left;border-bottom:1.5px solid #EEE8E0}
@@ -261,99 +270,22 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
     <button class="apply-btn" onclick="refreshAll()">Apply</button>
   </div>
 
-  <!-- ── Business Metrics (Supabase) ── -->
-  <div class="section-title">Business Metrics</div>
+  <!-- ══ SALES ANALYTICS ══════════════════════════════════════ -->
+  <div class="panel-header panel-header-sales">
+    <div>
+      <div class="panel-header-tag" style="color:#4ACA5A">● Sales Analytics</div>
+      <div class="panel-header-title">Revenue &amp; Conversions</div>
+      <div class="panel-header-sub">Who's visiting, who's buying — filtered by date range above</div>
+    </div>
+  </div>
 
   <div class="metrics">
-    <div class="metric-card"><div class="metric-label">Leads</div><div class="metric-value" id="m-leads">—</div><div class="metric-sub">Quiz completions</div></div>
+    <div class="metric-card"><div class="metric-label">Visitors</div><div class="metric-value" id="m-leads">—</div><div class="metric-sub" id="m-visitors-sub">Unique page visits</div></div>
     <div class="metric-card"><div class="metric-label">Purchases</div><div class="metric-value orange" id="m-purchases">—</div><div class="metric-sub">Completed sales</div></div>
     <div class="metric-card"><div class="metric-label">Revenue</div><div class="metric-value green" id="m-revenue">—</div><div class="metric-sub">Total earned</div></div>
-    <div class="metric-card"><div class="metric-label">Conversion</div><div class="metric-value teal" id="m-conversion">—</div><div class="metric-sub">Lead → purchase</div></div>
+    <div class="metric-card"><div class="metric-label">Conversion</div><div class="metric-value teal" id="m-conversion">—</div><div class="metric-sub">Visitor → purchase</div></div>
     <div class="metric-card"><div class="metric-label">Avg Order</div><div class="metric-value" id="m-aov">—</div><div class="metric-sub">Per purchase</div></div>
   </div>
-
-  <!-- ── Baseline Benchmark ── -->
-  <div class="card">
-    <div class="card-title">Baseline Benchmark · Pre-BondBlueprint (Stan Store)</div>
-    <table class="benchmark-table">
-      <thead>
-        <tr>
-          <th>Product</th>
-          <th class="r">Views</th>
-          <th class="r">Orders</th>
-          <th class="r">Conv %</th>
-          <th class="r">Revenue</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="benchmark-row-hero">
-          <td><strong>The Pull-Away Antidote</strong> <span style="font-size:10px;color:#E07A3A;font-weight:700;margin-left:4px">← predecessor to this funnel</span></td>
-          <td class="r">495</td><td class="r">28</td>
-          <td class="r" style="font-weight:800;color:#2C4A35">5.3%</td>
-          <td class="r" style="font-weight:800;color:#2C4A35">$532</td>
-        </tr>
-        <tr>
-          <td>Stop The Rollercoaster</td>
-          <td class="r">100</td><td class="r">3</td><td class="r">3.0%</td><td class="r">$57</td>
-        </tr>
-        <tr>
-          <td>Book a 1:1 Call with Me</td>
-          <td class="r">17</td><td class="r">1</td><td class="r">5.9%</td><td class="r">$50</td>
-        </tr>
-        <tr>
-          <td>Stop Fighting &amp; Start Connecting!</td>
-          <td class="r">15</td><td class="r">2</td><td class="r">13.3%</td><td class="r">$38</td>
-        </tr>
-        <tr>
-          <td>The Relationship PIP</td>
-          <td class="r">17</td><td class="r">1</td><td class="r">5.9%</td><td class="r">$19</td>
-        </tr>
-      </tbody>
-    </table>
-    <div class="benchmark-footer">
-      <div class="benchmark-footer-label">BondBlueprint target: match or beat <strong style="color:#2C4A35">5.3%</strong> lead → purchase conversion</div>
-      <div id="vs-baseline"><span class="vs-badge vs-at">—</span></div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Revenue &amp; Leads Over Time</div>
-    <div class="chart-wrap"><canvas id="revenue-chart"></canvas></div>
-  </div>
-
-  <div class="two-col">
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title">Lead Attachment Styles</div>
-      <div id="style-breakdown"><div class="empty">Loading…</div></div>
-    </div>
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title">Recent Purchases</div>
-      <div id="recent-purchases"><div class="empty">Loading…</div></div>
-    </div>
-  </div>
-
-  <!-- ── Customer Service ── -->
-  <div class="section-title" style="margin-top:32px">Customer Service</div>
-
-  <div class="metrics" id="cs-summary">
-    <div class="metric-card"><div class="metric-label">Total Purchased</div><div class="metric-value" id="cs-total">—</div><div class="metric-sub">All time</div></div>
-    <div class="metric-card"><div class="metric-label">Unclaimed</div><div class="metric-value orange" id="cs-unclaimed">—</div><div class="metric-sub">Waiting for quiz</div></div>
-    <div class="metric-card"><div class="metric-label">Claimed</div><div class="metric-value green" id="cs-claimed">—</div><div class="metric-sub">Quiz submitted</div></div>
-    <div class="metric-card"><div class="metric-label">Delivered</div><div class="metric-value teal" id="cs-delivered">—</div><div class="metric-sub">Blueprint emailed</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Unclaimed Purchases &mdash; waiting for quiz submission</div>
-    <div id="cs-unclaimed-table"><div class="empty">Loading…</div></div>
-  </div>
-
-  <div class="card">
-    <div class="card-title">Claimed Purchases &mdash; quiz submitted</div>
-    <div id="cs-claimed-table"><div class="empty">Loading…</div></div>
-  </div>
-
-  <!-- ── Behavioral Analytics (PostHog) ── -->
-  <div class="section-title" style="margin-top:32px">Behavioral Analytics</div>
 
   <!-- ── Live Panel ── -->
   <div class="live-panel">
@@ -423,38 +355,91 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
   <div class="card">
     <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
       Conversion Funnel
-      <span style="font-size:9px;font-weight:600;color:#9A908A;letter-spacing:0;text-transform:none">PostHog events take ~60s to appear after a visit — hit ↻ Refresh if you just tested</span>
+      <span style="font-size:9px;font-weight:600;color:#9A908A;letter-spacing:0;text-transform:none">Events take ~60s to appear — hit ↻ Refresh if you just tested</span>
     </div>
     <div class="funnel-steps" id="funnel"><div class="empty">Loading…</div></div>
     <div id="funnel-error" class="error-note"></div>
   </div>
 
+  <div class="card">
+    <div class="card-title">Revenue Over Time</div>
+    <div class="chart-wrap"><canvas id="revenue-chart"></canvas></div>
+  </div>
+
   <div class="two-col">
-    <div class="card" style="margin-bottom:0">
-      <div class="card-title">Quiz Drop-off by Question</div>
-      <div id="quiz-bars"><div class="empty">Loading…</div></div>
-      <div id="quiz-error" class="error-note"></div>
-    </div>
     <div class="card" style="margin-bottom:0">
       <div class="card-title">Traffic Sources</div>
       <div id="sources"><div class="empty">Loading…</div></div>
       <div id="sources-error" class="error-note"></div>
     </div>
-  </div>
-
-  <!-- ── Page Behavior ── -->
-  <div class="section-title" style="margin-top:32px">Page Behavior</div>
-
-  <!-- Click Map only -->
-  <div class="card" style="margin-bottom:14px">
-    <div class="card-title">Top Clicks · What people are tapping</div>
-    <div id="click-map"><div class="empty">Loading…</div></div>
-    <div id="click-error" class="error-note"></div>
-    <div style="margin-top:12px;font-size:10px;font-weight:600;color:#9A908A;line-height:1.7">
-      Most-clicked buttons and links in the selected date range, ranked by volume.
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Recent Purchases</div>
+      <div id="recent-purchases"><div class="empty">Loading…</div></div>
     </div>
   </div>
 
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Baseline Benchmark · Pre-BondBlueprint (Stan Store)</div>
+    <table class="benchmark-table">
+      <thead>
+        <tr>
+          <th>Product</th><th class="r">Views</th><th class="r">Orders</th><th class="r">Conv %</th><th class="r">Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="benchmark-row-hero">
+          <td><strong>The Pull-Away Antidote</strong> <span style="font-size:10px;color:#E07A3A;font-weight:700;margin-left:4px">← predecessor</span></td>
+          <td class="r">495</td><td class="r">28</td><td class="r" style="font-weight:800;color:#2C4A35">5.3%</td><td class="r" style="font-weight:800;color:#2C4A35">$532</td>
+        </tr>
+        <tr><td>Stop The Rollercoaster</td><td class="r">100</td><td class="r">3</td><td class="r">3.0%</td><td class="r">$57</td></tr>
+        <tr><td>Book a 1:1 Call with Me</td><td class="r">17</td><td class="r">1</td><td class="r">5.9%</td><td class="r">$50</td></tr>
+        <tr><td>Stop Fighting &amp; Start Connecting!</td><td class="r">15</td><td class="r">2</td><td class="r">13.3%</td><td class="r">$38</td></tr>
+        <tr><td>The Relationship PIP</td><td class="r">17</td><td class="r">1</td><td class="r">5.9%</td><td class="r">$19</td></tr>
+      </tbody>
+    </table>
+    <div class="benchmark-footer">
+      <div class="benchmark-footer-label">BondBlueprint target: beat <strong style="color:#2C4A35">5.3%</strong> visitor → purchase conversion</div>
+      <div id="vs-baseline"><span class="vs-badge vs-at">—</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CUSTOMER SUCCESS ═══════════════════════════════════════ -->
+  <div class="panel-header panel-header-cs">
+    <div>
+      <div class="panel-header-tag" style="color:#E07A3A">● Customer Success</div>
+      <div class="panel-header-title">Post-Purchase Journey</div>
+      <div class="panel-header-sub">Who completed the quiz, who's still waiting, and who received their blueprint</div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric-card"><div class="metric-label">Total Purchased</div><div class="metric-value" id="cs-total">—</div><div class="metric-sub">All time</div></div>
+    <div class="metric-card"><div class="metric-label">Quiz Done</div><div class="metric-value green" id="cs-claimed">—</div><div class="metric-sub">Completed the quiz</div></div>
+    <div class="metric-card"><div class="metric-label">Quiz Pending</div><div class="metric-value orange" id="cs-unclaimed">—</div><div class="metric-sub">Haven't filled it out</div></div>
+    <div class="metric-card"><div class="metric-label">Delivered</div><div class="metric-value teal" id="cs-delivered">—</div><div class="metric-sub">Blueprint emailed</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Attachment Style Breakdown</div>
+      <div id="style-breakdown"><div class="empty">Loading…</div></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Top Clicks · What people are tapping</div>
+      <div id="click-map"><div class="empty">Loading…</div></div>
+      <div id="click-error" class="error-note"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Quiz Pending — paid but haven't filled out the quiz yet</div>
+    <div id="cs-unclaimed-table"><div class="empty">Loading…</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Quiz Completed — quiz submitted &amp; blueprint sent</div>
+    <div id="cs-claimed-table"><div class="empty">Loading…</div></div>
+  </div>
 
 </div>
 </div>
