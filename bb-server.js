@@ -605,6 +605,9 @@ async function processCompletedCheckout(session) {
     await upsertLead({ email });
     await createPurchase({ email, stripeSessionId: sessionId, amountCents });
     await completePurchase({ stripeSessionId: sessionId, paymentIntent, blueprintData: { _pending: true, flow: 'v2' } });
+    // Remove from abandoned cart sequence immediately — they paid, don't harass them
+    removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+    tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
     console.log(`✅ V2 payment recorded for ${email} (session ${sessionId}) — awaiting quiz`);
     return;
   }
@@ -690,6 +693,9 @@ async function processV2PaymentIntent(pi) {
     paymentIntent:   piId,
     blueprintData:   { _pending: true, flow: 'v2' }
   });
+  // Remove from abandoned cart sequence immediately — they paid
+  removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+  tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
   console.log(`✅ V2 payment intent recorded for ${email} (${piId}) — awaiting quiz`);
 }
 
