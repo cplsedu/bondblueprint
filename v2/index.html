@@ -8,6 +8,33 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,400;0,600;0,700;0,800;0,900;1,700&family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&display=swap" rel="stylesheet">
 <script src="https://js.stripe.com/v3/"></script>
+<script>
+  // PostHog — queue events fired before the library loads
+  window._phq = [];
+  window.posthog = {
+    capture:          function(e,p){ window._phq.push(['capture',e,p]); },
+    identify:         function(id,p){ window._phq.push(['identify',id,p]); },
+    register:         function(){},
+    opt_out_capturing:function(){}
+  };
+  var _s = document.createElement('script');
+  _s.src = 'https://us-assets.i.posthog.com/static/array.js';
+  _s.crossOrigin = 'anonymous';
+  _s.defer = true;
+  _s.onload = function() {
+    posthog.init('phc_CXx2ezKhKjwXJWEWtShZgkYCf8q97VXgJEJ8GgaMiTUv', {
+      api_host: 'https://us.i.posthog.com',
+      autocapture: {
+        dom_event_allowlist: ['click'],
+        element_allowlist: ['a', 'button', 'label', 'input[type=submit]', 'input[type=button]'],
+      },
+      session_recording: { maskAllInputs: true }
+    });
+    window._phq.forEach(function(e){ posthog[e[0]](e[1],e[2]); });
+    window._phq = [];
+  };
+  document.head.appendChild(_s);
+</script>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{font-size:16px;-webkit-text-size-adjust:100%}
@@ -825,6 +852,32 @@ async function submitPayment() {
 document.getElementById('email').addEventListener('keydown', e => {
   if (e.key === 'Enter') startCheckout();
 });
+
+// ── TRACKING ──────────────────────────────────────
+function track(event, props) {
+  try { posthog.capture(event, props || {}); } catch(e) {}
+}
+
+// Page landed
+track('page_landed');
+
+// Checkout initiated — when email submitted and payment form appears
+const _origStartCheckout = startCheckout;
+startCheckout = async function() {
+  await _origStartCheckout();
+  // If payment step is now visible, email was accepted
+  if (document.getElementById('step-payment').style.display !== 'none') {
+    track('checkout_initiated', { email: (document.getElementById('email').value || '').trim() });
+    if (purchaseEmail) posthog.identify(purchaseEmail);
+  }
+};
+
+// Payment submitted
+const _origSubmitPayment = submitPayment;
+submitPayment = async function() {
+  track('payment_submitted');
+  await _origSubmitPayment();
+};
 </script>
 </body>
 </html>
