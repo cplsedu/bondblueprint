@@ -236,6 +236,25 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 .hm-loading{color:rgba(255,255,255,.4);font-size:12px;font-weight:700;letter-spacing:1px;text-align:center;padding:40px 0;animation:pulse 1.5s infinite}
 .hm-clarity-note{margin-top:16px;padding:12px 16px;background:rgba(255,255,255,.05);border-radius:10px;font-size:11px;font-weight:600;color:rgba(255,255,255,.35);line-height:1.7}
 .hm-clarity-note a{color:#E07A3A;text-decoration:none}
+
+/* Customer Service */
+.cs-table{width:100%;border-collapse:collapse;font-size:13px}
+.cs-table th{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#9A908A;padding:7px 10px 9px;text-align:left;border-bottom:1.5px solid #EEE8E0}
+.cs-table td{padding:9px 10px;border-bottom:1px solid #F5F0EA;font-weight:600;color:#1E1E1E;vertical-align:middle}
+.cs-table tr:last-child td{border-bottom:none}
+.cs-table .email-cell{font-weight:600;color:#1E1E1E;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cs-table .date-cell{font-size:11px;color:#9A908A;white-space:nowrap}
+.cs-table .days-cell{font-size:12px;font-weight:800;color:#E07A3A}
+.cs-table .style-cell{font-size:12px;font-weight:700}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;padding:3px 9px;border-radius:100px;white-space:nowrap}
+.badge-sent{background:#E8F0E9;color:#2C4A35}
+.badge-pending{background:#F5F0EA;color:#9A908A}
+.badge-delivered{background:#E8F0E9;color:#2C4A35}
+.badge-waiting{background:#FEF0E8;color:#E07A3A}
+.badge-style-AA{background:#FEF0E8;color:#C4660A}
+.badge-style-DA{background:#EAF0FE;color:#3060C4}
+.badge-style-FA{background:#F5EAF5;color:#7A3090}
+.badge-style-SA{background:#E8F0E9;color:#2C4A35}
 </style>
 </head>
 <body>
@@ -349,6 +368,26 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
       <div class="card-title">Recent Purchases</div>
       <div id="recent-purchases"><div class="empty">Loading…</div></div>
     </div>
+  </div>
+
+  <!-- ── Customer Service ── -->
+  <div class="section-title" style="margin-top:32px">Customer Service</div>
+
+  <div class="metrics" id="cs-summary">
+    <div class="metric-card"><div class="metric-label">Total Purchased</div><div class="metric-value" id="cs-total">—</div><div class="metric-sub">All time</div></div>
+    <div class="metric-card"><div class="metric-label">Unclaimed</div><div class="metric-value orange" id="cs-unclaimed">—</div><div class="metric-sub">Waiting for quiz</div></div>
+    <div class="metric-card"><div class="metric-label">Claimed</div><div class="metric-value green" id="cs-claimed">—</div><div class="metric-sub">Quiz submitted</div></div>
+    <div class="metric-card"><div class="metric-label">Delivered</div><div class="metric-value teal" id="cs-delivered">—</div><div class="metric-sub">Blueprint emailed</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Unclaimed Purchases &mdash; waiting for quiz submission</div>
+    <div id="cs-unclaimed-table"><div class="empty">Loading…</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Claimed Purchases &mdash; quiz submitted</div>
+    <div id="cs-claimed-table"><div class="empty">Loading…</div></div>
   </div>
 
   <!-- ── Behavioral Analytics (PostHog) ── -->
@@ -585,6 +624,7 @@ function showDashboard() {
   document.getElementById('from-date').value = todayStr();
   document.getElementById('to-date').value   = todayStr();
   loadLivePanel();
+  loadCustomerService();
   // Auto-load heatmap for landing page on open
   setTimeout(() => renderHeatmap(), 2000);
   refreshAll();
@@ -597,7 +637,90 @@ function refreshAll() {
   if (!from || !to) return;
   loadSupabase(from, to);
   loadPostHog(from, to);
+  loadCustomerService();
   document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+// ── Customer Service ──────────────────────────────────────────────────────────
+function loadCustomerService() {
+  fetch(`/api/admin/customer-service?key=${encodeURIComponent(adminKey)}`)
+    .then(r => { if (r.status===401) { localStorage.removeItem('bb_admin_key'); location.reload(); return null; } return r.json(); })
+    .then(data => { if (data) renderCustomerService(data); })
+    .catch(() => {});
+}
+
+const STYLE_LABELS = { AA:'Anxious', DA:'Avoidant', FA:'Fearful-Avoidant', SA:'Secure', '':'Unknown' };
+function styleLabel(code) { return STYLE_LABELS[code] || code || 'Unknown'; }
+function styleBadge(code) {
+  if (!code) return '<span class="badge badge-pending">—</span>';
+  return `<span class="badge badge-style-${code}">${styleLabel(code)}</span>`;
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+function renderCustomerService(d) {
+  const s = d.summary || {};
+  document.getElementById('cs-total').textContent     = s.totalPurchased ?? '—';
+  document.getElementById('cs-unclaimed').textContent = s.unclaimed       ?? '—';
+  document.getElementById('cs-claimed').textContent   = s.claimed         ?? '—';
+  document.getElementById('cs-delivered').textContent = s.emailsDelivered ?? '—';
+
+  // Unclaimed table
+  const unEl = document.getElementById('cs-unclaimed-table');
+  if (!d.unclaimed || d.unclaimed.length === 0) {
+    unEl.innerHTML = '<div class="empty">No unclaimed purchases 🎉</div>';
+  } else {
+    let rows = '';
+    d.unclaimed.forEach(p => {
+      const days = p.daysWaiting === 0 ? 'Today' : p.daysWaiting === 1 ? '1 day' : `${p.daysWaiting} days`;
+      rows += `<tr>
+        <td class="email-cell">${p.email}</td>
+        <td class="date-cell">${fmtDate(p.purchaseDate)}</td>
+        <td class="days-cell">${days}</td>
+        <td>${p.r1Sent ? '<span class="badge badge-sent">✓ Sent</span>' : '<span class="badge badge-pending">Not sent</span>'}</td>
+        <td>${p.r7Sent ? '<span class="badge badge-sent">✓ Sent</span>' : '<span class="badge badge-pending">Not sent</span>'}</td>
+      </tr>`;
+    });
+    unEl.innerHTML = `<table class="cs-table">
+      <thead><tr>
+        <th>Email</th>
+        <th>Purchase Date</th>
+        <th>Days Waiting</th>
+        <th>1-Hr Reminder</th>
+        <th>7-Day Reminder</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+
+  // Claimed table
+  const clEl = document.getElementById('cs-claimed-table');
+  if (!d.claimed || d.claimed.length === 0) {
+    clEl.innerHTML = '<div class="empty">No claimed purchases yet</div>';
+  } else {
+    let rows = '';
+    d.claimed.forEach(p => {
+      rows += `<tr>
+        <td class="email-cell">${p.email}</td>
+        <td class="date-cell">${fmtDate(p.purchaseDate)}</td>
+        <td>${styleBadge(p.attachmentStyle)}</td>
+        <td>${styleBadge(p.partnerStyle)}</td>
+        <td>${p.delivered ? '<span class="badge badge-delivered">✓ Delivered</span>' : '<span class="badge badge-waiting">Pending</span>'}</td>
+      </tr>`;
+    });
+    clEl.innerHTML = `<table class="cs-table">
+      <thead><tr>
+        <th>Email</th>
+        <th>Purchase Date</th>
+        <th>Their Style</th>
+        <th>Partner Style</th>
+        <th>Blueprint</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
 }
 
 // ── Supabase ──────────────────────────────────────────────────────────────────

@@ -7,7 +7,7 @@ const helmet      = require('helmet');
 const stripe      = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path        = require('path');
 
-const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent } = require('./lib/db');
+const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent, getCustomerServiceData } = require('./lib/db');
 const { sendBlueprintEmail, sendClaimReminderEmail } = require('./lib/email');
 const { generateBlueprintPdf }  = require('./lib/pdf');
 const { subscribeToConvertKit, tagSubscriber, removeTag } = require('./lib/marketing');
@@ -417,6 +417,20 @@ app.get('/api/admin/leads-by-email', async (req, res) => {
   } catch (err) {
     console.error('leads-by-email error:', err.message);
     res.status(500).json({ error: 'Failed to fetch leads' });
+  }
+});
+
+// ─── ADMIN: CUSTOMER SERVICE VIEW ────────────────────────────────────────────
+
+app.get('/api/admin/customer-service', async (req, res) => {
+  const { key } = req.query;
+  if (!key || key !== process.env.ADMIN_KEY) return res.status(401).json({ error: 'Unauthorized' });
+  try {
+    const data = await getCustomerServiceData();
+    res.json(data);
+  } catch (err) {
+    console.error('Customer service data error:', err.message);
+    res.status(500).json({ error: 'Failed to load customer service data' });
   }
 });
 
