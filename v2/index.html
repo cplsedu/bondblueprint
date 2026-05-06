@@ -676,6 +676,13 @@ footer a{color:rgba(255,255,255,.2);text-decoration:none}
 </footer>
 </div>
 
+<!-- PROCESSING OVERLAY — shown while Stripe redirects after payment -->
+<div id="processing-overlay" style="display:none;position:fixed;inset:0;background:rgba(4,10,5,0.97);z-index:9999;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;text-align:center">
+  <div style="width:52px;height:52px;border:4px solid rgba(255,255,255,0.12);border-top-color:#E07A3A;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto 28px"></div>
+  <div style="font-size:1.2rem;font-weight:900;color:#fff;margin-bottom:12px;font-family:'Playfair Display',serif">Processing your payment...</div>
+  <div style="font-size:.9rem;font-weight:700;color:rgba(255,255,255,0.45);max-width:260px;line-height:1.7">Please don't close or refresh this page. You'll be redirected automatically in just a moment.</div>
+</div>
+
 <script>
 // ── CAROUSEL ─────────────────────────────────────
 const CARD_STEP = 273;
@@ -763,10 +770,14 @@ function editEmail() {
 }
 
 async function submitPayment() {
-  const errEl = document.getElementById('co-pay-error');
-  const btn   = document.getElementById('pay-btn');
+  const errEl   = document.getElementById('co-pay-error');
+  const btn     = document.getElementById('pay-btn');
+  const overlay = document.getElementById('processing-overlay');
   errEl.textContent = ''; errEl.classList.remove('show');
   btn.disabled = true; btn.classList.add('loading');
+
+  // Show "don't close" overlay — stays up until Stripe redirects
+  overlay.style.display = 'flex';
 
   const { error } = await stripeInstance.confirmPayment({
     elements: stripeElements,
@@ -776,7 +787,8 @@ async function submitPayment() {
     }
   });
 
-  // Only reaches here if there was an error (success = redirect)
+  // Only reaches here if there was an error (success = redirect away from this page)
+  overlay.style.display = 'none';
   if (error) {
     errEl.textContent = error.message || 'Payment failed. Please try again.';
     errEl.classList.add('show');

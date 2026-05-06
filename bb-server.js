@@ -7,8 +7,8 @@ const helmet      = require('helmet');
 const stripe      = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path        = require('path');
 
-const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics } = require('./lib/db');
-const { sendBlueprintEmail }    = require('./lib/email');
+const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent } = require('./lib/db');
+const { sendBlueprintEmail, sendClaimReminderEmail } = require('./lib/email');
 const { generateBlueprintPdf }  = require('./lib/pdf');
 const { subscribeToConvertKit, tagSubscriber, removeTag } = require('./lib/marketing');
 
@@ -1038,6 +1038,51 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
     ]
   };
 }
+
+// ─── UNCLAIMED BLUEPRINT REMINDERS ────────────────────────────────────────────
+// Runs every 30 min — sends 1hr and 7-day nudges to buyers who never finished the quiz
+
+async function checkUnclaimedPurchases() {
+  console.log('[Reminders] Checking for unclaimed blueprints...');
+  try {
+    const origin = process.env.APP_URL || 'https://bondblueprint.com';
+
+    const [oneHrList, sevenDayList] = await Promise.all([
+      getUnclaimedPurchasesForReminder('1hr').catch(() => []),
+      getUnclaimedPurchasesForReminder('7d').catch(() => []),
+    ]);
+
+    for (const p of oneHrList) {
+      try {
+        await sendClaimReminderEmail({ to: p.email, piId: p.stripe_session_id, type: '1hr', origin });
+        await markReminderSent(p.stripe_session_id, '1hr');
+        console.log(`[Reminders] 1hr reminder sent -> ${p.email}`);
+      } catch (err) {
+        console.error(`[Reminders] 1hr failed for ${p.email}:`, err.message);
+      }
+    }
+
+    for (const p of sevenDayList) {
+      try {
+        await sendClaimReminderEmail({ to: p.email, piId: p.stripe_session_id, type: '7d', origin });
+        await markReminderSent(p.stripe_session_id, '7d');
+        console.log(`[Reminders] 7d reminder sent -> ${p.email}`);
+      } catch (err) {
+        console.error(`[Reminders] 7d failed for ${p.email}:`, err.message);
+      }
+    }
+
+    const total = oneHrList.length + sevenDayList.length;
+    if (total === 0) console.log('[Reminders] None pending.');
+    else console.log(`[Reminders] Sent ${total} reminder(s).`);
+  } catch (err) {
+    console.error('[Reminders] Check failed:', err.message);
+  }
+}
+
+// Run every 30 minutes; also do a first pass 2 minutes after server start
+setInterval(checkUnclaimedPurchases, 30 * 60 * 1000);
+setTimeout(checkUnclaimedPurchases,   2 * 60 * 1000);
 
 // ─── START ────────────────────────────────────────────────────────────────────
 
