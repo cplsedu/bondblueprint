@@ -280,7 +280,8 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
   </div>
 
   <div class="metrics">
-    <div class="metric-card"><div class="metric-label">Visitors</div><div class="metric-value" id="m-leads">—</div><div class="metric-sub" id="m-visitors-sub">Unique page visits</div></div>
+    <div class="metric-card"><div class="metric-label">Visitors</div><div class="metric-value" id="m-visitors">—</div><div class="metric-sub">Landed on the page</div></div>
+    <div class="metric-card"><div class="metric-label">Leads</div><div class="metric-value" id="m-leads">—</div><div class="metric-sub">Entered email at checkout</div></div>
     <div class="metric-card"><div class="metric-label">Purchases</div><div class="metric-value orange" id="m-purchases">—</div><div class="metric-sub">Completed sales</div></div>
     <div class="metric-card"><div class="metric-label">Revenue</div><div class="metric-value green" id="m-revenue">—</div><div class="metric-sub">Total earned</div></div>
     <div class="metric-card"><div class="metric-label">Conversion</div><div class="metric-value teal" id="m-conversion">—</div><div class="metric-sub">Visitor → purchase</div></div>
@@ -346,9 +347,8 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
       <div id="live-error" style="display:none;font-size:11px;color:#E07A3A;margin-top:8px;line-height:1.5"></div>
     </div>
   </div>
-  <!-- hidden but still populated for funnel query -->
+  <!-- hidden span for clickback count (still used internally) -->
   <div style="display:none">
-    <span id="m-visitors"></span>
     <span id="m-clickback"></span>
   </div>
 

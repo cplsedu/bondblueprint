@@ -354,6 +354,9 @@ app.post('/api/account', async (req, res) => {
   }
 });
 
+// ─── HEALTH CHECK ────────────────────────────────────────────────────────────
+app.get('/health', (req, res) => res.json({ ok: true }));
+
 // ─── ADMIN DASHBOARD ─────────────────────────────────────────────────────────
 
 app.get('/admin', (req, res) => {
@@ -1138,4 +1141,10 @@ app.listen(PORT, () => {
   console.log(`💳  Stripe: ${process.env.STRIPE_SECRET_KEY ? 'Connected' : 'MISSING STRIPE_SECRET_KEY'}`);
   console.log(`🗄️   DB:     ${process.env.SUPABASE_URL ? 'Connected' : 'MISSING SUPABASE_URL'}`);
   console.log(`📧  Email:  ${process.env.RESEND_API_KEY ? 'Connected' : 'MISSING RESEND_API_KEY'}\n`);
+
+  // ── Keep-alive: ping self every 4 min so Railway free tier doesn't sleep ──
+  const APP_URL = process.env.APP_URL || `http://localhost:${PORT}`;
+  setInterval(() => {
+    fetch(`${APP_URL}/health`).catch(() => {});
+  }, 4 * 60 * 1000);
 });
