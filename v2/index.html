@@ -203,7 +203,6 @@ img{display:block}
 .co-lock{font-size:.7rem;font-weight:700;color:rgba(255,255,255,.2);text-align:center}
 footer{background:#040A05;padding:16px 22px 30px;text-align:center;font-size:.65rem;font-weight:700;color:rgba(255,255,255,.15);line-height:1.9}
 footer a{color:rgba(255,255,255,.2);text-decoration:none}
-#test-banner{display:none;position:fixed;top:0;left:0;right:0;z-index:999;background:#F59E0B;color:#000;font-size:.72rem;font-weight:900;text-align:center;padding:6px 10px;letter-spacing:.04em}
 
 /* ── DESKTOP ─────────────────────────────────────── */
 @media(min-width:768px){
@@ -239,7 +238,6 @@ footer a{color:rgba(255,255,255,.2);text-decoration:none}
 </style>
 </head>
 <body>
-<div id="test-banner">🧪 TEST MODE — Use card 4242 4242 4242 4242 · No real charges</div>
 <div class="page">
 
 <!-- ── HERO ─────────────────────────────────────── -->
@@ -758,10 +756,6 @@ async function startCheckout() {
 
     if (!configData.publishableKey) throw new Error('Configuration error. Please try again.');
     if (!piData.clientSecret)       throw new Error(piData.error || 'Something went wrong. Please try again.');
-    if (configData.publishableKey.startsWith('pk_test_')) {
-      document.getElementById('test-banner').style.display = 'block';
-    }
-
     purchaseEmail  = email;
     stripeInstance = Stripe(configData.publishableKey);
     stripeElements = stripeInstance.elements({
@@ -814,7 +808,7 @@ async function submitPayment() {
   const { error } = await stripeInstance.confirmPayment({
     elements: stripeElements,
     confirmParams: {
-      return_url:    window.location.origin + '/v2/confirm',
+      return_url:    window.location.origin + '/confirm',
       receipt_email: purchaseEmail,
     }
   });

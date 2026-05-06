@@ -61,18 +61,16 @@ app.use(express.json({ limit: '20kb' }));
 app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'bondblueprint-free.html'));
-});
-
-// ─── V2 TEST FLOW ─────────────────────────────────────────────────────────────
-
-app.get('/v2', (req, res) => {
   res.sendFile(path.join(__dirname, 'v2/index.html'));
 });
 
-app.get('/v2/confirm', (req, res) => {
+app.get('/confirm', (req, res) => {
   res.sendFile(path.join(__dirname, 'v2/confirm.html'));
 });
+
+// Legacy V2 paths — redirect to clean URLs
+app.get('/v2',         (req, res) => res.redirect('/'));
+app.get('/v2/confirm', (req, res) => res.redirect('/confirm' + (req.search || '')));
 
 // ─── V2: CHECKOUT (email-only, quiz happens post-purchase) ───────────────────
 
