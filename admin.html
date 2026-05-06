@@ -376,22 +376,22 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
       <div class="live-bars-wrap">
         <div class="live-bars-title">Today's activity</div>
         <div class="live-bar-row">
-          <div class="live-bar-lbl">Quiz starts</div>
+          <div class="live-bar-lbl">Checkouts started</div>
           <div class="live-bar-track"><div class="live-bar-fill" id="lb-quiz" style="width:0%;background:#4A7A5A"></div></div>
           <div class="live-bar-cnt" id="lc-quiz">0</div>
         </div>
         <div class="live-bar-row">
-          <div class="live-bar-lbl">Email entries</div>
+          <div class="live-bar-lbl">Pay clicked</div>
           <div class="live-bar-track"><div class="live-bar-fill" id="lb-email" style="width:0%;background:#D4A843"></div></div>
           <div class="live-bar-cnt" id="lc-email">0</div>
         </div>
         <div class="live-bar-row">
-          <div class="live-bar-lbl">Checkouts</div>
+          <div class="live-bar-lbl">Purchased</div>
           <div class="live-bar-track"><div class="live-bar-fill" id="lb-checkout" style="width:0%;background:#E07A3A"></div></div>
           <div class="live-bar-cnt" id="lc-checkout">0</div>
         </div>
         <div class="live-bar-row">
-          <div class="live-bar-lbl">Purchases</div>
+          <div class="live-bar-lbl">Quiz done</div>
           <div class="live-bar-track"><div class="live-bar-fill" id="lb-purchase" style="width:0%;background:#2C4A35"></div></div>
           <div class="live-bar-cnt" id="lc-purchase">0</div>
         </div>
@@ -790,7 +790,7 @@ async function safeLoad(errId, fn) {
 
 async function loadFunnelAndMetrics(from, to, range) {
   const [funnelRows, liveRow] = await Promise.all([
-    phQuery(`SELECT event, uniq(distinct_id) as u FROM events WHERE event IN ('page_landed','quiz_started','quiz_completed','precheckout_email_entered','checkout_initiated','purchase_completed') AND ${range} GROUP BY event`),
+    phQuery(`SELECT event, uniq(distinct_id) as u FROM events WHERE event IN ('page_landed','checkout_initiated','payment_submitted','purchase_completed','quiz_submitted') AND ${range} GROUP BY event`),
     phQuery(`SELECT uniqIf(distinct_id, timestamp > now() - interval 3 minute), uniqIf(distinct_id, event='page_landed' AND ${range}), countIf(event='abandoned_cart_email_click' AND ${range}) FROM events`)
   ]);
 
@@ -803,12 +803,11 @@ async function loadFunnelAndMetrics(from, to, range) {
   }
 
   const steps = [
-    { key:'page_landed',               label:'Visited',     color:'#2C4A35' },
-    { key:'quiz_started',              label:'Quiz Start',  color:'#4A7A5A' },
-    { key:'quiz_completed',            label:'Quiz Done',   color:'#D4A843' },
-    { key:'precheckout_email_entered', label:'Email In',    color:'#E07A3A' },
-    { key:'checkout_initiated',        label:'Clicked Pay', color:'#C4860A' },
-    { key:'purchase_completed',        label:'Purchased',   color:'#1E3526' },
+    { key:'page_landed',       label:'Visited',        color:'#2C4A35' },
+    { key:'checkout_initiated',label:'Started Checkout',color:'#4A7A5A' },
+    { key:'payment_submitted', label:'Clicked Pay',    color:'#D4A843' },
+    { key:'purchase_completed',label:'Purchased',      color:'#E07A3A' },
+    { key:'quiz_submitted',    label:'Quiz Done',       color:'#1E3526' },
   ];
   const maxV  = Math.max(...steps.map(s=>map[s.key]||0), 1);
   const first = map[steps[0].key] || 1;
@@ -883,13 +882,12 @@ async function loadSources(range) {
 
 
 const FEED_EVENTS = {
-  page_landed:              { icon:'🌐', bg:'rgba(44,74,53,.6)',   label:'Visited the site' },
-  quiz_started:             { icon:'📝', bg:'rgba(74,122,90,.6)',  label:'Started the quiz' },
-  quiz_completed:           { icon:'✅', bg:'rgba(74,122,90,.6)',  label:'Completed the quiz' },
-  precheckout_email_entered:{ icon:'📧', bg:'rgba(212,168,67,.6)', label:'Entered their email' },
-  checkout_initiated:       { icon:'🛒', bg:'rgba(224,122,58,.6)', label:'Went to checkout' },
-  purchase_completed:       { icon:'🎉', bg:'rgba(30,53,38,.9)',   label:'Purchased' },
-  abandoned_cart_email_click:{ icon:'↩️',bg:'rgba(107,74,138,.6)', label:'Returned via cart email' },
+  page_landed:               { icon:'🌐', bg:'rgba(44,74,53,.6)',   label:'Visited the site' },
+  checkout_initiated:        { icon:'📧', bg:'rgba(212,168,67,.6)', label:'Started checkout' },
+  payment_submitted:         { icon:'💳', bg:'rgba(224,122,58,.6)', label:'Submitted payment' },
+  purchase_completed:        { icon:'🎉', bg:'rgba(30,53,38,.9)',   label:'Purchased' },
+  quiz_submitted:            { icon:'✅', bg:'rgba(74,122,90,.6)',  label:'Submitted quiz' },
+  abandoned_cart_email_click:{ icon:'↩️', bg:'rgba(107,74,138,.6)', label:'Returned via cart email' },
 };
 
 async function livePQ(sql) {
@@ -937,13 +935,13 @@ async function loadLivePanel() {
       toString(properties.\`$geoip_country_name\`) as cntry,
       timestamp
     FROM events
-    WHERE event IN ('page_landed','quiz_started','quiz_completed','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click')
+    WHERE event IN ('page_landed','checkout_initiated','payment_submitted','purchase_completed','quiz_submitted','abandoned_cart_email_click')
       AND timestamp >= now() - INTERVAL 6 HOUR
     ORDER BY timestamp DESC LIMIT 15`),
 
     livePQ(`SELECT event, count()
     FROM events
-    WHERE event IN ('quiz_started','precheckout_email_entered','checkout_initiated','purchase_completed','abandoned_cart_email_click')
+    WHERE event IN ('checkout_initiated','payment_submitted','purchase_completed','quiz_submitted','abandoned_cart_email_click')
       AND timestamp >= now() - INTERVAL 24 HOUR
     GROUP BY event`),
 
@@ -979,8 +977,8 @@ async function loadLivePanel() {
     const bm = {};
     barRows.forEach(([ev, cnt]) => { bm[ev] = +cnt; });
     const barMax = Math.max(...Object.values(bm), 1);
-    [['quiz_started','lb-quiz','lc-quiz'],['precheckout_email_entered','lb-email','lc-email'],
-     ['checkout_initiated','lb-checkout','lc-checkout'],['purchase_completed','lb-purchase','lc-purchase'],
+    [['checkout_initiated','lb-quiz','lc-quiz'],['payment_submitted','lb-email','lc-email'],
+     ['purchase_completed','lb-checkout','lc-checkout'],['quiz_submitted','lb-purchase','lc-purchase'],
      ['abandoned_cart_email_click','lb-cart','lc-cart']
     ].forEach(([ev, barId, cntId]) => {
       const v = bm[ev] || 0;

@@ -1174,6 +1174,52 @@ function showScreen(id) {
   if (el) el.classList.add('active');
   window.scrollTo(0, 0);
 }
+
+// ── TRACKING ─────────────────────────────────────
+function track(event, props) {
+  try { posthog.capture(event, props || {}); } catch(e) {}
+}
+
+// Fire purchase_completed once quiz_ready is confirmed
+const _origPoll = pollPurchaseStatus;
+pollPurchaseStatus = async function(attempt) {
+  await _origPoll(attempt);
+};
+
+// Patch showScreen to fire events at the right moments
+const _origShow = showScreen;
+showScreen = function(id) {
+  _origShow(id);
+  if (id === 'screen-quiz') {
+    track('purchase_completed');
+    if (purchaseEmail) try { posthog.identify(purchaseEmail); } catch(e) {}
+  }
+  if (id === 'screen-sending') {
+    track('quiz_submitted', { email: purchaseEmail });
+  }
+};
+</script>
+
+<script>
+  // PostHog
+  window._phq = [];
+  window.posthog = {
+    capture:  function(e,p){ window._phq.push(['capture',e,p]); },
+    identify: function(id,p){ window._phq.push(['identify',id,p]); },
+    register: function(){}, opt_out_capturing: function(){}
+  };
+  var _s = document.createElement('script');
+  _s.src = 'https://us-assets.i.posthog.com/static/array.js';
+  _s.crossOrigin = 'anonymous'; _s.defer = true;
+  _s.onload = function() {
+    posthog.init('phc_CXx2ezKhKjwXJWEWtShZgkYCf8q97VXgJEJ8GgaMiTUv', {
+      api_host: 'https://us.i.posthog.com',
+      session_recording: { maskAllInputs: true }
+    });
+    window._phq.forEach(function(e){ posthog[e[0]](e[1],e[2]); });
+    window._phq = [];
+  };
+  document.head.appendChild(_s);
 </script>
 
 </body>
