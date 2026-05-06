@@ -420,6 +420,34 @@ app.get('/api/admin/leads-by-email', async (req, res) => {
   }
 });
 
+// ─── ADMIN: TEST REMINDER EMAILS ─────────────────────────────────────────────
+
+app.post('/api/admin/test-reminder-email', async (req, res) => {
+  const { key, type } = req.body;
+  if (!key || key !== process.env.ADMIN_KEY) return res.status(401).json({ error: 'Unauthorized' });
+  if (!['1hr', '7d', 'both'].includes(type)) return res.status(400).json({ error: 'type must be 1hr, 7d, or both' });
+
+  const origin  = process.env.APP_URL || 'https://bond.coupleseducator.com';
+  const testTo  = 'ash@coupleseducator.com';
+  const fakePiId = 'pi_TEST_PREVIEW_EMAIL';
+
+  try {
+    const sent = [];
+    if (type === '1hr' || type === 'both') {
+      await sendClaimReminderEmail({ to: testTo, piId: fakePiId, type: '1hr', origin });
+      sent.push('1hr');
+    }
+    if (type === '7d' || type === 'both') {
+      await sendClaimReminderEmail({ to: testTo, piId: fakePiId, type: '7d', origin });
+      sent.push('7d');
+    }
+    res.json({ ok: true, sent, to: testTo });
+  } catch (err) {
+    console.error('Test reminder email error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── ADMIN: CUSTOMER SERVICE VIEW ────────────────────────────────────────────
 
 app.get('/api/admin/customer-service', async (req, res) => {

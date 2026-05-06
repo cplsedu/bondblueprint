@@ -198,44 +198,6 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
 .dd-anon{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #F5F0EA;color:#9A908A;font-size:12px}
 .dd-empty{color:#9A908A;font-size:13px;text-align:center;padding:32px 0}
 
-/* Heatmap Viewer */
-.heatmap-shell{background:linear-gradient(135deg,#0F1A10 0%,#1E3526 55%,#2C4A35 100%);border-radius:16px;padding:22px 24px;margin-top:14px}
-.heatmap-hdr{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
-.heatmap-title{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:#E07A3A}
-.heatmap-h2{font-size:17px;font-weight:800;color:#fff;margin-top:5px}
-.heatmap-sub{font-size:12px;color:rgba(255,255,255,.45);margin-top:4px}
-.heatmap-controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.hm-select{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);color:#fff;padding:8px 14px;border-radius:100px;font-size:12px;font-weight:700;outline:none;cursor:pointer}
-.hm-select option{background:#1E3526;color:#fff}
-.hm-btn{background:#E07A3A;color:#fff;border:none;border-radius:100px;padding:9px 20px;font-size:12px;font-weight:800;cursor:pointer;transition:background .15s;white-space:nowrap}
-.hm-btn:hover{background:#C4660A}
-.hm-btn:disabled{opacity:.4;cursor:default}
-.heatmap-stage{display:flex;gap:20px;align-items:flex-start;flex-wrap:wrap}
-.hm-phone-wrap{flex-shrink:0;position:relative}
-.hm-phone{width:320px;height:580px;border:3px solid rgba(255,255,255,.15);border-radius:28px;overflow:hidden;background:#0A0A0A;box-shadow:0 0 0 8px rgba(255,255,255,.04),0 20px 60px rgba(0,0,0,.5);position:relative}
-.hm-phone-notch{position:absolute;top:10px;left:50%;transform:translateX(-50%);width:80px;height:6px;background:rgba(255,255,255,.1);border-radius:3px;z-index:10;pointer-events:none}
-#hm-canvas{position:absolute;inset:0;width:100%;height:100%;cursor:crosshair}
-.hm-screen-label{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,.65);color:rgba(255,255,255,.6);font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;padding:3px 10px;border-radius:100px;white-space:nowrap;pointer-events:none}
-.hm-legend{flex:1;min-width:200px}
-.hm-legend-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:12px}
-.hm-legend-bar{height:10px;border-radius:5px;background:linear-gradient(90deg,rgba(0,0,255,0) 0%,rgba(0,200,255,.6) 25%,rgba(0,255,100,.7) 50%,rgba(255,200,0,.85) 75%,rgba(255,50,0,1) 100%);margin-bottom:6px}
-.hm-legend-labels{display:flex;justify-content:space-between;font-size:10px;font-weight:700;color:rgba(255,255,255,.3)}
-.hm-stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:18px}
-.hm-stat{background:rgba(255,255,255,.05);border-radius:10px;padding:12px 14px}
-.hm-stat-val{font-size:22px;font-weight:800;color:#fff;line-height:1}
-.hm-stat-lbl{font-size:10px;font-weight:600;color:rgba(255,255,255,.35);margin-top:3px}
-.hm-hot-list{margin-top:14px}
-.hm-hot-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:8px}
-.hm-hot-row{display:flex;align-items:center;gap:8px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.hm-hot-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.hm-hot-coord{font-size:11px;font-weight:700;color:rgba(255,255,255,.5);width:90px;flex-shrink:0}
-.hm-hot-bar{flex:1;height:4px;background:rgba(255,255,255,.07);border-radius:2px;overflow:hidden}
-.hm-hot-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,#E07A3A,#FF3322)}
-.hm-hot-cnt{font-size:11px;font-weight:800;color:rgba(255,255,255,.55);min-width:32px;text-align:right}
-.hm-empty{color:rgba(255,255,255,.35);font-size:13px;padding:28px 0;text-align:center}
-.hm-loading{color:rgba(255,255,255,.4);font-size:12px;font-weight:700;letter-spacing:1px;text-align:center;padding:40px 0;animation:pulse 1.5s infinite}
-.hm-clarity-note{margin-top:16px;padding:12px 16px;background:rgba(255,255,255,.05);border-radius:10px;font-size:11px;font-weight:600;color:rgba(255,255,255,.35);line-height:1.7}
-.hm-clarity-note a{color:#E07A3A;text-decoration:none}
 
 /* Customer Service */
 .cs-table{width:100%;border-collapse:collapse;font-size:13px}
@@ -493,60 +455,6 @@ body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;
     </div>
   </div>
 
-  <!-- Embedded Click Heatmap Viewer -->
-  <div class="heatmap-shell">
-    <div class="heatmap-hdr">
-      <div>
-        <div class="heatmap-title">Click Heatmap · Live</div>
-        <div class="heatmap-h2">Where Are People Clicking?</div>
-        <div class="heatmap-sub">Real click coordinates tracked across every screen — hottest zones in red</div>
-      </div>
-      <div class="heatmap-controls">
-        <select id="hm-screen" class="hm-select" onchange="renderHeatmap()">
-          <option value="screen-landing">Landing Page</option>
-          <option value="screen-gate">Email Gate</option>
-          <option value="screen-quiz">Quiz</option>
-          <option value="screen-results">Results</option>
-          <option value="screen-precheckout">Pre-Checkout</option>
-        </select>
-        <button class="hm-btn" onclick="renderHeatmap()" id="hm-load-btn">↻ Refresh</button>
-      </div>
-    </div>
-
-    <div class="heatmap-stage">
-      <!-- Phone frame with canvas overlay -->
-      <div class="hm-phone-wrap">
-        <div class="hm-phone">
-          <div class="hm-phone-notch"></div>
-          <canvas id="hm-canvas" width="314" height="574"></canvas>
-          <div class="hm-screen-label" id="hm-screen-label">LANDING PAGE</div>
-        </div>
-      </div>
-
-      <!-- Legend + stats panel -->
-      <div class="hm-legend">
-        <div class="hm-legend-title">Heat Intensity</div>
-        <div class="hm-legend-bar"></div>
-        <div class="hm-legend-labels"><span>None</span><span>Low</span><span>Med</span><span>High</span><span>Hot 🔥</span></div>
-
-        <div class="hm-stat-grid" id="hm-stats">
-          <div class="hm-stat"><div class="hm-stat-val" id="hm-total-clicks">—</div><div class="hm-stat-lbl">Total Clicks</div></div>
-          <div class="hm-stat"><div class="hm-stat-val" id="hm-unique-spots">—</div><div class="hm-stat-lbl">Unique Spots</div></div>
-          <div class="hm-stat"><div class="hm-stat-val" id="hm-hottest-zone">—</div><div class="hm-stat-lbl">Hottest Zone</div></div>
-          <div class="hm-stat"><div class="hm-stat-val" id="hm-top-count">—</div><div class="hm-stat-lbl">Clicks at Top Spot</div></div>
-        </div>
-
-        <div class="hm-hot-list" id="hm-hot-list">
-          <div class="hm-hot-title">Top Click Zones</div>
-          <div class="hm-empty" id="hm-canvas-status">Select a screen above — data loads automatically. Heatmap builds from real visitor clicks and may take a few minutes to appear after first visits.</div>
-        </div>
-
-        <div class="hm-clarity-note">
-          💡 Session recordings & scroll maps → <a href="https://clarity.microsoft.com" target="_blank">Microsoft Clarity</a> is already installed on your site (project <code style="font-size:10px">wkg1kh3v7r</code>). Click to view full replays.
-        </div>
-      </div>
-    </div>
-  </div>
 
 </div>
 </div>
@@ -625,8 +533,6 @@ function showDashboard() {
   document.getElementById('to-date').value   = todayStr();
   loadLivePanel();
   loadCustomerService();
-  // Auto-load heatmap for landing page on open
-  setTimeout(() => renderHeatmap(), 2000);
   refreshAll();
 }
 if (stored) loadConfig().then(ok => { if (ok) showDashboard(); });
@@ -871,157 +777,6 @@ async function loadClickMap(range) {
   }).join('');
 }
 
-// ── Click Heatmap ─────────────────────────────────────────────────────────────
-const SCREEN_LABELS = {
-  'screen-landing':     'LANDING PAGE',
-  'screen-gate':        'EMAIL GATE',
-  'screen-quiz':        'QUIZ',
-  'screen-results':     'RESULTS',
-  'screen-precheckout': 'PRE-CHECKOUT',
-};
-
-async function renderHeatmap() {
-  if (!PH_KEY || !PH_PID) return;
-  const screen  = document.getElementById('hm-screen').value;
-  const btn     = document.getElementById('hm-load-btn');
-  const canvas  = document.getElementById('hm-canvas');
-  const status  = document.getElementById('hm-canvas-status');
-  const ctx     = canvas.getContext('2d');
-
-  // Update screen label
-  document.getElementById('hm-screen-label').textContent = SCREEN_LABELS[screen] || screen;
-
-  // Show loading state
-  btn.disabled = true;
-  btn.textContent = 'Loading…';
-  status.className = 'hm-loading';
-  status.textContent = 'FETCHING CLICK DATA…';
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-  // Use date range from current range bar
-  const range = currentRange();
-
-  try {
-    // Bucket x/y into 5% cells so nearby clicks cluster together
-    const rows = await phQuery(`
-      SELECT
-        round(toFloat64OrZero(toString(properties.x)) / 5) * 5,
-        round(toFloat64OrZero(toString(properties.y)) / 5) * 5,
-        count()
-      FROM events
-      WHERE event = 'click_xy'
-        AND toString(properties.screen) = '${screen}'
-        AND ${range}
-      GROUP BY 1, 2
-      ORDER BY 3 DESC
-      LIMIT 200
-    `);
-
-    btn.disabled = false;
-    btn.textContent = 'Reload Heatmap';
-
-    if (!rows.length) {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      status.className = 'hm-empty';
-      status.textContent = 'No click data yet for this screen — data builds as visitors click around';
-      // Reset stats
-      ['hm-total-clicks','hm-unique-spots','hm-hottest-zone','hm-top-count'].forEach(id => {
-        document.getElementById(id).textContent = '—';
-      });
-      return;
-    }
-
-    // ── Draw heatmap on canvas ──────────────────────────────────────────────
-    const W = canvas.width;
-    const H = canvas.height;
-    ctx.clearRect(0, 0, W, H);
-
-    const maxHits = Math.max(...rows.map(r => Number(r[2])), 1);
-    const totalClicks = rows.reduce((s, r) => s + Number(r[2]), 0);
-
-    // Draw each cluster as a radial gradient blob
-    rows.forEach(([xb, yb, hits]) => {
-      const cx = (Number(xb) / 100) * W;
-      const cy = (Number(yb) / 100) * H;
-      const intensity = Number(hits) / maxHits;
-      const radius = Math.max(24, intensity * 60);
-
-      // Heat color: blue → cyan → green → yellow → red based on intensity
-      const heatColor = heatRGB(intensity);
-
-      const grad = ctx.createRadialGradient(cx, cy, 0, cx, cy, radius);
-      grad.addColorStop(0,   `rgba(${heatColor},${0.85 * intensity + 0.15})`);
-      grad.addColorStop(0.4, `rgba(${heatColor},${0.5  * intensity})`);
-      grad.addColorStop(1,   `rgba(${heatColor},0)`);
-
-      ctx.beginPath();
-      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.fillStyle = grad;
-      ctx.fill();
-    });
-
-    // Hot-spot cross-hair on top click
-    const [topX, topY, topHits] = rows[0];
-    const tx = (Number(topX) / 100) * W;
-    const ty = (Number(topY) / 100) * H;
-    ctx.strokeStyle = 'rgba(255,255,255,0.9)';
-    ctx.lineWidth = 1.5;
-    ctx.beginPath(); ctx.moveTo(tx-10, ty); ctx.lineTo(tx+10, ty); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(tx, ty-10); ctx.lineTo(tx, ty+10); ctx.stroke();
-    ctx.beginPath(); ctx.arc(tx, ty, 5, 0, Math.PI * 2); ctx.stroke();
-
-    // ── Update stats ────────────────────────────────────────────────────────
-    document.getElementById('hm-total-clicks').textContent  = n(totalClicks);
-    document.getElementById('hm-unique-spots').textContent  = n(rows.length);
-    document.getElementById('hm-hottest-zone').textContent  = `${Math.round(Number(topX))}%,${Math.round(Number(topY))}%`;
-    document.getElementById('hm-top-count').textContent     = n(Number(topHits));
-
-    // ── Hot zones list ───────────────────────────────────────────────────────
-    const top10 = rows.slice(0, 10);
-    const listMax = Number(top10[0]?.[2] || 1);
-    document.getElementById('hm-hot-list').innerHTML =
-      `<div class="hm-hot-title">Top Click Zones</div>` +
-      top10.map(([xb, yb, hits], i) => {
-        const pct  = Math.round(Number(hits) / listMax * 100);
-        const heat = heatRGB(Number(hits) / maxHits);
-        return `<div class="hm-hot-row">
-          <div class="hm-hot-dot" style="background:rgb(${heat})"></div>
-          <div class="hm-hot-coord">${Math.round(Number(xb))}% across, ${Math.round(Number(yb))}% down</div>
-          <div class="hm-hot-bar"><div class="hm-hot-fill" style="width:${pct}%"></div></div>
-          <div class="hm-hot-cnt">${n(Number(hits))}</div>
-        </div>`;
-      }).join('');
-
-    status.textContent = '';
-
-  } catch(e) {
-    btn.disabled = false;
-    btn.textContent = 'Retry Heatmap';
-    status.className = 'hm-empty';
-    status.textContent = 'Could not load heatmap: ' + e.message;
-    console.error('Heatmap error:', e);
-  }
-}
-
-function heatRGB(t) {
-  // Maps 0→1 through blue→cyan→green→yellow→red
-  t = Math.max(0, Math.min(1, t));
-  let r, g, b;
-  if (t < 0.25) {
-    const f = t / 0.25;
-    r = 0; g = Math.round(f * 200); b = 255;
-  } else if (t < 0.5) {
-    const f = (t - 0.25) / 0.25;
-    r = 0; g = Math.round(200 + f * 55); b = Math.round(255 * (1 - f));
-  } else if (t < 0.75) {
-    const f = (t - 0.5) / 0.25;
-    r = Math.round(f * 255); g = 255; b = 0;
-  } else {
-    const f = (t - 0.75) / 0.25;
-    r = 255; g = Math.round(255 * (1 - f)); b = 0;
-  }
-  return `${r},${g},${b}`;
-}
 
 function currentRange() {
   const { from, to } = getRange();
