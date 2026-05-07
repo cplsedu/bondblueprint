@@ -867,8 +867,9 @@ startCheckout = async function() {
   await _origStartCheckout();
   // If payment step is now visible, email was accepted
   if (document.getElementById('step-payment').style.display !== 'none') {
-    track('checkout_initiated', { email: (document.getElementById('email').value || '').trim() });
-    if (purchaseEmail) posthog.identify(purchaseEmail);
+    // Identify first so the event is recorded under their email, not an anonymous ID
+    if (purchaseEmail) try { posthog.identify(purchaseEmail); } catch(e) {}
+    track('checkout_initiated', { email: purchaseEmail });
   }
 };
 
