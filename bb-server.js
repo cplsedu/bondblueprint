@@ -8,6 +8,7 @@ const stripe      = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path        = require('path');
 
 const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent, getCustomerServiceData } = require('./lib/db');
+const VALID_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 const { sendBlueprintEmail, sendClaimReminderEmail } = require('./lib/email');
 const { generateBlueprintPdf }  = require('./lib/pdf');
 const { subscribeToConvertKit, tagSubscriber, removeTag } = require('./lib/marketing');
@@ -77,7 +78,7 @@ app.get('/v2/confirm', (req, res) => res.redirect('/confirm' + (req.search || ''
 app.post('/api/v2/checkout', checkoutLimiter, async (req, res) => {
   const { email } = req.body;
 
-  if (!email || !email.includes('@')) {
+  if (!email || !VALID_EMAIL_RE.test(email.trim())) {
     return res.status(400).json({ error: 'Valid email required' });
   }
 
@@ -153,7 +154,7 @@ app.get('/api/v2/config', (req, res) => {
 
 app.post('/api/v2/create-payment-intent', async (req, res) => {
   const { email } = req.body;
-  if (!email || !email.includes('@')) {
+  if (!email || !VALID_EMAIL_RE.test(email.trim())) {
     return res.status(400).json({ error: 'Valid email required' });
   }
   try {
@@ -320,7 +321,7 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
 app.post('/api/account', async (req, res) => {
   const { email, name, firstName, lastName, attachmentStyle, partnerStyle, quizData } = req.body;
 
-  if (!email || !email.includes('@')) {
+  if (!email || !VALID_EMAIL_RE.test(email.trim())) {
     return res.status(400).json({ error: 'Valid email required' });
   }
 
@@ -469,7 +470,7 @@ app.get('/api/admin/customer-service', async (req, res) => {
 
 app.get('/api/lead', async (req, res) => {
   const email = (req.query.email || '').trim().toLowerCase();
-  if (!email || !email.includes('@')) {
+  if (!email || !VALID_EMAIL_RE.test(email.trim())) {
     return res.status(400).json({ error: 'Valid email required' });
   }
   try {
@@ -501,7 +502,7 @@ app.get('/api/lead', async (req, res) => {
 app.post('/api/create-checkout', async (req, res) => {
   const { email, name, situation, attachmentStyle, partnerStyle } = req.body;
 
-  if (!email || !email.includes('@')) {
+  if (!email || !VALID_EMAIL_RE.test(email.trim())) {
     return res.status(400).json({ error: 'Valid email required' });
   }
 
@@ -953,7 +954,7 @@ app.post('/api/generate-blueprint', async (req, res) => {
 
 app.get('/api/test-flow', async (req, res) => {
   const email = req.query.email;
-  if (!email || !email.includes('@')) {
+  if (!email || !VALID_EMAIL_RE.test(email.trim())) {
     return res.status(400).send('Add ?email=your@email.com to the URL');
   }
 
