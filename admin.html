@@ -108,11 +108,8 @@ a{color:inherit}
 
   <!-- Actions -->
   <div class="action-bar">
-    <button class="action-btn orange" id="btn-abandoned" onclick="sendAbandonedReminders()">
-      📧 Send Abandoned Cart Reminders
-    </button>
     <button class="action-btn" onclick="loadAll()">↻ Refresh</button>
-    <span id="action-result" class="action-result"></span>
+    <span style="font-size:.82rem;color:#9A908A">📧 Reminders send automatically — 1hr &amp; 7-day nudges go out to anyone who bought but hasn't filled out their quiz yet.</span>
   </div>
 
   <!-- Unclaimed -->
@@ -224,35 +221,6 @@ function renderCustomerService(d) {
   }
 }
 
-async function sendAbandonedReminders() {
-  const btn = document.getElementById('btn-abandoned');
-  const res = document.getElementById('action-result');
-  btn.disabled = true;
-  res.textContent = 'Sending…';
-  res.className = 'action-result';
-  try {
-    const r = await fetch('/api/admin/send-abandoned-reminders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ key: adminKey })
-    });
-    const data = await r.json();
-    if (data.ok) {
-      res.textContent = data.count > 0
-        ? `✓ Sent ${data.count} reminder${data.count > 1 ? 's' : ''}`
-        : '✓ No new leads to remind right now';
-    } else {
-      res.textContent = 'Error: ' + (data.error || 'unknown');
-      res.className = 'action-result err';
-    }
-  } catch (e) {
-    res.textContent = 'Failed to send';
-    res.className = 'action-result err';
-  } finally {
-    btn.disabled = false;
-    setTimeout(() => { res.textContent = ''; }, 5000);
-  }
-}
 </script>
 </body>
 </html>

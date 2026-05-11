@@ -7,11 +7,11 @@ const helmet      = require('helmet');
 const stripe      = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path        = require('path');
 
-const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent, getCustomerServiceData, getAbandonedLeads, markAbandonedCartReminderSent } = require('./lib/db');
+const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent, getCustomerServiceData } = require('./lib/db');
 const VALID_EMAIL_RE  = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 // Set CONVERTKIT_ENABLED=true in Railway when Kit sequences are active again
 const KIT_ENABLED = process.env.CONVERTKIT_ENABLED === 'true';
-const { sendBlueprintEmail, sendClaimReminderEmail, sendAbandonedCartEmail } = require('./lib/email');
+const { sendBlueprintEmail, sendClaimReminderEmail } = require('./lib/email');
 const { generateBlueprintPdf }  = require('./lib/pdf');
 const { subscribeToConvertKit, tagSubscriber, removeTag } = require('./lib/marketing');
 
@@ -565,35 +565,7 @@ app.post('/api/admin/test-reminder-email', async (req, res) => {
   }
 });
 
-// ─── ADMIN: SEND ABANDONED CART REMINDERS ────────────────────────────────────
-// Sends a Resend email to leads who entered their email but never purchased.
-// Safe to call repeatedly — marks each lead so they're only emailed once.
 
-app.post('/api/admin/send-abandoned-reminders', async (req, res) => {
-  const { key } = req.body;
-  if (!key || key !== process.env.ADMIN_KEY) return res.status(401).json({ error: 'Unauthorized' });
-
-  const origin = process.env.APP_URL || 'https://bond.coupleseducator.com';
-  try {
-    const leads = await getAbandonedLeads();
-    const results = [];
-    for (const lead of leads) {
-      try {
-        await sendAbandonedCartEmail({ to: lead.email, origin });
-        await markAbandonedCartReminderSent(lead.email);
-        results.push({ email: lead.email, sent: true });
-        console.log(`📧 Abandoned cart reminder sent to ${lead.email}`);
-      } catch (err) {
-        results.push({ email: lead.email, sent: false, error: err.message });
-        console.warn(`Abandoned cart reminder failed for ${lead.email}:`, err.message);
-      }
-    }
-    res.json({ ok: true, count: results.filter(r => r.sent).length, results });
-  } catch (err) {
-    console.error('Abandoned cart reminders error:', err.message);
-    res.status(500).json({ error: err.message });
-  }
-});
 
 // ─── ADMIN: CUSTOMER SERVICE VIEW ────────────────────────────────────────────
 
