@@ -7,9 +7,11 @@ const helmet      = require('helmet');
 const stripe      = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path        = require('path');
 
-const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent, getCustomerServiceData } = require('./lib/db');
-const VALID_EMAIL_RE = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
-const { sendBlueprintEmail, sendClaimReminderEmail } = require('./lib/email');
+const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent, getCustomerServiceData, getAbandonedLeads, markAbandonedCartReminderSent } = require('./lib/db');
+const VALID_EMAIL_RE  = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
+// Set CONVERTKIT_ENABLED=true in Railway when Kit sequences are active again
+const KIT_ENABLED = process.env.CONVERTKIT_ENABLED === 'true';
+const { sendBlueprintEmail, sendClaimReminderEmail, sendAbandonedCartEmail } = require('./lib/email');
 const { generateBlueprintPdf }  = require('./lib/pdf');
 const { subscribeToConvertKit, tagSubscriber, removeTag } = require('./lib/marketing');
 
@@ -310,8 +312,8 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
       pdfBuffer
     }).catch(() => {});
 
-    removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
-    tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
+    if (KIT_ENABLED) removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+    if (KIT_ENABLED) tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
 
     console.log(`✅ V2 blueprint delivered to ${email} (session ${sessionId})`);
   } catch (err) {
@@ -362,7 +364,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
       name:  name || '',
       tags:  [process.env.CONVERTKIT_PAID_TAG_ID].filter(Boolean)
     }).catch(() => {});
-    removeTag({ email: cleanEmail, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+    if (KIT_ENABLED) removeTag({ email: cleanEmail, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
 
     const theme = resolveTheme(attachmentStyle, partnerStyle);
 
@@ -563,6 +565,36 @@ app.post('/api/admin/test-reminder-email', async (req, res) => {
   }
 });
 
+// ─── ADMIN: SEND ABANDONED CART REMINDERS ────────────────────────────────────
+// Sends a Resend email to leads who entered their email but never purchased.
+// Safe to call repeatedly — marks each lead so they're only emailed once.
+
+app.post('/api/admin/send-abandoned-reminders', async (req, res) => {
+  const { key } = req.body;
+  if (!key || key !== process.env.ADMIN_KEY) return res.status(401).json({ error: 'Unauthorized' });
+
+  const origin = process.env.APP_URL || 'https://bond.coupleseducator.com';
+  try {
+    const leads = await getAbandonedLeads();
+    const results = [];
+    for (const lead of leads) {
+      try {
+        await sendAbandonedCartEmail({ to: lead.email, origin });
+        await markAbandonedCartReminderSent(lead.email);
+        results.push({ email: lead.email, sent: true });
+        console.log(`📧 Abandoned cart reminder sent to ${lead.email}`);
+      } catch (err) {
+        results.push({ email: lead.email, sent: false, error: err.message });
+        console.warn(`Abandoned cart reminder failed for ${lead.email}:`, err.message);
+      }
+    }
+    res.json({ ok: true, count: results.filter(r => r.sent).length, results });
+  } catch (err) {
+    console.error('Abandoned cart reminders error:', err.message);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // ─── ADMIN: CUSTOMER SERVICE VIEW ────────────────────────────────────────────
 
 app.get('/api/admin/customer-service', async (req, res) => {
@@ -721,8 +753,8 @@ async function processCompletedCheckout(session) {
     await createPurchase({ email, stripeSessionId: sessionId, amountCents });
     await completePurchase({ stripeSessionId: sessionId, paymentIntent, blueprintData: { _pending: true, flow: 'v2' } });
     // Remove from abandoned cart sequence immediately — they paid, don't harass them
-    removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
-    tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
+    if (KIT_ENABLED) removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+    if (KIT_ENABLED) tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
     console.log(`✅ V2 payment recorded for ${email} (session ${sessionId}) — awaiting quiz`);
     return;
   }
@@ -780,8 +812,8 @@ async function processCompletedCheckout(session) {
   sendOwnerNotification({ email, name: name || lead?.name || '', attachmentStyle, partnerStyle, amountCents, lead, pdfBuffer }).catch(() => {});
 
   // ConvertKit: remove from abandoned cart sequence, add "paid" tag
-  removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
-  tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
+  if (KIT_ENABLED) removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+  if (KIT_ENABLED) tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
 
   console.log(`✅ Blueprint delivered to ${email} (session ${sessionId})`);
 }
@@ -809,8 +841,8 @@ async function processV2PaymentIntent(pi) {
     blueprintData:   { _pending: true, flow: 'v2' }
   });
   // Remove from abandoned cart sequence immediately — they paid
-  removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
-  tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
+  if (KIT_ENABLED) removeTag({ email, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+  if (KIT_ENABLED) tagSubscriber({ email, tagId: process.env.CONVERTKIT_PAID_TAG_ID }).catch(() => {});
   console.log(`✅ V2 payment intent recorded for ${email} (${piId}) — awaiting quiz`);
 }
 
@@ -826,12 +858,14 @@ async function generateBlueprint({ situation, who, theme, goal }) {
 
   const SYSTEM = `You are writing a personal relationship guide. Make it specific, validating, and actionable. Every sentence should feel like it was written about THIS person, not a generic relationship type.
 
-Write at a 5th grade reading level. Short sentences. Plain English. No jargon without immediate explanation.
+Write at a 5th grade reading level. Short sentences. Plain English. No jargon without immediate explanation. When you use a scientific term (like "nervous system," "attachment," "cortisol"), explain it in the next sentence in plain words.
 Mirror their exact words back. Use phrases they used. Make them feel seen, not analyzed.
 Never be clinical. Never be generic.
 Never use em-dashes (— or &mdash;). Use commas or periods instead.
 
-STRICT RULE — NO HALLUCINATION: Only reference events, behaviors, feelings, and details that the person explicitly wrote about in their situation text. If they did not mention pulling away, do not write about pulling away. If they did not mention a specific behavior, do not invent it. If their situation is brief or vague, write about what they DID say — do not fill in details they never provided. Every specific claim must trace back to their actual words.
+LANGUAGE RULE — NO ABSOLUTES OR COMMANDS: Never say "never do this," "you should stop," "you must," "don't ever," or any other commanding or absolute language. Instead, use soft research-based framing like "research suggests this tends to push people further away," "studies show this pattern often makes it harder to feel close," or "attachment science finds that this usually increases anxiety rather than reducing it." Keep it informational, not instructional. Make the reader feel curious, not judged.
+
+STRICT RULE — NO HALLUCINATION: Only reference events, behaviors, feelings, and details that the person explicitly wrote about in their situation text. If they did not mention pulling away, do not write about pulling away. If they did not mention a specific behavior, do not invent it. If their situation is brief or vague, write about what they DID say. Do not fill in details they never provided. Every specific claim must trace back to their actual words.
 
 STRICT RULE — USE THEIR EXACT LANGUAGE FOR PEOPLE: The person may be writing about a boyfriend, girlfriend, husband, wife, situationship, someone they are seeing, someone outside their relationship, or multiple people at once. Do not assume it is one person or a traditional partner. Refer to the people in their situation exactly the way they referred to them. If they said "he," use "he." If they named someone, use that name. If they mentioned two different people, keep them distinct. Never replace their words with generic labels like "your partner" if that is not what they wrote.
 
@@ -893,10 +927,10 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
     "A longer-term action for building what they actually want."
   ],
   "avoid": [
-    "Most important thing to stop. Specific to their situation. Start with Stop or Do not. Under 12 words.",
-    "Second pattern to stop, different type.",
-    "Something they probably do not realize is making it worse.",
-    "A subtle one most people miss."
+    "Most important pattern that tends to backfire. Specific to their situation. Start with 'Research shows...' or 'Studies suggest...' or 'Attachment science finds...'. Under 18 words.",
+    "Second pattern, different type. Same soft framing. No commands.",
+    "Something they probably do not realize tends to make it harder. Framed as a research finding.",
+    "A subtle one most people miss. Gentle, curious tone."
   ],
   "plan": [
     "Day 1: [specific action tied to their situation]",
