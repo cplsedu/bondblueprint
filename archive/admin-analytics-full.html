@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>BondBlueprint™ Analytics</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;background:#F7F3EE;color:#1E1E1E;min-height:100vh}
+
+.topbar{background:linear-gradient(135deg,#0F1A10 0%,#1E3526 55%,#2C4A35 100%);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.topbar-brand{font-size:10px;letter-spacing:3px;color:#E07A3A;font-weight:800;text-transform:uppercase;white-space:nowrap}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.last-updated{color:rgba(255,255,255,.35);font-size:11px;font-weight:600}
+.refresh-btn{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;padding:6px 14px;border-radius:100px;font-size:12px;font-weight:700;cursor:pointer}
+.refresh-btn:hover{background:rgba(255,255,255,.2)}
+
+/* Login */
+.login-wrap{display:flex;align-items:center;justify-content:center;min-height:85vh}
+.login-card{background:#fff;border-radius:16px;padding:40px;border:1.5px solid #DDD7CE;width:100%;max-width:360px;text-align:center}
+.login-card h2{font-size:20px;font-weight:800;margin-bottom:6px}
+.login-card p{font-size:14px;color:#6B6560;margin-bottom:24px}
+.login-input{width:100%;padding:12px 16px;border:1.5px solid #DDD7CE;border-radius:100px;font-size:15px;outline:none;margin-bottom:12px;text-align:center;letter-spacing:3px}
+.login-input:focus{border-color:#E07A3A}
+.btn-login{background:#E07A3A;color:#fff;border:none;border-radius:100px;padding:13px 32px;font-size:15px;font-weight:700;cursor:pointer;width:100%}
+.btn-login:hover{background:#C4860A}
+.login-error{color:#E07A3A;font-size:13px;margin-top:10px;display:none}
+
+/* Layout */
+.container{max-width:1140px;margin:0 auto;padding:24px 20px}
+.section-title{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:#9A908A;margin:28px 0 14px;display:flex;align-items:center;gap:10px}
+.section-title::after{content:'';flex:1;height:1px;background:#DDD7CE}
+.section-title:first-child{margin-top:0}
+
+/* Date bar — shared, controls everything */
+.date-bar{background:#fff;border-radius:14px;padding:14px 18px;border:1.5px solid #DDD7CE;margin-bottom:20px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.preset-btn{padding:6px 14px;border-radius:100px;border:1.5px solid #DDD7CE;background:#F7F3EE;font-size:12px;font-weight:700;cursor:pointer;color:#5A5450;transition:all .15s}
+.preset-btn:hover,.preset-btn.active{background:#E07A3A;color:#fff;border-color:#E07A3A}
+.date-input{padding:6px 14px;border-radius:100px;border:1.5px solid #DDD7CE;font-size:12px;font-weight:600;outline:none;background:#F7F3EE;color:#1E1E1E}
+.date-input:focus{border-color:#E07A3A}
+.apply-btn{padding:6px 18px;border-radius:100px;border:none;background:#2C4A35;color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin-left:auto}
+.apply-btn:hover{background:#1E3526}
+
+/* Panel Headers */
+.panel-header{border-radius:14px;padding:20px 24px;margin:32px 0 18px;display:flex;align-items:center;justify-content:space-between;gap:16px}
+.panel-header:first-child{margin-top:0}
+.panel-header-sales{background:linear-gradient(135deg,#0F1A10 0%,#1E3526 100%);border:1.5px solid #2C4A35}
+.panel-header-cs{background:linear-gradient(135deg,#1A1008 0%,#2E1C08 100%);border:1.5px solid #4A3010}
+.panel-header-tag{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px}
+.panel-header-title{font-size:18px;font-weight:800;color:#fff;line-height:1.2}
+.panel-header-sub{font-size:12px;color:rgba(255,255,255,.4);margin-top:4px}
+
+/* Benchmark */
+.benchmark-table{width:100%;border-collapse:collapse;font-size:12px;margin-top:2px}
+.benchmark-table th{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#9A908A;padding:6px 10px 8px;text-align:left;border-bottom:1.5px solid #EEE8E0}
+.benchmark-table th.r,.benchmark-table td.r{text-align:right}
+.benchmark-table td{padding:8px 10px;border-bottom:1px solid #F5F0EA;font-weight:600;color:#1E1E1E}
+.benchmark-table tr:last-child td{border-bottom:none}
+.benchmark-row-hero td{background:#F7F3EE}
+.vs-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 10px;border-radius:100px}
+.vs-above{background:#E8F0E9;color:#2C4A35}
+.vs-below{background:#FEF0E8;color:#E07A3A}
+.vs-at{background:#F5F0EA;color:#9A908A}
+.benchmark-footer{margin-top:12px;padding:10px 14px;background:#F7F3EE;border-radius:10px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.benchmark-footer-label{font-size:11px;font-weight:700;color:#6B6560}
+
+/* Metric cards */
+.metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:20px}
+.metric-card{background:#fff;border-radius:14px;padding:18px 20px;border:1.5px solid #DDD7CE}
+.metric-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#9A908A;margin-bottom:6px}
+.metric-value{font-size:30px;font-weight:800;line-height:1;color:#1E1E1E}
+.metric-value.orange{color:#E07A3A}
+.metric-value.green{color:#2C4A35}
+.metric-value.teal{color:#4A7A5A}
+.metric-sub{font-size:11px;font-weight:600;color:#9A908A;margin-top:4px}
+.live-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#4A7A5A;margin-right:4px;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+
+/* Cards */
+.card{background:#fff;border-radius:14px;padding:20px 22px;border:1.5px solid #DDD7CE;margin-bottom:14px}
+.card-title{font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#9A908A;margin-bottom:16px}
+.chart-wrap{position:relative;height:210px}
+
+/* Grid */
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:20px}
+@media(max-width:700px){.two-col,.three-col{grid-template-columns:1fr}}
+
+/* Funnel */
+.funnel-steps{display:flex;align-items:flex-end;gap:2px;height:180px;margin-top:4px}
+.funnel-step{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:pointer;border-radius:8px;transition:background .15s}
+.funnel-step:hover{background:rgba(0,0,0,.03)}
+.funnel-step:hover .funnel-name{color:#E07A3A}
+.funnel-bar{width:100%;border-radius:6px 6px 0 0;min-height:4px}
+.funnel-meta{text-align:center;padding-top:8px}
+.funnel-num{font-size:15px;font-weight:800;color:#1E1E1E}
+.funnel-pct{font-size:11px;font-weight:700;color:#E07A3A;margin-top:1px}
+.funnel-name{font-size:10px;font-weight:700;color:#9A908A;text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
+.funnel-arrow{flex:0 0 16px;display:flex;align-items:center;justify-content:center;padding-bottom:55px;color:#DDD7CE;font-size:16px}
+
+/* Quiz bars */
+.quiz-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+.quiz-qlabel{font-size:11px;font-weight:700;color:#9A908A;width:24px;text-align:right;flex-shrink:0}
+.quiz-track{flex:1;height:18px;background:#F0EBE4;border-radius:4px;overflow:hidden}
+.quiz-fill{height:100%;background:linear-gradient(90deg,#2C4A35,#4A7A5A);border-radius:4px;display:flex;align-items:center;padding-left:7px;transition:width .5s}
+.quiz-fill-label{font-size:10px;font-weight:800;color:#fff;white-space:nowrap}
+.quiz-count{font-size:11px;font-weight:700;color:#9A908A;width:38px;text-align:right;flex-shrink:0}
+
+/* Style bars */
+.style-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F0EBE4}
+.style-row:last-child{border-bottom:none}
+.style-name{font-size:13px;font-weight:700;flex:1}
+.style-bar-bg{flex:2;height:8px;background:#F0EBE4;border-radius:100px;overflow:hidden}
+.style-bar-fill{height:100%;border-radius:100px;background:#E07A3A}
+.style-count{font-size:13px;font-weight:800;min-width:28px;text-align:right}
+
+/* Source rows */
+.source-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #F0EBE4}
+.source-row:last-child{border-bottom:none}
+.source-name{font-size:13px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.source-bar-bg{width:70px;height:5px;background:#F0EBE4;border-radius:100px;overflow:hidden}
+.source-bar-fill{height:100%;background:#2C4A35;border-radius:100px}
+.source-count{font-size:13px;font-weight:800;color:#2C4A35;min-width:28px;text-align:right}
+
+/* Activity */
+.activity-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #F0EBE4}
+.activity-row:last-child{border-bottom:none}
+.activity-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.activity-text{font-size:13px;font-weight:600;flex:1}
+.activity-id{color:#9A908A;font-weight:400}
+.activity-time{font-size:11px;color:#9A908A;white-space:nowrap}
+
+/* Purchases */
+.purchase-row{display:flex;align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid #F0EBE4}
+.purchase-row:last-child{border-bottom:none}
+.purchase-email{font-size:13px;font-weight:600;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.purchase-date{font-size:11px;color:#9A908A;font-weight:600;flex-shrink:0}
+.purchase-amount{font-size:14px;font-weight:800;color:#2C4A35;flex-shrink:0}
+
+.empty{color:#9A908A;font-size:13px;padding:16px 0;text-align:center}
+.error-note{font-size:11px;color:#E07A3A;margin-top:6px}
+#main-content{display:none}
+
+/* Page Behavior */
+.scroll-row,.click-row,.tq-row{display:flex;align-items:center;gap:8px;padding:4px 0}
+.scroll-label,.click-label,.tq-label{font-size:11px;font-weight:700;color:#1E1E1E;width:56px;flex-shrink:0}
+.click-label{width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tq-label{width:88px}
+.scroll-bar-bg,.click-bar-bg,.tq-bar-bg{flex:1;height:8px;background:#F0EBE4;border-radius:4px;overflow:hidden}
+.scroll-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#4A7A5A,#2C4A35)}
+.click-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#E07A3A,#C4660A)}
+.tq-bar-fill{height:100%;border-radius:4px;background:linear-gradient(90deg,#D4A843,#B08820)}
+.scroll-count,.click-count,.tq-count{font-size:11px;font-weight:800;color:#9A908A;min-width:32px;text-align:right}
+.scroll-pct{font-size:10px;font-weight:700;color:#4A7A5A;min-width:32px;text-align:right}
+
+/* LIVE PANEL */
+.live-panel{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#0F1A10;border-radius:16px;overflow:hidden;margin-bottom:14px;border:1.5px solid #1E3526;min-height:420px}
+.live-left{padding:22px 24px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.live-right{background:#0A1208;padding:22px 24px;display:flex;flex-direction:column;gap:10px;overflow:hidden;min-height:0}
+.live-hdr{display:flex;align-items:center;gap:8px}
+.live-pulse{width:8px;height:8px;border-radius:50%;background:#4ACA5A;box-shadow:0 0 0 0 rgba(74,202,90,.4);animation:lpulse 2s infinite;flex-shrink:0}
+@keyframes lpulse{0%{box-shadow:0 0 0 0 rgba(74,202,90,.5)}70%{box-shadow:0 0 0 10px rgba(74,202,90,0)}100%{box-shadow:0 0 0 0 rgba(74,202,90,0)}}
+.live-hdr-txt{font-size:9px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,.35)}
+.live-active{margin:0}
+.live-active-val{font-size:40px;font-weight:800;color:#fff;line-height:1}
+.live-active-lbl{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);margin-top:3px}
+.live-bars-wrap{display:flex;flex-direction:column;gap:7px}
+.live-bars-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:2px}
+.live-bar-row{display:flex;align-items:center;gap:8px}
+.live-bar-lbl{font-size:10px;font-weight:700;color:rgba(255,255,255,.45);width:78px;flex-shrink:0}
+.live-bar-track{flex:1;height:5px;background:rgba(255,255,255,.07);border-radius:3px;overflow:hidden}
+.live-bar-fill{height:100%;border-radius:3px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.live-bar-cnt{font-size:11px;font-weight:800;color:rgba(255,255,255,.6);min-width:20px;text-align:right}
+.live-feed-wrap{flex:1;min-height:0;overflow:hidden}
+.live-feed-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.3);margin-bottom:7px}
+.lf-item{display:flex;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04);animation:lfIn .35s ease}
+@keyframes lfIn{from{opacity:0;transform:translateY(-5px)}to{opacity:1;transform:translateY(0)}}
+.lf-icon{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;flex-shrink:0}
+.lf-text{font-size:11px;font-weight:600;color:rgba(255,255,255,.65);line-height:1.3;flex:1;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.lf-time{font-size:10px;color:rgba(255,255,255,.28);flex-shrink:0}
+.globe-corner{position:absolute;bottom:14px;left:0;right:0;text-align:center;font-size:8px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,.15);pointer-events:none}
+@media(max-width:700px){.live-panel{grid-template-columns:1fr}}
+
+/* Funnel Drilldown Drawer */
+.dd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:900;display:none}
+.dd-drawer{position:fixed;top:0;right:0;bottom:0;width:420px;max-width:95vw;background:#fff;z-index:901;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);display:flex;flex-direction:column;box-shadow:-8px 0 60px rgba(0,0,0,.18)}
+.dd-drawer.open{transform:translateX(0)}
+.dd-head{padding:20px 22px 16px;border-bottom:1.5px solid #EEE8E0;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.dd-title{font-size:13px;font-weight:800;color:#1E1E1E}
+.dd-subtitle{font-size:11px;font-weight:600;color:#9A908A;margin-top:2px}
+.dd-close{width:30px;height:30px;border-radius:50%;border:1.5px solid #DDD7CE;background:#F7F3EE;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:#9A908A;flex-shrink:0}
+.dd-close:hover{background:#DDD7CE}
+.dd-body{flex:1;overflow-y:auto;padding:16px 22px}
+.dd-loading{color:#9A908A;font-size:13px;text-align:center;padding:40px 0}
+.dd-person{display:flex;align-items:flex-start;gap:12px;padding:12px 0;border-bottom:1px solid #F5F0EA}
+.dd-person:last-child{border-bottom:none}
+.dd-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#2C4A35,#4A7A5A);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#fff;flex-shrink:0}
+.dd-info{flex:1;min-width:0}
+.dd-name{font-size:13px;font-weight:800;color:#1E1E1E;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dd-email{font-size:11px;font-weight:600;color:#9A908A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:1px}
+.dd-styles{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.dd-tag{font-size:9px;font-weight:800;letter-spacing:.5px;text-transform:uppercase;padding:2px 8px;border-radius:100px}
+.dd-my{background:#E8F0E9;color:#2C4A35}
+.dd-pt{background:#FEF0E8;color:#C4660A}
+.dd-time{font-size:10px;font-weight:600;color:#9A908A;flex-shrink:0;text-align:right;margin-top:2px}
+.dd-anon{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #F5F0EA;color:#9A908A;font-size:12px}
+.dd-empty{color:#9A908A;font-size:13px;text-align:center;padding:32px 0}
+
+
+/* Customer Service */
+.cs-table{width:100%;border-collapse:collapse;font-size:13px}
+.cs-table th{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#9A908A;padding:7px 10px 9px;text-align:left;border-bottom:1.5px solid #EEE8E0}
+.cs-table td{padding:9px 10px;border-bottom:1px solid #F5F0EA;font-weight:600;color:#1E1E1E;vertical-align:middle}
+.cs-table tr:last-child td{border-bottom:none}
+.cs-table .email-cell{font-weight:600;color:#1E1E1E;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cs-table .date-cell{font-size:11px;color:#9A908A;white-space:nowrap}
+.cs-table .days-cell{font-size:12px;font-weight:800;color:#E07A3A}
+.cs-table .style-cell{font-size:12px;font-weight:700}
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:800;padding:3px 9px;border-radius:100px;white-space:nowrap}
+.badge-sent{background:#E8F0E9;color:#2C4A35}
+.badge-pending{background:#F5F0EA;color:#9A908A}
+.badge-delivered{background:#E8F0E9;color:#2C4A35}
+.badge-waiting{background:#FEF0E8;color:#E07A3A}
+.badge-style-AA{background:#FEF0E8;color:#C4660A}
+.badge-style-DA{background:#EAF0FE;color:#3060C4}
+.badge-style-FA{background:#F5EAF5;color:#7A3090}
+.badge-style-SA{background:#E8F0E9;color:#2C4A35}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-brand">BONDBLUEPRINT™ &nbsp;·&nbsp; Analytics</div>
+  <div class="topbar-right">
+    <span class="last-updated" id="last-updated"></span>
+    <button class="refresh-btn" onclick="refreshAll()">↻ Refresh</button>
+  </div>
+</div>
+
+<!-- Login -->
+<div id="login-section">
+  <div class="login-wrap">
+    <div class="login-card">
+      <h2>Admin Access</h2>
+      <p>Enter your admin key to view analytics</p>
+      <input class="login-input" type="password" id="key-input" placeholder="••••••••" autocomplete="off">
+      <button class="btn-login" onclick="login()">Enter Dashboard</button>
+      <div class="login-error" id="login-error">Incorrect key — try again.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Dashboard -->
+<div id="main-content">
+<div class="container">
+
+  <!-- Shared date range bar — controls everything -->
+  <div class="date-bar">
+    <button class="preset-btn active" onclick="setPresetToday(this)">Today</button>
+    <button class="preset-btn" onclick="setPreset(7,this)">Last 7 days</button>
+    <button class="preset-btn" onclick="setPreset(30,this)">Last 30 days</button>
+    <button class="preset-btn" onclick="setPreset(90,this)">Last 90 days</button>
+    <button class="preset-btn" onclick="setPresetMonth(this)">This month</button>
+    <button class="preset-btn" onclick="setPresetAll(this)">All time</button>
+    <span style="color:#DDD7CE;padding:0 2px">|</span>
+    <input class="date-input" type="date" id="from-date">
+    <span style="color:#9A908A;font-size:12px;font-weight:600">to</span>
+    <input class="date-input" type="date" id="to-date">
+    <button class="apply-btn" onclick="refreshAll()">Apply</button>
+  </div>
+
+  <!-- ══ SALES ANALYTICS ══════════════════════════════════════ -->
+  <div class="panel-header panel-header-sales">
+    <div>
+      <div class="panel-header-tag" style="color:#4ACA5A">● Sales Analytics</div>
+      <div class="panel-header-title">Revenue &amp; Conversions</div>
+      <div class="panel-header-sub">Who's visiting, who's buying — filtered by date range above</div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric-card"><div class="metric-label">Visitors</div><div class="metric-value" id="m-visitors">—</div><div class="metric-sub">Landed on the page</div></div>
+    <div class="metric-card"><div class="metric-label">Leads</div><div class="metric-value" id="m-leads">—</div><div class="metric-sub">Entered email at checkout</div></div>
+    <div class="metric-card"><div class="metric-label">Purchases</div><div class="metric-value orange" id="m-purchases">—</div><div class="metric-sub">Completed sales</div></div>
+    <div class="metric-card"><div class="metric-label">Revenue</div><div class="metric-value green" id="m-revenue">—</div><div class="metric-sub">Total earned</div></div>
+    <div class="metric-card"><div class="metric-label">Conversion</div><div class="metric-value teal" id="m-conversion">—</div><div class="metric-sub">Visitor → purchase</div></div>
+    <div class="metric-card"><div class="metric-label">Avg Order</div><div class="metric-value" id="m-aov">—</div><div class="metric-sub">Per purchase</div></div>
+  </div>
+
+  <!-- ── Live Panel ── -->
+  <div class="live-panel">
+    <div class="live-left">
+      <div class="live-hdr">
+        <div class="live-pulse"></div>
+        <div class="live-hdr-txt">Live · Updates every 30s · ~60s delay</div>
+        <div id="ph-status" style="margin-left:auto;font-size:9px;font-weight:800;letter-spacing:1px;padding:3px 9px;border-radius:100px;background:rgba(255,255,255,.07);color:rgba(255,255,255,.3)">CONNECTING…</div>
+      </div>
+      <div style="display:flex;gap:14px;align-items:flex-start">
+        <div class="live-active">
+          <div class="live-active-val" id="m-live">—</div>
+          <div class="live-active-lbl">Active last 10 min</div>
+        </div>
+        <div class="live-active">
+          <div class="live-active-val" id="m-live-hour" style="font-size:28px">—</div>
+          <div class="live-active-lbl">Visited last hour</div>
+        </div>
+      </div>
+      <div class="live-bars-wrap">
+        <div class="live-bars-title">Today's activity</div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Checkouts started</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-quiz" style="width:0%;background:#4A7A5A"></div></div>
+          <div class="live-bar-cnt" id="lc-quiz">0</div>
+        </div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Pay clicked</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-email" style="width:0%;background:#D4A843"></div></div>
+          <div class="live-bar-cnt" id="lc-email">0</div>
+        </div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Purchased</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-checkout" style="width:0%;background:#E07A3A"></div></div>
+          <div class="live-bar-cnt" id="lc-checkout">0</div>
+        </div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Quiz done</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-purchase" style="width:0%;background:#2C4A35"></div></div>
+          <div class="live-bar-cnt" id="lc-purchase">0</div>
+        </div>
+        <div class="live-bar-row">
+          <div class="live-bar-lbl">Cart returns</div>
+          <div class="live-bar-track"><div class="live-bar-fill" id="lb-cart" style="width:0%;background:#6B4A8A"></div></div>
+          <div class="live-bar-cnt" id="lc-cart" id="m-clickback">0</div>
+        </div>
+      </div>
+      <!-- Where they're coming from -->
+      <div>
+        <div class="live-bars-title">Where they're coming from today</div>
+        <div id="live-sources" style="display:flex;flex-direction:column;gap:5px"><div style="font-size:10px;color:rgba(255,255,255,.2)">Loading…</div></div>
+      </div>
+
+    </div>
+    <div class="live-right">
+      <div class="live-feed-title">Recent events · Last 6 hours</div>
+      <div id="live-feed" style="flex:1;overflow-y:auto;min-height:0"></div>
+      <div id="live-error" style="display:none;font-size:11px;color:#E07A3A;margin-top:8px;line-height:1.5"></div>
+    </div>
+  </div>
+  <!-- hidden span for clickback count (still used internally) -->
+  <div style="display:none">
+    <span id="m-clickback"></span>
+  </div>
+
+  <div class="card">
+    <div class="card-title" style="display:flex;align-items:center;justify-content:space-between">
+      Conversion Funnel
+      <span style="font-size:9px;font-weight:600;color:#9A908A;letter-spacing:0;text-transform:none">Events take ~60s to appear — hit ↻ Refresh if you just tested</span>
+    </div>
+    <div class="funnel-steps" id="funnel"><div class="empty">Loading…</div></div>
+    <div id="funnel-error" class="error-note"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Revenue Over Time</div>
+    <div class="chart-wrap"><canvas id="revenue-chart"></canvas></div>
+  </div>
+
+  <div class="two-col">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Traffic Sources</div>
+      <div id="sources"><div class="empty">Loading…</div></div>
+      <div id="sources-error" class="error-note"></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Recent Purchases</div>
+      <div id="recent-purchases"><div class="empty">Loading…</div></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Baseline Benchmark · Pre-BondBlueprint (Stan Store)</div>
+    <table class="benchmark-table">
+      <thead>
+        <tr>
+          <th>Product</th><th class="r">Views</th><th class="r">Orders</th><th class="r">Conv %</th><th class="r">Revenue</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="benchmark-row-hero">
+          <td><strong>The Pull-Away Antidote</strong> <span style="font-size:10px;color:#E07A3A;font-weight:700;margin-left:4px">← predecessor</span></td>
+          <td class="r">495</td><td class="r">28</td><td class="r" style="font-weight:800;color:#2C4A35">5.3%</td><td class="r" style="font-weight:800;color:#2C4A35">$532</td>
+        </tr>
+        <tr><td>Stop The Rollercoaster</td><td class="r">100</td><td class="r">3</td><td class="r">3.0%</td><td class="r">$57</td></tr>
+        <tr><td>Book a 1:1 Call with Me</td><td class="r">17</td><td class="r">1</td><td class="r">5.9%</td><td class="r">$50</td></tr>
+        <tr><td>Stop Fighting &amp; Start Connecting!</td><td class="r">15</td><td class="r">2</td><td class="r">13.3%</td><td class="r">$38</td></tr>
+        <tr><td>The Relationship PIP</td><td class="r">17</td><td class="r">1</td><td class="r">5.9%</td><td class="r">$19</td></tr>
+      </tbody>
+    </table>
+    <div class="benchmark-footer">
+      <div class="benchmark-footer-label">BondBlueprint target: beat <strong style="color:#2C4A35">5.3%</strong> visitor → purchase conversion</div>
+      <div id="vs-baseline"><span class="vs-badge vs-at">—</span></div>
+    </div>
+  </div>
+
+  <!-- ══ CUSTOMER SUCCESS ═══════════════════════════════════════ -->
+  <div class="panel-header panel-header-cs">
+    <div>
+      <div class="panel-header-tag" style="color:#E07A3A">● Customer Success</div>
+      <div class="panel-header-title">Post-Purchase Journey</div>
+      <div class="panel-header-sub">Who completed the quiz, who's still waiting, and who received their blueprint</div>
+    </div>
+  </div>
+
+  <div class="metrics">
+    <div class="metric-card"><div class="metric-label">Total Purchased</div><div class="metric-value" id="cs-total">—</div><div class="metric-sub">All time</div></div>
+    <div class="metric-card"><div class="metric-label">Quiz Done</div><div class="metric-value green" id="cs-claimed">—</div><div class="metric-sub">Completed the quiz</div></div>
+    <div class="metric-card"><div class="metric-label">Quiz Pending</div><div class="metric-value orange" id="cs-unclaimed">—</div><div class="metric-sub">Haven't filled it out</div></div>
+    <div class="metric-card"><div class="metric-label">Delivered</div><div class="metric-value teal" id="cs-delivered">—</div><div class="metric-sub">Blueprint emailed</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Attachment Style Breakdown</div>
+      <div id="style-breakdown"><div class="empty">Loading…</div></div>
+    </div>
+    <div class="card" style="margin-bottom:0">
+      <div class="card-title">Top Clicks · What people are tapping</div>
+      <div id="click-map"><div class="empty">Loading…</div></div>
+      <div id="click-error" class="error-note"></div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:14px">
+    <div class="card-title">Quiz Pending — paid but haven't filled out the quiz yet</div>
+    <div id="cs-unclaimed-table"><div class="empty">Loading…</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">Quiz Completed — quiz submitted &amp; blueprint sent</div>
+    <div id="cs-claimed-table"><div class="empty">Loading…</div></div>
+  </div>
+
+</div>
+</div>
+
+<!-- Funnel Drilldown Drawer -->
+<div class="dd-overlay" id="dd-overlay" onclick="closeDrilldown()"></div>
+<div class="dd-drawer" id="dd-drawer">
+  <div class="dd-head">
+    <div>
+      <div class="dd-title" id="dd-title">Funnel Step</div>
+      <div class="dd-subtitle" id="dd-subtitle">People who reached this step</div>
+    </div>
+    <button class="dd-close" onclick="closeDrilldown()">✕</button>
+  </div>
+  <div class="dd-body" id="dd-body">
+    <div class="dd-loading">Loading…</div>
+  </div>
+</div>
+
+<script>
+let PH_KEY       = '';
+let PH_PID       = '';
+let adminKey     = '';
+let revenueChart = null;
+
+// ── Auth ──────────────────────────────────────────────────────────────────────
+function login() {
+  const k = document.getElementById('key-input').value.trim();
+  if (!k) return;
+  fetch(`/api/admin/config?key=${encodeURIComponent(k)}`)
+    .then(r => { if (r.status === 401) { document.getElementById('login-error').style.display='block'; return null; } return r.json(); })
+    .then(cfg => {
+      if (!cfg) return;
+      adminKey = k;
+      PH_KEY   = cfg.phKey;
+      PH_PID   = cfg.phPid;
+      localStorage.setItem('bb_admin_key', k);
+      showDashboard();
+    });
+}
+document.getElementById('key-input').addEventListener('keydown', e => { if (e.key==='Enter') login(); });
+
+const stored = localStorage.getItem('bb_admin_key');
+if (stored) adminKey = stored;
+
+async function loadConfig() {
+  if (!adminKey) return false;
+  const r = await fetch(`/api/admin/config?key=${encodeURIComponent(adminKey)}`);
+  if (r.status === 401) { localStorage.removeItem('bb_admin_key'); location.reload(); return false; }
+  const cfg = await r.json();
+  PH_KEY = cfg.phKey;
+  PH_PID = cfg.phPid;
+  return true;
+}
+
+// ── Date helpers ──────────────────────────────────────────────────────────────
+// Use local calendar date (not UTC) so "Today" matches your clock, not London's
+function localDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function todayStr()    { return localDateStr(new Date()); }
+function daysAgoStr(n) { const d=new Date(); d.setDate(d.getDate()-n); return localDateStr(d); }
+function getRange()    { return { from: document.getElementById('from-date').value, to: document.getElementById('to-date').value }; }
+
+function clearPresets() { document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active')); }
+function setPresetToday(btn)     { clearPresets(); btn.classList.add('active'); document.getElementById('from-date').value=todayStr(); document.getElementById('to-date').value=todayStr(); refreshAll(); }
+function setPreset(days, btn)    { clearPresets(); btn.classList.add('active'); document.getElementById('from-date').value=daysAgoStr(days-1); document.getElementById('to-date').value=todayStr(); refreshAll(); }
+function setPresetMonth(btn)     { clearPresets(); btn.classList.add('active'); const n=new Date(); document.getElementById('from-date').value=`${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-01`; document.getElementById('to-date').value=todayStr(); refreshAll(); }
+function setPresetAll(btn)       { clearPresets(); btn.classList.add('active'); document.getElementById('from-date').value='2024-01-01'; document.getElementById('to-date').value=todayStr(); refreshAll(); }
+
+// ── Show dashboard ─────────────────────────────────────────────────────────────
+function showDashboard() {
+  document.getElementById('login-section').style.display = 'none';
+  document.getElementById('main-content').style.display  = 'block';
+  document.getElementById('from-date').value = todayStr();
+  document.getElementById('to-date').value   = todayStr();
+  loadLivePanel();
+  loadCustomerService();
+  refreshAll();
+}
+if (stored) loadConfig().then(ok => { if (ok) showDashboard(); });
+
+// ── Refresh all — one date range controls both sections ───────────────────────
+function refreshAll() {
+  const { from, to } = getRange();
+  if (!from || !to) return;
+  loadSupabase(from, to);
+  loadPostHog(from, to);
+  loadCustomerService();
+  document.getElementById('last-updated').textContent = 'Updated ' + new Date().toLocaleTimeString();
+}
+
+// ── Customer Service ──────────────────────────────────────────────────────────
+function loadCustomerService() {
+  fetch(`/api/admin/customer-service?key=${encodeURIComponent(adminKey)}`)
+    .then(r => { if (r.status===401) { localStorage.removeItem('bb_admin_key'); location.reload(); return null; } return r.json(); })
+    .then(data => { if (data) renderCustomerService(data); })
+    .catch(() => {});
+}
+
+const STYLE_LABELS = { AA:'Anxious', DA:'Avoidant', FA:'Fearful-Avoidant', SA:'Secure', '':'Unknown' };
+function styleLabel(code) { return STYLE_LABELS[code] || code || 'Unknown'; }
+function styleBadge(code) {
+  if (!code) return '<span class="badge badge-pending">—</span>';
+  return `<span class="badge badge-style-${code}">${styleLabel(code)}</span>`;
+}
+function fmtDate(iso) {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+}
+
+function renderCustomerService(d) {
+  const s = d.summary || {};
+  document.getElementById('cs-total').textContent     = s.totalPurchased ?? '—';
+  document.getElementById('cs-unclaimed').textContent = s.unclaimed       ?? '—';
+  document.getElementById('cs-claimed').textContent   = s.claimed         ?? '—';
+  document.getElementById('cs-delivered').textContent = s.emailsDelivered ?? '—';
+
+  // Unclaimed table
+  const unEl = document.getElementById('cs-unclaimed-table');
+  if (!d.unclaimed || d.unclaimed.length === 0) {
+    unEl.innerHTML = '<div class="empty">No unclaimed purchases 🎉</div>';
+  } else {
+    let rows = '';
+    d.unclaimed.forEach(p => {
+      const days = p.daysWaiting === 0 ? 'Today' : p.daysWaiting === 1 ? '1 day' : `${p.daysWaiting} days`;
+      rows += `<tr>
+        <td class="email-cell">${p.email}</td>
+        <td class="date-cell">${fmtDate(p.purchaseDate)}</td>
+        <td class="days-cell">${days}</td>
+        <td>${p.r1Sent ? '<span class="badge badge-sent">✓ Sent</span>' : '<span class="badge badge-pending">Not sent</span>'}</td>
+        <td>${p.r7Sent ? '<span class="badge badge-sent">✓ Sent</span>' : '<span class="badge badge-pending">Not sent</span>'}</td>
+      </tr>`;
+    });
+    unEl.innerHTML = `<table class="cs-table">
+      <thead><tr>
+        <th>Email</th>
+        <th>Purchase Date</th>
+        <th>Days Waiting</th>
+        <th>1-Hr Reminder</th>
+        <th>7-Day Reminder</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+
+  // Claimed table
+  const clEl = document.getElementById('cs-claimed-table');
+  if (!d.claimed || d.claimed.length === 0) {
+    clEl.innerHTML = '<div class="empty">No claimed purchases yet</div>';
+  } else {
+    let rows = '';
+    d.claimed.forEach(p => {
+      rows += `<tr>
+        <td class="email-cell">${p.email}</td>
+        <td class="date-cell">${fmtDate(p.purchaseDate)}</td>
+        <td>${styleBadge(p.attachmentStyle)}</td>
+        <td>${styleBadge(p.partnerStyle)}</td>
+        <td>${p.delivered ? '<span class="badge badge-delivered">✓ Delivered</span>' : '<span class="badge badge-waiting">Pending</span>'}</td>
+      </tr>`;
+    });
+    clEl.innerHTML = `<table class="cs-table">
+      <thead><tr>
+        <th>Email</th>
+        <th>Purchase Date</th>
+        <th>Their Style</th>
+        <th>Partner Style</th>
+        <th>Blueprint</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+  }
+}
+
+// ── Supabase ──────────────────────────────────────────────────────────────────
+function loadSupabase(from, to) {
+  fetch(`/api/admin/stats?key=${encodeURIComponent(adminKey)}&from=${from}&to=${to}`)
+    .then(r => { if (r.status===401) { localStorage.removeItem('bb_admin_key'); location.reload(); return null; } return r.json(); })
+    .then(data => { if (data) renderSupabase(data); });
+}
+
+function fmt$(c) { return '$'+(c/100).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,','); }
+function n(v)    { return v==null ? '0' : Number(v).toLocaleString(); }
+
+const BASELINE_CONV = 5.3; // Pull-Away Antidote on Stan — predecessor to this funnel
+
+function renderSupabase(d) {
+  document.getElementById('m-leads').textContent     = n(d.leads);
+  document.getElementById('m-purchases').textContent = n(d.purchases);
+  document.getElementById('m-revenue').textContent   = fmt$(d.revenue);
+  document.getElementById('m-conversion').textContent= d.conversionRate+'%';
+  document.getElementById('m-aov').textContent       = d.avgOrderValue ? fmt$(d.avgOrderValue) : '—';
+
+  // Live vs-baseline badge
+  const vsEl = document.getElementById('vs-baseline');
+  if (vsEl && d.leads >= 5) { // need enough data for the % to be meaningful
+    const current = parseFloat(d.conversionRate);
+    const delta   = (current - BASELINE_CONV).toFixed(1);
+    const sign    = delta >= 0 ? '+' : '';
+    const cls     = delta >= 0.5 ? 'vs-above' : delta <= -0.5 ? 'vs-below' : 'vs-at';
+    const arrow   = delta >= 0.5 ? '▲' : delta <= -0.5 ? '▼' : '≈';
+    vsEl.innerHTML = `<span class="vs-badge ${cls}">${arrow} ${sign}${delta}% vs ${BASELINE_CONV}% baseline</span>`;
+  } else if (vsEl) {
+    vsEl.innerHTML = `<span class="vs-badge vs-at">Need more data</span>`;
+  }
+
+  renderRevenueChart(d.dailyStats);
+  renderStyles(d.styleBreakdown);
+  renderPurchases(d.recentPurchases);
+}
+
+function renderRevenueChart(daily) {
+  const labels  = daily.map(d => d.date.slice(5));
+  const revenue = daily.map(d => d.revenue/100);
+  const leads   = daily.map(d => d.leads);
+  if (revenueChart) revenueChart.destroy();
+  const ctx = document.getElementById('revenue-chart').getContext('2d');
+  revenueChart = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [
+      { label:'Revenue ($)', data:revenue, backgroundColor:'rgba(224,122,58,0.75)', borderRadius:4, yAxisID:'y' },
+      { label:'Leads', data:leads, type:'line', borderColor:'#2C4A35', backgroundColor:'rgba(44,74,53,0.08)', tension:0.3, pointRadius:3, pointBackgroundColor:'#2C4A35', yAxisID:'y2', fill:true }
+    ]},
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      interaction:{ mode:'index', intersect:false },
+      plugins:{ legend:{ labels:{ font:{weight:'700',size:11}, boxWidth:10 } } },
+      scales: {
+        x:  { grid:{display:false}, ticks:{font:{size:10,weight:'600'},color:'#9A908A',maxTicksLimit:14} },
+        y:  { position:'left',  grid:{color:'#F0EBE4'}, ticks:{font:{size:10,weight:'600'},color:'#9A908A',callback:v=>'$'+v.toFixed(0)} },
+        y2: { position:'right', grid:{display:false},   ticks:{font:{size:10,weight:'600'},color:'#2C4A35',stepSize:1} }
+      }
+    }
+  });
+}
+
+function renderStyles(breakdown) {
+  const el = document.getElementById('style-breakdown');
+  if (!breakdown?.length) { el.innerHTML='<div class="empty">No data</div>'; return; }
+  const max = Math.max(...breakdown.map(s=>s.count));
+  el.innerHTML = breakdown.map(s=>`
+    <div class="style-row">
+      <div class="style-name">${s.style}</div>
+      <div class="style-bar-bg"><div class="style-bar-fill" style="width:${Math.round(s.count/max*100)}%"></div></div>
+      <div class="style-count">${s.count}</div>
+    </div>`).join('');
+}
+
+function renderPurchases(list) {
+  const el = document.getElementById('recent-purchases');
+  if (!list?.length) { el.innerHTML='<div class="empty">No purchases yet</div>'; return; }
+  el.innerHTML = list.map(p=>`
+    <div class="purchase-row">
+      <div class="purchase-email">${p.email}</div>
+      <div class="purchase-date">${p.date}</div>
+      <div class="purchase-amount">${fmt$(p.amount)}</div>
+    </div>`).join('');
+}
+
+// ── PostHog — all queries respect from/to ─────────────────────────────────────
+async function phQuery(sql) {
+  const r = await fetch(`https://us.posthog.com/api/projects/${PH_PID}/query/`, {
+    method:'POST',
+    headers:{ Authorization:`Bearer ${PH_KEY}`, 'Content-Type':'application/json' },
+    body:JSON.stringify({ query:{ kind:'HogQLQuery', query:sql } })
+  });
+  if (!r.ok) throw new Error(`PostHog ${r.status}`);
+  return (await r.json()).results || [];
+}
+
+function phRange(from, to) {
+  // Parse as LOCAL midnight/end-of-day, then convert to UTC for PostHog.
+  // new Date('YYYY-MM-DDT00:00:00') (no Z) = local midnight → .toISOString() = UTC.
+  // This means EST users get the correct local day, not a UTC-shifted one.
+  const start = new Date(`${from}T00:00:00`).toISOString().replace('T',' ').slice(0,19);
+  const end   = new Date(`${to}T23:59:59`).toISOString().replace('T',' ').slice(0,19);
+  return `timestamp >= '${start}' AND timestamp <= '${end}'`;
+}
+
+function ago(ts) {
+  const m = Math.floor((Date.now()-new Date(ts))/60000);
+  if (m<1) return 'just now';
+  if (m<60) return m+'m ago';
+  const h=Math.floor(m/60);
+  if (h<24) return h+'h ago';
+  return Math.floor(h/24)+'d ago';
+}
+
+async function loadPostHog(from, to) {
+  const range = phRange(from, to);
+  await Promise.all([
+    safeLoad('funnel-error',  () => loadFunnelAndMetrics(from, to, range)),
+    safeLoad('quiz-error',    () => loadQuizDropoff(range)),
+    safeLoad('sources-error', () => loadSources(range)),
+    safeLoad('click-error',   () => loadClickMap(range)),
+  ]);
+}
+
+async function loadClickMap(range) {
+  const rows = await phQuery(`
+    SELECT
+      coalesce(nullIf(toString(properties.\`$el_text\`),''), nullIf(toString(properties.\`$el_class\`),''), toString(properties.\`$el_tag\`)) as elem,
+      count() as clicks
+    FROM events
+    WHERE event='$autocapture' AND toString(properties.\`$event_type\`)='click' AND ${range}
+    AND elem != '' AND elem != 'null'
+    GROUP BY elem ORDER BY clicks DESC LIMIT 20
+  `);
+  const el = document.getElementById('click-map');
+  if (!rows.length) { el.innerHTML='<div class="empty">No click data yet — starts accumulating now that autocapture is enabled</div>'; return; }
+  const maxV = rows[0]?.[1] || 1;
+  el.innerHTML = rows.map(([elem, clicks]) => {
+    const label = String(elem).slice(0, 40);
+    const pct = Math.round(clicks / maxV * 100);
+    return `<div class="click-row">
+      <div class="click-label" title="${String(elem)}">${label}</div>
+      <div class="click-bar-bg"><div class="click-bar-fill" style="width:${pct}%"></div></div>
+      <div class="click-count">${n(clicks)}</div>
+    </div>`;
+  }).join('');
+}
+
+
+function currentRange() {
+  const { from, to } = getRange();
+  return phRange(from, to);
+}
+
+async function safeLoad(errId, fn) {
+  try { await fn(); }
+  catch(e) { console.error(e); const el=document.getElementById(errId); if(el) el.textContent='Could not load: '+e.message; }
+}
+
+async function loadFunnelAndMetrics(from, to, range) {
+  const [funnelRows, liveRow] = await Promise.all([
+    phQuery(`SELECT event, uniq(distinct_id) as u FROM events WHERE event IN ('page_landed','checkout_initiated','payment_submitted','purchase_completed','quiz_submitted') AND ${range} GROUP BY event`),
+    phQuery(`SELECT uniqIf(distinct_id, timestamp > now() - interval 3 minute), uniqIf(distinct_id, event='page_landed' AND ${range}), countIf(event='abandoned_cart_email_click' AND ${range}) FROM events`)
+  ]);
+
+  const map = {};
+  funnelRows.forEach(([e,u]) => { map[e]=u; });
+
+  if (liveRow.length) {
+    document.getElementById('m-visitors').textContent  = n(liveRow[0][1]);
+    document.getElementById('m-clickback').textContent = n(liveRow[0][2]);
+  }
+
+  const steps = [
+    { key:'page_landed',       label:'Visited',        color:'#2C4A35' },
+    { key:'checkout_initiated',label:'Started Checkout',color:'#4A7A5A' },
+    { key:'payment_submitted', label:'Clicked Pay',    color:'#D4A843' },
+    { key:'purchase_completed',label:'Purchased',      color:'#E07A3A' },
+    { key:'quiz_submitted',    label:'Quiz Done',       color:'#1E3526' },
+  ];
+  const maxV  = Math.max(...steps.map(s=>map[s.key]||0), 1);
+  const first = map[steps[0].key] || 1;
+  let html = '';
+  steps.forEach((s,i) => {
+    const val = map[s.key]||0;
+    const pct = i===0 ? 100 : Math.round(val/first*100);
+    const h   = Math.max(Math.round(val/maxV*150), 4);
+    if (i>0) html += `<div class="funnel-arrow">›</div>`;
+    html += `<div class="funnel-step" onclick="openFunnelStep('${s.key}', '${s.label}')">
+      <div class="funnel-bar" style="height:${h}px;background:${s.color}30;border-top:3px solid ${s.color}"></div>
+      <div class="funnel-meta">
+        <div class="funnel-num">${n(val)}</div>
+        <div class="funnel-pct">${pct}%</div>
+        <div class="funnel-name">${s.label}</div>
+      </div>
+    </div>`;
+  });
+  document.getElementById('funnel').innerHTML = html;
+}
+
+async function loadQuizDropoff(range) {
+  const rows = await phQuery(`
+    SELECT maxQ, count() as sessions FROM (
+      SELECT properties.$session_id as sid, max(toIntOrZero(toString(properties.question_number))) as maxQ
+      FROM events WHERE event='quiz_question_viewed' AND ${range} GROUP BY sid
+    ) WHERE maxQ > 0 GROUP BY maxQ ORDER BY maxQ ASC
+  `);
+  const el = document.getElementById('quiz-bars');
+  if (!rows.length) { el.innerHTML='<div class="empty">No quiz data in this range</div>'; return; }
+  const byMax={};
+  rows.forEach(([maxQ,cnt]) => { byMax[maxQ]=cnt; });
+  const totalQ=Math.max(...rows.map(r=>r[0]));
+  const cumulative=[];
+  for (let q=1; q<=totalQ; q++) {
+    let reached=0;
+    for (let m=q; m<=totalQ; m++) reached+=byMax[m]||0;
+    cumulative.push([q,reached]);
+  }
+  const maxV=cumulative[0]?.[1]||1;
+  el.innerHTML=cumulative.map(([qn,u],i)=>{
+    const pct=Math.round(u/maxV*100);
+    const dropPct=i===0?null:Math.round((1-u/cumulative[i-1][1])*100);
+    return `<div class="quiz-row">
+      <div class="quiz-qlabel">Q${qn}</div>
+      <div class="quiz-track"><div class="quiz-fill" style="width:${pct}%">${pct>20?`<span class="quiz-fill-label">${pct}%</span>`:''}</div></div>
+      <div class="quiz-count">${n(u)}${dropPct>0?`<span style="color:#E07A3A;font-size:9px;display:block">-${dropPct}%</span>`:''}</div>
+    </div>`;
+  }).join('');
+}
+
+async function loadSources(range) {
+  const rows = await phQuery(`
+    SELECT coalesce(nullIf(nullIf(properties.$referring_domain,''),'$direct'),'Direct') as src, uniq(distinct_id) as u
+    FROM events WHERE event='page_landed' AND ${range} GROUP BY src ORDER BY u DESC LIMIT 8
+  `);
+  const el=document.getElementById('sources');
+  if (!rows.length) { el.innerHTML='<div class="empty">No data in this range</div>'; return; }
+  const maxV=rows[0][1];
+  el.innerHTML=rows.map(([src,u])=>{
+    const pct=Math.round(u/maxV*100);
+    const label=src.length>32?src.slice(0,32)+'…':src;
+    return `<div class="source-row">
+      <div class="source-name">${label}</div>
+      <div class="source-bar-bg"><div class="source-bar-fill" style="width:${pct}%"></div></div>
+      <div class="source-count">${n(u)}</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Live Panel ────────────────────────────────────────────────────────────────
+
+
+const FEED_EVENTS = {
+  page_landed:               { icon:'🌐', bg:'rgba(44,74,53,.6)',   label:'Visited the site' },
+  checkout_initiated:        { icon:'📧', bg:'rgba(212,168,67,.6)', label:'Started checkout' },
+  payment_submitted:         { icon:'💳', bg:'rgba(224,122,58,.6)', label:'Submitted payment' },
+  purchase_completed:        { icon:'🎉', bg:'rgba(30,53,38,.9)',   label:'Purchased' },
+  quiz_submitted:            { icon:'✅', bg:'rgba(74,122,90,.6)',  label:'Submitted quiz' },
+  abandoned_cart_email_click:{ icon:'↩️', bg:'rgba(107,74,138,.6)', label:'Returned via cart email' },
+};
+
+async function livePQ(sql) {
+  // Thin wrapper — returns [] on any error so callers never throw
+  try {
+    return await phQuery(sql);
+  } catch(e) {
+    console.warn('live sub-query failed:', e.message, '\nSQL:', sql);
+    return null; // null = failed, [] = succeeded but empty
+  }
+}
+
+async function loadLivePanel() {
+  if (!PH_KEY) {
+    setPhStatus(false, 'NO API KEY');
+    const errEl = document.getElementById('live-error');
+    if (errEl) { errEl.style.display='block'; errEl.textContent='⚠ POSTHOG_PERSONAL_KEY or POSTHOG_PROJECT_ID not set in Railway → Variables.'; }
+    return;
+  }
+
+  // ── 1. Active counts (simplest possible — runs first, sets LIVE status) ──────
+  const liveRows = await livePQ(
+    `SELECT uniqIf(distinct_id, timestamp > now() - interval 10 minute), uniq(distinct_id)
+     FROM events WHERE timestamp > now() - interval 60 minute`
+  );
+  if (liveRows === null) {
+    setPhStatus(false, 'API ERROR');
+    const errEl = document.getElementById('live-error');
+    if (errEl) {
+      errEl.style.display = 'block';
+      errEl.textContent = '⚠ PostHog query returned an error. Make sure POSTHOG_PERSONAL_KEY and POSTHOG_PROJECT_ID are correct in Railway → Variables.';
+    }
+    return;
+  }
+  setPhStatus(true, 'LIVE');
+  document.getElementById('live-error').style.display = 'none';
+  document.getElementById('m-live').textContent      = n(liveRows[0]?.[0] || 0);
+  document.getElementById('m-live-hour').textContent = n(liveRows[0]?.[1] || 0);
+
+  // ── 2–4. Non-critical queries — run in parallel, fail silently ───────────────
+  const [actRows, barRows, srcRows] = await Promise.all([
+
+    livePQ(`SELECT event,
+      toString(properties.\`$geoip_city_name\`) as city,
+      toString(properties.\`$geoip_country_name\`) as cntry,
+      timestamp
+    FROM events
+    WHERE event IN ('page_landed','checkout_initiated','payment_submitted','purchase_completed','quiz_submitted','abandoned_cart_email_click')
+      AND timestamp >= now() - INTERVAL 6 HOUR
+    ORDER BY timestamp DESC LIMIT 15`),
+
+    livePQ(`SELECT event, count()
+    FROM events
+    WHERE event IN ('checkout_initiated','payment_submitted','purchase_completed','quiz_submitted','abandoned_cart_email_click')
+      AND timestamp >= now() - INTERVAL 24 HOUR
+    GROUP BY event`),
+
+    livePQ(`SELECT
+      coalesce(nullIf(nullIf(toString(properties.\`$referring_domain\`),''),'$direct'), 'Direct / Unknown') as src,
+      count() as visits
+    FROM events
+    WHERE event = 'page_landed'
+      AND timestamp >= now() - INTERVAL 24 HOUR
+    GROUP BY src ORDER BY visits DESC LIMIT 6`)
+  ]);
+
+  // Activity feed
+  const feedEl = document.getElementById('live-feed');
+  if (feedEl) {
+    if (actRows?.length) {
+      feedEl.innerHTML = actRows.map(([ev, city, cntry, ts]) => {
+        const cfg = FEED_EVENTS[ev] || { icon:'📍', bg:'rgba(255,255,255,.1)', label: ev };
+        const loc = (city && city !== 'null') ? (city + (cntry && cntry !== 'null' ? ', '+cntry : '')) : '';
+        return `<div class="lf-item">
+          <div class="lf-icon" style="background:${cfg.bg}">${cfg.icon}</div>
+          <div class="lf-text">${cfg.label}${loc ? ' · '+loc : ''}</div>
+          <div class="lf-time">${ago(ts)}</div>
+        </div>`;
+      }).join('');
+    } else {
+      feedEl.innerHTML = `<div style="font-size:11px;color:rgba(255,255,255,.25);padding:8px 0">No activity in the last 6 hours</div>`;
+    }
+  }
+
+  // Animated bars (today's counts)
+  if (barRows?.length) {
+    const bm = {};
+    barRows.forEach(([ev, cnt]) => { bm[ev] = +cnt; });
+    const barMax = Math.max(...Object.values(bm), 1);
+    [['checkout_initiated','lb-quiz','lc-quiz'],['payment_submitted','lb-email','lc-email'],
+     ['purchase_completed','lb-checkout','lc-checkout'],['quiz_submitted','lb-purchase','lc-purchase'],
+     ['abandoned_cart_email_click','lb-cart','lc-cart']
+    ].forEach(([ev, barId, cntId]) => {
+      const v = bm[ev] || 0;
+      const el = document.getElementById(barId);
+      const ce = document.getElementById(cntId);
+      if (el) el.style.width = Math.round(v/barMax*100)+'%';
+      if (ce) ce.textContent = v;
+    });
+  }
+
+  // Traffic sources (where visitors are coming from today)
+  const srcEl = document.getElementById('live-sources');
+  if (srcEl) {
+    if (srcRows?.length) {
+      const srcMax = Math.max(...srcRows.map(r => +r[1]), 1);
+      const SOURCE_ICONS = {
+        'instagram': '📸', 'tiktok': '🎵', 'facebook': '👥', 'google': '🔍',
+        'pinterest': '📌', 'twitter': '🐦', 'youtube': '▶️', 'linkedin': '💼',
+        'direct': '🔗', 'unknown': '🔗'
+      };
+      srcEl.innerHTML = srcRows.map(([src, visits]) => {
+        const label = String(src).length > 28 ? String(src).slice(0,28)+'…' : String(src);
+        const icon = SOURCE_ICONS[Object.keys(SOURCE_ICONS).find(k => String(src).toLowerCase().includes(k)) || 'direct'] || '🌐';
+        const pct = Math.round(+visits / srcMax * 100);
+        return `<div class="live-bar-row">
+          <div class="live-bar-lbl" style="width:110px;font-size:10px">${icon} ${label}</div>
+          <div class="live-bar-track"><div class="live-bar-fill" style="width:${pct}%;background:linear-gradient(90deg,#4A8ACA,#2C5A8A)"></div></div>
+          <div class="live-bar-cnt">${n(+visits)}</div>
+        </div>`;
+      }).join('');
+    } else {
+      srcEl.innerHTML = `<div style="font-size:10px;color:rgba(255,255,255,.2)">No visitor data yet today</div>`;
+    }
+  }
+}
+
+function setPhStatus(ok, label) {
+  const el = document.getElementById('ph-status');
+  if (!el) return;
+  el.textContent = label;
+  el.style.background = ok ? 'rgba(74,202,90,.15)' : 'rgba(224,122,58,.15)';
+  el.style.color = ok ? '#4ACA5A' : '#E07A3A';
+}
+
+// Auto-refresh live panel every 30s (always "right now"), funnel every 60s
+setInterval(() => { if (adminKey) loadLivePanel(); }, 30000);
+setInterval(() => {
+  if (!adminKey) return;
+  const {from,to} = getRange();
+  if (from && to) safeLoad('funnel-error', () => loadFunnelAndMetrics(from, to, phRange(from, to)));
+}, 60000);
+
+// ── Funnel Drilldown ──────────────────────────────────────────────────────────
+async function openFunnelStep(eventKey, label) {
+  document.getElementById('dd-title').textContent    = label;
+  document.getElementById('dd-subtitle').textContent = 'Loading…';
+  document.getElementById('dd-body').innerHTML       = '<div class="dd-loading">Fetching visitors…</div>';
+  document.getElementById('dd-overlay').style.display = 'block';
+  document.getElementById('dd-drawer').classList.add('open');
+
+  try {
+    const { from, to } = getRange();
+    const range = phRange(from, to);
+
+    const rows = await phQuery(`
+      SELECT distinct_id, max(timestamp) as last_seen
+      FROM events
+      WHERE event = '${eventKey}' AND ${range}
+      GROUP BY 1 ORDER BY 2 DESC LIMIT 50
+    `);
+
+    if (!rows.length) {
+      document.getElementById('dd-subtitle').textContent = '0 people';
+      document.getElementById('dd-body').innerHTML = '<div class="dd-empty">No one reached this step in the selected date range.</div>';
+      return;
+    }
+
+    document.getElementById('dd-subtitle').textContent = `${rows.length} ${rows.length===1?'person':'people'}`;
+
+    // Split identified (email) vs anonymous
+    const emailRows = rows.filter(r => String(r[0]).includes('@') && String(r[0]).includes('.'));
+    const anonCount = rows.length - emailRows.length;
+    const emails    = emailRows.map(r => String(r[0]));
+
+    // Fetch Supabase lead details
+    let leadMap = {};
+    if (emails.length) {
+      try {
+        const resp = await fetch(`/api/admin/leads-by-email?key=${encodeURIComponent(adminKey)}&emails=${encodeURIComponent(emails.join(','))}`);
+        if (resp.ok) {
+          const leads = await resp.json();
+          leads.forEach(l => { leadMap[l.email.toLowerCase()] = l; });
+        }
+      } catch(_) {}
+    }
+
+    let html = '';
+    emailRows.forEach(([id, ts]) => {
+      const lead = leadMap[id.toLowerCase()] || {};
+      const init = (lead.name || id).trim()[0]?.toUpperCase() || '?';
+      html += `<div class="dd-person">
+        <div class="dd-avatar">${init}</div>
+        <div class="dd-info">
+          <div class="dd-name">${lead.name || '—'}</div>
+          <div class="dd-email">${id}</div>
+          <div class="dd-styles">
+            ${lead.attachmentStyle ? `<span class="dd-tag dd-my">${lead.attachmentStyle}</span>` : ''}
+            ${lead.partnerStyle    ? `<span class="dd-tag dd-pt">Partner: ${lead.partnerStyle}</span>` : ''}
+          </div>
+        </div>
+        <div class="dd-time">${ts ? ago(ts) : ''}</div>
+      </div>`;
+    });
+
+    if (anonCount > 0) {
+      html += `<div class="dd-anon">
+        <span style="font-size:18px">👤</span>
+        <div style="font-size:12px;font-weight:600;color:#9A908A">${anonCount} anonymous visitor${anonCount>1?'s':''} (no email yet)</div>
+      </div>`;
+    }
+
+    document.getElementById('dd-body').innerHTML = html || '<div class="dd-empty">No lead data found.</div>';
+  } catch(err) {
+    console.error('Drilldown error:', err);
+    document.getElementById('dd-body').innerHTML = `<div class="dd-empty">Could not load: ${err.message}</div>`;
+  }
+}
+
+function closeDrilldown() {
+  document.getElementById('dd-overlay').style.display = 'none';
+  document.getElementById('dd-drawer').classList.remove('open');
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeDrilldown(); });
+</script>
+</body>
+</html>
