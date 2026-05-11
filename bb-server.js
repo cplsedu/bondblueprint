@@ -69,6 +69,10 @@ app.get('/confirm', (req, res) => {
   res.sendFile(path.join(__dirname, 'v2/confirm.html'));
 });
 
+app.get('/quiz', (req, res) => {
+  res.sendFile(path.join(__dirname, 'stan.html'));
+});
+
 // Legacy V2 paths — redirect to clean URLs
 app.get('/v2',         (req, res) => res.redirect('/'));
 app.get('/v2/confirm', (req, res) => res.redirect('/confirm' + (req.search || '')));
@@ -312,6 +316,113 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
     console.log(`✅ V2 blueprint delivered to ${email} (session ${sessionId})`);
   } catch (err) {
     console.error('V2 quiz submit error:', err.message);
+    if (!res.headersSent) res.status(500).json({ error: 'Submission failed' });
+  }
+});
+
+// ─── STAN: SUBMIT QUIZ (email-first flow, payment handled by Stan) ────────────
+
+app.post('/api/stan/submit', aiLimiter, async (req, res) => {
+  const { email, name, who, attachmentStyle, partnerStyle, situation, goal } = req.body;
+
+  if (!email || !VALID_EMAIL_RE.test(email.trim())) {
+    return res.status(400).json({ error: 'Valid email required' });
+  }
+
+  const cleanEmail = email.toLowerCase().trim();
+
+  try {
+    // Save lead with quiz data
+    await upsertLead({
+      email:           cleanEmail,
+      name:            name || '',
+      attachmentStyle: attachmentStyle || '',
+      partnerStyle:    partnerStyle    || '',
+      quizData:        { who: who || 'my partner', goal: goal || '' },
+      situation:       (situation || '').slice(0, 800)
+    });
+
+    // Create purchase record — Stan handled the $19 payment
+    const stanId = `stan_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+    await createPurchase({ email: cleanEmail, stripeSessionId: stanId, amountCents: 1900 });
+
+    // Lock immediately so double-submits are rejected
+    await completePurchase({
+      stripeSessionId: stanId,
+      paymentIntent:   null,
+      blueprintData:   { _processing: true, flow: 'stan' }
+    });
+
+    // Respond to client now — heavy work happens async
+    res.json({ success: true });
+
+    // Kit: subscribe as paid (Stan handled checkout tag separately if needed)
+    subscribeToConvertKit({
+      email: cleanEmail,
+      name:  name || '',
+      tags:  [process.env.CONVERTKIT_PAID_TAG_ID].filter(Boolean)
+    }).catch(() => {});
+    removeTag({ email: cleanEmail, tagId: process.env.CONVERTKIT_CHECKOUT_TAG_ID }).catch(() => {});
+
+    const theme = resolveTheme(attachmentStyle, partnerStyle);
+
+    let blueprint;
+    try {
+      blueprint = await generateBlueprint({
+        situation: (situation || '').slice(0, 700),
+        who:       who || 'my partner',
+        theme,
+        goal:      goal || 'feel safe in love'
+      });
+    } catch (err) {
+      console.error('Stan blueprint generation failed:', err.message);
+      blueprint = buildFallbackBlueprint(attachmentStyle, partnerStyle);
+    }
+
+    await completePurchase({
+      stripeSessionId: stanId,
+      paymentIntent:   null,
+      blueprintData:   blueprint
+    });
+
+    let pdfBuffer;
+    try {
+      pdfBuffer = await generateBlueprintPdf(blueprint, {
+        name:            name || '',
+        attachmentStyle: formatStyle(attachmentStyle),
+        partnerStyle:    formatStyle(partnerStyle)
+      });
+    } catch (err) {
+      console.error('Stan PDF generation failed (will send without attachment):', err.message);
+    }
+
+    try {
+      await sendBlueprintEmail({
+        to:              cleanEmail,
+        name:            name || '',
+        pdfBuffer,
+        blueprintTitle:  blueprint.title,
+        attachmentStyle: formatStyle(attachmentStyle),
+        partnerStyle:    formatStyle(partnerStyle)
+      });
+      await markEmailSent(stanId);
+    } catch (err) {
+      console.error('Stan email send failed:', err.message);
+    }
+
+    sendOwnerNotification({
+      email:           cleanEmail,
+      name:            name || '',
+      attachmentStyle,
+      partnerStyle,
+      amountCents:     1900,
+      lead:            { situation, quiz_data: { who, goal } },
+      pdfBuffer
+    }).catch(() => {});
+
+    console.log(`✅ Stan blueprint delivered to ${cleanEmail}`);
+  } catch (err) {
+    console.error('Stan quiz submit error:', err.message);
     if (!res.headersSent) res.status(500).json({ error: 'Submission failed' });
   }
 });

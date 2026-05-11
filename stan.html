@@ -1,0 +1,1189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>BondBlueprint™ — Personalize Your Blueprint</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,800;1,700&display=swap" rel="stylesheet">
+
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;-webkit-text-size-adjust:100%}
+body{font-family:'Nunito',sans-serif;background:#FAF7F3;color:#1A1714;overflow-x:hidden;min-height:100vh}
+button{cursor:pointer;border:none;background:none;font-family:inherit}
+input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none}
+
+:root{
+  --green-dark:#1A2E1F;
+  --green:#2C4A35;
+  --green-mid:#3A5E44;
+  --gold:#D4A843;
+  --orange:#E07A3A;
+  --orange-dk:#C96B2B;
+  --cream:#FAF7F3;
+  --surface:#fff;
+  --border:#EAE3D9;
+  --text:#1A1714;
+  --text2:#5A5450;
+  --text3:#9A908A;
+  --r:16px;
+  --rpill:100px;
+}
+
+/* ── SCREENS ────────────────────────────────────── */
+.screen{display:none!important}
+.screen.active{display:block!important}
+#screen-email.active,
+#screen-done.active,
+#screen-sending.active,
+#screen-error.active{display:flex!important}
+
+/* ── EMAIL CAPTURE SCREEN ───────────────────────── */
+#screen-email{
+  min-height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+}
+.email-screen-inner{
+  width:100%;
+  max-width:420px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.email-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1.2rem;
+  font-weight:800;
+  color:var(--green);
+  margin-bottom:28px;
+}
+.email-logo span{color:var(--orange)}
+.email-h{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.55rem,6vw,2rem);
+  font-weight:800;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:10px;
+}
+.email-sub{
+  font-size:.92rem;
+  font-weight:600;
+  color:var(--text2);
+  line-height:1.7;
+  margin-bottom:28px;
+  max-width:360px;
+}
+.email-form{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+}
+.email-input{
+  width:100%;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:12px;
+  padding:15px 16px;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--text);
+  outline:none;
+  transition:border-color .15s;
+  text-align:left;
+}
+.email-input:focus{border-color:var(--green)}
+.email-input::placeholder{color:var(--text3)}
+.email-error{
+  font-size:.85rem;
+  font-weight:700;
+  color:#DC2626;
+  text-align:center;
+  display:none;
+  line-height:1.5;
+}
+.email-error.show{display:block}
+.email-btn{
+  width:100%;
+  padding:17px;
+  border-radius:var(--rpill);
+  background:var(--orange);
+  color:#fff;
+  font-size:1.06rem;
+  font-weight:900;
+  box-shadow:0 6px 20px rgba(224,122,58,.35);
+  transition:all .2s;
+}
+.email-btn:hover{background:var(--orange-dk);transform:translateY(-1px)}
+.email-note{
+  font-size:.75rem;
+  font-weight:700;
+  color:var(--text3);
+  margin-top:10px;
+  line-height:1.5;
+}
+
+/* ── QUIZ SCREEN ────────────────────────────────── */
+#screen-quiz{
+  padding:0 0 60px;
+}
+
+.quiz-header{
+  background:linear-gradient(165deg,var(--green-dark),var(--green));
+  padding:28px 20px 24px;
+  text-align:center;
+}
+.quiz-logo{
+  font-family:'Playfair Display',serif;
+  font-size:1rem;
+  font-weight:800;
+  color:rgba(255,255,255,.5);
+  margin-bottom:16px;
+}
+.quiz-logo span{color:var(--gold)}
+
+.quiz-header-h{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(1.5rem,5.5vw,2rem);
+  font-weight:800;
+  color:#fff;
+  line-height:1.2;
+  margin-bottom:10px;
+}
+
+.quiz-header-sub{
+  font-size:.9rem;
+  font-weight:600;
+  color:rgba(255,255,255,.68);
+  line-height:1.65;
+  max-width:340px;
+  margin:0 auto;
+}
+
+/* FORM */
+.quiz-form{
+  max-width:480px;
+  margin:24px auto 0;
+  padding:0 20px;
+  display:flex;
+  flex-direction:column;
+  gap:22px;
+}
+
+.field-group{}
+.field-label{
+  display:block;
+  font-size:.78rem;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.07em;
+  color:var(--text2);
+  margin-bottom:8px;
+}
+.field-label .optional{
+  font-weight:600;
+  text-transform:none;
+  letter-spacing:0;
+  color:var(--text3);
+}
+
+.field-input{
+  width:100%;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--text);
+  outline:none;
+  transition:border-color .15s;
+}
+.field-input:focus{border-color:var(--green)}
+.field-input::placeholder{color:var(--text3)}
+
+.field-textarea{
+  width:100%;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:12px;
+  padding:14px 16px;
+  font-size:1rem;
+  font-weight:600;
+  color:var(--text);
+  outline:none;
+  resize:vertical;
+  min-height:120px;
+  line-height:1.6;
+  transition:border-color .15s;
+}
+.field-textarea:focus{border-color:var(--green)}
+.field-textarea::placeholder{color:var(--text3);font-weight:600}
+
+.field-hint{
+  font-size:.78rem;
+  font-weight:700;
+  color:var(--text3);
+  margin-top:6px;
+  line-height:1.45;
+}
+
+/* GOAL OPTIONS */
+.goal-options{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.goal-opt{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--surface);
+  border:2.5px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+  cursor:pointer;
+  transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.goal-opt:hover{border-color:var(--green);background:#F0F5F1}
+.goal-opt.sel{border-color:var(--green);background:var(--green)}
+.goal-opt input[type=radio]{display:none}
+.goal-opt-dot{
+  width:22px;height:22px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.goal-opt.sel .goal-opt-dot{
+  border-color:#fff;
+  background:#fff;
+}
+.goal-opt.sel .goal-opt-dot::after{
+  content:'';
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--green);
+  display:block;
+}
+.goal-opt-text{font-size:.93rem;font-weight:700;color:var(--text);line-height:1.35}
+.goal-opt.sel .goal-opt-text{color:#fff}
+
+/* SUBMIT */
+.submit-area{
+  padding:0 20px;
+  max-width:480px;
+  margin:28px auto 0;
+}
+.submit-btn{
+  width:100%;
+  padding:18px;
+  border-radius:var(--rpill);
+  background:var(--orange);
+  color:#fff;
+  font-size:1.08rem;
+  font-weight:900;
+  box-shadow:0 6px 20px rgba(224,122,58,.35);
+  transition:all .2s;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+}
+.submit-btn:hover{background:var(--orange-dk);transform:translateY(-1px)}
+.submit-btn:disabled{opacity:.5;pointer-events:none}
+.submit-btn .spinner{
+  width:18px;height:18px;
+  border:2.5px solid rgba(255,255,255,.3);
+  border-top-color:#fff;
+  border-radius:50%;
+  animation:spin .7s linear infinite;
+  display:none;
+}
+.submit-btn.loading .btn-text{display:none}
+.submit-btn.loading .spinner{display:block}
+
+.submit-note{
+  font-size:.78rem;
+  font-weight:700;
+  color:var(--text3);
+  text-align:center;
+  margin-top:10px;
+  line-height:1.5;
+}
+.submit-error{
+  font-size:.85rem;
+  font-weight:700;
+  color:#DC2626;
+  text-align:center;
+  margin-top:10px;
+  display:none;
+  line-height:1.5;
+}
+.submit-error.show{display:block}
+
+/* ── SENDING SCREEN ─────────────────────────────── */
+#screen-sending{
+  min-height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+  max-width:440px;
+  margin:0 auto;
+}
+.sending-icon{font-size:3.5rem;margin-bottom:20px;animation:pulse 1.5s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.sending-h{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;
+  font-weight:800;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:12px;
+}
+.sending-sub{
+  font-size:.95rem;
+  font-weight:600;
+  color:var(--text2);
+  line-height:1.7;
+  max-width:340px;
+}
+.sending-steps{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  margin-top:28px;
+  width:100%;
+  max-width:340px;
+}
+.sending-step{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:var(--r);
+  padding:12px 16px;
+  text-align:left;
+}
+.ss-dot{
+  width:10px;height:10px;
+  border-radius:50%;
+  background:var(--border);
+  flex-shrink:0;
+  transition:background .5s;
+}
+.ss-dot.active{background:var(--orange);animation:dotpulse 1s ease-in-out infinite}
+.ss-dot.done{background:var(--green)}
+@keyframes dotpulse{0%,100%{opacity:1}50%{opacity:.4}}
+.ss-text{font-size:.88rem;font-weight:700;color:var(--text)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── SPAM NOTE ──────────────────────────────────── */
+.sending-spam-note{
+  font-size:.75rem;
+  font-weight:700;
+  color:var(--text3);
+  margin-top:14px;
+  line-height:1.6;
+  max-width:300px;
+  text-align:center;
+}
+
+/* ── LIKERT SCALE ───────────────────────────────── */
+.likert-intro{
+  font-size:.82rem;
+  font-weight:700;
+  color:var(--text3);
+  line-height:1.6;
+  padding:0 4px;
+  margin-bottom:14px;
+  text-align:center;
+}
+.likert-qs{
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+.likert-q{
+  background:var(--surface);
+  border:2px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px 12px;
+  transition:border-color .15s;
+}
+.likert-q.answered{border-color:rgba(44,74,53,.35)}
+.likert-q-text{
+  font-size:.88rem;
+  font-weight:700;
+  color:var(--text);
+  line-height:1.45;
+  margin-bottom:12px;
+}
+.ls-row{
+  display:flex;
+  gap:5px;
+  justify-content:space-between;
+  margin-bottom:6px;
+}
+.ls-opt{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  cursor:pointer;
+  -webkit-tap-highlight-color:transparent;
+}
+.ls-opt input[type=radio]{display:none}
+.ls-num{
+  width:38px;height:38px;
+  border-radius:50%;
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:.88rem;font-weight:800;
+  color:var(--text2);
+  transition:all .15s;
+}
+.ls-opt.sel .ls-num{
+  border-color:var(--green);
+  background:var(--green);
+  color:#fff;
+}
+.ls-lbl-row{
+  display:flex;
+  justify-content:space-between;
+  padding:0 2px;
+}
+.ls-lbl-end{
+  font-size:.65rem;
+  font-weight:700;
+  color:var(--text3);
+  line-height:1.3;
+}
+
+/* ── DONE SCREEN ─────────────────────────────────── */
+#screen-done{
+  min-height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+  max-width:440px;
+  margin:0 auto;
+}
+.done-icon{font-size:3.5rem;margin-bottom:20px}
+.done-h{
+  font-family:'Playfair Display',serif;
+  font-size:1.8rem;
+  font-weight:800;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:12px;
+}
+.done-sub{
+  font-size:.95rem;
+  font-weight:600;
+  color:var(--text2);
+  line-height:1.7;
+  max-width:340px;
+}
+
+/* ── ERROR SCREEN ────────────────────────────────── */
+#screen-error{
+  min-height:100vh;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  padding:40px 20px;
+  text-align:center;
+  max-width:440px;
+  margin:0 auto;
+}
+.error-icon{font-size:3rem;margin-bottom:20px}
+.error-h{
+  font-family:'Playfair Display',serif;
+  font-size:1.6rem;
+  font-weight:800;
+  color:var(--text);
+  line-height:1.2;
+  margin-bottom:12px;
+}
+.error-sub{
+  font-size:.95rem;
+  font-weight:600;
+  color:var(--text2);
+  line-height:1.7;
+  max-width:340px;
+}
+.error-email-display{
+  font-size:.88rem;
+  font-weight:900;
+  color:var(--green);
+  margin-top:16px;
+}
+
+/* ── DESKTOP ─────────────────────────────────────── */
+@media(min-width:768px){
+  body{background:#EEEAE4}
+
+  #screen-email{
+    min-height:auto;
+    background:#FAF7F3;
+    border-radius:20px;
+    box-shadow:0 8px 40px rgba(0,0,0,.1);
+    max-width:500px;
+    margin:80px auto;
+    padding:56px 48px;
+  }
+
+  #screen-done,
+  #screen-sending,
+  #screen-error{
+    min-height:auto;
+    background:#FAF7F3;
+    border-radius:20px;
+    box-shadow:0 8px 40px rgba(0,0,0,.1);
+    max-width:500px;
+    margin:80px auto;
+    padding:56px 48px;
+  }
+
+  /* Quiz screen — wider, breathing room */
+  #screen-quiz{
+    max-width:760px;
+    margin:0 auto;
+    padding-bottom:80px;
+  }
+  .quiz-header{
+    padding:36px 48px 32px;
+    border-radius:0;
+  }
+  .quiz-form{
+    max-width:680px;
+    padding:0 48px;
+  }
+  .submit-area{
+    max-width:680px;
+    padding:0 48px;
+    margin-top:32px;
+  }
+
+  .likert-q{padding:18px 20px 14px}
+  .ls-num{width:42px;height:42px;font-size:.92rem}
+
+  .sending-steps{max-width:380px;margin:32px auto 0}
+}
+</style>
+</head>
+<body>
+
+<!-- ── EMAIL CAPTURE ──────────────────────────────── -->
+<div id="screen-email" class="screen active">
+  <div class="email-screen-inner">
+    <div class="email-logo">Bond<span>Blueprint</span>™</div>
+    <h1 class="email-h">You're in. Let's personalize your blueprint.</h1>
+    <p class="email-sub">Enter the email you used at checkout — your blueprint will be sent there.</p>
+    <div class="email-form">
+      <input
+        class="email-input"
+        type="email"
+        id="e-email"
+        inputmode="email"
+        autocomplete="email"
+        placeholder="Your email address"
+        required
+      >
+      <input
+        class="email-input"
+        type="text"
+        id="e-name"
+        inputmode="text"
+        autocomplete="given-name"
+        placeholder="Your first name (optional)"
+      >
+      <div class="email-error" id="email-error"></div>
+      <button class="email-btn" onclick="startQuiz()">Start My Quiz →</button>
+      <p class="email-note">We'll only use this to send your blueprint. No spam, ever.</p>
+    </div>
+  </div>
+</div>
+
+<!-- ── QUIZ ──────────────────────────────────────── -->
+<div id="screen-quiz" class="screen">
+
+  <div class="quiz-header">
+    <div class="quiz-logo">Bond<span>Blueprint</span>™</div>
+    <h1 class="quiz-header-h">Now let's make it personal.</h1>
+    <p class="quiz-header-sub">Answer honestly. The more real you are, the better your blueprint.</p>
+  </div>
+
+  <form class="quiz-form" id="quiz-form" onsubmit="submitQuiz(event)">
+
+    <!-- Q1: Name -->
+    <div class="field-group">
+      <label class="field-label" for="q-name">Your first name</label>
+      <input
+        class="field-input"
+        id="q-name"
+        type="text"
+        inputmode="text"
+        autocomplete="given-name"
+        placeholder="e.g. Ashley"
+      >
+    </div>
+
+    <!-- Q2: Who -->
+    <div class="field-group">
+      <label class="field-label" for="q-who">Who is this about? <span class="optional">(how do you refer to them?)</span></label>
+      <input
+        class="field-input"
+        id="q-who"
+        type="text"
+        placeholder="e.g. my boyfriend, Tyler, my ex"
+      >
+      <div class="field-hint">Use whatever feels natural — we'll use your exact words in your blueprint.</div>
+    </div>
+
+    <!-- Q3: My style (Likert scale) -->
+    <div class="field-group">
+      <label class="field-label">How do YOU usually feel in relationships?</label>
+      <p class="likert-intro">Rate each statement from 1 (Not really like me) to 5 (Very much like me)</p>
+      <div class="likert-qs" id="my-style-qs">
+
+        <div class="likert-q">
+          <div class="likert-q-text">I worry they'll lose interest or pull away from me</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="me_1" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="me_1" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="me_1" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="me_1" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="me_1" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">I need reassurance that things are still okay between us</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="me_2" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="me_2" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="me_2" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="me_2" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="me_2" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">When they don't respond for a while, I start to spiral</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="me_3" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="me_3" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="me_3" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="me_3" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="me_3" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">I want more closeness than they seem to want</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="me_4" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="me_4" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="me_4" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="me_4" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="me_4" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">Too much emotional intensity or closeness makes me want to pull back</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="me_5" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="me_5" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="me_5" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="me_5" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="me_5" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">I prefer keeping some emotional distance, even with people I care about</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="me_6" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="me_6" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="me_6" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="me_6" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="me_6" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">When things get overwhelming, I go quiet or shut down</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="me_7" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="me_7" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="me_7" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="me_7" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="me_7" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">I find it easier to be alone than to rely on or need someone</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="me_8" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="me_8" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="me_8" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="me_8" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="me_8" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Q4: Their style (Likert scale) -->
+    <div class="field-group">
+      <label class="field-label">How do THEY usually act?</label>
+      <p class="likert-intro">Rate each statement from 1 (Not really like them) to 5 (Very much like them)</p>
+      <div class="likert-qs" id="their-style-qs">
+
+        <div class="likert-q">
+          <div class="likert-q-text">They need a lot of reassurance that things are okay between you</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="pt_1" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_1" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_1" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_1" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_1" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">They get more intense or clingy when they sense you pulling back</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="pt_2" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_2" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_2" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_2" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_2" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">They read into texts, silences, or small things and can seem insecure</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="pt_3" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_3" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_3" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_3" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_3" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">They can spiral or overreact to things that seem small to you</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="pt_4" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_4" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_4" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_4" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_4" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">They go quiet or cold when things get emotional</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="pt_5" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_5" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_5" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_5" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_5" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">They pull away or create distance right when things start to feel close</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="pt_6" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_6" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_6" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_6" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_6" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">They need a lot of space and independence in the relationship</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="pt_7" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_7" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_7" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_7" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_7" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+        <div class="likert-q">
+          <div class="likert-q-text">They shut down or become hard to reach during conflict</div>
+          <div class="ls-row">
+            <label class="ls-opt"><input type="radio" name="pt_8" value="1"><div class="ls-num">1</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_8" value="2"><div class="ls-num">2</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_8" value="3"><div class="ls-num">3</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_8" value="4"><div class="ls-num">4</div></label>
+            <label class="ls-opt"><input type="radio" name="pt_8" value="5"><div class="ls-num">5</div></label>
+          </div>
+          <div class="ls-lbl-row"><span class="ls-lbl-end">Not really</span><span class="ls-lbl-end">Very much</span></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Q5: Situation -->
+    <div class="field-group">
+      <label class="field-label" for="q-situation">What's actually been happening? <span class="optional">(the more honest, the better)</span></label>
+      <textarea
+        class="field-textarea"
+        id="q-situation"
+        placeholder="Describe what's been going on between you two..."
+        maxlength="800"
+      ></textarea>
+      <div class="field-hint">No one else sees this. Be as honest as you can.</div>
+    </div>
+
+    <!-- Q6: Goal -->
+    <div class="field-group">
+      <label class="field-label">What do you most want right now?</label>
+      <div class="goal-options" id="goal-opts">
+
+        <label class="goal-opt" data-val="stop_cycle">
+          <input type="radio" name="goal" value="stop_cycle">
+          <div class="goal-opt-dot"></div>
+          <div class="goal-opt-text">Stop this pattern from repeating again</div>
+        </label>
+
+        <label class="goal-opt" data-val="feel_safe">
+          <input type="radio" name="goal" value="feel_safe">
+          <div class="goal-opt-dot"></div>
+          <div class="goal-opt-text">Feel safe and secure in this relationship</div>
+        </label>
+
+        <label class="goal-opt" data-val="communicate">
+          <input type="radio" name="goal" value="communicate">
+          <div class="goal-opt-dot"></div>
+          <div class="goal-opt-text">Know what to say and how to say it</div>
+        </label>
+
+        <label class="goal-opt" data-val="understand">
+          <input type="radio" name="goal" value="understand">
+          <div class="goal-opt-dot"></div>
+          <div class="goal-opt-text">Just understand what's actually going on</div>
+        </label>
+
+      </div>
+    </div>
+
+  </form>
+
+  <div class="submit-area">
+    <button class="submit-btn" id="submit-btn" onclick="submitQuiz(event)">
+      <span class="btn-text">Build My Blueprint</span>
+      <div class="spinner"></div>
+    </button>
+    <div class="submit-note">Once you submit, your blueprint starts generating. Check your inbox — it'll arrive in a few minutes.</div>
+    <div class="submit-error" id="submit-error"></div>
+  </div>
+
+</div>
+
+<!-- ── SENDING ────────────────────────────────────── -->
+<div id="screen-sending" class="screen">
+  <div class="sending-icon">✨</div>
+  <h2 class="sending-h">Your blueprint is being built.</h2>
+  <p class="sending-sub" id="sending-email-note">Check your inbox in a few minutes. It'll arrive as a PDF you can keep forever.</p>
+  <p class="sending-spam-note">* Check your spam or promotions folder if it hasn't arrived in 1-2 minutes.</p>
+  <div class="sending-steps">
+    <div class="sending-step">
+      <div class="ss-dot done" id="dot-1"></div>
+      <div class="ss-text">Reading your situation</div>
+    </div>
+    <div class="sending-step">
+      <div class="ss-dot active" id="dot-2"></div>
+      <div class="ss-text">Writing your personal scripts</div>
+    </div>
+    <div class="sending-step">
+      <div class="ss-dot" id="dot-3"></div>
+      <div class="ss-text">Building your 7-day plan</div>
+    </div>
+    <div class="sending-step">
+      <div class="ss-dot" id="dot-4"></div>
+      <div class="ss-text">Sending to your inbox</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── DONE ───────────────────────────────────────── -->
+<div id="screen-done" class="screen">
+  <div class="done-icon">📬</div>
+  <h2 class="done-h">Check your inbox!</h2>
+  <p class="done-sub">Your BondBlueprint™ is on its way. Check your spam folder if it doesn't arrive in a few minutes.</p>
+</div>
+
+<!-- ── ERROR ─────────────────────────────────────── -->
+<div id="screen-error" class="screen">
+  <div class="error-icon">💛</div>
+  <h2 class="error-h">Something went wrong on our end.</h2>
+  <p class="error-sub">Your payment went through and your blueprint is yours. Email us and we'll sort it out right away.</p>
+  <div class="error-email-display">ash@coupleseducator.com</div>
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────
+let purchaseEmail = null;
+
+// ── START QUIZ (from email screen) ───────────────
+function startQuiz() {
+  const emailEl = document.getElementById('e-email');
+  const nameEl  = document.getElementById('e-name');
+  const errorEl = document.getElementById('email-error');
+
+  const email = (emailEl.value || '').trim();
+  errorEl.textContent = '';
+  errorEl.classList.remove('show');
+
+  if (!email || !/^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/.test(email)) {
+    errorEl.textContent = 'Please enter a valid email address.';
+    errorEl.classList.add('show');
+    emailEl.focus();
+    return;
+  }
+
+  purchaseEmail = email;
+
+  // Pre-fill name in quiz if provided
+  const name = (nameEl.value || '').trim();
+  if (name) {
+    const qName = document.getElementById('q-name');
+    if (qName) qName.value = name;
+  }
+
+  showScreen('screen-quiz');
+}
+
+// Support Enter key on email screen
+document.getElementById('e-email').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); startQuiz(); }
+});
+document.getElementById('e-name').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') { e.preventDefault(); startQuiz(); }
+});
+
+// ── LIKERT SCALE SELECTION ───────────────────────
+document.querySelectorAll('.ls-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const name = opt.querySelector('input').name;
+    document.querySelectorAll(`input[name="${name}"]`).forEach(inp => {
+      inp.closest('.ls-opt').classList.remove('sel');
+    });
+    opt.classList.add('sel');
+    opt.querySelector('input').checked = true;
+    opt.closest('.likert-q').classList.add('answered');
+  });
+});
+
+// ── GOAL CARD SELECTION ──────────────────────────
+document.querySelectorAll('.goal-opt').forEach(opt => {
+  opt.addEventListener('click', () => {
+    const group = opt.closest('.goal-options');
+    group.querySelectorAll('.goal-opt').forEach(o => o.classList.remove('sel'));
+    opt.classList.add('sel');
+    opt.querySelector('input[type=radio]').checked = true;
+  });
+});
+
+// ── ATTACHMENT STYLE SCORING ─────────────────────
+// Items 1-4 = anxious cluster, items 5-8 = avoidant cluster
+function computeStyle(prefix) {
+  const scores = [];
+  for (let i = 1; i <= 8; i++) {
+    const checked = document.querySelector(`input[name="${prefix}_${i}"]:checked`);
+    if (!checked) return null;
+    scores.push(parseInt(checked.value, 10));
+  }
+  const anxious  = (scores[0] + scores[1] + scores[2] + scores[3]) / 4;
+  const avoidant = (scores[4] + scores[5] + scores[6] + scores[7]) / 4;
+
+  if (anxious >= 2.5 && avoidant >= 2.5) return 'FA';
+  if (anxious >= 2.5)                     return 'AA';
+  if (avoidant >= 2.5)                    return 'DA';
+  return 'SA';
+}
+
+// ── SUBMIT ───────────────────────────────────────
+async function submitQuiz(e) {
+  if (e) e.preventDefault();
+
+  const errorEl = document.getElementById('submit-error');
+  const btnEl   = document.getElementById('submit-btn');
+
+  errorEl.textContent = '';
+  errorEl.classList.remove('show');
+
+  const name       = document.getElementById('q-name').value.trim();
+  const who        = document.getElementById('q-who').value.trim() || 'my partner';
+  const myStyle    = computeStyle('me');
+  const theirStyle = computeStyle('pt');
+  const situation  = document.getElementById('q-situation').value.trim();
+  const goal       = document.querySelector('input[name="goal"]:checked')?.value || '';
+
+  const missing = [];
+  if (!myStyle)    missing.push('all 8 questions about how YOU feel');
+  if (!theirStyle) missing.push('all 8 questions about how THEY act');
+  if (!situation)  missing.push('what\'s been happening');
+  if (!goal)       missing.push('what you most want');
+
+  if (missing.length) {
+    errorEl.textContent = 'Please fill in: ' + missing.join(', ') + '.';
+    errorEl.classList.add('show');
+    document.getElementById('quiz-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  btnEl.disabled = true;
+  btnEl.classList.add('loading');
+
+  try {
+    const res = await fetch('/api/stan/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        email:           purchaseEmail,
+        name,
+        who,
+        attachmentStyle: myStyle,
+        partnerStyle:    theirStyle,
+        situation,
+        goal
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (res.status === 409) {
+        showScreen('screen-done');
+        return;
+      }
+      throw new Error(data.error || 'Something went wrong. Please try again.');
+    }
+
+    // Success — show sending animation
+    document.getElementById('sending-email-note').textContent =
+      `Check ${purchaseEmail} in a few minutes. It'll arrive as a PDF you can keep forever.`;
+    showScreen('screen-sending');
+    animateSendingSteps();
+
+  } catch (err) {
+    errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+    errorEl.classList.add('show');
+    btnEl.disabled = false;
+    btnEl.classList.remove('loading');
+  }
+}
+
+// ── SENDING ANIMATION ────────────────────────────
+function animateSendingSteps() {
+  const steps = [
+    { dot: 'dot-2', delay: 1500 },
+    { dot: 'dot-3', delay: 3500 },
+    { dot: 'dot-4', delay: 5500 },
+  ];
+
+  steps.forEach(({ dot, delay }, i) => {
+    setTimeout(() => {
+      if (i > 0) {
+        const prev = document.getElementById(steps[i - 1].dot);
+        if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+      }
+      const el = document.getElementById(dot);
+      if (el) el.classList.add('active');
+    }, delay);
+  });
+
+  setTimeout(() => {
+    document.getElementById('dot-4')?.classList.remove('active');
+    document.getElementById('dot-4')?.classList.add('done');
+  }, 8000);
+}
+
+// ── SCREEN UTILITY ───────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
+  window.scrollTo(0, 0);
+
+  // PostHog tracking
+  if (id === 'screen-quiz') {
+    try { posthog.capture('quiz_started'); } catch(e) {}
+    if (purchaseEmail) {
+      try { posthog.identify(purchaseEmail); } catch(e) {}
+    }
+  }
+  if (id === 'screen-sending') {
+    try { posthog.capture('quiz_submitted', { email: purchaseEmail }); } catch(e) {}
+  }
+}
+</script>
+
+<script>
+  // PostHog
+  window._phq = [];
+  window.posthog = {
+    capture:  function(e,p){ window._phq.push(['capture',e,p]); },
+    identify: function(id,p){ window._phq.push(['identify',id,p]); },
+    register: function(){}, opt_out_capturing: function(){}
+  };
+  var _s = document.createElement('script');
+  _s.src = 'https://us-assets.i.posthog.com/static/array.js';
+  _s.crossOrigin = 'anonymous'; _s.defer = true;
+  _s.onload = function() {
+    posthog.init('phc_CXx2ezKhKjwXJWEWtShZgkYCf8q97VXgJEJ8GgaMiTUv', {
+      api_host: 'https://us.i.posthog.com',
+      session_recording: { maskAllInputs: true }
+    });
+    window._phq.forEach(function(e){ posthog[e[0]](e[1],e[2]); });
+    window._phq = [];
+  };
+  document.head.appendChild(_s);
+</script>
+
+</body>
+</html>
