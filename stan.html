@@ -227,6 +227,18 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
 .field-textarea:focus{border-color:var(--green)}
 .field-textarea::placeholder{color:var(--text3);font-weight:600}
 
+.cycle-q{margin-bottom:16px}
+.cycle-q-label{
+  font-size:.92rem;
+  font-weight:700;
+  color:var(--text);
+  margin-bottom:8px;
+  display:block;
+  line-height:1.5;
+}
+.cycle-ta{min-height:76px}
+
+
 .field-hint{
   font-size:.78rem;
   font-weight:700;
@@ -866,16 +878,36 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
       </div>
     </div>
 
-    <!-- Q5: Situation -->
+    <!-- Q5: The Cycle — map one recent conflict -->
     <div class="field-group">
-      <label class="field-label" for="q-situation">What's actually been happening? <span class="optional">(the more honest, the better)</span></label>
-      <textarea
-        class="field-textarea"
-        id="q-situation"
-        placeholder="Describe what's been going on between you two..."
-        maxlength="800"
-      ></textarea>
-      <div class="field-hint">No one else sees this. Be as honest as you can.</div>
+      <label class="field-label">Think of the most recent moment things went wrong between you</label>
+      <p class="likert-intro">Answer these four questions about that one specific moment. This maps your side of the cycle, and your blueprint will use it to show you both sides.</p>
+
+      <div class="cycle-q">
+        <label class="cycle-q-label" for="q-cycle-trigger">1. What triggered you?</label>
+        <textarea class="field-textarea cycle-ta" id="q-cycle-trigger" maxlength="350"
+          placeholder="What did they say or do right before things went sideways?"></textarea>
+      </div>
+
+      <div class="cycle-q">
+        <label class="cycle-q-label" for="q-cycle-feelings">2. What did you feel emotionally, and what did you feel in your body, once you were triggered?</label>
+        <textarea class="field-textarea cycle-ta" id="q-cycle-feelings" maxlength="350"
+          placeholder="e.g. panic, anger, hurt... tight chest, racing heart, pit in my stomach"></textarea>
+      </div>
+
+      <div class="cycle-q">
+        <label class="cycle-q-label" for="q-cycle-story">3. Why do you feel they made the choice that triggered you?</label>
+        <textarea class="field-textarea cycle-ta" id="q-cycle-story" maxlength="350"
+          placeholder="The story you told yourself in that moment about why they did it"></textarea>
+      </div>
+
+      <div class="cycle-q">
+        <label class="cycle-q-label" for="q-cycle-cope">4. What did you do to handle or cope with that trigger?</label>
+        <textarea class="field-textarea cycle-ta" id="q-cycle-cope" maxlength="350"
+          placeholder="e.g. sent a long text, went silent, picked a fight, shut down, left"></textarea>
+      </div>
+
+      <div class="field-hint">No one else sees this. These four answers become your personal cycle map inside the blueprint, so be as honest as you can.</div>
     </div>
 
     <!-- Q6: Goal -->
@@ -1060,14 +1092,18 @@ async function submitQuiz(e) {
   const who        = document.getElementById('q-who').value.trim() || 'my partner';
   const myStyle    = computeStyle('me');
   const theirStyle = computeStyle('pt');
-  const situation  = document.getElementById('q-situation').value.trim();
   const goal       = document.querySelector('input[name="goal"]:checked')?.value || '';
+  const cycle      = {
+    trigger:  document.getElementById('q-cycle-trigger').value.trim(),
+    feelings: document.getElementById('q-cycle-feelings').value.trim(),
+    story:    document.getElementById('q-cycle-story').value.trim(),
+    cope:     document.getElementById('q-cycle-cope').value.trim()
+  };
 
   const missing = [];
   if (!myStyle)    missing.push('all 8 questions about how YOU feel');
-  if (!theirStyle) missing.push('all 8 questions about how THEY act');
-  if (!situation)  missing.push('what\'s been happening');
-  if (!goal)       missing.push('what you most want');
+  if (!theirStyle)   missing.push('all 8 questions about how THEY act');
+  if (!goal)         missing.push('what you most want');
 
   if (missing.length) {
     errorEl.textContent = 'Please fill in: ' + missing.join(', ') + '.';
@@ -1089,8 +1125,8 @@ async function submitQuiz(e) {
         who,
         attachmentStyle: myStyle,
         partnerStyle:    theirStyle,
-        situation,
-        goal
+        goal,
+        cycle
       })
     });
 
