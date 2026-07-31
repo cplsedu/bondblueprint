@@ -60,6 +60,21 @@ app.post(
   handleStripeWebhook
 );
 
+// ─── FIGHT BETTER PROXY ───────────────────────────────────────────────────────
+// Serves the separate Fight Better app (its own Railway service) under the path
+// coupleseducator.com/fightbetter. Registered BEFORE the JSON body parser so POST
+// bodies stream through to the upstream untouched. Set FIGHTBETTER_URL in the
+// environment to the Fight Better service URL (e.g. https://fightbetter-production.up.railway.app).
+if (process.env.FIGHTBETTER_URL) {
+  const { createProxyMiddleware } = require('http-proxy-middleware');
+  app.use('/fightbetter', createProxyMiddleware({
+    target: process.env.FIGHTBETTER_URL,
+    changeOrigin: true,
+    xfwd: true,
+    pathRewrite: { '^/fightbetter': '' }
+  }));
+}
+
 app.use(express.json({ limit: '20kb' }));
 app.use(express.static(path.join(__dirname)));
 
@@ -333,15 +348,6 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
 
   const cleanEmail = email.toLowerCase().trim();
 
-  // Cycle-mapping answers (trigger → feelings → story → coping). All optional.
-  const cycleRaw = req.body.cycle || {};
-  const cycle    = {};
-  for (const key of ['trigger', 'feelings', 'story', 'cope']) {
-    const v = typeof cycleRaw[key] === 'string' ? cycleRaw[key].trim().slice(0, 350) : '';
-    if (v) cycle[key] = v;
-  }
-  const hasCycle = Object.keys(cycle).length > 0;
-
   try {
     // Save lead with quiz data
     await upsertLead({
@@ -349,7 +355,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
       name:            name || '',
       attachmentStyle: attachmentStyle || '',
       partnerStyle:    partnerStyle    || '',
-      quizData:        { who: who || 'my partner', goal: goal || '', cycle: hasCycle ? cycle : null },
+      quizData:        { who: who || 'my partner', goal: goal || '' },
       situation:       (situation || '').slice(0, 800)
     });
 
@@ -383,13 +389,11 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
         situation: (situation || '').slice(0, 700),
         who:       who || 'my partner',
         theme,
-        goal:      goal || 'feel safe in love',
-        cycle:     hasCycle ? cycle : null
+        goal:      goal || 'feel safe in love'
       });
     } catch (err) {
       console.error('Stan blueprint generation failed:', err.message);
       blueprint = buildFallbackBlueprint(attachmentStyle, partnerStyle);
-      blueprint.cycleAnswers = hasCycle ? cycle : null;
     }
 
     await completePurchase({
@@ -831,7 +835,7 @@ async function processV2PaymentIntent(pi) {
 
 // ─── AI: BLUEPRINT GENERATION ─────────────────────────────────────────────────
 
-async function generateBlueprint({ situation, who, theme, goal, cycle = null }) {
+async function generateBlueprint({ situation, who, theme, goal }) {
   const themeLabels = {
     pullaway:     'one partner pulling away / avoidant withdrawal',
     rollercoaster:'anxious-avoidant push-pull cycle',
@@ -848,11 +852,11 @@ Never use em-dashes (— or &mdash;). Use commas or periods instead.
 
 LANGUAGE RULE — NO ABSOLUTES OR COMMANDS: Never say "never do this," "you should stop," "you must," "don't ever," or any other commanding or absolute language. Instead, use soft research-based framing like "research suggests this tends to push people further away," "studies show this pattern often makes it harder to feel close," or "attachment science finds that this usually increases anxiety rather than reducing it." Keep it informational, not instructional. Make the reader feel curious, not judged.
 
-STRICT RULE — NO HALLUCINATION: Only reference events, behaviors, feelings, and details that the person explicitly wrote about in their own words (their situation text or their cycle answers). If they did not mention pulling away, do not write about pulling away. If they did not mention a specific behavior, do not invent it. If their situation is brief or vague, write about what they DID say. Do not fill in details they never provided. Every specific claim must trace back to their actual words.
+STRICT RULE — NO HALLUCINATION: Only reference events, behaviors, feelings, and details that the person explicitly wrote about in their situation text. If they did not mention pulling away, do not write about pulling away. If they did not mention a specific behavior, do not invent it. If their situation is brief or vague, write about what they DID say. Do not fill in details they never provided. Every specific claim must trace back to their actual words.
 
 STRICT RULE — USE THEIR EXACT LANGUAGE FOR PEOPLE: The person may be writing about a boyfriend, girlfriend, husband, wife, situationship, someone they are seeing, someone outside their relationship, or multiple people at once. Do not assume it is one person or a traditional partner. Refer to the people in their situation exactly the way they referred to them. If they said "he," use "he." If they named someone, use that name. If they mentioned two different people, keep them distinct. Never replace their words with generic labels like "your partner" if that is not what they wrote.
 
-SAFETY ASSESSMENT — SEPARATE FROM THE GUIDE ITSELF: Read everything they shared (their situation text and their cycle answers) once more and assess two specific safety concerns, independent of the relationship content above:
+SAFETY ASSESSMENT — SEPARATE FROM THE GUIDE ITSELF: Read their situation text once more and assess two specific safety concerns, independent of the relationship content above:
 1. "abuse" — true ONLY if they describe physical violence, threats of harm, being afraid of their partner, or controlling behavior that goes beyond normal relationship friction (hitting, choking, shoving, threats, monitoring, isolation, financial control, etc.).
 2. "selfHarm" — true ONLY if they describe wanting to hurt themselves, thoughts of suicide, self-harm, or not wanting to be alive.
 Be conservative. Normal sadness, frustration, anger, or relationship conflict does NOT count. Only flag clear, explicit descriptions of these concerns.
@@ -868,15 +872,8 @@ CONTEXT:
 - Who this is about: ${who}
 - Main relationship pattern: ${themeLabels[theme] || theme}
 - What they want most: ${goal}
-${cycle ? `
-THEIR MOST RECENT CYCLE (their exact words about one specific conflict):
-- What triggered them: "${cycle.trigger || 'not shared'}"
-- What they felt emotionally and in their body: "${cycle.feelings || 'not shared'}"
-- The story they told themselves about why ${who} did it: "${cycle.story || 'not shared'}"
-- How they coped with the trigger: "${cycle.cope || 'not shared'}"
-` : ''}
 
-IMPORTANT: Only reference what they actually shared above (their situation text and their cycle answers). Do not invent behaviors they did not describe. If they did not mention something, leave it out. If they shared very little, write about what they DID share plus the general pattern named in the context.
+IMPORTANT: Only reference what is in the situation text above. Do not invent behaviors they did not describe. If they did not mention something, leave it out. If they shared very little, write about what they DID share plus the general pattern named in the context.
 
 Return a JSON object with EXACTLY this structure (no extra fields, no missing fields):
 
@@ -928,24 +925,20 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
     "Something they probably do not realize tends to make it harder. Framed as a research finding.",
     "A subtle one most people miss. Gentle, curious tone."
   ],
-  "cycleInsight": [
-    "Paragraph 1: Mirror their most recent cycle back to them. Name the trigger, what it set off in their body and emotions, and the story they told themselves. Use their exact words if they shared cycle answers. If they did not, describe the likely cycle based on their situation text. 2 sentences, under 50 words.",
-    "Paragraph 2: Gently show how their coping move lands on the other person and keeps the loop spinning. Soft research framing, no blame. End with the idea that the other person is running their own version of this same loop. 2 sentences, under 50 words."
-  ],
-  "coreNeeds": ["2 or 3 strings, each EXACTLY one of: contact, comfort, care, acceptance, belonging, togetherness, love, value, safety. The core attachment needs most clearly sitting underneath their trigger, their feelings, and the story they told themselves. Pick only from that list, lowercase."],
-  "insecurity": "Name the core insecurity underneath their trigger: the question their attachment alarm is really asking (am I safe, do I matter, am I about to be left, am I enough). Tie it directly to their trigger and the story they told themselves, using their exact words as evidence. Connect it to the coreNeeds you identified. 2 sentences, under 55 words. Warm, no jargon.",
+  "coreNeeds": ["2 or 3 strings, each EXACTLY one of: contact, comfort, care, acceptance, belonging, togetherness, love, value, safety. The core attachment needs most clearly sitting underneath what they described in their situation. Pick only from that list, lowercase."],
+  "insecurity": "Name the core insecurity underneath their pain: the question their attachment alarm is really asking (am I safe, do I matter, am I about to be left, am I enough). Tie it directly to what they described, using their exact words as evidence. Connect it to the coreNeeds you identified. 2 sentences, under 55 words. Warm, no jargon.",
   "triggeredSteps": [
     "The very first physical thing to do the moment they feel triggered, before any reaction. Concrete. Under 14 words. Do NOT write 'Step 1:' — start directly with a verb.",
     "How to name what is happening to themselves. Under 14 words. Start with a verb, no numbering.",
-    "What to do instead of their usual coping move (reference how they said they cope). Under 14 words. Start with a verb, no numbering.",
+    "What to do instead of their usual reactive move (infer it from what they described). Under 14 words. Start with a verb, no numbering.",
     "When and how to re-engage once regulated. Under 14 words. Start with a verb, no numbering."
   ],
   "innerDialogue": [
-    { "instead": "The exact thought that currently fires when triggered. Pull from the story they told themselves if shared. Under 12 words.", "try": "The secure replacement thought, spoken to themselves in first person. Under 20 words." },
+    { "instead": "The thought that likely fires when they are triggered, based on what they described. Under 12 words.", "try": "The secure replacement thought, spoken to themselves in first person. Under 20 words." },
     { "instead": "Second triggered thought", "try": "Second secure replacement" },
     { "instead": "Third triggered thought", "try": "Third secure replacement" }
   ],
-  "secureCope": "2 sentences, under 55 words. The secure way to cope with this exact trigger, directly contrasting their current coping move. Show how it gets the coreNeeds you identified met without feeding the loop. Warm, practical, no commands.",
+  "secureCope": "2 sentences, under 55 words. The secure way to cope when this pattern flares, contrasting how they currently react. Show how it gets the coreNeeds you identified met. Warm, practical, no commands.",
   "plan": [
     "Day 1: [specific action tied to their situation]",
     "Day 2: [specific action]",
@@ -970,10 +963,6 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
 
   parsed.safetyNote = buildSafetyNote(parsed.safetyFlags);
   delete parsed.safetyFlags;
-
-  // Echo the customer's own cycle answers into the stored blueprint so the PDF
-  // (including any later resend from the DB) can render them verbatim.
-  parsed.cycleAnswers = cycle || null;
 
   // AI-identified core attachment needs → whitelist for the PDF's needs pills
   const NEED_KEYS = ['contact', 'comfort', 'care', 'acceptance', 'belonging', 'togetherness', 'love', 'value', 'safety'];
@@ -1232,10 +1221,6 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
     situationSummary:  'The pattern between you is driven by differing attachment strategies, not a lack of love. Both of you are responding from nervous systems shaped long before this relationship. Neither of you is the problem. The cycle is.',
     cycleLeft:         'Seeks connection, reaches for closeness',
     cycleRight:        'Seeks distance, needs space to regulate',
-    cycleInsight: [
-      'Every conflict between you runs on the same loop: something triggers the alarm, your body reacts before your mind catches up, a story forms about what it means, and then you cope the best way you know how.',
-      'Research on couples shows the coping move is where the loop feeds itself. What protects you in the moment usually reads as an attack or a retreat to the other person, and their reaction becomes your next trigger. They are running their own version of this exact same loop.'
-    ],
     insecurity: 'Underneath the trigger, your attachment system is asking one simple question: am I safe with you, and do I matter to you? The reaction feels big because the question is big. It is not drama. It is a nervous system protecting a real need.',
     triggeredSteps: [
       'Put both feet on the floor and take five slow breaths before anything else.',
