@@ -237,48 +237,77 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
   line-height:1.45;
 }
 
-/* GOAL OPTIONS */
-.goal-options{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
+/* ── DIAGNOSTIC FLOW ────────────────────────────── */
+#screen-diagnostic{padding:0 0 60px}
+.diag-wrap{max-width:480px;margin:0 auto;padding:0 20px}
+.diag-step{margin-top:26px}
+.diag-kicker{
+  font-size:.72rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--orange);margin-bottom:10px;
 }
-.goal-opt{
-  display:flex;
-  align-items:center;
-  gap:12px;
-  background:var(--surface);
-  border:2.5px solid var(--border);
-  border-radius:var(--r);
-  padding:14px 16px;
-  cursor:pointer;
-  transition:all .15s;
+.diag-q{
+  font-family:'Playfair Display',serif;
+  font-size:1.32rem;font-weight:800;color:var(--text);
+  line-height:1.3;margin-bottom:8px;
+}
+.diag-help{font-size:.86rem;font-weight:600;color:var(--text2);line-height:1.6;margin-bottom:16px}
+.diag-input,.diag-ta{
+  width:100%;background:var(--surface);border:2px solid var(--border);border-radius:12px;
+  padding:14px 16px;font-size:1rem;font-weight:600;color:var(--text);outline:none;
+  transition:border-color .15s;line-height:1.6;
+}
+.diag-ta{min-height:104px;resize:vertical}
+.diag-input:focus,.diag-ta:focus{border-color:var(--green)}
+.diag-input::placeholder,.diag-ta::placeholder{color:var(--text3);font-weight:600}
+.diag-choices{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.diag-choice{
+  display:flex;align-items:center;gap:12px;background:var(--surface);
+  border:2.5px solid var(--border);border-radius:var(--r);padding:14px 16px;
+  cursor:pointer;transition:all .15s;text-align:left;width:100%;
+  font-size:.95rem;font-weight:700;color:var(--text);line-height:1.4;
   -webkit-tap-highlight-color:transparent;
 }
-.goal-opt:hover{border-color:var(--green);background:#F0F5F1}
-.goal-opt.sel{border-color:var(--green);background:var(--green)}
-.goal-opt input[type=radio]{display:none}
-.goal-opt-dot{
-  width:22px;height:22px;
-  border-radius:50%;
-  border:2px solid var(--border);
-  flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  transition:all .15s;
+.diag-choice:hover{border-color:var(--green);background:#F0F5F1}
+.diag-choice.sel{border-color:var(--green);background:var(--green);color:#fff}
+.diag-next{
+  width:100%;padding:16px;border-radius:var(--rpill);background:var(--orange);color:#fff;
+  font-size:1rem;font-weight:900;box-shadow:0 6px 20px rgba(224,122,58,.3);
+  transition:all .2s;margin-top:18px;
 }
-.goal-opt.sel .goal-opt-dot{
-  border-color:#fff;
-  background:#fff;
+.diag-next:hover{background:var(--orange-dk);transform:translateY(-1px)}
+.diag-next:disabled{opacity:.45;pointer-events:none}
+.diag-skip{
+  display:block;width:100%;text-align:center;margin-top:12px;
+  font-size:.82rem;font-weight:700;color:var(--text3);text-decoration:underline;
 }
-.goal-opt.sel .goal-opt-dot::after{
-  content:'';
-  width:10px;height:10px;
-  border-radius:50%;
-  background:var(--green);
-  display:block;
+.diag-card{
+  background:var(--surface);border:2px solid var(--green);border-radius:var(--r);
+  padding:18px 20px;margin-bottom:14px;
 }
-.goal-opt-text{font-size:.93rem;font-weight:700;color:var(--text);line-height:1.35}
-.goal-opt.sel .goal-opt-text{color:#fff}
+.diag-card-label{
+  font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;
+  color:var(--green);margin-bottom:8px;
+}
+.diag-card-text{font-size:1rem;font-weight:700;color:var(--text);line-height:1.6}
+.diag-script-card{
+  background:var(--green);border-radius:var(--r);padding:18px 20px;margin-bottom:12px;
+}
+.diag-script-label{
+  font-size:.7rem;font-weight:900;text-transform:uppercase;letter-spacing:.12em;
+  color:rgba(255,255,255,.55);margin-bottom:8px;
+}
+.diag-script-text{font-size:1rem;font-weight:700;color:#fff;line-height:1.65}
+.diag-script-eg{font-size:.85rem;font-weight:600;color:rgba(255,255,255,.62);line-height:1.6;margin-top:10px;font-style:italic}
+.diag-note{
+  background:#FBF3EC;border-left:3px solid var(--orange);border-radius:0 10px 10px 0;
+  padding:13px 16px;margin-bottom:14px;
+}
+.diag-note p{font-size:.88rem;font-weight:700;color:var(--text);line-height:1.6}
+.diag-error{
+  font-size:.85rem;font-weight:700;color:#DC2626;text-align:center;
+  margin-top:10px;display:none;line-height:1.5;
+}
+.diag-error.show{display:block}
 
 /* SUBMIT */
 .submit-area{
@@ -868,61 +897,42 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
       </div>
     </div>
 
-    <!-- Q5: Situation -->
+    <!-- Q5: Last fight -->
     <div class="field-group">
-      <label class="field-label" for="q-situation">What's actually been happening? <span class="optional">(the more honest, the better)</span></label>
+      <label class="field-label" for="q-situation">What was your last fight about? <span class="optional">(the more details the better)</span></label>
       <textarea
         class="field-textarea"
         id="q-situation"
-        placeholder="Describe what's been going on between you two..."
-        maxlength="800"
+        placeholder="What set it off, what was said, and how it ended..."
+        maxlength="2000"
       ></textarea>
       <div class="field-hint">No one else sees this. Be as honest as you can.</div>
-    </div>
-
-    <!-- Q6: Goal -->
-    <div class="field-group">
-      <label class="field-label">What do you most want right now?</label>
-      <div class="goal-options" id="goal-opts">
-
-        <label class="goal-opt" data-val="stop_cycle">
-          <input type="radio" name="goal" value="stop_cycle">
-          <div class="goal-opt-dot"></div>
-          <div class="goal-opt-text">Stop this pattern from repeating again</div>
-        </label>
-
-        <label class="goal-opt" data-val="feel_safe">
-          <input type="radio" name="goal" value="feel_safe">
-          <div class="goal-opt-dot"></div>
-          <div class="goal-opt-text">Feel safe and secure in this relationship</div>
-        </label>
-
-        <label class="goal-opt" data-val="communicate">
-          <input type="radio" name="goal" value="communicate">
-          <div class="goal-opt-dot"></div>
-          <div class="goal-opt-text">Know what to say and how to say it</div>
-        </label>
-
-        <label class="goal-opt" data-val="understand">
-          <input type="radio" name="goal" value="understand">
-          <div class="goal-opt-dot"></div>
-          <div class="goal-opt-text">Just understand what's actually going on</div>
-        </label>
-
-      </div>
     </div>
 
   </form>
 
   <div class="submit-area">
-    <button class="submit-btn" id="submit-btn" onclick="submitQuiz(event)">
-      <span class="btn-text">Build My Blueprint</span>
+    <button class="submit-btn" id="submit-btn" onclick="startDiagnostic(event)">
+      <span class="btn-text">Let's see what's going on</span>
       <div class="spinner"></div>
     </button>
-    <div class="submit-note">Once you submit, your blueprint starts generating. Check your inbox — it'll arrive in a few minutes.</div>
+    <div class="submit-note">A few short questions next, to find what was really underneath that fight.</div>
     <div class="submit-error" id="submit-error"></div>
   </div>
 
+</div>
+
+<!-- ── ATTACHMENT NEED DIAGNOSTIC ─────────────────── -->
+<div id="screen-diagnostic" class="screen">
+  <div class="quiz-header">
+    <div class="quiz-logo">Bond<span>Blueprint</span>™</div>
+    <h1 class="quiz-header-h">Let's find what was underneath it.</h1>
+    <p class="quiz-header-sub">Fights are rarely about the thing they're about. A few questions to find the real one.</p>
+  </div>
+  <div class="diag-wrap">
+    <div id="diag-body"></div>
+    <div class="diag-error" id="diag-error"></div>
+  </div>
 </div>
 
 <!-- ── SENDING ────────────────────────────────────── -->
@@ -1020,16 +1030,6 @@ document.querySelectorAll('.ls-opt').forEach(opt => {
   });
 });
 
-// ── GOAL CARD SELECTION ──────────────────────────
-document.querySelectorAll('.goal-opt').forEach(opt => {
-  opt.addEventListener('click', () => {
-    const group = opt.closest('.goal-options');
-    group.querySelectorAll('.goal-opt').forEach(o => o.classList.remove('sel'));
-    opt.classList.add('sel');
-    opt.querySelector('input[type=radio]').checked = true;
-  });
-});
-
 // ── ATTACHMENT STYLE SCORING ─────────────────────
 // Items 1-4 = anxious cluster, items 5-8 = avoidant cluster
 function computeStyle(prefix) {
@@ -1048,12 +1048,364 @@ function computeStyle(prefix) {
   return 'SA';
 }
 
+// ── ATTACHMENT NEED DIAGNOSTIC FLOW ──────────────
+// Rules-based state machine: signal scan → (triage) → branch confirm → diagnosis
+// → reflection → direct ask → partner invite. Spec: attachment_needs_diagnostic_flow v1.0
+const DIAG_SPEC = {
+  needs: {
+    presence:                 { label: 'Presence',                    short: 'them to be there when it was hard' },
+    responsiveness_validation:{ label: 'Responsiveness / validation', short: 'your feelings taken seriously' },
+    acceptance:               { label: 'Acceptance',                  short: 'to be accepted as you are', pick: 'to be accepted as you are, flaws and all' },
+    safe_to_fail:             { label: 'Room to grow',                short: 'to feel safe making mistakes', pick: 'to feel safe making mistakes and learning from them' },
+    trust_reliability:        { label: 'Trust / reliability',         short: 'to count on their word' },
+    autonomy:                 { label: 'Autonomy within connection',  short: 'space without it costing the relationship' },
+    valued_chosen:            { label: 'Being valued / chosen',       short: 'to know you matter enough' }
+  },
+  signal_phrases: {
+    presence: ["wasn't there","didn't check on me","had to deal with it alone","by myself","couldn't reach"],
+    responsiveness_validation: ["got defensive","said i was overreacting","didn't even acknowledge","made it about them","wouldn't listen"],
+    acceptance: ["you always","called me dramatic","too sensitive","selfish","made me feel like something's wrong with me"],
+    safe_to_fail: ["held it against me","brings it up every time","never lets it go","walking on eggshells","can't win","throws it back in my face","one mistake"],
+    trust_reliability: ["said they would and didn't","found out","lied","kept it from me","broke a promise"],
+    autonomy: ["needed space","felt smothered","got upset when i wanted time alone","accused me of pulling away","too controlling"],
+    valued_chosen: ["always chooses","over me","like an afterthought","didn't even notice","prioritized"]
+  },
+  triage: [
+    { id: 'T1', text: "In the moment it hurt most, what were you hoping they'd do or say — and what did they actually do or say instead?" },
+    { id: 'T2', text: "If they'd handled it differently, what's the one sentence that would have made you feel better?" }
+  ],
+  confirm: {
+    presence: [
+      "Was there a specific moment you needed them to show up — physically or emotionally — and they weren't there or seemed checked out?",
+      "Looking back, would 'just be here with me' have mattered more than them fixing anything?"
+    ],
+    responsiveness_validation: [
+      "When you told them how you felt, did they get defensive or minimize it rather than ask more?",
+      "Did it feel like they argued with whether your feeling was valid, instead of hearing it?"
+    ],
+    acceptance: [
+      "Did the fight involve them criticizing something about who you are, not just what you did?",
+      "Did you feel like you had to defend your character rather than just explain your behavior?"
+    ],
+    safe_to_fail: [
+      "Did the fight leave you feeling like you couldn't admit you got something wrong without it being used against you?",
+      "Do old mistakes get brought back up instead of being left behind once you've owned them?"
+    ],
+    trust_reliability: [
+      "Was there a promise, plan, or expectation that didn't hold up?",
+      "Is this the kind of thing that makes you double-check what they tell you going forward?"
+    ],
+    autonomy: [
+      "Was the conflict more about closeness or control than about distance?",
+      "Did wanting space — yours or theirs — get treated like rejection?"
+    ],
+    valued_chosen: [
+      "Did the fight involve feeling like something or someone else (work, phone, friends, family) got prioritized over you?",
+      "Did it feel less like 'they did something wrong' and more like 'I don't rank high enough'?"
+    ]
+  },
+  output: {
+    presence: "This wasn't really about [topic] — it sounds like what you needed was to know they'd show up for you when things got hard.",
+    responsiveness_validation: "Underneath the disagreement about [topic], it sounds like what you needed was to have your feelings taken seriously instead of argued with.",
+    acceptance: "This sounds less like a disagreement about [topic] and more about needing to feel accepted for who you are.",
+    safe_to_fail: "Underneath [topic], it sounds like what you needed was room to get something wrong, own it, and grow from it without it being held over you.",
+    trust_reliability: "What's underneath [topic] isn't really the specific incident — it's whether you can trust their word and count on consistency.",
+    autonomy: "It sounds like what was really at stake in [topic] was room to have space, or to depend on each other, without it threatening the relationship.",
+    valued_chosen: "This sounds less like [topic] and more like the question of whether you matter enough to be chosen first."
+  },
+  pattern_suffix: "And it sounds like this isn't the first time, which is likely part of why it's landing so hard now.",
+  closing_check: "Does that sound right, or is it something else?",
+  reflection: [
+    { id: 'CR1', text: "Does this feeling — needing [need] and not getting it — feel familiar from earlier in your life, maybe childhood?", type: 'yesno' },
+    { id: 'CR2', text: "If you think back, what did you need in those moments? Did you get it, or did you learn to go without it?", type: 'text' },
+    { id: 'CR3', text: "What would it look like to meet that need now — something you can give yourself, or something you can ask a partner for directly?", type: 'text' }
+  ],
+  direct_ask: {
+    presence: { t: "I feel alone when [situation]. What I need is for you to be there with me, even if you can't fix it.",
+                e: "I felt so alone at the ER waiting to hear from you. What I need is a check-in when I'm going through something hard — even just a text." },
+    responsiveness_validation: { t: "I feel dismissed when my feelings get argued with instead of heard. What I need is for you to hear me out first.",
+                e: "When I told you I was upset and you said I was overreacting, I felt dismissed. What I need is for you to hear me out before deciding if it's a big deal." },
+    acceptance: { t: "I feel judged when who I am gets criticized. What I need is to feel accepted for who I am.",
+                e: "When you called me dramatic, I felt judged for having feelings at all. What I need is to feel like it's okay to be emotional with you." },
+    safe_to_fail: { t: "I feel like I can't get anything wrong when mistakes keep getting held against me. What I need is room to mess up, own it, and move forward.",
+                e: "When I apologized and you brought up the same thing from months ago, I shut down. What I need is for us to be able to move past something once I've owned it." },
+    trust_reliability: { t: "I feel unsettled when a promise doesn't hold up. What I need is consistency I can count on.",
+                e: "When you said you'd call and didn't, I started second-guessing things. What I need is for your word to be something I can rely on." },
+    autonomy: { t: "I feel smothered when closeness or space happens without us talking about it. What I need is room for either without it threatening us.",
+                e: "When I asked for space and you got upset, it felt like wanting time alone meant something was wrong with us. What I need is to know space doesn't put us at risk." },
+    valued_chosen: { t: "I feel like an afterthought when other things get priority. What I need is to know I matter enough to come first sometimes.",
+                e: "When you were on your phone through dinner again, I felt like I don't rank high for you. What I need is to feel chosen, even in small moments." }
+  },
+  partner_self_check: "Before you bring this to them — are you ready to actually hear their side, not just explain yours?",
+  partner_script: "I've been thinking about our fight about [topic]. Can I share what I think I needed in that moment? I'd also like to understand what it was like for you."
+};
+
+let diag = { topic:'', need:null, confidence:null, pattern:false, triaged:false,
+             tried:[], answers:{}, confirmYes:0, step:null };
+
+const dEl = () => document.getElementById('diag-body');
+const dErr = m => { const e = document.getElementById('diag-error');
+                    e.textContent = m || ''; e.classList.toggle('show', !!m); };
+
+function startDiagnostic(e) {
+  if (e) e.preventDefault();
+  const errorEl = document.getElementById('submit-error');
+  errorEl.textContent = ''; errorEl.classList.remove('show');
+
+  const missing = [];
+  if (!computeStyle('me')) missing.push('all 8 questions about how YOU feel');
+  if (!computeStyle('pt')) missing.push('all 8 questions about how THEY act');
+  if (!document.getElementById('q-situation').value.trim()) missing.push('what your last fight was about');
+  if (missing.length) {
+    errorEl.textContent = 'Please fill in: ' + missing.join(', ') + '.';
+    errorEl.classList.add('show');
+    document.getElementById('quiz-form').scrollIntoView({ behavior:'smooth', block:'start' });
+    return;
+  }
+  diag = { topic:'', need:null, confidence:null, pattern:false, triaged:false,
+           tried:[], answers:{}, confirmYes:0, step:null };
+  showScreen('screen-diagnostic');
+  renderTopic();
+}
+
+// signal_scan — count phrase hits per need
+function signalScan(text) {
+  const t = (text || '').toLowerCase();
+  const hits = {};
+  Object.keys(DIAG_SPEC.signal_phrases).forEach(k => {
+    const n = DIAG_SPEC.signal_phrases[k].filter(p => t.includes(p)).length;
+    if (n) hits[k] = n;
+  });
+  return hits;
+}
+
+function renderTopic() {
+  dErr('');
+  dEl().innerHTML = `
+    <div class="diag-step">
+      <div class="diag-kicker">First, the short version</div>
+      <div class="diag-q">In a few words, what was the fight about?</div>
+      <div class="diag-help">Just the surface topic — "the dishes", "him being on his phone", "my family". We'll get underneath it next.</div>
+      <input class="diag-input" id="diag-topic" placeholder="e.g. him not texting back" maxlength="80">
+      <button class="diag-next" onclick="submitTopic()">Continue</button>
+    </div>`;
+  setTimeout(() => document.getElementById('diag-topic')?.focus(), 80);
+}
+
+function submitTopic() {
+  const v = document.getElementById('diag-topic').value.trim();
+  if (!v) { dErr('Just a few words is fine.'); return; }
+  diag.topic = v;
+  dErr('');
+  const hits = signalScan(document.getElementById('q-situation').value);
+  const keys = Object.keys(hits);
+  if (keys.length === 1) { diag.need = keys[0]; renderConfirm(0); }   // single_strong_match
+  else { diag.hits = hits; renderTriage(0); }                          // multiple / zero matches
+}
+
+function renderTriage(i) {
+  dErr('');
+  if (i < DIAG_SPEC.triage.length) {
+    const q = DIAG_SPEC.triage[i];
+    dEl().innerHTML = `
+      <div class="diag-step">
+        <div class="diag-kicker">Question ${i + 1}</div>
+        <div class="diag-q">${q.text}</div>
+        <textarea class="diag-ta" id="diag-t" maxlength="600" placeholder="Take your time..."></textarea>
+        <button class="diag-next" onclick="submitTriage(${i})">Continue</button>
+      </div>`;
+    setTimeout(() => document.getElementById('diag-t')?.focus(), 80);
+    return;
+  }
+  // T3 — pattern modifier
+  dEl().innerHTML = `
+    <div class="diag-step">
+      <div class="diag-kicker">Question 3</div>
+      <div class="diag-q">Was this the first time something like this happened, or does it feel like a pattern?</div>
+      <div class="diag-choices">
+        <button class="diag-choice" onclick="submitPattern(false)">It was pretty much a one-off</button>
+        <button class="diag-choice" onclick="submitPattern(true)">It feels like a pattern</button>
+      </div>
+    </div>`;
+}
+
+function submitTriage(i) {
+  const v = document.getElementById('diag-t').value.trim();
+  if (!v) { dErr('A sentence or two is enough.'); return; }
+  diag.answers[DIAG_SPEC.triage[i].id] = v;
+  dErr('');
+  renderTriage(i + 1);
+}
+
+function submitPattern(isPattern) {
+  diag.pattern = isPattern;
+  diag.triaged = true;
+  // route via T1/T2 keyword match, falling back to the paragraph scan
+  const combined = [diag.answers.T1, diag.answers.T2].filter(Boolean).join(' ');
+  const hits = signalScan(combined);
+  const merged = Object.assign({}, diag.hits || {}, hits);
+  const ranked = Object.keys(merged).sort((a, b) => merged[b] - merged[a]).filter(k => !diag.tried.includes(k));
+  if (ranked.length) { diag.need = ranked[0]; renderConfirm(0); }
+  else renderPick('We want to get this right. Which of these lands closest?');
+}
+
+function renderConfirm(i) {
+  dErr('');
+  if (i === 0) diag.confirmYes = 0;
+  const qs = DIAG_SPEC.confirm[diag.need];
+  dEl().innerHTML = `
+    <div class="diag-step">
+      <div class="diag-kicker">Checking something</div>
+      <div class="diag-q">${qs[i]}</div>
+      <div class="diag-choices">
+        <button class="diag-choice" onclick="answerConfirm(${i}, true)">Yes</button>
+        <button class="diag-choice" onclick="answerConfirm(${i}, false)">No</button>
+      </div>
+    </div>`;
+}
+
+function answerConfirm(i, yes) {
+  if (yes) diag.confirmYes++;
+  diag.answers[diag.need + '_Q' + (i + 1)] = yes ? 'yes' : 'no';
+  if (i === 0) { renderConfirm(1); return; }
+
+  if (diag.confirmYes === 2)      { diag.confidence = 'high'; renderDiagnosis(); }
+  else if (diag.confirmYes === 1) { diag.confidence = 'soft'; renderDiagnosis(); }
+  else {                                        // 0_of_2 → reroute
+    diag.tried.push(diag.need);
+    if (!diag.triaged) { diag.hits = signalScan(document.getElementById('q-situation').value); renderTriage(0); }
+    else {
+      const merged = diag.hits || {};
+      const next = Object.keys(merged).sort((a,b) => merged[b]-merged[a]).filter(k => !diag.tried.includes(k));
+      if (next.length) { diag.need = next[0]; renderConfirm(0); }
+      else renderPick('Not quite? Which of these is closest to what that fight was really about?');
+    }
+  }
+}
+
+function renderPick(prompt) {
+  dErr('');
+  const opts = Object.keys(DIAG_SPEC.needs).map(k =>
+    `<button class="diag-choice" onclick="pickNeed('${k}')">${DIAG_SPEC.needs[k].label} &mdash; ${DIAG_SPEC.needs[k].pick || DIAG_SPEC.needs[k].short}</button>`
+  ).join('');
+  dEl().innerHTML = `
+    <div class="diag-step">
+      <div class="diag-kicker">In your words</div>
+      <div class="diag-q">${prompt}</div>
+      <div class="diag-choices">${opts}</div>
+    </div>`;
+}
+
+function pickNeed(k) { diag.need = k; diag.confidence = 'self_selected'; renderDiagnosis(); }
+
+function renderDiagnosis() {
+  dErr('');
+  let line = DIAG_SPEC.output[diag.need].replace('[topic]', diag.topic);
+  if (diag.confidence === 'soft') line = 'It sounds like part of what was going on was this. ' + line;
+  const suffix = diag.pattern ? `<p style="margin-top:10px">${DIAG_SPEC.pattern_suffix}</p>` : '';
+  dEl().innerHTML = `
+    <div class="diag-step">
+      <div class="diag-kicker">What was underneath it</div>
+      <div class="diag-card">
+        <div class="diag-card-label">The need that went unmet</div>
+        <div class="diag-card-text">${line}${suffix}</div>
+      </div>
+      <div class="diag-q" style="font-size:1.05rem">${DIAG_SPEC.closing_check}</div>
+      <div class="diag-choices">
+        <button class="diag-choice" onclick="renderReflection(0)">That sounds right</button>
+        <button class="diag-choice" onclick="renderPick('Which of these is closer?')">It's something else</button>
+      </div>
+    </div>`;
+}
+
+function renderReflection(i) {
+  dErr('');
+  if (i >= DIAG_SPEC.reflection.length) { renderDirectAsk(); return; }
+  const q = DIAG_SPEC.reflection[i];
+  const text = q.text.replace('[need]', DIAG_SPEC.needs[diag.need].short);
+  if (q.type === 'yesno') {
+    dEl().innerHTML = `
+      <div class="diag-step">
+        <div class="diag-kicker">One step back</div>
+        <div class="diag-q">${text}</div>
+        <div class="diag-help">There's no wrong answer here. "No" is just as useful as "yes."</div>
+        <div class="diag-choices">
+          <button class="diag-choice" onclick="answerReflection('${q.id}','yes',${i})">Yes, it feels familiar</button>
+          <button class="diag-choice" onclick="answerReflection('${q.id}','no',${i})">No, this feels new</button>
+        </div>
+      </div>`;
+  } else {
+    dEl().innerHTML = `
+      <div class="diag-step">
+        <div class="diag-kicker">One step back</div>
+        <div class="diag-q">${text}</div>
+        <textarea class="diag-ta" id="diag-r" maxlength="600" placeholder="Whatever comes to mind..."></textarea>
+        <button class="diag-next" onclick="answerReflection('${q.id}', null, ${i})">Continue</button>
+        <a class="diag-skip" onclick="renderReflection(${i + 1})">Skip this one</a>
+      </div>`;
+    setTimeout(() => document.getElementById('diag-r')?.focus(), 80);
+  }
+}
+
+function answerReflection(id, val, i) {
+  const v = val !== null ? val : document.getElementById('diag-r').value.trim();
+  if (v) diag.answers[id] = v;
+  renderReflection(i + 1);
+}
+
+function renderDirectAsk() {
+  dErr('');
+  const s = DIAG_SPEC.direct_ask[diag.need];
+  dEl().innerHTML = `
+    <div class="diag-step">
+      <div class="diag-kicker">How to ask for it</div>
+      <div class="diag-q">Here's the ask, without the fight.</div>
+      <div class="diag-help">Naming the need directly works better than hoping they notice it.</div>
+      <div class="diag-script-card">
+        <div class="diag-script-label">The shape of it</div>
+        <div class="diag-script-text">${s.t}</div>
+        <div class="diag-script-eg">For example: ${s.e}</div>
+      </div>
+      <button class="diag-next" onclick="renderPartnerInvite()">Continue</button>
+    </div>`;
+}
+
+function renderPartnerInvite() {
+  dErr('');
+  dEl().innerHTML = `
+    <div class="diag-step">
+      <div class="diag-kicker">Before you bring it to them</div>
+      <div class="diag-q">${DIAG_SPEC.partner_self_check}</div>
+      <div class="diag-help">Repair only works when both sides get voiced, not just yours.</div>
+      <div class="diag-choices">
+        <button class="diag-choice" onclick="finishDiagnostic('yes')">Yes, I'm ready to hear their side</button>
+        <button class="diag-choice" onclick="finishDiagnostic('not_yet')">Not yet, I need to sit with mine first</button>
+      </div>
+      <div class="diag-script-card" style="margin-top:18px">
+        <div class="diag-script-label">When you're ready, open with this</div>
+        <div class="diag-script-text">${DIAG_SPEC.partner_script.replace('[topic]', diag.topic)}</div>
+      </div>
+    </div>`;
+}
+
+function finishDiagnostic(readiness) {
+  diag.answers.partner_ready = readiness;
+  dEl().innerHTML = `
+    <div class="diag-step">
+      <div class="diag-kicker">That's everything</div>
+      <div class="diag-q">Your blueprint is ready to build.</div>
+      <div class="diag-help">It'll be written around what we just found, not just your quiz answers.</div>
+      <button class="diag-next" id="diag-final" onclick="submitQuiz(event)">Build my blueprint</button>
+    </div>`;
+}
+
 // ── SUBMIT ───────────────────────────────────────
 async function submitQuiz(e) {
   if (e) e.preventDefault();
 
-  const errorEl = document.getElementById('submit-error');
-  const btnEl   = document.getElementById('submit-btn');
+  const onDiag  = document.getElementById('screen-diagnostic').classList.contains('active');
+  const errorEl = document.getElementById(onDiag ? 'diag-error' : 'submit-error');
+  const btnEl   = document.getElementById(onDiag ? 'diag-final' : 'submit-btn');
 
   errorEl.textContent = '';
   errorEl.classList.remove('show');
@@ -1063,23 +1415,32 @@ async function submitQuiz(e) {
   const myStyle    = computeStyle('me');
   const theirStyle = computeStyle('pt');
   const situation  = document.getElementById('q-situation').value.trim();
-  const goal       = document.querySelector('input[name="goal"]:checked')?.value || '';
 
   const missing = [];
   if (!myStyle)    missing.push('all 8 questions about how YOU feel');
   if (!theirStyle) missing.push('all 8 questions about how THEY act');
-  if (!situation)  missing.push('what\'s been happening');
-  if (!goal)       missing.push('what you most want');
+  if (!situation)  missing.push('what your last fight was about');
 
   if (missing.length) {
     errorEl.textContent = 'Please fill in: ' + missing.join(', ') + '.';
     errorEl.classList.add('show');
-    document.getElementById('quiz-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!onDiag) document.getElementById('quiz-form').scrollIntoView({ behavior: 'smooth', block: 'start' });
     return;
   }
 
   btnEl.disabled = true;
   btnEl.classList.add('loading');
+
+  // Attachment-need diagnostic results (null if the flow was somehow skipped)
+  const diagnostic = diag.need ? {
+    need:       diag.need,
+    label:      DIAG_SPEC.needs[diag.need].label,
+    coreNeed:   DIAG_SPEC.needs[diag.need].short,
+    topic:      diag.topic,
+    confidence: diag.confidence,
+    pattern:    diag.pattern,
+    answers:    diag.answers
+  } : null;
 
   try {
     const res = await fetch('/api/stan/submit', {
@@ -1092,7 +1453,7 @@ async function submitQuiz(e) {
         attachmentStyle: myStyle,
         partnerStyle:    theirStyle,
         situation,
-        goal
+        diagnostic
       })
     });
 

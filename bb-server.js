@@ -258,7 +258,7 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
       attachmentStyle: attachmentStyle || '',
       partnerStyle:    partnerStyle || '',
       quizData:        { who: who || 'my partner', goal: goal || '' },
-      situation:       (situation || '').slice(0, 800)
+      situation:       (situation || '').slice(0, 2000)
     });
 
     // Lock the record immediately so double-submits are rejected
@@ -276,7 +276,7 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
     let blueprint;
     try {
       blueprint = await generateBlueprint({
-        situation: (situation || '').slice(0, 700),
+        situation: (situation || '').slice(0, 2000),
         who:       who || 'my partner',
         theme,
         goal:      goal || 'feel safe in love'
@@ -348,6 +348,24 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
 
   const cleanEmail = email.toLowerCase().trim();
 
+  // Attachment-need diagnostic results (whitelisted; all fields optional)
+  const NEED_IDS = ['presence','responsiveness_validation','acceptance','safe_to_fail','trust_reliability','autonomy','valued_chosen'];
+  const d        = req.body.diagnostic || {};
+  const str      = (v, n) => typeof v === 'string' ? v.trim().slice(0, n) : '';
+  const diagnostic = NEED_IDS.includes(d.need) ? {
+    need:       d.need,
+    label:      str(d.label, 60),
+    coreNeed:   str(d.coreNeed, 120),
+    topic:      str(d.topic, 120),
+    confidence: ['high','soft','self_selected'].includes(d.confidence) ? d.confidence : 'soft',
+    pattern:    d.pattern === true,
+    answers:    Object.fromEntries(
+                  Object.entries(d.answers || {}).slice(0, 12)
+                    .map(([k, v]) => [String(k).slice(0, 40), str(v, 600)])
+                    .filter(([, v]) => v)
+                )
+  } : null;
+
   try {
     // Save lead with quiz data
     await upsertLead({
@@ -355,8 +373,8 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
       name:            name || '',
       attachmentStyle: attachmentStyle || '',
       partnerStyle:    partnerStyle    || '',
-      quizData:        { who: who || 'my partner', goal: goal || '' },
-      situation:       (situation || '').slice(0, 800)
+      quizData:        { who: who || 'my partner', goal: goal || '', diagnostic },
+      situation:       (situation || '').slice(0, 2000)
     });
 
     // Create purchase record — Stan handled the $19 payment
@@ -386,15 +404,17 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
     let blueprint;
     try {
       blueprint = await generateBlueprint({
-        situation: (situation || '').slice(0, 700),
+        situation: (situation || '').slice(0, 2000),
         who:       who || 'my partner',
         theme,
-        goal:      goal || 'feel safe in love'
+        goal:      goal || '',   // Stan quiz no longer asks for a goal
+        diagnostic
       });
     } catch (err) {
       console.error('Stan blueprint generation failed:', err.message);
       blueprint = buildFallbackBlueprint(attachmentStyle, partnerStyle);
     }
+    if (diagnostic) blueprint.diagnostic = diagnostic;
 
     await completePurchase({
       stripeSessionId: stanId,
@@ -636,7 +656,7 @@ app.post('/api/create-checkout', async (req, res) => {
     return res.status(400).json({ error: 'Valid email required' });
   }
 
-  const cleanSituation = (situation || '').trim().slice(0, 800);
+  const cleanSituation = (situation || '').trim().slice(0, 2000);
 
   try {
     // Save situation description to the lead record before checkout
@@ -835,7 +855,7 @@ async function processV2PaymentIntent(pi) {
 
 // ─── AI: BLUEPRINT GENERATION ─────────────────────────────────────────────────
 
-async function generateBlueprint({ situation, who, theme, goal }) {
+async function generateBlueprint({ situation, who, theme, goal, diagnostic = null }) {
   const themeLabels = {
     pullaway:     'one partner pulling away / avoidant withdrawal',
     rollercoaster:'anxious-avoidant push-pull cycle',
@@ -865,15 +885,24 @@ Return ONLY valid JSON. No markdown, no explanation, no code fences. Just the ra
 
   const USER_PROMPT = `Here is someone's real situation. Read every word carefully. Then write their personal relationship guide.
 ${situation && situation.trim() ? `
-THEIR SITUATION (their exact words):
-"${situation.trim().slice(0, 700)}"
+WHAT THEY SHARED (their exact words). They were asked what their last fight was about, so this is usually one specific conflict. Treat that fight as a window into the pattern between them, not as the whole relationship. Ground everything you write in it, and do not invent a wider history they did not describe:
+"${situation.trim().slice(0, 2000)}"
 ` : ''}
 CONTEXT:
 - Who this is about: ${who}
-- Main relationship pattern: ${themeLabels[theme] || theme}
-- What they want most: ${goal}
+- Main relationship pattern: ${themeLabels[theme] || theme}${goal && String(goal).trim() ? `
+- What they want most: ${goal}` : ''}${diagnostic ? `
 
-IMPORTANT: Only reference what is in the situation text above. Do not invent behaviors they did not describe. If they did not mention something, leave it out. If they shared very little, write about what they DID share plus the general pattern named in the context.
+THE UNMET ATTACHMENT NEED THEY CONFIRMED (from a guided diagnostic they just completed):
+- The fight, in their words: "${diagnostic.topic}"
+- The need that went unmet: ${diagnostic.label} — ${diagnostic.coreNeed}
+- How confident: ${diagnostic.confidence === 'high' ? 'they confirmed both checks, treat this as solid' : diagnostic.confidence === 'self_selected' ? 'they chose this themselves from a list' : 'partial confirmation, hold it a little loosely'}
+- Recurring pattern: ${diagnostic.pattern ? 'yes, this has happened before' : 'they described it as more of a one-off'}${Object.keys(diagnostic.answers || {}).length ? `
+- What else they said: ${Object.entries(diagnostic.answers).map(([k, v]) => `[${k}] ${v}`).join(' | ')}` : ''}
+
+Build the whole guide around this need. It is the spine of their situation, not a detail. The insecurity, the scripts, and the actions should all trace back to it. Use their own words for the fight wherever it fits.` : ''}
+
+IMPORTANT: Only reference what they actually wrote above. Do not invent behaviors they did not describe. If they did not mention something, leave it out. If they shared very little, write about what they DID share plus the general pattern named in the context.
 
 Return a JSON object with EXACTLY this structure (no extra fields, no missing fields):
 
