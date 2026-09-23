@@ -7,7 +7,7 @@ const helmet      = require('helmet');
 const stripe      = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path        = require('path');
 
-const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, markReminderSent, getCustomerServiceData } = require('./lib/db');
+const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, getUndeliveredPurchases, markReminderSent, getCustomerServiceData } = require('./lib/db');
 const VALID_EMAIL_RE  = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 // Set CONVERTKIT_ENABLED=true in Railway when Kit sequences are active again
 const KIT_ENABLED = process.env.CONVERTKIT_ENABLED === 'true';
@@ -1361,6 +1361,70 @@ async function checkUnclaimedPurchases() {
 // Run every 30 minutes; also do a first pass 2 minutes after server start
 setInterval(checkUnclaimedPurchases, 30 * 60 * 1000);
 setTimeout(checkUnclaimedPurchases,   2 * 60 * 1000);
+
+// ─── UNDELIVERED BLUEPRINT SWEEP ──────────────────────────────────────────────
+// A paid order can be generated and saved, then lost before its email goes out if
+// the process dies in between (deploy, crash, restart). Nothing retries it and no
+// alert fires, so the customer is left with nothing. This sweep finds those rows
+// and delivers them from the blueprint already stored on the purchase.
+
+async function sweepUndeliveredBlueprints() {
+  try {
+    const stuck = await getUndeliveredPurchases();
+    if (!stuck.length) { console.log('[Sweep] No undelivered blueprints.'); return; }
+
+    console.log(`[Sweep] Found ${stuck.length} paid order(s) with no email sent. Delivering...`);
+
+    for (const p of stuck) {
+      try {
+        const lead      = await getLeadByEmail(p.email).catch(() => null);
+        const blueprint = p.blueprint_data;
+        const myStyle   = formatStyle(lead?.attachment_style || '');
+        const ptStyle   = formatStyle(lead?.partner_style    || '');
+
+        let pdfBuffer;
+        try {
+          pdfBuffer = await generateBlueprintPdf(blueprint, {
+            name: lead?.name || '', attachmentStyle: myStyle, partnerStyle: ptStyle
+          });
+        } catch (err) {
+          console.error(`[Sweep] PDF failed for ${p.email}:`, err.message);
+        }
+
+        await sendBlueprintEmail({
+          to:              p.email,
+          name:            lead?.name || '',
+          pdfBuffer,
+          blueprintTitle:  blueprint.title,
+          attachmentStyle: myStyle,
+          partnerStyle:    ptStyle
+        });
+        await markEmailSent(p.stripe_session_id);
+        console.log(`[Sweep] Recovered and delivered -> ${p.email}`);
+
+        // The owner alert rides at the end of the normal flow, so it was lost too.
+        sendOwnerNotification({
+          email:           p.email,
+          name:            lead?.name || '',
+          attachmentStyle: lead?.attachment_style || '',
+          partnerStyle:    lead?.partner_style    || '',
+          amountCents:     p.amount_cents,
+          lead,
+          pdfBuffer
+        }).catch(() => {});
+      } catch (err) {
+        console.error(`[Sweep] Recovery failed for ${p.email}:`, err.message);
+      }
+    }
+  } catch (err) {
+    console.error('[Sweep] Check failed:', err.message);
+  }
+}
+
+// First pass 90s after boot (past the 3-minute settle window on the next tick),
+// then every 15 minutes so a mid-flight failure self-heals without a restart.
+setTimeout(sweepUndeliveredBlueprints,      90 * 1000);
+setInterval(sweepUndeliveredBlueprints, 15 * 60 * 1000);
 
 // ─── START ────────────────────────────────────────────────────────────────────
 
