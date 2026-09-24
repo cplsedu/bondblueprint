@@ -11,7 +11,10 @@ const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, complet
 const VALID_EMAIL_RE  = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 // Set CONVERTKIT_ENABLED=true in Railway when Kit sequences are active again
 const KIT_ENABLED = process.env.CONVERTKIT_ENABLED === 'true';
-const { sendBlueprintEmail, sendClaimReminderEmail } = require('./lib/email');
+const { sendBlueprintEmail, sendClaimReminderEmail, sendFailureAlert } = require('./lib/email');
+
+// Never let an alert failure break the flow it is reporting on.
+const alert = (o) => sendFailureAlert(o).catch(e => console.error('[Alert] send failed:', e.message));
 const { generateBlueprintPdf }  = require('./lib/pdf');
 const { subscribeToConvertKit, tagSubscriber, removeTag } = require('./lib/marketing');
 
@@ -416,6 +419,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
       });
     } catch (err) {
       console.error('Stan blueprint generation failed:', err.message);
+      alert({ stage: 'Blueprint generation (fell back to generic)', email: cleanEmail, detail: err.message });
       blueprint = buildFallbackBlueprint(attachmentStyle, partnerStyle);
     }
     if (diagnostic) blueprint.diagnostic = diagnostic;
@@ -435,6 +439,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
       });
     } catch (err) {
       console.error('Stan PDF generation failed (will send without attachment):', err.message);
+      alert({ stage: 'PDF render — customer got an email with no attachment', email: cleanEmail, detail: err.message });
     }
 
     try {
@@ -449,6 +454,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
       await markEmailSent(stanId);
     } catch (err) {
       console.error('Stan email send failed:', err.message);
+      alert({ stage: 'Delivery email — customer received nothing', email: cleanEmail, detail: err.message });
     }
 
     sendOwnerNotification({
@@ -464,6 +470,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
     console.log(`✅ Stan blueprint delivered to ${cleanEmail}`);
   } catch (err) {
     console.error('Stan quiz submit error:', err.message);
+    alert({ stage: 'Quiz submission', email: cleanEmail, detail: err.message });
     if (!res.headersSent) res.status(500).json({ error: 'Submission failed' });
   }
 });
@@ -1432,6 +1439,8 @@ async function sweepUndeliveredBlueprints() {
         });
         await markEmailSent(p.stripe_session_id);
         console.log(`[Sweep] Recovered and delivered -> ${p.email}`);
+        alert({ stage: 'Recovered by the sweep', email: p.email, recovered: true,
+                detail: `Order from ${p.created_at} had a saved blueprint but no email. Delivered now.` });
 
         // The owner alert rides at the end of the normal flow, so it was lost too.
         sendOwnerNotification({
@@ -1445,6 +1454,7 @@ async function sweepUndeliveredBlueprints() {
         }).catch(() => {});
       } catch (err) {
         console.error(`[Sweep] Recovery failed for ${p.email}:`, err.message);
+        alert({ stage: 'Sweep tried to recover this order and could not', email: p.email, detail: err.message });
       }
     }
   } catch (err) {
