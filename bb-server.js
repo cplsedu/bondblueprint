@@ -1061,14 +1061,14 @@ function buildSafetyNote(flags = {}) {
     notes.push({
       type:    'abuse',
       heading: 'A note about your safety',
-      message: 'What you described includes behavior that goes beyond normal relationship conflict. This guide focuses on attachment patterns and communication, and it is not designed to address safety concerns. If you are ever afraid of your partner, the National Domestic Violence Hotline is free, confidential, and available 24/7: call 1-800-799-7233 or text START to 88788.'
+      message: 'What you described includes behavior that goes beyond normal relationship conflict. This guide focuses on attachment patterns and communication, and it is not designed to address safety concerns. If you are ever afraid of your partner, please reach out to a domestic violence support service in your country. They are free and confidential, and talking to one does not commit you to anything.'
     });
   }
   if (flags?.selfHarm) {
     notes.push({
       type:    'selfharm',
       heading: 'A note about how you\'re feeling',
-      message: 'What you shared includes thoughts of hurting yourself or not wanting to be here. This guide is psychoeducational content about relationships and is not able to support you with this. Please reach out right now: call or text 988 for the Suicide & Crisis Lifeline, available 24/7, or text HOME to 741741 for the Crisis Text Line.'
+      message: 'What you shared includes thoughts of hurting yourself or not wanting to be here. This guide is psychoeducational content about relationships and is not able to support you with this. Please reach out to a crisis line or a licensed mental health professional in your country today. If you are in immediate danger, contact your local emergency services.'
     });
   }
   return notes;
