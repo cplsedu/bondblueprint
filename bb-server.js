@@ -279,7 +279,9 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
         situation: (situation || '').slice(0, 2000),
         who:       who || 'my partner',
         theme,
-        goal:      goal || 'feel safe in love'
+        goal:      goal || 'feel safe in love',
+        myStyle:   attachmentStyle || '',
+        theirStyle: partnerStyle || ''
       });
     } catch (err) {
       console.error('V2 blueprint generation failed:', err.message);
@@ -408,7 +410,9 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
         who:       who || 'my partner',
         theme,
         goal:      goal || '',   // Stan quiz no longer asks for a goal
-        diagnostic
+        diagnostic,
+        myStyle:   attachmentStyle || '',
+        theirStyle: partnerStyle || ''
       });
     } catch (err) {
       console.error('Stan blueprint generation failed:', err.message);
@@ -779,7 +783,7 @@ async function processCompletedCheckout(session) {
   // Generate blueprint with Claude
   let blueprint;
   try {
-    blueprint = await generateBlueprint({ situation, who, theme, goal });
+    blueprint = await generateBlueprint({ situation, who, theme, goal, myStyle: attachmentStyle || '', theirStyle: partnerStyle || '' });
   } catch (err) {
     console.error('Blueprint generation failed:', err.message);
     blueprint = buildFallbackBlueprint(attachmentStyle, partnerStyle);
@@ -855,7 +859,55 @@ async function processV2PaymentIntent(pi) {
 
 // ─── AI: BLUEPRINT GENERATION ─────────────────────────────────────────────────
 
-async function generateBlueprint({ situation, who, theme, goal, diagnostic = null }) {
+// The moments that actually set off each attachment style. Scripts are written
+// against these so the scenarios match the reader's own triggers, not generic ones.
+const STYLE_NAMES = { AA: 'anxious', DA: 'dismissive-avoidant', FA: 'fearful-avoidant', SA: 'secure' };
+
+const STYLE_TRIGGERS = {
+  AA: [
+    'They take hours to reply and you feel the panic rising',
+    'They seem short or distant and you cannot tell why',
+    'They ask for a night to themselves',
+    'Plans get cancelled last minute',
+    'A fight ends without any reassurance',
+    'They are vague about where this is going',
+    'You are about to send the second and third message',
+    'They come back warm after being cold'
+  ],
+  DA: [
+    'They want to talk about feelings right now',
+    'They ask why you have gone quiet',
+    'They want more time together than you have to give',
+    'You feel crowded and want to leave the room',
+    'They read your need for space as rejection',
+    'They get emotional and you go blank',
+    'You notice yourself shutting down mid-conversation',
+    'They ask for more of you than you know how to give'
+  ],
+  FA: [
+    'Things get close and you want to run',
+    'You pushed them away and now you are panicking',
+    'They reassure you and you cannot believe it',
+    'You catch yourself wanting to test whether they will stay',
+    'You feel needy and suffocated at the same time',
+    'You went cold and now they are hurt',
+    'You cannot tell if your read on this is accurate',
+    'They ask what you want and you genuinely do not know'
+  ],
+  SA: [
+    'They go quiet and you do not want to assume',
+    'You are starting to feel taken for granted',
+    'Something is off and neither of you has named it',
+    'They are escalating and you want to stay steady',
+    'They pull away and you feel the urge to chase',
+    'You need something and do not want to be a burden',
+    'The same issue has come back around again',
+    'You want to check in without adding pressure'
+  ]
+};
+
+async function generateBlueprint({ situation, who, theme, goal, diagnostic = null, myStyle = '', theirStyle = '' }) {
+  const triggerList = STYLE_TRIGGERS[myStyle] || STYLE_TRIGGERS.AA;
   const themeLabels = {
     pullaway:     'one partner pulling away / avoidant withdrawal',
     rollercoaster:'anxious-avoidant push-pull cycle',
@@ -890,6 +942,7 @@ WHAT THEY SHARED (their exact words). They were asked what their last fight was 
 ` : ''}
 CONTEXT:
 - Who this is about: ${who}
+- THEIR attachment style: ${STYLE_NAMES[theirStyle] || 'unclear'}
 - Main relationship pattern: ${themeLabels[theme] || theme}${goal && String(goal).trim() ? `
 - What they want most: ${goal}` : ''}${diagnostic ? `
 
@@ -901,6 +954,8 @@ THE UNMET ATTACHMENT NEED THEY CONFIRMED (from a guided diagnostic they just com
 - What else they said: ${Object.entries(diagnostic.answers).map(([k, v]) => `[${k}] ${v}`).join(' | ')}` : ''}
 
 Build the whole guide around this need. It is the spine of their situation, not a detail. The insecurity, the scripts, and the actions should all trace back to it. Use their own words for the fight wherever it fits.` : ''}
+
+THE SCRIPTS — READ THIS CAREFULLY: The eight "context" values are fixed. Do not change them. They are the moments that most reliably set off someone with this person's attachment style, which means each one is a moment where their own insecurity fires. For every one, the "say" line has a single job: teach them to name the feeling and then ask for the need straight out, in their own voice. Not a hint. Not a test. Not a complaint about what the other person did. The shape is "I feel X, what I need is Y." This is the skill nobody taught them, so the wording has to model it cleanly enough to copy.
 
 IMPORTANT: Only reference what they actually wrote above. Do not invent behaviors they did not describe. If they did not mention something, leave it out. If they shared very little, write about what they DID share plus the general pattern named in the context.
 
@@ -914,9 +969,8 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
   "cycleLeft": "The pursuing side: what that person does when disconnected. Active verbs. Under 12 words.",
   "cycleRight": "The withdrawing side: what that person does when overwhelmed. Active verbs. Under 12 words.",
   "understandingPartner": [
-    "Paragraph 1: What is actually going on inside their partner. Name the nervous system response. Use their specific words as evidence. 2-3 sentences.",
-    "Paragraph 2: Why this pattern exists for their partner. One research-grounded explanation in plain English. 2-3 sentences.",
-    "Paragraph 3: What the partner actually needs that they cannot ask for. How knowing this changes the dynamic. 2-3 sentences."
+    "Paragraph 1: What is actually going on inside ${who}. Name the nervous system response. Use their specific words as evidence. HARD LIMIT: 2 sentences and no more than 45 words. This is a strict cap, not a target.",
+    "Paragraph 2: Why this pattern exists for ${who}. One research-grounded explanation in plain English. HARD LIMIT: 2 sentences and no more than 45 words. This is a strict cap, not a target."
   ],
   "partnerBehaviors": [
     { "behavior": "A specific behavior from their situation (under 8 words)", "translation": "What it actually means emotionally (under 15 words)", "move": "The one right response (under 12 words)" },
@@ -925,14 +979,7 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
     { "behavior": "Fourth behavior", "translation": "What it means", "move": "Right response" }
   ],
   "scripts": [
-    { "context": "When [specific trigger from their situation]. Under 9 words total.", "theirMessage": "What their partner typically says or does (under 15 words)", "say": "Exact words to say. Calm. Non-blaming. Under 20 words.", "note": "Short note on tone or timing (under 10 words)", "why": "Why this exact wording works psychologically. One sentence, under 15 words." },
-    { "context": "When [second specific trigger]", "theirMessage": "What partner says or does", "say": "What to say", "note": "Tone note", "why": "Why it works" },
-    { "context": "When [third trigger]", "theirMessage": "Partner behavior", "say": "What to say", "note": "Tone note", "why": "Why it works" },
-    { "context": "When [fourth trigger]", "theirMessage": "Partner behavior", "say": "What to say", "note": "Tone note", "why": "Why it works" },
-    { "context": "When [fifth trigger]", "theirMessage": "Partner behavior", "say": "What to say", "note": "Tone note", "why": "Why it works" },
-    { "context": "When [sixth trigger]", "theirMessage": "Partner behavior", "say": "What to say", "note": "Tone note", "why": "Why it works" },
-    { "context": "When [seventh trigger]", "theirMessage": "Partner behavior", "say": "What to say", "note": "Tone note", "why": "Why it works" },
-    { "context": "When [eighth trigger]", "theirMessage": "Partner behavior", "say": "What to say", "note": "Tone note", "why": "Why it works" }
+${triggerList.map((t, i) => `    { "context": "${t}", "theirMessage": "What is happening on their side in that moment (under 15 words)", "say": "What THEY should say. It must name the feeling and then state the need plainly, in first person. No hinting, no testing, no blaming. HARD LIMIT: 22 words.", "note": "Short note on tone or timing (under 10 words)", "why": "Why naming the need directly works better than the usual move. One sentence, under 15 words." }${i < triggerList.length - 1 ? ',' : ''}`).join('\n')}
   ],
   "inPersonScripts": [
     { "context": "A face-to-face moment from their situation", "say": "Exact words for in-person. Under 20 words.", "note": "Body language or delivery note" },
@@ -948,19 +995,15 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
     "An action for their own regulation.",
     "A longer-term action for building what they actually want."
   ],
-  "avoid": [
-    "Most important pattern that tends to backfire. Specific to their situation. Start with 'Research shows...' or 'Studies suggest...' or 'Attachment science finds...'. Under 18 words.",
-    "Second pattern, different type. Same soft framing. No commands.",
-    "Something they probably do not realize tends to make it harder. Framed as a research finding.",
-    "A subtle one most people miss. Gentle, curious tone."
-  ],
   "coreNeeds": ["2 or 3 strings, each EXACTLY one of: contact, comfort, care, acceptance, belonging, togetherness, love, value, safety. The core attachment needs most clearly sitting underneath what they described in their situation. Pick only from that list, lowercase."],
   "insecurity": "Name the core insecurity underneath their pain: the question their attachment alarm is really asking (am I safe, do I matter, am I about to be left, am I enough). Tie it directly to what they described, using their exact words as evidence. Connect it to the coreNeeds you identified. 2 sentences, under 55 words. Warm, no jargon.",
-  "triggeredSteps": [
-    "The very first physical thing to do the moment they feel triggered, before any reaction. Concrete. Under 14 words. Do NOT write 'Step 1:' — start directly with a verb.",
-    "How to name what is happening to themselves. Under 14 words. Start with a verb, no numbering.",
-    "What to do instead of their usual reactive move (infer it from what they described). Under 14 words. Start with a verb, no numbering.",
-    "When and how to re-engage once regulated. Under 14 words. Start with a verb, no numbering."
+  "partnerNeeds": [
+    "Four strings. What ${who} actually needs FROM the reader, and every one must be correct for a ${STYLE_NAMES[theirStyle] || 'insecure'} attachment style specifically. Where possible, tie it to a behaviour the reader actually described. Under 12 words each.",
+    "Second", "Third", "Fourth"
+  ],
+  "partnerWorse": [
+    "Four strings. What makes things WORSE for someone with a ${STYLE_NAMES[theirStyle] || 'insecure'} attachment style. These must be the opposite of what that style needs, not generic relationship advice. Tie to what the reader described where possible. Under 12 words each.",
+    "Second", "Third", "Fourth"
   ],
   "innerDialogue": [
     { "instead": "The thought that likely fires when they are triggered, based on what they described. Under 12 words.", "try": "The secure replacement thought, spoken to themselves in first person. Under 20 words." },
@@ -969,13 +1012,13 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
   ],
   "secureCope": "2 sentences, under 55 words. The secure way to cope when this pattern flares, contrasting how they currently react. Show how it gets the coreNeeds you identified met. Warm, practical, no commands.",
   "plan": [
-    "Day 1: [specific action tied to their situation]",
-    "Day 2: [specific action]",
-    "Day 3: [specific action]",
-    "Day 4: [specific action]",
-    "Day 5: [specific action]",
-    "Day 6: [specific action]",
-    "Day 7: [reflection: what they now understand that they did not before]"
+    "Day 1: Catch one moment ${who} was actually reaching for something, even though it came out sideways. Noticing only, no response. Under 20 words.",
+    "Day 2: Catch another, and privately name which need was underneath it. Under 20 words.",
+    "Day 3: In a calm moment, ask ${who} one gentle question about what they did as a child when they were upset. Give the actual question. Under 22 words.",
+    "Day 4: Ask a follow-up about who they could go to growing up, and whether it helped. Give the actual question. Under 22 words.",
+    "Day 5: Listen for the line between what they learned then and what they do now. Do not say it out loud yet. Under 20 words.",
+    "Day 6: Share one thing from your own childhood, so this is two people opening up rather than one being studied. Under 20 words.",
+    "Day 7: Reflection on the pattern that may be repeating, and what it would take to not repeat it. Under 22 words."
   ]
 }`;
 
@@ -1251,12 +1294,6 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
     cycleLeft:         'Seeks connection, reaches for closeness',
     cycleRight:        'Seeks distance, needs space to regulate',
     insecurity: 'Underneath the trigger, your attachment system is asking one simple question: am I safe with you, and do I matter to you? The reaction feels big because the question is big. It is not drama. It is a nervous system protecting a real need.',
-    triggeredSteps: [
-      'Put both feet on the floor and take five slow breaths before anything else.',
-      'Say to yourself: "I am triggered. My attachment alarm is on."',
-      'Delay your usual coping move for at least 30 minutes.',
-      'Once your body is calm, reach out once, warmly, and name what you need.'
-    ],
     innerDialogue: [
       { instead: 'They are pulling away because they do not care.',  try: 'Their distance is their nervous system regulating. It is not a verdict on me.' },
       { instead: 'If I do not fix this right now, I will lose them.', try: 'Nothing real is lost in one calm hour. I can pause and still be okay.' },
@@ -1298,12 +1335,6 @@ function buildFallbackBlueprint(myStyle, partnerStyle) {
       'Take a 20-minute walk alone when you feel triggered before responding.',
       'Write down what safety feels like to you. Not what your partner does, what YOU feel.',
       'Find one therapist who specializes in attachment for even one session together.'
-    ],
-    avoid: [
-      'Stop pursuing harder when they go quiet. It accelerates withdrawal.',
-      'Do not interpret silence as rejection before asking directly.',
-      'Stop apologizing for having needs. They are valid.',
-      'Do not have the big conversations when either of you is flooded or overwhelmed.'
     ],
     plan: [
       'Day 1: Read this blueprint from start to finish. Underline one thing that resonates.',
