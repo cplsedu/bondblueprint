@@ -354,7 +354,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
   const cleanEmail = email.toLowerCase().trim();
 
   // Attachment-need diagnostic results (whitelisted; all fields optional)
-  const NEED_IDS = ['presence','responsiveness_validation','acceptance','safe_to_fail','trust_reliability','autonomy','valued_chosen'];
+  const NEED_IDS = ['safety','attunement','soothing','safe_to_fail','trust_reliability','autonomy','valued_chosen'];
   const d        = req.body.diagnostic || {};
   const str      = (v, n) => typeof v === 'string' ? v.trim().slice(0, n) : '';
   const diagnostic = NEED_IDS.includes(d.need) ? {

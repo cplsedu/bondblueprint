@@ -1053,18 +1053,18 @@ function computeStyle(prefix) {
 // → reflection → direct ask → partner invite. Spec: attachment_needs_diagnostic_flow v1.0
 const DIAG_SPEC = {
   needs: {
-    presence:                 { label: 'Presence',                    short: 'them to be there when it was hard' },
-    responsiveness_validation:{ label: 'Responsiveness / validation', short: 'your feelings taken seriously' },
-    acceptance:               { label: 'Acceptance',                  short: 'to be accepted as you are', pick: 'to be accepted as you are, flaws and all' },
+    safety:                   { label: 'Safety',                      short: 'to be able to open up to someone' },
+    attunement:               { label: 'Attunement',                  short: 'to feel seen and heard' },
+    soothing:                 { label: 'Soothing',                    short: 'to feel comforted and supported', pick: 'to feel comforted and supported during difficult times' },
     safe_to_fail:             { label: 'Room to grow',                short: 'to feel safe making mistakes', pick: 'to feel safe making mistakes and learning from them' },
     trust_reliability:        { label: 'Trust / reliability',         short: 'to count on their word' },
     autonomy:                 { label: 'Autonomy within connection',  short: 'space without it costing the relationship' },
     valued_chosen:            { label: 'Being valued / chosen',       short: 'to know you matter enough' }
   },
   signal_phrases: {
-    presence: ["wasn't there","didn't check on me","had to deal with it alone","by myself","couldn't reach"],
-    responsiveness_validation: ["got defensive","said i was overreacting","didn't even acknowledge","made it about them","wouldn't listen"],
-    acceptance: ["you always","called me dramatic","too sensitive","selfish","made me feel like something's wrong with me"],
+    safety: ["walking on eggshells","afraid to bring it up","couldn't say anything","shut me down","scared to tell"],
+    attunement: ["didn't even notice","wasn't listening","talked over me","didn't get it","like i wasn't there"],
+    soothing: ["had to deal with it alone","didn't comfort me","by myself","nobody there","made it worse"],
     safe_to_fail: ["held it against me","brings it up every time","never lets it go","walking on eggshells","can't win","throws it back in my face","one mistake"],
     trust_reliability: ["said they would and didn't","found out","lied","kept it from me","broke a promise"],
     autonomy: ["needed space","felt smothered","got upset when i wanted time alone","accused me of pulling away","too controlling"],
@@ -1075,17 +1075,17 @@ const DIAG_SPEC = {
     { id: 'T2', text: "If they'd handled it differently, what's the one sentence that would have made you feel better?" }
   ],
   confirm: {
-    presence: [
-      "Was there a specific moment you needed them to show up — physically or emotionally — and they weren't there or seemed checked out?",
-      "Looking back, would 'just be here with me' have mattered more than them fixing anything?"
+    safety: [
+      "Did it feel risky to say what you actually thought or felt in that moment?",
+      "Do you find yourself editing what you say to avoid setting something off?"
     ],
-    responsiveness_validation: [
-      "When you told them how you felt, did they get defensive or minimize it rather than ask more?",
-      "Did it feel like they argued with whether your feeling was valid, instead of hearing it?"
+    attunement: [
+      "Did it feel like they missed what was actually going on with you?",
+      "Would it have helped if they had simply noticed, even without fixing anything?"
     ],
-    acceptance: [
-      "Did the fight involve them criticizing something about who you are, not just what you did?",
-      "Did you feel like you had to defend your character rather than just explain your behavior?"
+    soothing: [
+      "When it got hard, did you need comfort more than you needed a solution?",
+      "Did you end up managing the hard feeling on your own?"
     ],
     safe_to_fail: [
       "Did the fight leave you feeling like you couldn't admit you got something wrong without it being used against you?",
@@ -1105,9 +1105,9 @@ const DIAG_SPEC = {
     ]
   },
   output: {
-    presence: "This wasn't really about [topic] — it sounds like what you needed was to know they'd show up for you when things got hard.",
-    responsiveness_validation: "Underneath the disagreement about [topic], it sounds like what you needed was to have your feelings taken seriously instead of argued with.",
-    acceptance: "This sounds less like a disagreement about [topic] and more about needing to feel accepted for who you are.",
+    safety: "This sounds less like [topic] and more like needing it to feel safe to open up in the first place.",
+    attunement: "Underneath [topic], it sounds like what you needed was to feel seen and heard.",
+    soothing: "This sounds less like [topic] and more like needing comfort and support when things got hard.",
     safe_to_fail: "Underneath [topic], it sounds like what you needed was room to get something wrong, own it, and grow from it without it being held over you.",
     trust_reliability: "What's underneath [topic] isn't really the specific incident — it's whether you can trust their word and count on consistency.",
     autonomy: "It sounds like what was really at stake in [topic] was room to have space, or to depend on each other, without it threatening the relationship.",
@@ -1121,12 +1121,12 @@ const DIAG_SPEC = {
     { id: 'CR3', text: "What would it look like to meet that need now — something you can give yourself, or something you can ask a partner for directly?", type: 'text' }
   ],
   direct_ask: {
-    presence: { t: "I feel alone when [situation]. What I need is for you to be there with me, even if you can't fix it.",
-                e: "I felt so alone at the ER waiting to hear from you. What I need is a check-in when I'm going through something hard — even just a text." },
-    responsiveness_validation: { t: "I feel dismissed when my feelings get argued with instead of heard. What I need is for you to hear me out first.",
-                e: "When I told you I was upset and you said I was overreacting, I felt dismissed. What I need is for you to hear me out before deciding if it's a big deal." },
-    acceptance: { t: "I feel judged when who I am gets criticized. What I need is to feel accepted for who I am.",
-                e: "When you called me dramatic, I felt judged for having feelings at all. What I need is to feel like it's okay to be emotional with you." },
+    safety: { t: "I feel like I have to be careful with what I say. What I need is to know it is safe to be honest with you.",
+                e: "When I brought it up and you got sharp, I stopped talking. What I need is to be able to say something hard without it turning into a fight." },
+    attunement: { t: "I feel unseen when what is going on with me gets missed. What I need is for you to notice and check in.",
+                e: "When I said I was struggling and you changed the subject, I felt invisible. What I need is for you to stay with it for a minute." },
+    soothing: { t: "I feel alone with it when things get hard. What I need is comfort first, before any fixing.",
+                e: "When I was falling apart and you jumped straight to solutions, I shut down. What I need is for you to just be with me first." },
     safe_to_fail: { t: "I feel like I can't get anything wrong when mistakes keep getting held against me. What I need is room to mess up, own it, and move forward.",
                 e: "When I apologized and you brought up the same thing from months ago, I shut down. What I need is for us to be able to move past something once I've owned it." },
     trust_reliability: { t: "I feel unsettled when a promise doesn't hold up. What I need is consistency I can count on.",
