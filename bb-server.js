@@ -1261,10 +1261,26 @@ app.get('/api/test-flow', async (req, res) => {
   }
 });
 
-app.get('/api/health', (req, res) => {
+// Actually checks the Anthropic key works (listing models is free, no tokens).
+// Cached for 5 minutes so health pings don't hit the API every time.
+let aiCheck = { ok: false, at: 0 };
+async function anthropicKeyWorks() {
+  if (!process.env.ANTHROPIC_API_KEY) return false;
+  if (Date.now() - aiCheck.at < 5 * 60 * 1000) return aiCheck.ok;
+  try {
+    await anthropic.models.list({ limit: 1 });
+    aiCheck = { ok: true, at: Date.now() };
+  } catch (err) {
+    console.error('Anthropic key check failed:', err.status || '', err.message);
+    aiCheck = { ok: false, at: Date.now() };
+  }
+  return aiCheck.ok;
+}
+
+app.get('/api/health', async (req, res) => {
   res.json({
     ok:     true,
-    ai:     !!process.env.ANTHROPIC_API_KEY,
+    ai:     await anthropicKeyWorks(),
     stripe: !!process.env.STRIPE_SECRET_KEY,
     db:     !!process.env.SUPABASE_URL,
     email:  !!process.env.RESEND_API_KEY
