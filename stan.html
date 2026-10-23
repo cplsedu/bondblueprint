@@ -122,6 +122,21 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
   transition:all .2s;
 }
 .email-btn:hover{background:var(--orange-dk);transform:translateY(-1px)}
+.email-heads-up{
+  background:#FDF0E6;
+  border-left:3px solid var(--orange);
+  border-radius:0 10px 10px 0;
+  padding:12px 14px;
+  margin-top:14px;
+  text-align:left;
+}
+.email-heads-up p{
+  font-size:.84rem;
+  font-weight:700;
+  color:var(--text);
+  line-height:1.6;
+}
+
 .email-note{
   font-size:.75rem;
   font-weight:700;
@@ -228,6 +243,13 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
 .field-textarea::placeholder{color:var(--text3);font-weight:600}
 
 
+
+.sit-count{
+  float:right;
+  font-weight:800;
+  color:var(--text3);
+}
+.sit-count.good{color:var(--green)}
 
 .field-hint{
   font-size:.78rem;
@@ -646,6 +668,9 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
       >
       <div class="email-error" id="email-error"></div>
       <button class="email-btn" onclick="startQuiz()">Start My Quiz →</button>
+      <div class="email-heads-up">
+        <p>One thing before you start: the more you write, the better this gets. I'm building your guide from your actual words, so a few honest sentences will get you way further than a few words.</p>
+      </div>
       <p class="email-note">We'll only use this to send your blueprint. No spam, ever.</p>
     </div>
   </div>
@@ -905,8 +930,9 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
         id="q-situation"
         placeholder="What set it off, what was said, and how it ended..."
         maxlength="2000"
+        oninput="updateCount()"
       ></textarea>
-      <div class="field-hint">No one else sees this. Be as honest as you can.</div>
+      <div class="field-hint">No one else sees this. Be as honest as you can. <span id="sit-count" class="sit-count">0 / 2000</span></div>
     </div>
 
   </form>
@@ -1397,6 +1423,16 @@ function finishDiagnostic(readiness) {
       <div class="diag-help">It'll be written around what we just found, not just your quiz answers.</div>
       <button class="diag-next" id="diag-final" onclick="submitQuiz(event)">Build my blueprint</button>
     </div>`;
+}
+
+// ── CHARACTER COUNT ──────────────────────────────
+function updateCount() {
+  const ta = document.getElementById('q-situation');
+  const el = document.getElementById('sit-count');
+  if (!ta || !el) return;
+  const n = ta.value.length;
+  el.textContent = n + ' / 2000';
+  el.classList.toggle('good', n >= 200);
 }
 
 // ── SUBMIT ───────────────────────────────────────
