@@ -261,7 +261,7 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
       attachmentStyle: attachmentStyle || '',
       partnerStyle:    partnerStyle || '',
       quizData:        { who: who || 'my partner', goal: goal || '' },
-      situation:       (situation || '').slice(0, 2000)
+      situation:       (situation || '').slice(0, 5000)
     });
 
     // Lock the record immediately so double-submits are rejected
@@ -279,7 +279,7 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
     let blueprint;
     try {
       blueprint = await generateBlueprint({
-        situation: (situation || '').slice(0, 2000),
+        situation: (situation || '').slice(0, 5000),
         who:       who || 'my partner',
         theme,
         goal:      goal || 'feel safe in love',
@@ -379,7 +379,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
       attachmentStyle: attachmentStyle || '',
       partnerStyle:    partnerStyle    || '',
       quizData:        { who: who || 'my partner', goal: goal || '', diagnostic },
-      situation:       (situation || '').slice(0, 2000)
+      situation:       (situation || '').slice(0, 5000)
     });
 
     // Create purchase record — Stan handled the $19 payment
@@ -409,7 +409,7 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
     let blueprint;
     try {
       blueprint = await generateBlueprint({
-        situation: (situation || '').slice(0, 2000),
+        situation: (situation || '').slice(0, 5000),
         who:       who || 'my partner',
         theme,
         goal:      goal || '',   // Stan quiz no longer asks for a goal
@@ -667,7 +667,7 @@ app.post('/api/create-checkout', async (req, res) => {
     return res.status(400).json({ error: 'Valid email required' });
   }
 
-  const cleanSituation = (situation || '').trim().slice(0, 2000);
+  const cleanSituation = (situation || '').trim().slice(0, 5000);
 
   try {
     // Save situation description to the lead record before checkout
@@ -945,7 +945,7 @@ Return ONLY valid JSON. No markdown, no explanation, no code fences. Just the ra
   const USER_PROMPT = `Here is someone's real situation. Read every word carefully. Then write their personal relationship guide.
 ${situation && situation.trim() ? `
 WHAT THEY SHARED (their exact words). They were asked what their last fight was about, so this is usually one specific conflict. Treat that fight as a window into the pattern between them, not as the whole relationship. Ground everything you write in it, and do not invent a wider history they did not describe:
-"${situation.trim().slice(0, 2000)}"
+"${situation.trim().slice(0, 5000)}"
 ` : ''}
 CONTEXT:
 - Who this is about: ${who}

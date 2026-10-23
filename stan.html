@@ -929,10 +929,10 @@ input,textarea,select{font-family:inherit;font-size:16px;-webkit-appearance:none
         class="field-textarea"
         id="q-situation"
         placeholder="What set it off, what was said, and how it ended..."
-        maxlength="2000"
+        maxlength="5000"
         oninput="updateCount()"
       ></textarea>
-      <div class="field-hint">No one else sees this. Be as honest as you can. <span id="sit-count" class="sit-count">0 / 2000</span></div>
+      <div class="field-hint">No one else sees this. Be as honest as you can. <span id="sit-count" class="sit-count">0 / 5000</span></div>
     </div>
 
   </form>
@@ -1431,7 +1431,7 @@ function updateCount() {
   const el = document.getElementById('sit-count');
   if (!ta || !el) return;
   const n = ta.value.length;
-  el.textContent = n + ' / 2000';
+  el.textContent = n + ' / 5000';
   el.classList.toggle('good', n >= 200);
 }
 
