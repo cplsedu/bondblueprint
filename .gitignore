@@ -2,3 +2,8 @@
 node_modules
 bb-accounts.json
 analytics-dashboard.html
+
+# Customer data — generated blueprints and raw quiz input. Never commit these.
+/*.pdf
+/*-input.txt
+.DS_Store

@@ -984,7 +984,7 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
     "Paragraph 2: Why this pattern exists for ${who}. One research-grounded explanation in plain English. HARD LIMIT: 2 sentences and no more than 45 words. This is a strict cap, not a target."
   ],
   "partnerBehaviors": [
-    { "behavior": "A specific behavior from their situation (under 8 words)", "translation": "What it actually means emotionally (under 15 words)", "move": "The one right response (under 12 words)" },
+    { "behavior": "A specific behavior from their situation (under 8 words)", "translation": "What it actually means emotionally (under 15 words). If the reader asked their partner to stop something and the partner did it again, do NOT translate it as playfulness, teasing or cruelty. It is the partner trying to hold the connection during conflict with the only tool they learned growing up, delivered in a way that hurts. Say plainly that it hurt, that it was a clumsy attempt to stay close rather than a verdict on how much they care, and that it is a missing skill. (under 15 words)", "move": "The one right response (under 12 words)" },
     { "behavior": "Second specific behavior", "translation": "What it means", "move": "Right response" },
     { "behavior": "Third behavior", "translation": "What it means", "move": "Right response" },
     { "behavior": "Fourth behavior", "translation": "What it means", "move": "Right response" }
@@ -1016,6 +1016,12 @@ ${triggerList.map((t, i) => {
   ],
   "coreNeeds": ["2 or 3 strings, each EXACTLY one of: contact, comfort, care, acceptance, belonging, togetherness, love, value, safety. The core attachment needs most clearly sitting underneath what they described in their situation. Pick only from that list, lowercase."],
   "insecurity": "Name the core insecurity underneath their pain: the question their attachment alarm is really asking (am I safe, do I matter, am I about to be left, am I enough). Tie it directly to what they described, using their exact words as evidence. Connect it to the coreNeeds you identified. 2 sentences, under 55 words. Warm, no jargon.",
+  "selfProtection": [
+    { "move": "Something the READER themselves actually did in the situation they described, in their own words where possible (under 9 words)", "protecting": "What they were protecting themselves from when they did it. Self-protection, not a character flaw. (under 11 words)" },
+    { "move": "Second thing the reader did", "protecting": "What that one was protecting" },
+    { "move": "Third thing the reader did", "protecting": "What that one was protecting" }
+  ],
+  "selfProtectionNote": "One sentence tying their moves together: these were protection, not personality. Under 30 words. IF the reader described themselves yelling, attacking, going mean, saying something cruel or opening their mouth and not stopping, you MUST instead say that part of it is their attachment style firing and part of it is a skill they were never taught, and that both are true. Under 40 words in that case.",
   "partnerNeeds": [
     "Four strings. What ${who} actually needs FROM the reader, and every one must be correct for a ${STYLE_NAMES[theirStyle] || 'insecure'} attachment style specifically. Where possible, tie it to a behaviour the reader actually described. Under 12 words each.",
     "Second", "Third", "Fourth"
@@ -1223,81 +1229,6 @@ app.post('/api/generate-blueprint', async (req, res) => {
 });
 
 // ─── HEALTH CHECK ─────────────────────────────────────────────────────────────
-
-// ─── TEST ENDPOINT (remove after go-live) ────────────────────────────────────
-// Hit: GET /api/test-flow?email=you@example.com
-// Generates a real blueprint with Claude, renders a PDF, and emails it to you.
-
-app.get('/api/test-flow', async (req, res) => {
-  const email = req.query.email;
-  if (!email || !VALID_EMAIL_RE.test(email.trim())) {
-    return res.status(400).send('Add ?email=your@email.com to the URL');
-  }
-
-  try {
-    res.write('Starting test...\n');
-
-    // 1. Generate blueprint with Claude
-    res.write('Calling Claude to generate blueprint...\n');
-    const blueprint = await generateBlueprint({
-      situation: "We have been together for two years. When things feel close and connected, she suddenly goes cold and distant for days without explanation. I reach out and she says nothing is wrong but pulls further away. I end up feeling desperate and clingy, which I hate. When I give her space she comes back warm and loving, but I never know how long it will last. I am exhausted from the cycle and do not know if I am the problem.",
-      who: 'my partner',
-      theme: 'pullaway',
-      goal: 'feel safe in love'
-    });
-    res.write(`Blueprint generated: "${blueprint.title}"\n`);
-
-    // 2. Render PDF
-    res.write('Rendering PDF...\n');
-    const pdfBuffer = await generateBlueprintPdf(blueprint, {
-      name: 'Ashley',
-      attachmentStyle: 'Anxious',
-      partnerStyle: 'Avoidant'
-    });
-    res.write(`PDF rendered: ${Math.round(pdfBuffer.length / 1024)}KB\n`);
-
-    // 3. Send email
-    res.write(`Sending email to ${email}...\n`);
-    await sendBlueprintEmail({
-      to: email,
-      name: 'Ashley',
-      pdfBuffer,
-      blueprintTitle: blueprint.title,
-      attachmentStyle: 'Anxious',
-      partnerStyle: 'Avoidant'
-    });
-
-    res.end(`\n✅ SUCCESS — Check ${email} for your test blueprint PDF.\nTitle: "${blueprint.title}"`);
-  } catch (err) {
-    res.end(`\n❌ ERROR: ${err.message}`);
-  }
-});
-
-// Actually checks the Anthropic key works (listing models is free, no tokens).
-// Cached for 5 minutes so health pings don't hit the API every time.
-let aiCheck = { ok: false, at: 0 };
-async function anthropicKeyWorks() {
-  if (!process.env.ANTHROPIC_API_KEY) return false;
-  if (Date.now() - aiCheck.at < 5 * 60 * 1000) return aiCheck.ok;
-  try {
-    await anthropic.models.list({ limit: 1 });
-    aiCheck = { ok: true, at: Date.now() };
-  } catch (err) {
-    console.error('Anthropic key check failed:', err.status || '', err.message);
-    aiCheck = { ok: false, at: Date.now() };
-  }
-  return aiCheck.ok;
-}
-
-app.get('/api/health', async (req, res) => {
-  res.json({
-    ok:     true,
-    ai:     await anthropicKeyWorks(),
-    stripe: !!process.env.STRIPE_SECRET_KEY,
-    db:     !!process.env.SUPABASE_URL,
-    email:  !!process.env.RESEND_API_KEY
-  });
-});
 
 // ─── HELPERS ──────────────────────────────────────────────────────────────────
 
