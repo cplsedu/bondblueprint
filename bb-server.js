@@ -536,16 +536,104 @@ async function anthropicKeyWorks() {
   return aiCheck.ok;
 }
 
-app.get('/api/health', async (req, res) => {
-  res.json({
-    ok:     true,
-    ai:     await anthropicKeyWorks(),
-    stripe: !!process.env.STRIPE_SECRET_KEY,
-    db:     !!process.env.SUPABASE_URL,
-    email:  !!process.env.RESEND_API_KEY
+// The other three used to be presence checks on the env var, which is how an
+// expired key can read as healthy for a month while every call 401s. These
+// actually exercise the credential. All are free and cached for 5 minutes.
+const depCache = {};
+async function cachedCheck(name, fn) {
+  const c = depCache[name];
+  if (c && Date.now() - c.at < 5 * 60 * 1000) return c.ok;
+  let ok = false;
+  try { ok = await fn(); }
+  catch (err) { console.error(`[Health] ${name} check failed:`, err.message); }
+  depCache[name] = { ok, at: Date.now() };
+  return ok;
+}
+
+// A send-only Resend key cannot list domains, but it answers 401
+// "restricted_api_key", while a bad key answers 400 "API key is invalid".
+// Both mean the key is real; only the second means it is broken.
+function resendKeyWorks() {
+  if (!process.env.RESEND_API_KEY) return Promise.resolve(false);
+  return cachedCheck('resend', async () => {
+    const r = await fetch('https://api.resend.com/domains', {
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}` }
+    });
+    if (r.ok) return true;
+    const body = await r.json().catch(() => ({}));
+    return body.name === 'restricted_api_key';
   });
+}
+
+function stripeKeyWorks() {
+  if (!process.env.STRIPE_SECRET_KEY) return Promise.resolve(false);
+  return cachedCheck('stripe', async () => { await stripe.balance.retrieve(); return true; });
+}
+
+function dbWorks() {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_KEY) return Promise.resolve(false);
+  return cachedCheck('db', async () => {
+    const r = await fetch(`${process.env.SUPABASE_URL}/rest/v1/purchases?select=id&limit=1`, {
+      headers: {
+        apikey:        process.env.SUPABASE_SERVICE_KEY,
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_KEY}`
+      }
+    });
+    return r.ok;
+  });
+}
+
+async function dependencyStatus() {
+  const [ai, stripeOk, db, email] = await Promise.all([
+    anthropicKeyWorks(), stripeKeyWorks(), dbWorks(), resendKeyWorks()
+  ]);
+  return { ai, stripe: stripeOk, db, email };
+}
+
+app.get('/api/health', async (req, res) => {
+  const deps = await dependencyStatus();
+  res.json({ ok: Object.values(deps).every(Boolean), ...deps });
 });
 app.get('/health', (req, res) => res.json({ ok: true }));
+
+// ─── DEPENDENCY WATCHDOG ─────────────────────────────────────────────────────
+// The month of 401s was never a detection problem: the per-order alerts fired
+// every time. Nothing escalated when they kept firing, and /health answered
+// {ok:true} throughout. This watches the credentials directly and emails only
+// when something changes state, so a dead key is loud once instead of silent
+// forever.
+const DEP_LABELS = {
+  ai:     'Anthropic API key — blueprints will fall back to the generic template',
+  stripe: 'Stripe secret key — card checkout will fail',
+  db:     'Supabase — orders cannot be saved or read',
+  email:  'Resend API key — customers will receive nothing'
+};
+let lastDepState = null;
+
+async function watchDependencies() {
+  let deps;
+  try { deps = await dependencyStatus(); }
+  catch (err) { console.error('[Watchdog] check failed:', err.message); return; }
+
+  for (const [key, ok] of Object.entries(deps)) {
+    const was = lastDepState ? lastDepState[key] : true;
+    if (was === ok) continue;
+    if (!ok) {
+      console.error(`[Watchdog] ${key} went DOWN`);
+      alert({ stage: `Service check failed — ${key}`, email: '(no customer affected yet)',
+              detail: DEP_LABELS[key] || key });
+    } else if (lastDepState) {
+      console.log(`[Watchdog] ${key} recovered`);
+      alert({ stage: `Service check recovered — ${key}`, email: '(no action needed)',
+              detail: `${DEP_LABELS[key] || key}. This is working again.`, recovered: true });
+    }
+  }
+  lastDepState = deps;
+}
+
+// First pass 2 minutes after boot so a bad deploy is caught quickly, then hourly.
+setTimeout(watchDependencies,      2 * 60 * 1000);
+setInterval(watchDependencies, 60 * 60 * 1000);
 
 // ─── ADMIN DASHBOARD ─────────────────────────────────────────────────────────
 
