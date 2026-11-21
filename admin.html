@@ -61,6 +61,9 @@ a{color:inherit}
 .badge-pending{background:#F5F3F0;color:#9A908A}
 .badge-delivered{background:#E8F4EC;color:#2C7A3A}
 .badge-waiting{background:#FEF3E2;color:#B8741A}
+.badge-generic{background:#FDE8E8;color:#B42318}
+.regen-btn{margin-left:8px;font-size:.75rem;font-weight:700;border:1px solid #2C4A35;color:#2C4A35;background:#fff;border-radius:8px;padding:4px 10px;cursor:pointer}
+.regen-btn:disabled{opacity:.5;cursor:not-allowed}
 .badge-style-AA{background:#FEE8E8;color:#C0392B}
 .badge-style-DA{background:#E8F0FE;color:#2C5CC5}
 .badge-style-FA{background:#F3E8FE;color:#7B2FBE}
@@ -213,12 +216,30 @@ function renderCustomerService(d) {
       <td class="date-cell">${fmtDate(p.purchaseDate)}</td>
       <td>${styleBadge(p.attachmentStyle)}</td>
       <td>${styleBadge(p.partnerStyle)}</td>
-      <td>${p.delivered ? '<span class="badge badge-delivered">✓ Delivered</span>' : '<span class="badge badge-waiting">Pending</span>'}</td>
+      <td>${p.delivered ? '<span class="badge badge-delivered">✓ Delivered</span>' : '<span class="badge badge-waiting">Pending</span>'}
+        ${p.generic ? `<span class="badge badge-generic">Generic</span><button class="regen-btn" onclick="regenerate(this, '${p.email}')">Regenerate &amp; resend</button>` : ''}</td>
     </tr>`).join('');
     clEl.innerHTML = `<table class="cs-table"><thead><tr>
       <th>Customer</th><th>Purchased</th><th>Their Style</th><th>Partner Style</th><th>Blueprint</th>
     </tr></thead><tbody>${rows}</tbody></table>`;
   }
+}
+
+function regenerate(btn, email) {
+  if (!confirm(`Write a new personalized blueprint for ${email} and email it to them?`)) return;
+  btn.disabled = true;
+  btn.textContent = 'Working… (about a minute)';
+  fetch('/api/admin/regenerate-blueprint', {
+    method:  'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body:    JSON.stringify({ key: adminKey, email })
+  })
+    .then(r => r.json().then(d => ({ ok: r.ok, d })))
+    .then(({ ok, d }) => {
+      if (ok) { alert(`Sent! ${email} has their personalized blueprint.`); loadAll(); }
+      else    { alert(`Not sent: ${d.error}`); btn.disabled = false; btn.textContent = 'Regenerate & resend'; }
+    })
+    .catch(() => { alert('Not sent: could not reach the server.'); btn.disabled = false; btn.textContent = 'Regenerate & resend'; });
 }
 
 </script>

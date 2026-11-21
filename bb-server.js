@@ -7,7 +7,7 @@ const helmet      = require('helmet');
 const stripe      = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const path        = require('path');
 
-const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, getUndeliveredPurchases, markReminderSent, getCustomerServiceData } = require('./lib/db');
+const { upsertLead, updateLeadSituation, getLeadByEmail, createPurchase, completePurchase, markEmailSent, getPurchaseBySession, getAnalytics, getUnclaimedPurchasesForReminder, getUndeliveredPurchases, markReminderSent, getCustomerServiceData, getLatestPurchaseByEmail, updatePurchaseBlueprint } = require('./lib/db');
 const VALID_EMAIL_RE  = /^[^\s@]+@[^\s@]+\.[a-zA-Z]{2,}$/;
 // Set CONVERTKIT_ENABLED=true in Railway when Kit sequences are active again
 const KIT_ENABLED = process.env.CONVERTKIT_ENABLED === 'true';
@@ -624,6 +624,74 @@ app.get('/api/admin/customer-service', async (req, res) => {
   } catch (err) {
     console.error('Customer service data error:', err.message);
     res.status(500).json({ error: 'Failed to load customer service data' });
+  }
+});
+
+// ─── ADMIN: REGENERATE + RESEND A BLUEPRINT ───────────────────────────────────
+// For orders that fell back to the generic blueprint (e.g. the AI call failed).
+// Rebuilds it from the quiz answers saved on the lead, stores it on the buyer's
+// latest purchase and emails it. If generation fails again nothing is sent, so
+// the customer never gets a second generic copy.
+
+app.post('/api/admin/regenerate-blueprint', async (req, res) => {
+  const { key, email } = req.body || {};
+  if (!key || key !== process.env.ADMIN_KEY) return res.status(401).json({ error: 'Unauthorized' });
+  if (!email || !VALID_EMAIL_RE.test(String(email).trim())) return res.status(400).json({ error: 'Valid email required' });
+
+  const cleanEmail = String(email).toLowerCase().trim();
+  try {
+    const [lead, purchase] = await Promise.all([getLeadByEmail(cleanEmail), getLatestPurchaseByEmail(cleanEmail)]);
+    if (!lead)     return res.status(404).json({ error: 'No quiz answers saved for this email' });
+    if (!purchase) return res.status(404).json({ error: 'No completed purchase for this email' });
+
+    const myStyle    = lead.attachment_style || '';
+    const theirStyle = lead.partner_style    || '';
+    const quiz       = lead.quiz_data || {};
+
+    let blueprint;
+    try {
+      blueprint = await generateBlueprint({
+        situation:  (lead.situation || '').slice(0, 5000),
+        who:        quiz.who  || 'my partner',
+        theme:      resolveTheme(myStyle, theirStyle),
+        goal:       quiz.goal || '',
+        diagnostic: quiz.diagnostic || null,
+        myStyle,
+        theirStyle
+      });
+    } catch (err) {
+      console.error(`[Regenerate] Generation failed for ${cleanEmail}:`, err.message);
+      return res.status(502).json({ error: `Blueprint generation failed, nothing was sent: ${err.message}` });
+    }
+    if (quiz.diagnostic) blueprint.diagnostic = quiz.diagnostic;
+
+    await updatePurchaseBlueprint(purchase.stripe_session_id, blueprint);
+
+    let pdfBuffer;
+    try {
+      pdfBuffer = await generateBlueprintPdf(blueprint, {
+        name: lead.name || '', attachmentStyle: formatStyle(myStyle), partnerStyle: formatStyle(theirStyle)
+      });
+    } catch (err) {
+      console.error(`[Regenerate] PDF failed for ${cleanEmail}:`, err.message);
+      return res.status(500).json({ error: `PDF generation failed, nothing was sent: ${err.message}` });
+    }
+
+    await sendBlueprintEmail({
+      to:              cleanEmail,
+      name:            lead.name || '',
+      pdfBuffer,
+      blueprintTitle:  blueprint.title,
+      attachmentStyle: formatStyle(myStyle),
+      partnerStyle:    formatStyle(theirStyle)
+    });
+    await markEmailSent(purchase.stripe_session_id);
+
+    console.log(`✅ [Regenerate] Personalized blueprint resent to ${cleanEmail}`);
+    res.json({ success: true, title: blueprint.title });
+  } catch (err) {
+    console.error(`[Regenerate] Failed for ${cleanEmail}:`, err.message);
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -1311,6 +1379,7 @@ function formatStyle(code) {
 
 function buildFallbackBlueprint(myStyle, partnerStyle) {
   return {
+    _fallback:         true,
     title:             'Your Relationship Guide',
     coverIntro:        'You showed up. That matters. This guide was built from what you shared and what the research says about this exact pattern. You are not the problem. The cycle is.',
     situationSummary:  'The pattern between you is driven by differing attachment strategies, not a lack of love. Both of you are responding from nervous systems shaped long before this relationship. Neither of you is the problem. The cycle is.',
