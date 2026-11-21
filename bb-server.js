@@ -290,6 +290,7 @@ app.post('/api/v2/submit-quiz', aiLimiter, async (req, res) => {
       console.error('V2 blueprint generation failed:', err.message);
       blueprint = buildFallbackBlueprint(attachmentStyle, partnerStyle);
     }
+    blueprint.partnerName = (who || '').trim().slice(0, 40);
 
     await completePurchase({
       stripeSessionId: sessionId,
@@ -423,6 +424,9 @@ app.post('/api/stan/submit', aiLimiter, async (req, res) => {
       blueprint = buildFallbackBlueprint(attachmentStyle, partnerStyle);
     }
     if (diagnostic) blueprint.diagnostic = diagnostic;
+    // Carried on the blueprint so the PDF can name them, including on a later
+    // re-render from the stored record.
+    blueprint.partnerName = (who || '').trim().slice(0, 40);
 
     await completePurchase({
       stripeSessionId: stanId,
@@ -986,7 +990,15 @@ Return a JSON object with EXACTLY this structure (no extra fields, no missing fi
     { "behavior": "Fourth behavior", "translation": "What it means", "move": "Right response" }
   ],
   "scripts": [
-${triggerList.map((t, i) => `    { "context": "${t}", "theirMessage": "What is happening on their side in that moment (under 15 words)", "say": "What THEY should say. It must name the feeling and then state the need plainly, in first person. No hinting, no testing, no blaming. HARD LIMIT: 22 words.", "note": "Short note on tone or timing (under 10 words)", "why": "Why naming the need directly works better than the usual move. One sentence, under 15 words." }${i < triggerList.length - 1 ? ',' : ''}`).join('\n')}
+${triggerList.map((t, i) => {
+    // First four contexts come from what the customer actually described, so the
+    // scripts are about their relationship. The last four cover recurring moments
+    // for their attachment style, reworded for this specific pairing.
+    const ctx = i < 4
+      ? `Moment ${i + 1}, and these first four come straight from their own situation: a real moment from what they described above, or the hours and days right after it. Use the actual details and ${who}'s name where it fits. If their situation does not hold four clearly different moments, stay inside the same dynamic rather than inventing an unrelated scene. Never a generic scenario. Under 12 words.`
+      : `Now choose: the moment most likely to matter for THIS person next, given their attachment style, ${who}'s style, and the dynamic they described. Pick what would genuinely help them, not a stock scenario, and do not repeat a moment already used above. A common one for this style, to adapt or ignore as you judge best: "${t}". Under 12 words.`;
+    return `    { "context": "${ctx}", "theirMessage": "What is happening on their side in that moment (under 15 words)", "say": "What THEY should say. It must name the feeling and then state the need plainly, in first person. No hinting, no testing, no blaming. HARD LIMIT: 22 words.", "note": "Short note on tone or timing (under 10 words)", "why": "Why naming the need directly works better than the usual move. One sentence, under 15 words." }${i < triggerList.length - 1 ? ',' : ''}`;
+  }).join('\n')}
   ],
   "inPersonScripts": [
     { "context": "A face-to-face moment from their situation", "say": "Exact words for in-person. Under 20 words.", "note": "Body language or delivery note" },
